@@ -1,19 +1,13 @@
 <template>
-  <div id="app">
-    <nav-bar></nav-bar>
-    <hr />
-    <router-view></router-view>
+  <div>
+    <h1>된건가?</h1>
   </div>
 </template>
 
 <script>
-  import NavBar from '@/components/NavBar.vue'
 
-  export default {
-    name: 'App',
-    components: { NavBar },
 
-  }
+export default {
+  name: 'App',
+}
 </script>
-
-<style></style>
