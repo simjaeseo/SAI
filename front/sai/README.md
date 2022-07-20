@@ -1,4 +1,4 @@
-# sai
+# ssafy-vue
 
 ## Project setup
 ```
