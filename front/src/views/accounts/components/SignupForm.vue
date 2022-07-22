@@ -11,7 +11,7 @@
             <input type='text' id='user_signup_email'
             class='form-control'>
           </label>
-          <button class="btn mx-4" id="double-check-btn">중복확인</button>
+          <button class="btn mx-2" id="double-check-btn">중복확인</button>
         </div>
         <div class='mt-5 mb-5' id='pw-input-wrap'>
           <label for='user_signup_pw1'><p id="login-text2">비밀번호</p>
@@ -34,7 +34,7 @@
               placeholder='최대 3개까지 입력 가능합니다.'
               class='form-control'>
             </label>
-            <button class="btn mx-4" id="double-check-btn">등록</button>
+            <button class="btn mx-2" id="double-check-btn">등록</button>
             <!-- 예시 -->
             <p>#삼성전자</p>
           </div>
@@ -46,7 +46,7 @@
                 placeholder='최대 3개까지 입력 가능합니다.'
                 class='form-control'>
               </label>
-              <button class="btn mx-4" id="double-check-btn">등록</button>
+              <button class="btn mx-2" id="double-check-btn">등록</button>
               <!-- 예시 -->
               <p>#프론트앤드</p>
             </div>
@@ -76,10 +76,18 @@
                 <option value='4'>구미</option>
                 <option value='5'>부울경</option>
               </select>
+              <select class='form-select' id='form-select2' aria-label='Default select example'>
+                <option selected>반</option>
+                <option value='1'>1반</option>
+                <option value='2'>2반</option>
+                <option value='3'>3반</option>
+                <option value='4'>4반</option>
+                <option value='5'>5반</option>
+              </select>
             </div>
             <div id='form-select-wrap' class="mx-2">
-              <p id='login-text3'>연락처</p>
-              <select class='form-select' id='form-select2' aria-label='Default select example'>
+              <p id='login-text4'>연락처</p>
+              <select class='form-select' id='form-select3' aria-label='Default select example'>
                 <option value='1'>010</option>
                 <option value='2'>011</option>
                 <option value='3'>016</option>
@@ -87,8 +95,11 @@
                 <option value='5'>018</option>
                 <option value='5'>019</option>
               </select>
-              <label for="user_signup_number">
-                <input type="text" class="form-control" id='user_signup_number'>
+              <label for="user_signup_number1">
+                <input type="text" class="form-control" id='user_signup_number1'>
+              </label>
+              <label for="user_signup_number2">
+                <input type="text" class="form-control" id='user_signup_number2'>
               </label>
             </div>
           </div>
@@ -155,9 +166,10 @@ export default {
   outline: 0;
   box-shadow: 0 0 0 0.1rem #5c6ac4;
 }
-#user_signup_number {
+#user_signup_number1 {
   margin-bottom: 3px;
-  width: 114px;
+  margin-left: 20px;
+  width: 100px;
   height: 50px;
   font-size: 1rem;
   line-height: 7;
@@ -170,7 +182,30 @@ export default {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-#user_signup_number  {
+#user_signup_number1:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac4;
+}
+#user_signup_number2 {
+  margin-bottom: 3px;
+  margin-left: 20px;
+  width: 100px;
+  height: 50px;
+  font-size: 1rem;
+  line-height: 7;
+  color: #000000;
+  background-clip: padding-box;
+  border: 1.9px solid #cecece;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+#user_signup_number2:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
@@ -225,16 +260,51 @@ export default {
   font-stretch: normal;
   letter-spacing: normal;
   margin: 0;
-  display: inline;
+}
+#login-text4 {
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 2;
+  font-stretch: normal;
+  letter-spacing: normal;
+  margin: 0;
 }
 #form-select {
-  width: 342px;
-  height: 50px;
-}
-#form-select2 {
-  width: 114px;
+  width: 167px;
   height: 50px;
   display: inline-block;
+}
+#form-select:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac4;
+}
+#form-select2 {
+  width: 167px;
+  height: 50px;
+  margin-left: 9px;
+  display: inline-block;
+}
+#form-select2:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac4;
+}
+#form-select3 {
+  width: 100px;
+  height: 50px;
+  display: inline-block;
+}
+#form-select3:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac4;
 }
 #form-select-wrap{
   display: inline-block;

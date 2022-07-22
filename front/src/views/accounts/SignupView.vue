@@ -16,7 +16,6 @@ export default {
 <style scoped>
 #signup-wrap1 {
   height: 1500px;
-  background-color: rgba(248, 248, 248, 0.404);
 }
 
 </style>
