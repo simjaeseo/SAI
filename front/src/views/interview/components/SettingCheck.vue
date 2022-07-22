@@ -14,19 +14,20 @@ export default {
 
 <style scoped>
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   max-width: 1600px;
   padding: 0;
 }
 p {
-  font-size: 48px;
+  font-size: 32px;
 }
 .box {
-  display: flex;
-  justify-content: center;
   border: 1px solid black;
   background: grey;
-  width: 1600px;
-  height: 900px;
+  width: 1366px;
+  height: 768px;
   margin-bottom: 1rem;
 }
 

@@ -33,7 +33,7 @@ export default {
   justify-content: space-between;
   grid-gap: 1rem;
   padding: 1rem;
-  max-width: 1024px;
+  max-width: 1000px;
   margin: 0 auto;
   font-family: var(--font-sans);
 }
