@@ -1,35 +1,36 @@
 <template>
-  <div id="wrap-div1">
-    <div id="wrap-div2">
-      <img src="@/assets/SAI-logo.png" alt="logo" id="logo-image">
+  <div id='wrap-div1'>
+    <div id='wrap-div2'>
+      <img src='@/assets/SAI-logo.png' alt='logo' id='logo-image'>
     </div>
-    <div id="form-wrap1">
-      <div id="user-id-wrap">
-        <label for='user_id' id="id_text"><h6>아이디</h6>
-          <input type="text" id='user_id'
+    <form id='form-wrap1'>
+      <div id='user-id-wrap'>
+        <label for='user_id' id='id_text'><h6>아이디</h6>
+          <input type='text' id='user_id'
           placeholder="아이디를 입력하세요"
-          class="form-control">
+          class='form-control'>
         </label>
       </div>
-      <div id="user-pw-wrap">
+      <div id='user-pw-wrap'>
         <label for='user_pw'><h6>비밀번호</h6>
-          <input type="password" id='user_pw'
-          placeholder="비밀번호를 입력하세요"
-          class="form-control">
+          <input type='password' id='user_pw'
+          placeholder='비밀번호를 입력하세요'
+          class='form-control'>
         </label>
       </div>
-      <div id="help-wrap">
-        <p><router-link to="/helpid" id="help-text">아이디 찾기 |</router-link>
-        <router-link to="/helpPassword" id="help-text"> 비밀번호 찾기</router-link></p>
+      <div id='help-wrap'>
+        <p><router-link to='/helpid' id='help-text'>아이디 찾기 |</router-link>
+        <router-link to='/helpPassword' id='help-text'> 비밀번호 찾기</router-link></p>
       </div>
-      <div id="user-login-btn-wrap">
-        <button class="btn btn-primary" id="login-btn">로그인</button>
+      <div id='user-login-btn-wrap'>
+        <button class='btn' id='login-btn' type="submit">로그인</button>
       </div>
-      <div id="signup-btn-wrap">
-        <button class="btn btn-primary" id="signup-btn">
-        <router-link to="/signup" id="sign-up-text">회원가입</router-link></button>
+    </form>
+      <div id='signup-btn-wrap'>
+        <router-link to='/signup' id='sign-up-text'>
+        <button class='btn' id='signup-btn'>
+        회원가입</button></router-link>
       </div>
-    </div>
   </div>
 </template>
 
@@ -44,7 +45,7 @@ export default {
   text-align: center;
 }
 #form-wrap1 {
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 #wrap-div2 {
   text-align: center;
@@ -95,9 +96,7 @@ export default {
     transition: none;
   }
 }
-#login-btn:hover {
-  border: 1px solid white;
-}
+
 .form-control {
   margin-bottom: 3px;
   width: 300px;
@@ -106,7 +105,7 @@ export default {
   line-height: 7;
   color: #000000;
   background-clip: padding-box;
-  border: 1px solid rgb(49, 48, 48);
+  border: 1.9px solid #cecece;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -118,10 +117,11 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 0.1rem #5c6ac4;
 }
 #logo-image {
   width: 20%;
+  animation: tada 2s ease-out;
 }
 #router-link-signup {
   text-decoration: none;
@@ -173,4 +173,5 @@ width:  400px;
 .form-control {
   width: 400px;
 }
+
 </style>

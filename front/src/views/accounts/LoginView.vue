@@ -1,14 +1,15 @@
 <template>
-  <div id="wrap1" class="container">
-    <div id="wrap2" class="row">
+  <div id='wrap1' class='container'>
+    <div id='wrap2' class='row'>
       <!-- 로그인이미지 -->
-      <div id="login-image1" class="d-none d-md-block col-md-6">
-        <img src="@/assets/loginpageimage1.jpg" alt="interview-image" id="interview-image">
-        <h4>면접관과 나와의 거리 42CM</h4>
+      <div id='login-image1' class='d-none d-md-block col-md-6'>
+        <img src='@/assets/login_image_3.jpg' alt='interview-image' id='interview-image'>
+        <h6>면접관과 나와의 거리 42CM</h6>
+        <h6>오직 나만을 위한 면접 코치 [사:이]</h6>
       </div>
       <!-- 로그인폼 -->
-      <div id="login-form" class="col-sm-12 col-md-6">
-        <login-form class="login-form"></login-form>
+      <div id='login-form' class='col-sm-12 col-md-6'>
+        <login-form class='login-form'></login-form>
       </div>
     </div>
   </div>
@@ -23,7 +24,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #wrap1 {
   height: 80vh;
   margin: 0 auto;
