@@ -6,14 +6,18 @@
       </div>
       <!-- 로그인폼 -->
       <div id="login-form" class="col-sm-12 col-md-6">
+        <login-form></login-form>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import LoginForm from '@/views/accounts/components/LoginForm.vue';
 
+export default {
+  name: 'LoginView',
+  components: { LoginForm },
 };
 </script>
 
