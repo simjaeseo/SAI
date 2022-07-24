@@ -9,7 +9,7 @@ import HelpIdView from '@/views/accounts/HelpIdView.vue';
 import ProfileView from '@/views/accounts/ProfileView.vue';
 import UpdateUserView from '@/views/accounts/UpdateUserView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
-import ScheduleHomeView from '@/views/schedule/ScheduleHomeView.vue';
+import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import InterviewView from '@/views/interview/InterviewView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
@@ -58,7 +58,7 @@ const routes = [
   {
     path: '/schedule',
     name: 'ScheduleHome',
-    component: ScheduleHomeView,
+    component: ScheduleView,
   },
   {
     path: '/interview',
