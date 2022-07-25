@@ -12,8 +12,8 @@
     <router-link to="/interview">interview</router-link> |
     <router-link to="/interview/solo">InterviewSolo</router-link> |
     <router-link to="/interview/ct">InterviewCt</router-link> |
-    <router-link to="//analysis/comprehensive">AnalysisComprehensive</router-link> |
-    <router-link to="//analysis/detail">AnalysisDetail</router-link>
+    <router-link to="/analysis/comprehensive">AnalysisComprehensive</router-link> |
+    <router-link to="/analysis/detail">AnalysisDetail</router-link>
   </nav>
   <router-view/>
 </template>
