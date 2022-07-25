@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "date-fns": "^2.29.1",
     "google-fonts-webpack-plugin": "^0.4.4",
     "vue": "^3.2.13",
     "vue-next-select": "^2.10.4",
@@ -28,7 +29,8 @@
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
-    "eslint-plugin-vuejs-accessibility": "^1.1.0"
+    "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "vue-cli-plugin-vuetify": "~2.5.1"
   },
   "eslintConfig": {
     "root": true,
