@@ -11,7 +11,7 @@
     <div>
       <label for="detail">상세정보: <input type="text" id="detail"></label>
     </div>
-    <div>
+    <div id="add-button">
       <button>추 가</button>
     </div>
   </div>
@@ -28,6 +28,7 @@ button {
   margin-top: 1.5vw;
   width: 6vw;
   height: 3vw;
+  font-size: 1vw;
 }
 
 select {
@@ -41,7 +42,16 @@ select {
 #div-category {
   display: flex;
   justify-content: start;
-  padding: 0%;
+}
+
+#category {
+  display: inline;
+  text-align: center;
+}
+
+#add-button {
+  display: flex;
+  justify-content: center;
 }
 
 label {

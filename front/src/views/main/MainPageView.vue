@@ -1,12 +1,20 @@
 <template>
   <div>
-    <button class="btn btn-primary">!</button>
+    <div>
+      <p>안녕하세요 user님!</p>
+      <route-button></route-button>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+import RouteButton from './components/RouteButton.vue';
 
+export default {
+  name: 'MainPage',
+  components: {
+    RouteButton,
+  },
 };
 </script>
 

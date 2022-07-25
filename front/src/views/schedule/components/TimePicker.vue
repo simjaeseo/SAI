@@ -41,5 +41,6 @@ button {
   height: 3vw;
   margin: 0.2vw;
   background: #5E6CBE;
+  font-size: 1vw;
 }
 </style>
