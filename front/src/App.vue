@@ -4,6 +4,7 @@
     <router-link to="/schedule">Schdule</router-link> |
     <router-link to="/login">login</router-link> |
     <router-link to="/signup">signup</router-link> |
+    <router-link to="/signupCT">signupCT</router-link> |
     <router-link to="/helpPassword">helpPassword</router-link> |
     <router-link to="/helpid">helpid</router-link> |
     <router-link to="/profile">profile</router-link> |
