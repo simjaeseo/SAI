@@ -1,7 +1,12 @@
 <template>
   <div>
-    <div>
-        <button>컨설턴트 선택</button>
+    <div id="select-button">
+        <label for="select-CT"><select name="select-CT" id="select-CT">
+          <option value="">컨설턴트 선택</option>
+          <option value="kim-CT">김씨티</option>
+          <option value="choi-CT">최씨티</option>
+          <option value="gang-CT">강씨티</option>
+        </select></label>
         <button>일정 추가</button>
     </div>
     <div>
@@ -51,5 +56,10 @@ export default {
     height: 13vw;
     left: 50%;
     transform: translate(-50%);
+}
+
+#select-button {
+  display: flex;
+  justify-content: center;
 }
 </style>

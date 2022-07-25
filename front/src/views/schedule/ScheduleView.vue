@@ -4,7 +4,9 @@
       <my-calendar></my-calendar>
     </div>
     <div id="sidebar">
-      <button v-on:click="transChange" class="btn btn-primary"></button>
+      <div id="trans-button">
+        <button v-on:click="transChange" class="btn btn-primary"></button>
+      </div>
       <show-event v-show=trans></show-event>
       <add-event v-show=!trans></add-event>
     </div>
@@ -36,7 +38,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #calendar {
   border: 1px solid black;
   position: absolute;
@@ -45,6 +47,7 @@ export default {
   width: 60vw;
   height: 42vw;
 }
+
 #sidebar {
   border: 1px solid black;
   position: absolute;
@@ -52,5 +55,10 @@ export default {
   left: 68%;
   width: 30vw;
   height: 42vw
+}
+
+#trans-button {
+  display: flex;
+  justify-content: center;
 }
 </style>
