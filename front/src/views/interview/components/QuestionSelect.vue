@@ -70,7 +70,6 @@ export default {
 .box2 {
   display: flex;
   align-items: center;
-  justify-content: start;
   width: 1000px;
   height: 150px;
   font-size: 48px;
@@ -92,7 +91,6 @@ export default {
 .question {
   display: flex;
   flex-direction: column;
-  align-items: start;
   height: 650px;
 }
 .btn {

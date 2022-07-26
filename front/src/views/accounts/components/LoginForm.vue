@@ -1,7 +1,7 @@
 <template>
   <div id='wrap-div1'>
     <div id='wrap-div2'>
-      <img src='@/assets/SAI-logo.png' alt='logo' id='logo-image'>
+      <img src='../../../assets/SAI-logo.png' alt='logo' id='logo-image'>
     </div>
     <form id='form-wrap1'>
       <div id='user-id-wrap'>
