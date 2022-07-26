@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
+// 메인페이지 라우터
 import MainPageView from '@/views/main/MainPageView.vue';
+// 인터뷰 라우터
 import AnalysisComprehensiveView from '@/views/interview/AnalysisComprehensiveView.vue';
 import AnalysisDetailView from '@/views/interview/AnalysisDetailView.vue';
+import InterviewView from '@/views/interview/InterviewView.vue';
+import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
+import InterviewCtView from '@/views/interview/InterviewCtView.vue';
+// 유저 라우터
 import LoginView from '@/views/accounts/LoginView.vue';
 import SignupView from '@/views/accounts/SignupView.vue';
 import SignupCTView from '@/views/accounts/SignupCTView.vue';
@@ -10,10 +16,9 @@ import HelpIdView from '@/views/accounts/HelpIdView.vue';
 import ProfileView from '@/views/accounts/ProfileView.vue';
 import UpdateUserView from '@/views/accounts/UpdateUserView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
+import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
+// 스케줄 라우터
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
-import InterviewView from '@/views/interview/InterviewView.vue';
-import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
-import InterviewCtView from '@/views/interview/InterviewCtView.vue';
 
 const routes = [
   {
@@ -90,6 +95,11 @@ const routes = [
     path: '/analysis/detail',
     name: 'AnalysisDetail',
     component: AnalysisDetailView,
+  },
+  {
+    path: '/password/update',
+    name: 'PasswordUpdate',
+    component: PasswordUpdateView,
   },
 ];
 
