@@ -4,6 +4,7 @@ import AnalysisComprehensiveView from '@/views/interview/AnalysisComprehensiveVi
 import AnalysisDetailView from '@/views/interview/AnalysisDetailView.vue';
 import LoginView from '@/views/accounts/LoginView.vue';
 import SignupView from '@/views/accounts/SignupView.vue';
+import SignupCTView from '@/views/accounts/SignupCTView.vue';
 import HelpPasswordView from '@/views/accounts/HelpPasswordView.vue';
 import HelpIdView from '@/views/accounts/HelpIdView.vue';
 import ProfileView from '@/views/accounts/ProfileView.vue';
@@ -22,27 +23,32 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'Mogin',
+    name: 'Login',
     component: LoginView,
   },
   {
     path: '/signup',
-    name: 'Mignup',
+    name: 'Signup',
     component: SignupView,
   },
   {
+    path: '/signupCT',
+    name: 'SignupCT',
+    component: SignupCTView,
+  },
+  {
     path: '/helpPassword',
-    name: 'MelpPassword',
+    name: 'HelpPassword',
     component: HelpPasswordView,
   },
   {
     path: '/helpid',
-    name: 'Melpid',
+    name: 'Helpid',
     component: HelpIdView,
   },
   {
     path: '/profile',
-    name: 'Mrofile',
+    name: 'Profile',
     component: ProfileView,
   },
   {

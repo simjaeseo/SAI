@@ -1,7 +1,7 @@
 <template>
   <div class='mt-5'>
     <div id='signup-text-wrap'>
-      <p id='signup-text1'>회원가입 교육생용</p>
+      <p id='signup-text1'>회원가입 컨설턴트용</p>
     </div>
     <div id='form-input-wrap'>
       <form action=''>
@@ -26,33 +26,6 @@
           </label>
         </div>
         <hr>
-        <div class='mb-5 mt-5'>
-          <p id='login-text1'>관심 기업</p>
-          <div>
-            <label for='user_signup_companies'><p id='login-text2'>기업명</p>
-              <input type='text' id='user_signup_companies'
-              placeholder='최대 3개까지 입력 가능합니다.'
-              class='form-control'>
-            </label>
-            <button class="btn mx-2" id="double-check-btn">등록</button>
-            <!-- 예시 -->
-            <p>#삼성전자</p>
-          </div>
-          <div>
-            <p id='login-text1'>관심 직무</p>
-            <div>
-              <label for='user_signup_duty'><p id='login-text2'>직무</p>
-                <input type='text' id='user_signup_duty'
-                placeholder='최대 3개까지 입력 가능합니다.'
-                class='form-control'>
-              </label>
-              <button class="btn mx-2" id="double-check-btn">등록</button>
-              <!-- 예시 -->
-              <p>#프론트앤드</p>
-            </div>
-          </div>
-        </div>
-        <hr>
         <div class='mt-5 mb-5'>
           <p id='login-text1'>개인 정보</p>
           <div>
@@ -60,70 +33,21 @@
               <input type='text' id='user_signup_name'
               class='form-control'>
             </label>
-            <div id='form-select-wrap1'>
-              <p id='login-text3'>생년월일</p>
-              <select class='form-select' id='form-select-cardinal-number'
-              aria-label='Default select example'>
-                <option selected>년도</option>
-                <option value='1'>1기</option>
-                <option value='2'>2기</option>
-                <option value='3'>3기</option>
-                <option value='4'>4기</option>
-                <option value='5'>5기</option>
-                <option value='6'>6기</option>
-                <option value='7'>7기</option>
-              </select>
-              <select class='form-select' id='form-select-region'
-              aria-label='Default select example'>
-                <option selected>월</option>
-                <option value='1'>서울</option>
-                <option value='2'>대전</option>
-                <option value='3'>광주</option>
-                <option value='4'>구미</option>
-                <option value='5'>부울경</option>
-              </select>
-              <select class='form-select' id='form-select-class'
-              aria-label='Default select example'>
-                <option selected>일</option>
-                <option value='1'>1반</option>
-                <option value='2'>2반</option>
-                <option value='3'>3반</option>
-                <option value='4'>4반</option>
-                <option value='5'>5반</option>
-              </select>
-            </div>
+            <label for='user_signup_date_of_birth' class="mx-2"><p id='login-text2'>생년월일</p>
+              <input type='text' id='user_signup_date_of_birth'
+              class='form-control'>
+            </label>
           </div>
           <div>
             <div id='form-select-wrap'>
-              <p id='login-text3'>소속</p>
-              <select class='form-select' id='form-select-cardinal-number'
-              aria-label='Default select example'>
-                <option selected>기수</option>
-                <option value='1'>1기</option>
-                <option value='2'>2기</option>
-                <option value='3'>3기</option>
-                <option value='4'>4기</option>
-                <option value='5'>5기</option>
-                <option value='6'>6기</option>
-                <option value='7'>7기</option>
-              </select>
-              <select class='form-select' id='form-select-region'
-              aria-label='Default select example'>
+              <p id='login-text3'>지역</p>
+              <select class='form-select' id='form-select' aria-label='Default select example'>
                 <option selected>지역</option>
                 <option value='1'>서울</option>
                 <option value='2'>대전</option>
                 <option value='3'>광주</option>
                 <option value='4'>구미</option>
                 <option value='5'>부울경</option>
-              </select>
-              <select class='form-select' id='form-select-class'
-              aria-label='Default select example'>
-                <option selected>반</option>
-                <option value='1'>1반</option>
-                <option value='2'>2반</option>
-                <option value='3'>3반</option>
-                <option value='4'>4반</option>
-                <option value='5'>5반</option>
               </select>
             </div>
             <div id='form-select-wrap' class="mx-2">
@@ -193,7 +117,7 @@ export default {
   line-height: 7;
   color: #000000;
   background-clip: padding-box;
-  border: 1px solid #ced4da;
+  border: 1.9px solid #cecece;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -311,28 +235,9 @@ export default {
   margin: 0;
 }
 #form-select {
-  width: 105px;
+  width: 342px;
   height: 50px;
   display: inline-block;
-}
-#form-select-cardinal-number{
-  width: 107px;
-  height: 50px;
-  display: inline-block;
-
-}
-#form-select-region{
-  width: 107px;
-  height: 50px;
-  display: inline-block;
-  margin-left: 10px;
-}
-#form-select-class{
-  width: 107px;
-  height: 50px;
-  display: inline-block;
-  margin-left: 10px;
-  margin-right: 1px;
 }
 #form-select:focus {
   color: #000000;
@@ -366,19 +271,8 @@ export default {
   outline: 0;
   box-shadow: 0 0 0 0.1rem #5c6ac4;
 }
-.form-select:focus {
-  color: #000000;
-  background-color: rgb(255, 255, 255);
-  border-color: #ffffff;
-  outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
-}
 #form-select-wrap{
   display: inline-block;
-}
-#form-select-wrap1{
-  display: inline-block;
-  margin-left: 9px;
 }
 #user-signup-btn {
   display: flex;
