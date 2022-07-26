@@ -5,6 +5,8 @@ import MainPageView from '@/views/main/MainPageView.vue';
 import AnalysisComprehensiveView from '@/views/interview/AnalysisComprehensiveView.vue';
 import AnalysisDetailView from '@/views/interview/AnalysisDetailView.vue';
 import InterviewView from '@/views/interview/InterviewView.vue';
+import InterviewSettingView from '@/views/interview/InterviewSettingView.vue';
+import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
 // 유저 라우터
@@ -75,6 +77,16 @@ const routes = [
     path: '/interview',
     name: 'Interview',
     component: InterviewView, // 인터뷰 페이지
+  },
+  {
+    path: '/interview/setting',
+    name: 'InterviewSetting',
+    component: InterviewSettingView,
+  },
+  {
+    path: '/interview/question',
+    name: 'InterviewQuestion',
+    component: InterviewQuestionView,
   },
   {
     path: '/interview/solo',
