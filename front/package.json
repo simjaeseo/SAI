@@ -11,6 +11,7 @@
     "core-js": "^3.8.3",
     "date-fns": "^2.29.1",
     "google-fonts-webpack-plugin": "^0.4.4",
+    "i": "^0.3.7",
     "vue": "^3.2.13",
     "vue-next-select": "^2.10.4",
     "vue-router": "^4.0.13",

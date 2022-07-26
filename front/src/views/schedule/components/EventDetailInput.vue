@@ -41,7 +41,7 @@ select {
 
 #div-category {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 #category {

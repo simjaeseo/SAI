@@ -208,7 +208,7 @@ template {
   color: #ffffff;
   display: flex;
   padding: 0.25em 0em 0em 0.25em;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 @media screen and (min-width: 48em) {
