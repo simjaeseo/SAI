@@ -5,10 +5,6 @@
         <!-- 프로필이미지 -->
         <div id='profile_image_box' class='col-sm-2'>
           <img src='@/assets/SAI_LOGO.png' alt='basic-img' id='user_profile_img'> <br>
-            <div class="filebox">
-                <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                ref='image' class='upload-box'>파일선택</label>
-            </div>
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-sm-10'>
