@@ -1,0 +1,146 @@
+<template>
+  <div style="display:inline">
+    <div class="max-w-xs relative space-y-3" style="display:inline">
+      <label
+        for="search"
+        class="text-gray-900"
+      >
+      <input
+        type="text"
+        id="search"
+        v-model="searchTerm"
+        placeholder="&#128269;  학생명검색"
+        class="p-3 mb-0.5 w-full form-control"
+        style="width:200px; height:38px"
+      >
+      </label>
+
+      <ul
+        v-if="searchCountries.length"
+        class="border border-gray-300 absolute z-10"
+      >
+        <li>
+          <p id='result-count'>
+            {{ countries.length }} 개의 기업중 {{ searchCountries.length }}개가 검색되었습니다.
+          </p>
+        </li>
+        <li
+            v-for="country in searchCountries"
+            :key="country.name"
+            @click="selectCountry(country.name)"
+            @keydown="selectCountry(country.name)"
+        >
+          <p id='result'>
+            {{ country.name }}
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+import countries from '@/data/countries.json';
+import { ref, computed } from 'vue';
+
+export default {
+  name: 'SearchBar',
+  setup() {
+    const searchTerm = ref('');
+
+    const searchCountries = computed(() => {
+      if (searchTerm.value === '') {
+        return [];
+      }
+
+      let matches = 0;
+
+      return countries.filter((country) => {
+        if (country.name.toLowerCase().includes(searchTerm.value.toLowerCase()) && matches < 10) {
+          matches += 1;
+          return country;
+        }
+        return false;
+      });
+    });
+    const selectedCountry = ref('');
+    const selectedCountries = [];
+    const selectCountry = (country) => {
+      selectedCountry.value = country;
+      selectedCountries.push(selectedCountry.value);
+      searchTerm.value = '';
+    };
+
+    return {
+      countries,
+      searchTerm,
+      searchCountries,
+      selectCountry,
+      selectedCountry,
+      selectedCountries,
+    };
+  },
+};
+</script>
+
+<style scoped>
+#selected-item{
+  z-index: 1000;
+  color: #5c6ac4;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 15px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  height: 50px;
+  width: 90px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #selected-item {
+    transition: none;
+  }
+}
+#selected-item:hover {
+  color: #5c6ac4;
+  background-color: #ffffff;
+  border: 1px solid white;
+}
+ul {
+  background-color: white;
+  width: 200px;
+  list-style:none;
+  padding-left: 0;
+}
+#result-count {
+  color: gray;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
+}
+li:hover {
+ cursor: pointer;
+ background-color: rgb(233, 233, 233);
+}
+#result {
+  margin-bottom: 0;
+  padding: 15px;
+  text-align: center;
+}
+.form-control:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
+}
+</style>

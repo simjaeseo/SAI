@@ -1,35 +1,43 @@
 <template>
   <div>
     <form action="">
-      <div>
+      <div class="mt-5">
         <label for='find_user_input_name'>
-          <p id='find_user_input_text'>이름</p>
-          <input type='text' id='find_user_input_name' class='form-control'>
+          <p id='find_user_input_text'>현재비밀번호</p>
+          <input type='password' id='find_user_input_name' class='form-control'>
         </label>
       </div>
       <div>
         <label for='find_user_input_email'>
-          <p id='find_user_input_text'>생년월일</p>
-          <input type='text' id='find_user_input_email'
-          placeholder='email@google.com'
+          <p id='find_user_input_text'>변경할 비밀번호</p>
+          <input type='password' id='find_user_input_email'
           class='form-control'>
         </label>
       </div>
       <div>
-        <button id='find-pw-btn' type='submit'>비밀번호 찾기</button>
+        <label for='find_user_input_email'>
+          <p id='find_user_input_text'>변경할 비밀번호</p>
+          <input type='password' id='find_user_input_email'
+          class='form-control'>
+        </label>
+      </div>
+      <div>
+        <router-link to='/'>
+        <button class='btn' id='find-pw-btn' type='submit'>
+        변경완료</button></router-link>
       </div>
     </form>
       <div>
-        <router-link to='/login'>
+        <router-link to='/'>
         <button class='btn' id='login-btn'>
-        로그인 페이지</button></router-link>
+        홈으로</button></router-link>
       </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'FindID',
+  name: 'PasswordUpdateForm',
 };
 </script>
 
