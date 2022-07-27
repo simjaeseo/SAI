@@ -1,14 +1,24 @@
 export default {
+  namespace: true,
   state: {
-    selectedDate: null,
+    selectedDate: false,
   },
   getters: {
-    dateToggle: (state) => state.selectedDate,
+    selectedDate: (state) => state.selectedDate,
   },
   mutations: {
-    SET_DATE: (state, selectedDate) => selectedDate,
+    SET_DATE(state, date) {
+      if (state.selectedDate !== date) {
+        state.selectedDate = date;
+      } else {
+        state.selectedDate = false;
+      }
+    },
   },
   actions: {
+    pickDate({ commit }, date) {
+      commit('SET_DATE', date);
+    },
   },
   modules: {
   },

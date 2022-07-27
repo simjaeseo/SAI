@@ -38,8 +38,8 @@ export default {
 #main-calendar {
   border: 1px solid black;
   margin-top: 10%;
-  width: 20vw;
-  height: 20vw;
+  width: 22vw;
+  height: 22vw;
 }
 
 .components {
