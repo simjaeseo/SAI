@@ -24,11 +24,20 @@
                 <p id="user-data">19980422</p>
                 <p id='data-name'>이메일</p>
                 <p id="user-data">google@naver.com</p>
-                <p id='data-name'>깃허브 링크는 어떨까?</p>
-                <p id="user-data">깃허브</p>
+                <p id='data-name'>관심직무</p>
+                <p id="user-data">웹개발</p>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <!-- 관심기업/직무 -->
+    <div>
+      <div id='personal-video-box1' class='container'>
+        <p>관심기업/직무</p>
+          <div id='personal-video-box2'>
+            <p id='none-data-text1'>관심기업/직무를 등록하세요!</p>
+          </div>
       </div>
     </div>
     <!-- 동영상 -->
@@ -36,11 +45,11 @@
       <div id='personal-video-box1' class="container">
         <p>내 동영상</p>
           <div id='personal-video-box2'>
-          <!-- 내동영상 -->
+            <p id='none-data-text1'>아직 저장된 영상이 없어요</p>
           </div>
         <p>컨설팅 영상</p>
           <div id='personal-video-box3'>
-            <!-- 컨설팅영상 -->
+            <p id='none-data-text1'>아직 저장된 영상이 없어요</p>
           </div>
       </div>
     </div>
@@ -54,6 +63,11 @@ export default {
 </script>
 
 <style scoped>
+#none-data-text1{
+  color: rgb(167, 167, 167);
+  line-height: 250px;
+  text-align: center;
+}
 .form-select:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
@@ -176,7 +190,7 @@ export default {
     background-color: rgb(255, 255, 255);
     border-color: #ffffff;
     outline: 0;
-    box-shadow: 0 0 0 0.1rem #5c6ac4;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #data-name {
   font-size: 12px;
