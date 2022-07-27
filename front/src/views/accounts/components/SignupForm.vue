@@ -28,27 +28,15 @@
         <hr>
         <div class='mb-5 mt-5'>
           <p id='login-text1'>관심 기업</p>
-          <div>
-            <label for='user_signup_companies'><p id='login-text2'>기업명</p>
-              <input type='text' id='user_signup_companies'
-              placeholder='최대 3개까지 입력 가능합니다.'
-              class='form-control'>
-            </label>
-            <button class="btn mx-2" id="double-check-btn">등록</button>
+          <div id='search-bar-box'>
+            <search-bar class="mb-5"></search-bar>
             <!-- 예시 -->
-            <p>#삼성전자</p>
           </div>
-          <div>
+          <div id='search-bar-box2'>
             <p id='login-text1'>관심 직무</p>
             <div>
-              <label for='user_signup_duty'><p id='login-text2'>직무</p>
-                <input type='text' id='user_signup_duty'
-                placeholder='최대 3개까지 입력 가능합니다.'
-                class='form-control'>
-              </label>
-              <button class="btn mx-2" id="double-check-btn">등록</button>
+            <search-bar-duty-sign-up class="mb-5"></search-bar-duty-sign-up>
               <!-- 예시 -->
-              <p>#프론트앤드</p>
             </div>
           </div>
         </div>
@@ -72,6 +60,7 @@
                 <option value='5'>5기</option>
                 <option value='6'>6기</option>
                 <option value='7'>7기</option>
+                <option value='7'>8기</option>
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'>
@@ -157,13 +146,26 @@
 </template>
 
 <script>
+import SearchBar from './SearchBar.vue';
+import SearchBarDutySignUp from './SearchBarDutySignUp.vue';
 
 export default {
+  components: { SearchBar, SearchBarDutySignUp },
   name: 'SignupForm',
 };
 </script>
 
 <style scoped>
+#search-bar-box {
+  height: 110px;
+  position: relative;
+  z-index: 1000;
+}
+#search-bar-box2 {
+  height: 110px;
+  position: relative;
+  z-index: 900;
+}
 #signup-text-wrap {
   text-align: center;
   margin-bottom: 100px;
@@ -205,7 +207,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #user_signup_number1 {
   margin-bottom: 3px;
@@ -222,13 +224,14 @@ export default {
   appearance: none;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid #ced4da;
 }
 #user_signup_number1:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #user_signup_number2 {
   margin-bottom: 3px;
@@ -244,14 +247,15 @@ export default {
   -moz-appearance: none;
   appearance: none;
   border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid #ced4da;
+ transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 #user_signup_number2:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #double-check-btn{
   z-index: 1000;
@@ -339,7 +343,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select2 {
   width: 167px;
@@ -352,7 +356,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select3 {
   width: 100px;
@@ -371,7 +375,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select-wrap{
   display: inline-block;

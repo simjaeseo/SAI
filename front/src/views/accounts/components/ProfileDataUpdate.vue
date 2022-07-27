@@ -74,11 +74,47 @@
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
                     class='form-control'></label>
-                    <p id='data-name'>깃허브 링크는 어떨까?</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    <p id='data-name'>관심직무</p>
+                    <search-bar-duty></search-bar-duty>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div id='personal-video-box1' class='container'>
+            <div id='box1'>
+              <p id='for-inline'>관심기업</p>
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop" id='add-btn'>
+                추가하기
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+              data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+              aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">관심기업명을 검색하세요</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"
+                      aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <search-bar></search-bar>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn" id='cancel-btn2'
+                      data-bs-dismiss="modal">닫기</button>
+                      <button type="button" class="btn" id='update-btn2'>확인</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id='personal-video-box2'>
             </div>
           </div>
         </div>
@@ -87,11 +123,9 @@
           <div id='personal-video-box1' class="container">
             <p>내 동영상</p>
               <div id='personal-video-box2'>
-              <!-- 내동영상 -->
               </div>
             <p>컨설팅 영상</p>
               <div id='personal-video-box3'>
-                <!-- 컨설팅영상 -->
               </div>
           </div>
         </div>
@@ -107,12 +141,60 @@
 </template>
 
 <script>
+import SearchBar from './SearchBar.vue';
+import SearchBarDuty from './SearchBarDuty.vue';
+
 export default {
+  components: { SearchBar, SearchBarDuty },
   name: 'ProfileDataUpdate',
 };
 </script>
 
 <style scoped>
+.modal-body {
+  height: 500px;
+}
+#box1 {
+  display: flex;
+  justify-content: space-between;
+}
+#for-inline {
+  display: inline;
+}
+#add-btn {
+  z-index: 1000;
+  color: #5c6ac4;
+  background-color: white;
+  border: 1px solid #5c6ac4;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 15px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  height: 40px;
+  width: 90px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-bottom: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #add-btn {
+    transition: none;
+  }
+}
+#add-btn:hover {
+  color: white;
+  background-color: #5c6ac4;
+}
 .form-select:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
@@ -154,6 +236,40 @@ export default {
   color: white;
   background-color: #5c6ac4;
 }
+#update-btn2 {
+  z-index: 1000;
+  color: #5c6ac4;
+  background-color: white;
+  border: 1px solid #5c6ac4;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 15px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  height: 40px;
+  width: 90px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-left: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #update-btn2 {
+    transition: none;
+  }
+}
+#update-btn2:hover {
+  color: white;
+  background-color: #5c6ac4;
+}
 #cancel-btn {
   z-index: 1000;
   color: #5c6ac4;
@@ -187,6 +303,39 @@ export default {
   color: white;
   background-color: #5c6ac4;
 }
+#cancel-btn2 {
+  z-index: 1000;
+  color: #5c6ac4;
+  background-color: white;
+  border: 1px solid #5c6ac4;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 15px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  height: 40px;
+  width: 90px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cancel-btn2 {
+    transition: none;
+  }
+}
+#cancel-btn2:hover {
+  color: white;
+  background-color: #5c6ac4;
+}
 #btn-box {
     text-align: center;
     margin-top: 40px;
@@ -196,14 +345,33 @@ export default {
     display: inline;
     margin-left: 7.5px;
 }
+#form-select-region:hover {
+    width: 95px;
+    display: inline;
+    margin-left: 7.5px;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
+}
 #form-select-class {
     width: 95px;
     display: inline;
     margin-left: 7.5px;
 }
+#form-select-class:hover {
+    width: 95px;
+    display: inline;
+    margin-left: 7.5px;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
+}
 #form-select-cardinal-number {
   width: 95px;
   display: inline;
+}
+#form-select-cardinal-number:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select-first {
     display: inline;
@@ -214,7 +382,7 @@ export default {
     background-color: rgb(255, 255, 255);
     border-color: #ffffff;
     outline: 0;
-    box-shadow: 0 0 0 0.1rem #5c6ac4;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select-second {
     width: 95px;
@@ -225,7 +393,7 @@ export default {
     background-color: rgb(255, 255, 255);
     border-color: #ffffff;
     outline: 0;
-    box-shadow: 0 0 0 0.1rem #5c6ac4;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 .form-control {
     width: 300px;
@@ -235,7 +403,7 @@ export default {
     background-color: rgb(255, 255, 255);
     border-color: #ffffff;
     outline: 0;
-    box-shadow: 0 0 0 0.1rem #5c6ac4;
+    box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #data-name {
   font-size: 12px;
@@ -268,6 +436,7 @@ p {
 #personal-data-box1 {
     background-color: #5c6ac40c;
     text-align: start;
+    height: 230px;
     border-radius: 10px;
 }
 #profile_image_box {
