@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <p>카메라, 마이크를 체크합니다.</p>
-    <div class="box"></div>
     <div class="check">
       <router-link to='/interview/question' id='routerlink'>
        <button class="start-btn">시작하기</button>
       </router-link>
     </div>
+    <div class="box"></div>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ p {
   align-items: center;
 }
 .box {
-  border: 1px solid black;
+  border: 0.1px solid black;
   background: grey;
   width: 1366px;
   height: 768px;
@@ -40,7 +40,7 @@ p {
   justify-content: flex-end;
 }
 .start-btn{
-  margin: 3px;
+  margin-bottom: 3px;
   z-index: 1000;
   background-color: #5c6ac4;
   color: white;
