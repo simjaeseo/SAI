@@ -1,6 +1,6 @@
 <template>
-  <div style="display:inline">
-    <div class="max-w-xs relative space-y-3" style="display:inline">
+  <div style="display:inline" class="d-flex">
+    <div class="max-w-xs relative space-y-3">
       <label
         for="search"
         class="text-gray-900"
@@ -21,7 +21,7 @@
       >
         <li>
           <p id='result-count'>
-            {{ countries.length }} 개의 기업중 {{ searchCountries.length }}개가 검색되었습니다.
+            {{ countries.length }}명 중 {{ searchCountries.length }}명
           </p>
         </li>
         <li
@@ -120,6 +120,8 @@ ul {
   width: 200px;
   list-style:none;
   padding-left: 0;
+  position: relative;
+  z-index: 1000;
 }
 #result-count {
   color: gray;

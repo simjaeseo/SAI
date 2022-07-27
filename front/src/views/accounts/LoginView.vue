@@ -3,7 +3,7 @@
     <div id='wrap2' class='row'>
       <!-- 로그인이미지 -->
       <div id='login-image1' class='d-none d-md-block col-md-6'>
-        <img src='@/assets/login_image_3.jpg' alt='interview-image' id='interview-image'>
+        <img src='@/assets/login3.jpg' alt='interview-image' id='interview-image'>
         <h6>면접관과 나와의 거리 42cm</h6>
         <h6>오직 나만을 위한 AI 면접 코치 SAI[사:이]</h6>
       </div>
