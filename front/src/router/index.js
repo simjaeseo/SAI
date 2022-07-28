@@ -24,7 +24,7 @@ import HelpPasswordView from '@/views/accounts/HelpPasswordView.vue';
 import HelpIdView from '@/views/accounts/HelpIdView.vue';
 import ProfileView from '@/views/accounts/ProfileView.vue';
 import ProfileUpdateCTView from '@/views/accounts/ProfileUpdateCTView.vue';
-import UpdateUserView from '@/views/accounts/UpdateUserView.vue';
+import ProfileUpdateView from '@/views/accounts/ProfileUpdateView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
 import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
 
@@ -73,7 +73,7 @@ const routes = [
   {
     path: '/update',
     name: 'MpdateUser',
-    component: UpdateUserView,
+    component: ProfileUpdateView,
   },
   {
     path: '/management',
