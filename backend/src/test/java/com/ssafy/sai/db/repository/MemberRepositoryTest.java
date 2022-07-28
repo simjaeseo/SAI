@@ -1,0 +1,160 @@
+package com.ssafy.sai.db.repository;
+
+import com.ssafy.sai.db.entity.Campus;
+import com.ssafy.sai.db.entity.Member;
+import com.ssafy.sai.db.entity.MemberStatus;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@Transactional
+class MemberRepositoryTest {
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    EntityManager em;
+
+    @AfterEach
+    private void after() {
+        em.clear();
+    }
+
+    @Test
+    public void 회원저장_성공() throws Exception {
+        //given
+//        Member member = new Member("ssafy@ssafy.com", "싸피", "123456789", null);
+        Member member = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+        //when
+        Member savedMember = memberRepository.save(member);
+
+        //then
+        Member findMember = memberRepository.findById(savedMember.getId())
+                .orElseThrow(() -> new RuntimeException("저장된 회원이 없습니다"));
+
+        assertThat(findMember).isSameAs(savedMember);
+        assertThat(findMember).isSameAs(member);
+    }
+
+    @Test
+    public void 회원수정_성공() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+
+        memberRepository.save(member);
+        em.clear();
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        //when
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow(() -> new Exception());
+        findMember.updateMember(passwordEncoder, "987654321", "싸피이", "010-1112-2223", null);
+        em.flush();
+
+        //then
+        Member findUpdatedMember = memberRepository.findById(findMember.getId()).orElseThrow(() -> new Exception());
+
+        assertThat(findUpdatedMember).isSameAs(findMember);
+        assertThat(passwordEncoder.matches("987654321", findUpdatedMember.getPassword())).isTrue();
+        assertThat(findUpdatedMember.getName()).isEqualTo("싸피이");
+        assertThat(findUpdatedMember.getName()).isNotEqualTo(member.getName());
+    }
+
+    @Test
+    public void 회원가입_중복이메일_체크() throws Exception {
+        //given
+        Member member1 = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+
+        Member member2 = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+
+        memberRepository.save(member1);
+        em.clear();
+
+        //when, then
+        assertThrows(Exception.class, () -> memberRepository.save(member2));
+
+    }
+
+    @Test
+    public void 회원삭제_성공() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+
+        memberRepository.save(member);
+        //when
+        memberRepository.delete(member);
+
+        //then
+        assertThrows(Exception.class, () -> memberRepository.findById(member.getId())
+                .orElseThrow(() -> new Exception()));
+    }
+
+    @Test
+    public void 회원가입시간_등록() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("ssafy@ssafy.com")
+                .password("1234567890")
+                .memberStatus(MemberStatus.TRAINEE)
+                .campus(null)
+                .phone("010-1234-1234")
+                .profilePicture("www.asdfasdf.com")
+                .build();
+
+        memberRepository.save(member);
+        //when
+        Member findMember = memberRepository.findById(member.getId()).orElseThrow(() -> new Exception());
+
+        //then
+        assertThat(findMember.getCreatedDate()).isNotNull();
+        assertThat(findMember.getUpdatedDate()).isNotNull();
+    }
+
+
+}
