@@ -11,10 +11,10 @@
     </div>
     <div class="d-flex align-items-center detail-bar">
       <router-link to="/analysis/detail">
-        <div class="selected" id="sight">시선 처리</div>
+        <div id="sight">시선 처리</div>
       </router-link>
       <router-link to="/analysis/detail/head">
-        <div id="head">머리 움직임</div>
+        <div class="selected" id="head">머리 움직임</div>
       </router-link>
       <router-link to="/analysis/detail/pitch">
         <div id="pitch">음성 높낮이</div>
@@ -51,7 +51,7 @@
         <div class="ctfeedback"></div>
       </div>
       <div class="right">
-        <p>프레임별 시선 처리</p>
+        <p>프레임별 머리 움직임</p>
         <div class="graph"></div>
       </div>
     </div>

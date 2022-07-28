@@ -1,16 +1,18 @@
 <template>
     <div>
-      <interview-ct></interview-ct>
+      <progress-bar-second></progress-bar-second>
+      <setting-check></setting-check>
     </div>
 </template>
 
 <script>
-import InterviewCt from '@/views/interview/components/InterviewCt.vue';
+import ProgressBarSecond from '@/views/interview/components/ProgressBarSecond.vue';
+import SettingCheck from '@/views/interview/components/SettingCheck.vue';
 
 export default {
-  // name: '',
   components: {
-    InterviewCt,
+    ProgressBarSecond,
+    SettingCheck,
   },
   data() {
     return {

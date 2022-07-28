@@ -1,23 +1,17 @@
 <template>
-  <progress-bar></progress-bar>
+  <progress-bar-first></progress-bar-first>
   <mode-select></mode-select>
-  <setting-check></setting-check>
-  <question-select></question-select>
 </template>
 
 <script>
-import ProgressBar from '@/views/interview/components/ProgressBar.vue';
+import ProgressBarFirst from '@/views/interview/components/ProgressBarFirst.vue';
 import ModeSelect from '@/views/interview/components/ModeSelect.vue';
-import SettingCheck from '@/views/interview/components/SettingCheck.vue';
-import QuestionSelect from '@/views/interview/components/QuestionSelect.vue';
 
 export default {
   // name: 'InterviewView',
   components: {
-    ProgressBar,
+    ProgressBarFirst,
     ModeSelect,
-    SettingCheck,
-    QuestionSelect,
   },
 };
 </script>
