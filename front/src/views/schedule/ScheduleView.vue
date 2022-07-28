@@ -4,16 +4,16 @@
       <my-calendar></my-calendar>
     </div>
     <div id="sidebar">
-      <div id="trans-button">
-        <button v-on:click="transChange" class="btn btn-primary"></button>
-      </div>
-      <show-event v-show=trans></show-event>
-      <add-event v-show=!trans></add-event>
+      <show-event v-show="!selectDate"></show-event>
+      <add-event v-show="selectDate"></add-event>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 import MyCalendar from './components/MyCalendar.vue';
 import AddEvent from './components/AddEvent.vue';
 import ShowEvent from './components/ShowEvent.vue';
@@ -25,15 +25,11 @@ export default {
     AddEvent,
     ShowEvent,
   },
-  data() {
-    return {
-      trans: false,
-    };
-  },
-  methods: {
-    transChange() {
-      this.trans = !this.trans;
-    },
+  setup() {
+    const store = useStore();
+
+    const selectDate = computed(() => store.getters.selectedDate);
+    return { selectDate };
   },
 };
 </script>
@@ -45,7 +41,7 @@ export default {
   top: 10%;
   left: 5%;
   width: 60vw;
-  height: 42vw;
+  height: 44vw;
 }
 
 #sidebar {
@@ -54,7 +50,7 @@ export default {
   top: 10%;
   left: 68%;
   width: 30vw;
-  height: 42vw
+  height: 44vw;
 }
 
 #trans-button {
