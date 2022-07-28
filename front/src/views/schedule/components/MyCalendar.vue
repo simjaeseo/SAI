@@ -17,11 +17,12 @@
             <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
               <td v-for="(day, index2) in row" :key="index2">
                 <button v-if="selectDate === day"
-                @click.prevent="pickDate(day)"
+                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)"
                 id="picked">
                   {{day}}
                 </button>
-                <button  v-else-if="day" @click.prevent="pickDate(day)">
+                <button  v-else-if="day"
+                @click.prevent="pickDate(day)">
                   {{day}}
                 </button>
               </td>
@@ -64,15 +65,6 @@ export default {
     this.init();
   },
   methods: {
-    clickDate(date) {
-      if (this.selectedDate !== date) {
-        this.selectedDate = date;
-      } else {
-        this.selectedDate = false;
-      }
-      console.log(date, this.selectedDate);
-      this.$emit('pick-date', this.selectedDate);
-    },
     init() {
       this.currentMonthStartWeekIndex = this.getStartWeek(this.currentYear, this.currentMonth);
       this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
