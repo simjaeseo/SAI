@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import SearchedStudent from './components/SearchedStudent.vue';
-import SearchBarStudent from './components/SearchStudent.vue';
+import SearchedStudent from './components/SearchedStudentCT.vue';
+import SearchBarStudent from './components/SearchStudentCT.vue';
 
 export default {
   components: { SearchBarStudent, SearchedStudent },
@@ -26,7 +26,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #home-btn{
   z-index: 1000;
   background-color: #ffffff;

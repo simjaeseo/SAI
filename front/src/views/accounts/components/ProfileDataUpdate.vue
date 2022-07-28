@@ -5,7 +5,7 @@
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/SAI_LOGO.png' alt='basic-img' id='user_profile_img'> <br>
+              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
                     ref='image' class='upload-box'>파일선택</label>
@@ -444,8 +444,8 @@ p {
   display: inline-block;
 }
 #user_profile_img {
-  width: 132.2px;
-  height: 170px;
+  width: 100%;
+  height: 80%;
   border: 1px solid #d0d0d0;
   display: inline-block;
 }
