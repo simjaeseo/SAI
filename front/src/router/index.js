@@ -23,6 +23,7 @@ import SignupCTView from '@/views/accounts/SignupCTView.vue';
 import HelpPasswordView from '@/views/accounts/HelpPasswordView.vue';
 import HelpIdView from '@/views/accounts/HelpIdView.vue';
 import ProfileView from '@/views/accounts/ProfileView.vue';
+import ProfileUpdateCTView from '@/views/accounts/ProfileUpdateCTView.vue';
 import UpdateUserView from '@/views/accounts/UpdateUserView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
 import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
@@ -148,6 +149,11 @@ const routes = [
     path: '/chat',
     name: 'Chat',
     component: ChatView,
+  },
+  {
+    path: '/profile/update/ct',
+    name: 'ProfileUpdateCTView ',
+    component: ProfileUpdateCTView,
   },
 ];
 
