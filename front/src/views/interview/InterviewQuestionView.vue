@@ -1,16 +1,19 @@
 <template>
     <div>
-      <interview-ct></interview-ct>
+      <progress-bar-last></progress-bar-last>
+      <question-select></question-select>
     </div>
 </template>
 
 <script>
-import InterviewCt from '@/views/interview/components/InterviewCt.vue';
+import ProgressBarLast from '@/views/interview/components/ProgressBarLast.vue';
+import QuestionSelect from '@/views/interview/components/QuestionSelect.vue';
 
 export default {
   // name: '',
   components: {
-    InterviewCt,
+    ProgressBarLast,
+    QuestionSelect,
   },
   data() {
     return {

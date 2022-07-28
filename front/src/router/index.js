@@ -4,7 +4,13 @@ import MainPageView from '@/views/main/MainPageView.vue';
 // 인터뷰 라우터
 import AnalysisComprehensiveView from '@/views/interview/AnalysisComprehensiveView.vue';
 import AnalysisDetailView from '@/views/interview/AnalysisDetailView.vue';
+import AnalysisDetailHeadView from '@/views/interview/AnalysisDetailHeadView.vue';
+import AnalysisDetailPitchView from '@/views/interview/AnalysisDetailPitchView.vue';
+import AnalysisDetailVolumeView from '@/views/interview/AnalysisDetailVolumeView.vue';
+import AnalysisDetailSttView from '@/views/interview/AnalysisDetailSttView.vue';
 import InterviewView from '@/views/interview/InterviewView.vue';
+import InterviewSettingView from '@/views/interview/InterviewSettingView.vue';
+import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
 // 유저 라우터
@@ -77,6 +83,16 @@ const routes = [
     component: InterviewView, // 인터뷰 페이지
   },
   {
+    path: '/interview/setting',
+    name: 'InterviewSetting',
+    component: InterviewSettingView,
+  },
+  {
+    path: '/interview/question',
+    name: 'InterviewQuestion',
+    component: InterviewQuestionView,
+  },
+  {
     path: '/interview/solo',
     name: 'InterviewSolo',
     component: InterviewSoloView,
@@ -95,6 +111,26 @@ const routes = [
     path: '/analysis/detail',
     name: 'AnalysisDetail',
     component: AnalysisDetailView,
+  },
+  {
+    path: '/analysis/detail/head',
+    name: 'AnalysisDetailHead',
+    component: AnalysisDetailHeadView,
+  },
+  {
+    path: '/analysis/detail/pitch',
+    name: 'AnalysisDetailPitch',
+    component: AnalysisDetailPitchView,
+  },
+  {
+    path: '/analysis/detail/volume',
+    name: 'AnalysisDetailVolume',
+    component: AnalysisDetailVolumeView,
+  },
+  {
+    path: '/analysis/detail/stt',
+    name: 'AnalysisDetailStt',
+    component: AnalysisDetailSttView,
   },
   {
     path: '/password/update',
