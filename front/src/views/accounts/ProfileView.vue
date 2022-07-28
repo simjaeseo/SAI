@@ -1,6 +1,5 @@
 <template>
   <div>
-    <navbar></navbar>
     <div class='container' id='my_page1'>
       <p id='profile_text1'>~~님의 마이페이지</p>
       <hr>
@@ -19,13 +18,11 @@
 
 <script>
 import ProfileData from '@/views/accounts/components/ProfileData.vue';
-import Navbar from './components/NavBar.vue';
 
 export default {
   name: 'ProfileView',
   components: {
     ProfileData,
-    Navbar,
   },
 };
 </script>
