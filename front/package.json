@@ -12,11 +12,13 @@
     "date-fns": "^2.29.1",
     "google-fonts-webpack-plugin": "^0.4.4",
     "i": "^0.3.7",
+    "sockjs-client": "^1.6.1",
     "vue": "^3.2.13",
     "vue-next-select": "^2.10.4",
     "vue-router": "^4.0.13",
     "vue3-toggle-button": "^1.0.0",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

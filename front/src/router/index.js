@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 // 메인페이지 라우터
 import MainPageView from '@/views/main/MainPageView.vue';
+
 // 인터뷰 라우터
 import AnalysisComprehensiveView from '@/views/interview/AnalysisComprehensiveView.vue';
 import AnalysisDetailView from '@/views/interview/AnalysisDetailView.vue';
@@ -13,6 +15,7 @@ import InterviewSettingView from '@/views/interview/InterviewSettingView.vue';
 import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
+
 // 유저 라우터
 import LoginView from '@/views/accounts/LoginView.vue';
 import SignupView from '@/views/accounts/SignupView.vue';
@@ -23,8 +26,12 @@ import ProfileView from '@/views/accounts/ProfileView.vue';
 import UpdateUserView from '@/views/accounts/UpdateUserView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
 import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
+
 // 스케줄 라우터
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
+
+// 채팅 라우터
+import ChatView from '@/views/chat/ChatView.vue';
 
 const routes = [
   {
@@ -136,6 +143,11 @@ const routes = [
     path: '/password/update',
     name: 'PasswordUpdate',
     component: PasswordUpdateView,
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: ChatView,
   },
 ];
 
