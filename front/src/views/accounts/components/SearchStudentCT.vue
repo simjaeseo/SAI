@@ -1,6 +1,6 @@
 <template>
   <div class='container' id='search-bar-box1'>
-    <div class='pt-3'>
+    <div class='pt-3' id='components-box'>
       <select class='form-select' id='form-select-cardinal-number'
       aria-label='Default select example'>
         <option selected>년도</option>
@@ -13,13 +13,13 @@
         <option value='7'>7기</option>
         <option value='7'>8기</option>
       </select>
-      <search-bar-student id='component-bar'></search-bar-student>
+      <search-bar-student></search-bar-student>
     </div>
   </div>
 </template>
 
 <script>
-import SearchBarStudent from './SearchBarStudent.vue';
+import SearchBarStudent from './SearchBarStudentCT.vue';
 
 export default {
   components: { SearchBarStudent },
@@ -28,9 +28,6 @@ export default {
 </script>
 
 <style scoped>
-#component-bar {
-  margin-left: 10px;
-}
 #search-bar-box1 {
   background-color: #5c6ac40c;
   width: 100%;
@@ -40,6 +37,7 @@ export default {
 }
 #form-select-cardinal-number {
   width: 100px;
-  display: inline;
+  float: left;
+  margin-right: 10px;
 }
 </style>
