@@ -1,12 +1,17 @@
 <template>
     <div>
+      <interview-ct></interview-ct>
     </div>
 </template>
 
 <script>
+import InterviewCt from '@/views/interview/components/InterviewCt.vue';
+
 export default {
   // name: '',
-  components: {},
+  components: {
+    InterviewCt,
+  },
   data() {
     return {
       sampleData: '',
