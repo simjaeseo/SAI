@@ -13,7 +13,10 @@ public class Job {
 
     private String name;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "favorite_job_id")
-    private FavoriteJob favoriteJob;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "favorite_job_id")
+//    private FavoriteJob favoriteJob;
+
+
+
 }

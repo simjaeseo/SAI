@@ -1,9 +1,6 @@
 package com.ssafy.sai.db.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,6 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class FavoriteEnterprise {
 
     // 기업쪽으로 일대다 , 회원쪽으로 다대일
@@ -27,10 +25,16 @@ public class FavoriteEnterprise {
 //    private List<Enterprise> enterprises = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "enterprise_id")
+    private Enterprise enterprise;
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+
 
     public void addMember(Member member) {
         this.member = member;
     }
+
 }

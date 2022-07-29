@@ -20,7 +20,9 @@ public class Enterprise {
 
     private String name;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "favorite_enterprise_id")
-    private FavoriteEnterprise favoriteEnterprise;
+//    @ManyToOne(fetch = LAZY)
+//    @JoinColumn(name = "favorite_enterprise_id")
+//    private FavoriteEnterprise favoriteEnterprise;
+
+
 }

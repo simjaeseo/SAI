@@ -18,8 +18,12 @@ public class FavoriteJob {
     @Column(name = "favorite_job_id")
     private Long id;
 
-    @OneToMany(mappedBy = "favoriteJob")
-    private List<Job> jobs = new ArrayList<>();
+//    @OneToMany(mappedBy = "favoriteJob")
+//    private List<Job> jobs = new ArrayList<>();
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "job_id")
+    private FavoriteJob favoriteJob;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")

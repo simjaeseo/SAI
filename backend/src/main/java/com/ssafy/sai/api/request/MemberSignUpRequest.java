@@ -1,8 +1,10 @@
 package com.ssafy.sai.api.request;
 
+import com.ssafy.sai.db.dto.EnterpriseId;
 import com.ssafy.sai.db.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -40,8 +42,8 @@ public class MemberSignUpRequest {
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
-    private List<Long> jobs;
-    private List<Long> enterprises;
+    private List<EnterpriseId> favoriteJobs;
+    private List<EnterpriseId> favoriteEnterprises;
 
     public Member toEntity() {
         return Member.builder()
