@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div id='time-box' class="container">
     <button v-for="time in times"
     :key="time"
     @click.prevent="pickTime(time)"
-    :style="[selectStartTime == time ? {background:'#ffffff'} : {background:'#5c6ac4'}]"
+    :style="[selectStartTime == time ?
+    {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
     >
       {{ time }}
     </button>
@@ -83,9 +84,10 @@ export default {
   margin-bottom: 20px;
 }
 button {
-  width: 5.5vw;
-  height: 3vw;
-  margin: 0.2vw;
-  font-size: 1vw;
+  border: 1px solid #ced4da;
+  width: 68px;
+  height: 40px;
+  margin: 5px 5px 10px 5px;
+  border-radius: 10px;
 }
 </style>
