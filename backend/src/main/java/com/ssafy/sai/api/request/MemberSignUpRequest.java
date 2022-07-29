@@ -1,6 +1,7 @@
 package com.ssafy.sai.api.request;
 
 import com.ssafy.sai.db.dto.EnterpriseId;
+import com.ssafy.sai.db.dto.JobId;
 import com.ssafy.sai.db.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,8 +43,8 @@ public class MemberSignUpRequest {
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
-    private List<EnterpriseId> favoriteJobs;
-    private List<EnterpriseId> favoriteEnterprises;
+    private List<JobId> interestedJobs;
+    private List<EnterpriseId> interestedEnterprises;
 
     public Member toEntity() {
         return Member.builder()
@@ -54,8 +55,6 @@ public class MemberSignUpRequest {
                 .birthday(birthday)
                 .campus(campus)
                 .phone(phone)
-//                .favoriteEnterprises(jobs)
-//                .favoriteJobs((List<FavoriteJob>) favoriteJob)
                 .build();
     }
 }

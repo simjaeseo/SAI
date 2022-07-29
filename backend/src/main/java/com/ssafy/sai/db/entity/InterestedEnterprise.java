@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -14,15 +11,11 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class FavoriteEnterprise {
+public class InterestedEnterprise {
 
-    // 기업쪽으로 일대다 , 회원쪽으로 다대일
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "favorite_enterprise_id")
+    @Column(name = "interested_enterprise_id")
     private Long id;
-
-//    @OneToMany(mappedBy = "favoriteEnterprise")
-//    private List<Enterprise> enterprises = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "enterprise_id")
@@ -30,8 +23,6 @@ public class FavoriteEnterprise {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-
 
     public void addMember(Member member) {
         this.member = member;

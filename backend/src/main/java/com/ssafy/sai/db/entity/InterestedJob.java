@@ -1,29 +1,26 @@
 package com.ssafy.sai.db.entity;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-public class FavoriteJob {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+public class InterestedJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "favorite_job_id")
+    @Column(name = "interested_job_id")
     private Long id;
-
-//    @OneToMany(mappedBy = "favoriteJob")
-//    private List<Job> jobs = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "job_id")
-    private FavoriteJob favoriteJob;
+    private Job job;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")

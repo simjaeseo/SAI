@@ -1,10 +1,18 @@
 package com.ssafy.sai.db.entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Job {
 
     @Id @GeneratedValue
@@ -12,11 +20,4 @@ public class Job {
     private Long id;
 
     private String name;
-
-//    @ManyToOne(fetch = LAZY)
-//    @JoinColumn(name = "favorite_job_id")
-//    private FavoriteJob favoriteJob;
-
-
-
 }

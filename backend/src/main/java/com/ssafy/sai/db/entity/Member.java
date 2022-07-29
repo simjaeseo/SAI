@@ -46,19 +46,19 @@ public class Member extends BaseEntity {
     private Campus campus;
 
     @OneToMany(mappedBy = "member")
-    private List<FavoriteJob> favoriteJobs = new ArrayList<>();
+    private List<InterestedJob> interestedJobs = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<FavoriteEnterprise> favoriteEnterprises = new ArrayList<>();
+    private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
-    public void addFavoriteEnterprise(FavoriteEnterprise favoriteEnterprise) {
-        favoriteEnterprises.add(favoriteEnterprise);
-        favoriteEnterprise.addMember(this);
+    public void addFavoriteEnterprise(InterestedEnterprise interestedEnterprise) {
+        interestedEnterprises.add(interestedEnterprise);
+        interestedEnterprise.addMember(this);
     }
 
-    public void addFavoriteJob(FavoriteJob favoriteJob) {
-        favoriteJobs.add(favoriteJob);
-        favoriteJob.addMember(this);
+    public void addFavoriteJob(InterestedJob interestedJob) {
+        interestedJobs.add(interestedJob);
+        interestedJob.addMember(this);
     }
 
     public void updateCampus(Campus campus) {
