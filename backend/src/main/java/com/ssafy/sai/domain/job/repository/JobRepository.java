@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.member.repository;
+package com.ssafy.sai.domain.job.repository;
 
 import com.ssafy.sai.domain.job.domain.Job;
 import org.springframework.data.jpa.repository.JpaRepository;

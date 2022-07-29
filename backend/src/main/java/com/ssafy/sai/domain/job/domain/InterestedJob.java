@@ -1,6 +1,5 @@
 package com.ssafy.sai.domain.job.domain;
 
-import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
 import lombok.*;
 

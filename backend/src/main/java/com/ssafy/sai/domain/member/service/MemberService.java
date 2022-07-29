@@ -2,6 +2,10 @@ package com.ssafy.sai.domain.member.service;
 
 import com.ssafy.sai.domain.job.dto.InterestedEnterpriseCreateRequest;
 import com.ssafy.sai.domain.job.dto.InterestedJobCreateRequest;
+import com.ssafy.sai.domain.job.repository.EnterpriseRepository;
+import com.ssafy.sai.domain.job.repository.InterestedEnterpriseRepository;
+import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
+import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.domain.job.dto.EnterpriseId;

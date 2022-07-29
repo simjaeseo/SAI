@@ -1,6 +1,5 @@
 package com.ssafy.sai.domain.member.domain;
 
-import com.ssafy.sai.domain.member.domain.Member;
 import lombok.*;
 
 import javax.persistence.*;
