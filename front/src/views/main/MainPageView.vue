@@ -1,12 +1,18 @@
 <template>
-  <div id="main-page-view">
-    <div id="route-button">
-      <p>안녕하세요 user님!</p>
-      <route-button class="components"></route-button>
+  <div id="main-page-view" class="container">
+    <div id="route-button" class="row">
+      <p id='main-text1'>안녕하세요 user님!</p>
+      <div class="col-lg-8" id='user-schedule-box1'>
+        <route-button></route-button>
+      </div>
+      <div class="col-lg-1">
+      </div>
+      <div class="col-lg-3" id='user-schedule-box2'>
+        <router-link to="schedule" id="main-calendar">
+          <main-calendar></main-calendar>
+        </router-link>
+      </div>
     </div>
-    <router-link to="schedule" id="main-calendar">
-      <main-calendar></main-calendar>
-    </router-link>
   </div>
 </template>
 
@@ -24,25 +30,20 @@ export default {
 </script>
 
 <style scoped>
-#main-page-view {
+#main-text1 {
+  font-weight: bold;
+  font-size: 30px;
+}
+.container {
+  margin-top: 150px;
+}
+#user-schedule-box1 {
+  border: 1px solid black;
+  background-color: #5c6ac40c;
+  border-radius: 10px;
   display: flex;
-  justify-content: space-around;
 }
-
-#route-button {
-  border: 1px solid black;
-  margin-top: 10%;
-  width: 50vw;
-}
-
-#main-calendar {
-  border: 1px solid black;
-  margin-top: 10%;
-  width: 22vw;
-  height: 22vw;
-}
-
-.components {
-  border: 1px solid black;
+#user-schedule-box2 {
+  border: 1px solid black
 }
 </style>

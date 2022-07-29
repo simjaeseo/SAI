@@ -145,7 +145,7 @@ export default {
 };
 </script>
 
-<style type="text/css">
+<style scoped type="text/css">
 .rounded {
   -moz-border-radius:20px 20px 20px 20px;
   border-radius:20px 20px 20px 20px;
