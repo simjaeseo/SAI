@@ -3,6 +3,7 @@ package com.ssafy.sai.db.entity;
 import lombok.Getter;
 
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class FavoriteJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "favorite_enterprise_id")
+    @Column(name = "favorite_job_id")
     private Long id;
 
     @OneToMany(mappedBy = "favoriteJob")
@@ -23,4 +24,8 @@ public class FavoriteJob {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void addMember(Member member) {
+        this.member = member;
+    }
 }

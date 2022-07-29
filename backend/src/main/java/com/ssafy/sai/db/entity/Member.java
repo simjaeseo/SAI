@@ -6,6 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -43,13 +45,21 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "favorite_job_id")
-    private FavoriteJob favoriteJob;
+    @OneToMany(mappedBy = "member")
+    private List<FavoriteJob> favoriteJobs = new ArrayList<>();
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "favorite_enterprise_id")
-    private FavoriteEnterprise favoriteEnterprise;
+    @OneToMany(mappedBy = "member")
+    private List<FavoriteEnterprise> favoriteEnterprises = new ArrayList<>();
+
+    public void addFavoriteEnterprise(FavoriteEnterprise favoriteEnterprise) {
+        favoriteEnterprises.add(favoriteEnterprise);
+        favoriteEnterprise.addMember(this);
+    }
+
+    public void addFavoriteJob(FavoriteJob favoriteJob) {
+        favoriteJobs.add(favoriteJob);
+        favoriteJob.addMember(this);
+    }
 
     public void updateCampus(Campus campus) {
         this.campus = campus;

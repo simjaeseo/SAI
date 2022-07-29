@@ -25,12 +25,16 @@ public class MemberUpdateRequest {
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
+
+    private String profilePicture;
+
     public Member toEntity() {
         return Member.builder()
                 .id(id)
                 .birthday(birthday)
                 .campus(campus)
                 .phone(phone)
+                .profilePicture(profilePicture)
                 .build();
     }
 }

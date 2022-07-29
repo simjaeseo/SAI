@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Campus {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "campus_id")
     private Long id;
 
@@ -21,6 +21,6 @@ public class Campus {
     @Column(name = "class")
     private int classNumber;
 
-    @OneToMany(mappedBy = "campus")
+    @OneToMany(mappedBy = "campus", cascade = CascadeType.ALL)
     List<Member> members = new ArrayList<>();
 }

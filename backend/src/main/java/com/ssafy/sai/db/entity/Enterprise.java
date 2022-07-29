@@ -1,6 +1,8 @@
 package com.ssafy.sai.db.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -8,6 +10,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Enterprise {
 
     @Id @GeneratedValue
@@ -19,5 +23,4 @@ public class Enterprise {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "favorite_enterprise_id")
     private FavoriteEnterprise favoriteEnterprise;
-
 }

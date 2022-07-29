@@ -1,7 +1,6 @@
 package com.ssafy.sai.api.request;
 
-import com.ssafy.sai.db.entity.Campus;
-import com.ssafy.sai.db.entity.Member;
+import com.ssafy.sai.db.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -32,21 +33,27 @@ public class MemberSignUpRequest {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthday;
 
+    private MemberStatus memberStatus;
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private Campus campus;
 
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
+    private List<Long> jobs;
+    private List<Long> enterprises;
 
     public Member toEntity() {
         return Member.builder()
                 .email(email)
                 .password(password)
+                .memberStatus(memberStatus)
                 .name(name)
                 .birthday(birthday)
                 .campus(campus)
                 .phone(phone)
+//                .favoriteEnterprises(jobs)
+//                .favoriteJobs((List<FavoriteJob>) favoriteJob)
                 .build();
     }
 }
