@@ -55,37 +55,6 @@ class MemberRepositoryTest {
     }
 
     @Test
-    public void 회원수정_성공() throws Exception {
-        //given
-        Member member = Member.builder()
-                .email("ssafy@ssafy.com")
-                .password("1234567890")
-                .memberStatus(MemberStatus.TRAINEE)
-                .campus(null)
-                .phone("010-1234-1234")
-                .profilePicture("www.asdfasdf.com")
-                .build();
-
-        memberRepository.save(member);
-        em.clear();
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        //when
-        Member findMember = memberRepository.findById(member.getId()).orElseThrow(() -> new Exception());
-        findMember.updateMember(passwordEncoder, "987654321", "싸피이", "010-1112-2223", null);
-        em.flush();
-
-        //then
-        Member findUpdatedMember = memberRepository.findById(findMember.getId()).orElseThrow(() -> new Exception());
-
-        assertThat(findUpdatedMember).isSameAs(findMember);
-        assertThat(passwordEncoder.matches("987654321", findUpdatedMember.getPassword())).isTrue();
-        assertThat(findUpdatedMember.getName()).isEqualTo("싸피이");
-        assertThat(findUpdatedMember.getName()).isNotEqualTo(member.getName());
-    }
-
-    @Test
     public void 회원가입_중복이메일_체크() throws Exception {
         //given
         Member member1 = Member.builder()
