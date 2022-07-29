@@ -1,10 +1,19 @@
 <template>
   <div>
-    <button v-for="time in times" :key="time">{{ time }}</button>
+    <button v-for="time in times"
+    :key="time"
+    @click.prevent="pickTime(time)"
+    :style="[selectStartTime == time ? {background:'#ffffff'} : {background:'#5c6ac4'}]"
+    >
+      {{ time }}
+    </button>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'TimePicker',
   data() {
@@ -12,6 +21,15 @@ export default {
       times: [],
       hour: 9,
     };
+  },
+  setup() {
+    const store = useStore();
+
+    const selectStartTime = computed(() => store.getters.selectedStartTime);
+    const pickTime = (time) => {
+      store.dispatch('pickTime', time);
+    };
+    return { pickTime, selectStartTime };
   },
   methods: {
     timeSet() {
@@ -30,7 +48,6 @@ export default {
   },
   mounted() {
     this.timeSet();
-    console.log(this.time);
   },
 };
 </script>
@@ -40,7 +57,6 @@ button {
   width: 5.5vw;
   height: 3vw;
   margin: 0.2vw;
-  background: #5E6CBE;
   font-size: 1vw;
 }
 </style>
