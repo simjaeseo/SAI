@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div id='time-box' class="container">
     <button v-for="time in times"
     :key="time"
     @click.prevent="pickTime(time)"
-    :style="[selectStartTime == time ? {background:'#ffffff'} : {background:'#5c6ac4'}]"
+    :style="[selectStartTime == time ?
+    {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
     >
       {{ time }}
     </button>
@@ -20,6 +21,7 @@ export default {
     return {
       times: [],
       hour: 9,
+      selectedTime: '',
     };
   },
   setup() {
@@ -45,6 +47,30 @@ export default {
         }
       }
     },
+    selected() {
+      const btn = document.getElementsByClassName('btn');
+      console.log(btn);
+      function handleClick(event) {
+        if (event.target.classList[1] === 'clicked') {
+          event.target.classList.remove('clicked');
+        } else {
+          for (let i = 0; i < btn.length; i += 1) {
+            btn[i].classList.remove('clicked');
+          }
+
+          event.target.classList.add('clicked');
+        }
+      }
+
+      function init() {
+        for (let i = 0; i < btn.length; i += 1) {
+          console.log(btn[i]);
+          btn[i].addEventListener('click', handleClick);
+        }
+      }
+
+      init();
+    },
   },
   mounted() {
     this.timeSet();
@@ -53,10 +79,15 @@ export default {
 </script>
 
 <style scoped>
+#time-box {
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
 button {
-  width: 5.5vw;
-  height: 3vw;
-  margin: 0.2vw;
-  font-size: 1vw;
+  border: 1px solid #ced4da;
+  width: 68px;
+  height: 40px;
+  margin: 5px 5px 10px 5px;
+  border-radius: 10px;
 }
 </style>

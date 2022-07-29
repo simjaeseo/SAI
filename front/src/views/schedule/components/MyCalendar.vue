@@ -5,7 +5,7 @@
         {{currentYear}}년 {{currentMonth}}월
         <a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
       </h2>
-      <table class="table table-hover">
+      <table class="table">
           <thead>
             <tr>
               <td id="th" v-for="(weekName, index) in weekNames" v-bind:key="index">
@@ -163,46 +163,48 @@ export default {
 </script>
 
 <style scoped>
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 10px;
+}
+button:hover {
+  color: white;
+}
+.calender {
+  height: 600px;
+}
 #picked {
   /* border-radius: 50%; */
-  background-color:#5E6CBE;
-  padding: 0.1vw;
-  color:#ffffff;
 }
 
 td {
-  height: 6vw;
-  font-size: 0.3vw;
+  height: 100px;
+  font-size: 10px;
+}
+td:hover {
+  background-color: #5c6ac475;
 }
 
 a {
   text-decoration: none;
+  color: #5a5a5a7a;
 }
 
 h2 {
   display: flex;
   justify-content: space-between;
   text-align: center;
-  padding: 1%;
+  padding-top: 20px;
+  color: #5a5a5a;
 }
 
 #th {
-  height: 2vw;
-  width: 4vw;
-  font-size: 1vw;
+  height: 100px;
+  text-align: center;
+  font-weight: 500;
+  color: #5a5a5a;
 }
 
-#test {
-  background-color: aqua;
-  border-radius: 20px;
-  text-indent: 0.4vw;
-  margin-bottom: 0.4vw;
-}
-
-#test2 {
-  background-color: pink;
-  border-radius: 20px;
-  text-indent: 0.4vw;
-  margin-bottom: 0.4vw;
-}
 </style>
