@@ -1,14 +1,12 @@
 package com.ssafy.sai.db.repository;
 
-import com.ssafy.sai.db.entity.Campus;
-import com.ssafy.sai.db.entity.Member;
-import com.ssafy.sai.db.entity.MemberStatus;
-import org.assertj.core.api.Assertions;
+import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.domain.MemberStatus;
+import com.ssafy.sai.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
