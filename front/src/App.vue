@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id='app'>
     <nav class="navbar navbar-expand-lg navbar-light bg-white" id='sai-nav'>
       <div class="container-fluid">
         <router-link to='/'>

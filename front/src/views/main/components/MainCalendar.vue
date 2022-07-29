@@ -1,6 +1,6 @@
 <template>
   <div class="calendar">
-    <p class="d-flex justify-content-center">
+    <p class="d-flex justify-content-center" id='text-year'>
       {{currentYear}}년 {{currentMonth}}월
     </p>
       <table class="table">
@@ -14,12 +14,12 @@
           <tbody>
             <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
               <td v-for="(day, index2) in row" :key="index2" id="calendar-date">
-                <span v-if="isToday(currentYear, currentMonth, day)" class="rounded">
+                <p v-if="isToday(currentYear, currentMonth, day)" class="rounded">
                   {{day}}
-                </span>
-                <span v-else>
+                </p>
+                <p v-else id="calendar-date">
                   {{day}}
-                </span>
+                </p>
               </td>
             </tr>
           </tbody>
@@ -146,16 +146,33 @@ export default {
 </script>
 
 <style scoped type="text/css">
+tbody td {
+  border-color: white;
+}
+span {
+  font-weight: 200;
+  color: #5a5a5a;
+}
+thead {
+  text-align: center;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+#text-year {
+  text-decoration: none;
+  margin-top: 20px;
+  color: #5a5a5a;
+}
 .rounded {
-  -moz-border-radius:20px 20px 20px 20px;
-  border-radius:20px 20px 20px 20px;
+  border-radius: 80%;
   border:solid 1px #ffffff;
-  background-color:#2b6bd1;
+  background-color:#5c6ac475;
   /* padding:10px; */
   color:#ffffff;
 }
 
 #calendar-date {
   text-align: center;
+  margin-bottom: 5px;
 }
 </style>
