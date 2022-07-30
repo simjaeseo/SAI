@@ -1,5 +1,7 @@
 package com.ssafy.sai.domain.member.domain;
 
+import com.ssafy.sai.domain.job.domain.Enterprise;
+import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
@@ -54,21 +56,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
-    public void addFavoriteEnterprise(InterestedEnterprise interestedEnterprise) {
-        interestedEnterprises.add(interestedEnterprise);
-        interestedEnterprise.addMember(this);
-    }
-
-    public void addFavoriteJob(InterestedJob interestedJob) {
-        interestedJobs.add(interestedJob);
-        interestedJob.addMember(this);
-    }
 
     public void updateCampus(Campus campus) {
-        if (this.campus != null) {
-            this.campus.getMembers().remove(this);
-        }
-
         this.campus = campus;
         campus.getMembers().add(this);
     }
@@ -76,7 +65,11 @@ public class Member extends BaseEntity {
     public void updateMember(MemberUpdateRequest request) {
         this.birthday = request.getBirthday();
         this.phone = request.getPhone();
+        this.profilePicture = request.getProfilePicture();
 
-        updateCampus(request.getCampus());
+        if (this.campus != null) {
+            this.campus.getMembers().remove(this);
+            updateCampus(campus);
+        }
     }
 }

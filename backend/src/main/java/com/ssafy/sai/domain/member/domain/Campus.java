@@ -21,6 +21,6 @@ public class Campus {
     @Column(name = "class")
     private int classNumber;
 
-    @OneToMany(mappedBy = "campus")
+    @OneToMany(mappedBy = "campus", cascade = CascadeType.ALL)
     List<Member> members = new ArrayList<>();
 }

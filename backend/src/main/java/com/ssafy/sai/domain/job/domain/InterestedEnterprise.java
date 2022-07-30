@@ -24,9 +24,4 @@ public class InterestedEnterprise {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    public void addMember(Member member) {
-        this.member = member;
-    }
-
 }
