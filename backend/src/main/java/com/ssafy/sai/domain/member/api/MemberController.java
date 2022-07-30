@@ -17,8 +17,8 @@ public class MemberController {
     private final MemberService memberService;
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void singUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
-        memberService.signUpMember(request);
+    public Long singUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
+        return memberService.signUpMember(request);
     }
 
     @PutMapping("/{id}")

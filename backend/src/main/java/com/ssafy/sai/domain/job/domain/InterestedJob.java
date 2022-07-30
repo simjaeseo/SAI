@@ -27,7 +27,8 @@ public class InterestedJob {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public void addMember(Member member) {
+    public InterestedJob(Job job, Member member) {
+        this.job = job;
         this.member = member;
     }
 }

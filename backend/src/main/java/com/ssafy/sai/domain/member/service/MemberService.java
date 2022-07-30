@@ -43,7 +43,7 @@ public class MemberService {
      * @throws Exception 이미 존재하는 이메일인 경우 예외 처리
      */
     @Transactional
-    public void signUpMember(MemberSignUpRequest request) throws Exception {
+    public Long signUpMember(MemberSignUpRequest request) throws Exception {
         Member member = request.toEntity();
 
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -54,7 +54,6 @@ public class MemberService {
         for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
             Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
 
-            // enterprise.get() 인자 값 수정
             InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
             InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
             interestedEnterpriseRepository.save(interestedEnterprise);
@@ -66,6 +65,8 @@ public class MemberService {
             InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
             interestedJobRepository.save(interestedJob);
         }
+
+        return findMember.getId();
     }
 
     @Transactional
