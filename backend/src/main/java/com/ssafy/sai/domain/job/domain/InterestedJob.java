@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.job.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.sai.domain.member.domain.Member;
 import lombok.*;
 
@@ -23,9 +24,11 @@ public class InterestedJob {
     @JoinColumn(name = "job_id")
     private Job job;
 
+    @JsonBackReference
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
 
     public InterestedJob(Job job, Member member) {
         this.job = job;
