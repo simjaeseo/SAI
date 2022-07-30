@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
@@ -50,9 +51,11 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedJob> interestedJobs = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
