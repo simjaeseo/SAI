@@ -65,17 +65,18 @@ public class Member extends BaseEntity {
     }
 
     public void updateCampus(Campus campus) {
+        if (this.campus != null) {
+            this.campus.getMembers().remove(this);
+        }
+
         this.campus = campus;
         campus.getMembers().add(this);
     }
 
     public void updateMember(MemberUpdateRequest request) {
         this.birthday = request.getBirthday();
-        this.campus = request.getCampus();
         this.phone = request.getPhone();
 
-        if (campus != null) {
-            updateCampus(campus);
-        }
+        updateCampus(request.getCampus());
     }
 }

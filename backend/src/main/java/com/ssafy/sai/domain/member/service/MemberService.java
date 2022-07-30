@@ -36,8 +36,11 @@ public class MemberService {
     private final JobRepository jobRepository;
     private final InterestedJobRepository interestedJobRepository;
 
-    /*
-    회원 가입
+
+    /**
+     * 회원가입
+     * @param request 회원 가입 폼 양식
+     * @throws Exception 이미 존재하는 이메일인 경우 예외 처리
      */
     @Transactional
     public void signUpMember(MemberSignUpRequest request) throws Exception {
@@ -67,7 +70,8 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberUpdateRequest request) throws Exception {
-        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 
         findMember.updateMember(request);
     }
