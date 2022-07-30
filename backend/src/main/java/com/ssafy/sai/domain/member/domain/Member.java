@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
@@ -46,30 +47,25 @@ public class Member extends BaseEntity {
     @Column(name = "profile_picture_url")
     private String profilePicture;
 
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedJob> interestedJobs = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
 
     public void updateCampus(Campus campus) {
         this.campus = campus;
-        campus.getMembers().add(this);
     }
 
     public void updateMember(MemberUpdateRequest request) {
-        this.birthday = request.getBirthday();
         this.phone = request.getPhone();
         this.profilePicture = request.getProfilePicture();
-
-        if (this.campus != null) {
-            this.campus.getMembers().remove(this);
-            updateCampus(campus);
-        }
     }
 }
