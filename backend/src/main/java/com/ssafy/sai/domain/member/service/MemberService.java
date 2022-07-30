@@ -51,20 +51,20 @@ public class MemberService {
         }
 
         Member findMember = memberRepository.saveAndFlush(member);
-//        for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
-//            Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
-//
-//            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
-//            InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
-//            interestedEnterpriseRepository.save(interestedEnterprise);
-//        }
-//
-//        for (JobId jobId : request.getInterestedJobs()) {
-//            Optional<Job> job = jobRepository.findById(jobId.getId());
-//            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job.get(), findMember);
-//            InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
-//            interestedJobRepository.save(interestedJob);
-//        }
+        for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
+            Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
+
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
+            InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
+            interestedEnterpriseRepository.save(interestedEnterprise);
+        }
+
+        for (JobId jobId : request.getInterestedJobs()) {
+            Optional<Job> job = jobRepository.findById(jobId.getId());
+            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job.get(), findMember);
+            InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
+            interestedJobRepository.save(interestedJob);
+        }
 
         return findMember.getId();
     }
