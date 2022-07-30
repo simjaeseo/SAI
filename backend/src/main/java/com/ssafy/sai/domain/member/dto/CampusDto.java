@@ -8,6 +8,11 @@ public class CampusDto {
     private String city;
     private Integer classNumber;
 
+    public CampusDto(String city, Integer classNumber) {
+        this.city = city;
+        this.classNumber = classNumber;
+    }
+
     public Campus toEntity() {
         return Campus.builder()
                 .city(city)

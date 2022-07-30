@@ -26,4 +26,9 @@ public class Campus {
     @JsonIgnore
     @OneToMany(mappedBy = "campus")
     List<Member> members = new ArrayList<>();
+
+    public Campus(String city, Integer classNumber) {
+        this.city = city;
+        this.classNumber = classNumber;
+    }
 }

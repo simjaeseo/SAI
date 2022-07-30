@@ -3,6 +3,8 @@ package com.ssafy.sai.domain.member.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
+import com.ssafy.sai.domain.member.dto.CampusDto;
+import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
@@ -59,6 +61,17 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
+    public MemberDto toMemberDto() {
+        return MemberDto.builder()
+                .email(email)
+                .name(name)
+                .phone(phone)
+                .campus(new CampusDto(campus.getCity(), campus.getClassNumber()))
+                .memberStatus(memberStatus)
+                .birthday(birthday)
+                .profilePicture(profilePicture)
+                .build();
+    }
 
     public void updateCampus(Campus campus) {
         this.campus = campus;

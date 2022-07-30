@@ -22,9 +22,10 @@ public class MemberController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DataResponse<Member> findMemberInfo(@PathVariable Long id) {
-        Member member = memberService.findMember(id);
-        return new DataResponse<>(200, "OK", member);
+    public DataResponse<MemberDto> findMemberInfo(@PathVariable Long id) {
+        Member findMember = memberService.findMember(id);
+        MemberDto memberDto = findMember.toMemberDto();
+        return new DataResponse<>(200, "OK", memberDto);
     }
 
     @PostMapping("/member")
