@@ -35,7 +35,7 @@ public class ConsultantSignUpRequest {
     private MemberStatus memberStatus;
 
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
-    private CampusDto campus;
+    private CampusConsultantDto campus;
 
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;

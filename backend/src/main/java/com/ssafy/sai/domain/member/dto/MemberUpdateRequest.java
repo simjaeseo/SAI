@@ -1,7 +1,7 @@
 package com.ssafy.sai.domain.member.dto;
 
-import com.ssafy.sai.domain.job.dto.EnterpriseId;
-import com.ssafy.sai.domain.job.dto.JobId;
+import com.ssafy.sai.domain.job.dto.EnterpriseName;
+import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.member.domain.Member;
 import lombok.Data;
 
@@ -22,8 +22,8 @@ public class MemberUpdateRequest {
 
     private String profilePicture;
 
-    private List<EnterpriseId> interestedEnterprises;
-    private List<JobId> interestedJobs;
+    private List<EnterpriseName> interestedEnterprises;
+    private List<JobName> interestedJobs;
 
     public Member toEntity() {
         return Member.builder()
