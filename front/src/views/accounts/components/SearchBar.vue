@@ -12,12 +12,13 @@
         placeholder="&#128269;  기업명을검색하세요"
         class="p-3 mb-0.5 w-full form-control"
         style="width:460px"
+        @keydown.enter.prevent
       >
       </label>
 
       <ul
         v-if="searchCountries.length"
-        class="border border-gray-300 absolute z-10"
+        class="border border-gray-300"
       >
         <li>
           <p id='result-count'>
@@ -29,15 +30,19 @@
             :key="country.name"
             @click="selectCountry(country.name)"
             @keydown="selectCountry(country.name)"
+            @keyup="selectCountry(country.name)"
         >
           <p id='result'>
             {{ country.name }}
           </p>
         </li>
       </ul>
-      <div v-if="selectedCountry" id='selected-item-div'>
+      <div v-if="selectedCountry">
         <button v-for="country in selectedCountries" :key="country" class='btn'
-        id='selected-item'>#{{ country }}</button>
+        id='selected-item'
+        @click.prevent="selectedDeleteItem(country)">
+        #{{ country }}<span id='delete'> x</span></button>
+
       </div>
     </div>
   </div>
@@ -49,6 +54,12 @@ import { ref, computed } from 'vue';
 
 export default {
   name: 'SearchBar',
+  data() {
+    return {
+      deleteItem: '',
+      isClicked: '',
+    };
+  },
   setup() {
     const searchTerm = ref('');
 
@@ -84,10 +95,33 @@ export default {
       selectedCountries,
     };
   },
+  updated() {
+    this.$emit('companies', this.selectedCountries);
+  },
+  methods: {
+    selectedDeleteItem(event) {
+      this.deleteItem = event;
+      for (let i = 0; i < this.selectedCountries.length; i += 1) {
+        if (this.selectedCountries[i] === this.deleteItem) {
+          this.selectedCountries.splice(i, 1);
+          i -= 1;
+        }
+      } this.$forceUpdate();
+    },
+  },
 };
 </script>
 
 <style scoped>
+#delete {
+  font-size: 5px;
+  vertical-align: top;
+}
+ul {
+  z-index: 1000;
+  position: absolute;
+  overflow: scroll;
+}
 #selected-item{
   z-index: 1000;
   color: #5c6ac4;
@@ -103,8 +137,6 @@ export default {
   font-size: 15px;
   border-radius: 0.25rem;
   padding: 0.5rem;
-  height: 50px;
-  width: 90px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
