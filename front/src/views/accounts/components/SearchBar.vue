@@ -42,7 +42,6 @@
         id='selected-item'
         @click.prevent="selectedDeleteItem(country)">
         #{{ country }}<span id='delete'> x</span></button>
-
       </div>
     </div>
   </div>
@@ -80,6 +79,8 @@ export default {
     });
     const selectedCountry = ref('');
     const selectedCountries = [];
+    
+    console.log(selectedCountries);
     const selectCountry = (country) => {
       selectedCountry.value = country;
       selectedCountries.push(selectedCountry.value);
@@ -93,6 +94,7 @@ export default {
       selectCountry,
       selectedCountry,
       selectedCountries,
+      selectedData,
     };
   },
   updated() {

@@ -4,13 +4,14 @@
       <p id='signup-text1'>회원가입 교육생용</p>
     </div>
     <div id='form-input-wrap'>
-      <form @submit.prevent="signup(credentials)">
+      <form @submit.prevent="signupform">
         <p id='login-text1' class="mb-4">로그인 정보</p>
         <div>
           <label for='user_signup_email'><p id="login-text2">이메일</p>
             <input type='text' id='user_signup_email'
             class='form-control'
-            v-model="credentials.userEmail">
+            v-model="state.credentials.userEmail"
+            required />
           </label>
           <button class="btn mx-2" id="double-check-btn">중복확인</button>
         </div>
@@ -18,31 +19,32 @@
           <label for='user_signup_pw1'><p id="login-text2">비밀번호</p>
             <input type='password' id='user_signup_pw1'
             class='form-control'
-            v-model="credentials.userPassword1"
-            placeholder="8자리 이상 16자리 이하 영문+숫자">
+            v-model="state.credentials.userPassword1"
+            placeholder="8자리 이상 16자리 이하 영문+숫자"
+            required />
           </label>
           <label for='user_signup_pw2' class="mx-2"><p id="login-text2">비밀번호 확인</p>
             <input type='password' id='user_signup_pw2'
             class='form-control'
-            v-model="credentials.userPassword2"
-            placeholder="8자리 이상 16자리 이하 영문+숫자">
+            v-model="state.credentials.userPassword2"
+            placeholder="8자리 이상 16자리 이하 영문+숫자"
+            @keydown="update"
+            required />
           </label>
-          <div v-show='isInput'>
-            <p v-if='passwordCorrect' id='correct-pw'>비밀번호가 일치합니다.</p>
-            <p v-else id='incorrect-pw'>비밀번호가 일치하지않습니다. 다시 입력해주세요.</p>
-          </div>
+            <p id='correct-pw'>비밀번호가 일치합니다.</p>
+            <p id='incorrect-pw'>비밀번호가 일치하지않습니다. 다시 입력해주세요.</p>
         </div>
         <hr>
         <div class='mb-5 mt-5'>
           <p id='login-text1'>관심 기업</p>
           <div id='search-bar-box'>
-            <search-bar class="mb-5" @companies='companies'></search-bar>
+            <search-bar class="mb-5" @companies='companies' required></search-bar>
             <!-- 예시 -->
           </div>
           <div id='search-bar-box2'>
             <p id='login-text1'>관심 직무</p>
             <div>
-            <search-bar-duty-sign-up class="mb-5" @duties='duties'></search-bar-duty-sign-up>
+            <search-bar-duty-sign-up @duties='duties' required></search-bar-duty-sign-up>
               <!-- 예시 -->
             </div>
           </div>
@@ -54,18 +56,19 @@
             <label for='user_signup_name'><p id='login-text2'>이름</p>
               <input type='text' id='user_signup_name'
               class='form-control'
-              v-model="credentials.username">
+              v-model="state.credentials.username"
+              required />
             </label>
             <div id='form-select-wrap1'>
               <p id='login-text3'>생년월일</p>
               <select class='form-select' id='form-select-cardinal-number'
               aria-label='Default select example'
-              @change="selectedUserYear">
-                <option selected>년도</option>
+              @change="selectedUserYear" required>
+                <option selected>연도</option>
                 <option value='1990'>1990</option>
                 <option value='1991'>1991</option>
                 <option value='1992'>1992</option>
-                <option value='1993'>1993</option>
+                <option value='1992'>1993</option>
                 <option value='1994'>1994</option>
                 <option value='1995'>1995</option>
                 <option value='1996'>1996</option>
@@ -79,7 +82,9 @@
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'
-              @change="selectedUserMonth">
+              @change="selectedUserMonth"
+              required>
+                <option selected>월</option>
                 <option value='01'>01</option>
                 <option value='02'>02</option>
                 <option value='03'>03</option>
@@ -95,16 +100,18 @@
               </select>
               <select class='form-select' id='form-select-class'
               aria-label='Default select example'
-              @change="selectedUserDay">
-                <option value='1'>01</option>
-                <option value='2'>02</option>
-                <option value='3'>03</option>
-                <option value='4'>04</option>
-                <option value='5'>05</option>
-                <option value='6'>06</option>
-                <option value='7'>07</option>
-                <option value='8'>08</option>
-                <option value='9'>09</option>
+              @change="selectedUserDay"
+              required>
+                <option selected>일</option>
+                <option value='01'>01</option>
+                <option value='02'>02</option>
+                <option value='03'>03</option>
+                <option value='04'>04</option>
+                <option value='05'>05</option>
+                <option value='06'>06</option>
+                <option value='07'>07</option>
+                <option value='08'>08</option>
+                <option value='09'>09</option>
                 <option value='10'>10</option>
                 <option value='11'>11</option>
                 <option value='12'>12</option>
@@ -135,21 +142,23 @@
               <p id='login-text3'>소속</p>
               <select class='form-select' id='form-select-cardinal-number'
               aria-label='Default select example'
-              @change="selectedUserCardinalNumber">
+              @change="selectedUserCardinalNumber"
+              required>
                 <option selected>기수</option>
-                <option value='1기'>1기</option>
-                <option value='2기'>2기</option>
-                <option value='3기'>3기</option>
-                <option value='4기'>4기</option>
-                <option value='5기'>5기</option>
-                <option value='6기'>6기</option>
-                <option value='7기'>7기</option>
+                <option value='1'>1기</option>
+                <option value='2'>2기</option>
+                <option value='3'>3기</option>
+                <option value='4'>4기</option>
+                <option value='5'>5기</option>
+                <option value='6'>6기</option>
+                <option value='7'>7기</option>
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'
-              v-model="selected"
-              @click='setOptions'
-              @change="selectedUserRegion">
+              v-model="state.selected"
+              @click.prevent='setOptions'
+              @change="selectedUserRegion"
+              required>
                 <option value='서울'>서울</option>
                 <option value='대전'>대전</option>
                 <option value='광주'>광주</option>
@@ -158,14 +167,16 @@
               </select>
               <select class='form-select' id='form-select-class'
               aria-label='Default select example'
-              @change="selectedUserClass">
-                <option v-for='option in options' :key="option">{{option}}</option>
+              @change="selectedUserClass"
+              required>
+                <option v-for='option in state.options' :key="option">{{option}}</option>
               </select>
             </div>
             <div id='form-select-wrap' class="mx-2">
               <p id='login-text4'>연락처</p>
               <select class='form-select' id='form-select3' aria-label='Default select example'
-              @change="UserMobileFirst">
+              @change="UserMobileFirst"
+              required>
                 <option selected>선택</option>
                 <option value='010'>010</option>
                 <option value='011'>011</option>
@@ -176,11 +187,14 @@
               </select>
               <label for="user_signup_number1">
                   <input type="text" class="form-control" id='user_signup_number1'
-                @change="UserMobileSecond">
+                @change="UserMobileSecond"
+                v-model="mobileSecond"
+                required>
               </label>
               <label for="user_signup_number2">
                 <input type="text" class="form-control" id='user_signup_number2'
-                @change="UserMobileLast">
+                @change="UserMobileLast"
+                required>
               </label>
             </div>
           </div>
@@ -197,94 +211,161 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
+// import router from '@/router';
 import SearchBar from './SearchBar.vue';
 import SearchBarDutySignUp from './SearchBarDutySignUp.vue';
 
 export default {
   components: { SearchBar, SearchBarDutySignUp },
   name: 'SignupForm',
-  data() {
-    return {
+  setup() {
+    const store = useStore();
+    const state = reactive({
       credentials: {
         userSelectedCompanies: '',
         userSelectedDuties: '',
         userBirth: '',
-        userPhoneNumber: '',
         userEmail: '',
         userPassword1: '',
         userPassword2: '',
         username: '',
-        selectedUserCardinalNumber: '',
-        selectedUserRegion: '',
-        selectedUserClass: '',
+        userCardinalNumber: '',
+        userRegion: '',
+        userClass: '',
+        memberStatus: 'TRAINEE',
       },
       selected: '',
       options: [],
-      passwordCorrect: false,
-      isInput: false,
+      mobileFirst: '',
+      mobileSecond: '',
+      mobileLast: '',
+    });
+    const companies = function (data) {
+      state.credentials.userSelectedCompanies = data;
+      console.log(state.credentials.userSelectedCompanies);
     };
-  },
-  methods: {
-    companies(data) {
-      this.userSelectedCompanies = data;
-      console.log(this.userSelectedCompanies);
-    },
-    duties(data) {
-      this.userSelectedDuties = data;
-      console.log(this.userSelectedDuties);
-    },
-    setOptions() {
-      if (this.selected === '서울') {
-        this.options.push('1반', '2반', '3반', '4반', '5반', '6반', '7반', '8반', '9반', '10반', '11반', '12반', '13반', '14반', '15반', '16반');
-        console.log(this.options);
-      } else if (this.selected === '대전') {
-        this.options = [];
-        this.options.push('1반', '2반', '3반', '4반', '5반', '6반', '7반');
-      } else if (this.selected === '광주') {
-        this.options = [];
-        this.options.push('1반', '2반', '3반', '4반', '5반', '6반');
-      } else if (this.selected === '구미') {
-        this.options = [];
-        this.options.push('1반', '2반', '3반', '4반', '5반', '6반', '7반');
-      } else if (this.selected === '부울경') {
-        this.options = [];
-        this.options.push('1반', '2반', '3반', '4반', '5반', '6반');
+    const duties = function (data) {
+      state.credentials.userSelectedDuties = data;
+    };
+    const setOptions = function () {
+      if (state.selected === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (state.selected === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (state.selected === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (state.selected === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (state.selected === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
       }
-    },
-    selectedUserYear(event) {
+    };
+    const selectedUserYear = function (event) {
       const dash = '-';
-      this.credentials.userBirth = event.target.value.concat(dash);
-    },
-    selectedUserMonth(event) {
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        state.credentials.userBirth = '';
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserMonth = function (event) {
       const dash = '-';
-      this.credentials.userBirth += event.target.value.concat(dash);
-    },
-    selectedUserDay(event) {
-      this.credentials.userBirth += event.target.value;
-    },
-    UserMobileFirst(event) {
-      this.credentials.userPhoneNumber = event.target.value;
-    },
-    UserMobileSecond(event) {
-      this.credentials.userPhoneNumber += event.target.value;
-    },
-    UserMobileLast(event) {
-      this.credentials.userPhoneNumber += event.target.value;
-    },
-    ...mapActions(['signup']),
-  },
-  updated() {
-    if (this.credentials.userPassword1.length > 0) {
-      this.isInput = true;
-    } else {
-      this.isInput = false;
-    }
-    if (this.credentials.userPassword1 === this.credentials.userPassword2) {
-      this.passwordCorrect = true;
-    } else {
-      this.passwordCorrect = false;
-    }
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        const updateMonth = state.credentials.userBirth.substr(0, 5);
+        state.credentials.userBirth = updateMonth;
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserDay = function (event) {
+      state.credentials.userBirth += event.target.value;
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value;
+      } else {
+        const updateDay = state.credentials.userBirth.substr(0, 8);
+        state.credentials.userBirth = updateDay;
+        state.credentials.userBirth += event.target.value;
+      }
+    };
+    const UserMobileFirst = function (event) {
+      if (state.mobileFirst.length === 0) {
+        state.mobileFirst = event.target.value;
+      } else {
+        state.mobileFirst = '';
+        state.mobileFirst = event.target.value;
+      }
+    };
+    const UserMobileSecond = function (event) {
+      if (state.mobileSecond.length === 0) {
+        state.mobileSecond = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileSecond;
+      } else {
+        state.mobileSecond = '';
+        state.mobileSecond = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileSecond;
+      }
+    };
+    const UserMobileLast = function (event) {
+      if (state.mobileLast.length === 0) {
+        state.mobileLast = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileLast;
+      } else {
+        state.mobileLast = '';
+        state.mobileLast = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileLast;
+      }
+    };
+    const selectedUserCardinalNumber = function (event) {
+      state.credentials.userCardinalNumber = event.target.value;
+    };
+    const selectedUserRegion = function (event) {
+      state.credentials.userRegion = event.target.value;
+    };
+    const selectedUserClass = function (event) {
+      state.credentials.userClass = event.target.value;
+    };
+    const signupform = function () {
+      store.dispatch('signup', {
+        email: state.credentials.userEmail,
+        password: state.credentials.userPassword1,
+        name: state.credentials.username,
+        birthday: state.credentials.userBirth,
+        year: state.credentials.userCardinalNumber,
+        campus: {
+          city: state.credentials.userRegion,
+          classNumber: state.credentials.userClass,
+        },
+        interestedJobs: state.credentials.userSelectedCompanies,
+        interestedEnterprises: state.credentials.userSelectedDuties,
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        memberStatus: state.credentials.memberStatus,
+      });
+    };
+    return {
+      state,
+      store,
+      companies,
+      duties,
+      setOptions,
+      selectedUserYear,
+      selectedUserMonth,
+      selectedUserDay,
+      UserMobileFirst,
+      UserMobileSecond,
+      UserMobileLast,
+      signupform,
+      selectedUserCardinalNumber,
+      selectedUserRegion,
+      selectedUserClass,
+    };
   },
 };
 </script>

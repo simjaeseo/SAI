@@ -96,7 +96,7 @@ export default {
     };
   },
   updated() {
-    this.$emit('companies', this.selectedCountries);
+    this.$emit('duties', this.selectedCountries);
   },
   methods: {
     selectedDeleteItem(event) {
