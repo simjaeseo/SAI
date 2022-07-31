@@ -1,7 +1,7 @@
 package com.ssafy.sai.domain.member.dto;
 
-import com.ssafy.sai.domain.job.dto.EnterpriseId;
-import com.ssafy.sai.domain.job.dto.JobId;
+import com.ssafy.sai.domain.job.dto.EnterpriseName;
+import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Getter;
@@ -46,8 +46,8 @@ public class MemberSignUpRequest {
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
-    private List<JobId> interestedJobs;
-    private List<EnterpriseId> interestedEnterprises;
+    private List<JobName> interestedJobs;
+    private List<EnterpriseName> interestedEnterprises;
 
     public Member toEntity() {
         return Member.builder()
