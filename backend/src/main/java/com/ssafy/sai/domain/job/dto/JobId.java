@@ -1,8 +1,9 @@
 package com.ssafy.sai.domain.job.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class JobId {
     private Long id;
 }
