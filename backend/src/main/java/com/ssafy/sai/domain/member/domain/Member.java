@@ -1,7 +1,10 @@
 package com.ssafy.sai.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
+import com.ssafy.sai.domain.member.dto.CampusDto;
+import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
@@ -46,30 +49,37 @@ public class Member extends BaseEntity {
     @Column(name = "profile_picture_url")
     private String profilePicture;
 
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    private int year;
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedJob> interestedJobs = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
+    public MemberDto toMemberDto() {
+        return MemberDto.builder()
+                .email(email)
+                .name(name)
+                .phone(phone)
+                .year(year)
+                .campus(new CampusDto(campus.getCity(), campus.getClassNumber()))
+                .memberStatus(memberStatus)
+                .birthday(birthday)
+                .build();
+    }
 
     public void updateCampus(Campus campus) {
         this.campus = campus;
-        campus.getMembers().add(this);
     }
 
     public void updateMember(MemberUpdateRequest request) {
-        this.birthday = request.getBirthday();
         this.phone = request.getPhone();
         this.profilePicture = request.getProfilePicture();
-
-        if (this.campus != null) {
-            this.campus.getMembers().remove(this);
-            updateCampus(campus);
-        }
     }
 }

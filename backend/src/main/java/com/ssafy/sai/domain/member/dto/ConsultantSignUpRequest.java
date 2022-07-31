@@ -1,8 +1,5 @@
 package com.ssafy.sai.domain.member.dto;
 
-import com.ssafy.sai.domain.job.dto.EnterpriseId;
-import com.ssafy.sai.domain.job.dto.JobId;
-import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Getter;
@@ -13,11 +10,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MemberSignUpRequest {
+public class ConsultantSignUpRequest {
 
     @NotBlank(message = "이메일은 필수 입력값입니다.")
     @Pattern(regexp = "^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}",
@@ -38,24 +34,17 @@ public class MemberSignUpRequest {
 
     private MemberStatus memberStatus;
 
-    @NotNull(message = "기수 정보는 필수 입력값입니다.")
-    private int year;
-
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private CampusDto campus;
 
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;
 
-    private List<JobId> interestedJobs;
-    private List<EnterpriseId> interestedEnterprises;
-
     public Member toEntity() {
         return Member.builder()
                 .email(email)
                 .password(password)
                 .memberStatus(memberStatus)
-                .year(year)
                 .name(name)
                 .birthday(birthday)
                 .phone(phone)
