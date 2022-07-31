@@ -79,7 +79,6 @@ export default {
     });
     const selectedCountry = ref('');
     const selectedCountries = [];
-    
     console.log(selectedCountries);
     const selectCountry = (country) => {
       selectedCountry.value = country;
@@ -94,7 +93,6 @@ export default {
       selectCountry,
       selectedCountry,
       selectedCountries,
-      selectedData,
     };
   },
   updated() {

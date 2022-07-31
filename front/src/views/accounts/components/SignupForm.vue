@@ -21,6 +21,7 @@
             class='form-control'
             v-model="state.credentials.userPassword1"
             placeholder="8자리 이상 16자리 이하 영문+숫자"
+            @change="update"
             required />
           </label>
           <label for='user_signup_pw2' class="mx-2"><p id="login-text2">비밀번호 확인</p>
@@ -28,11 +29,13 @@
             class='form-control'
             v-model="state.credentials.userPassword2"
             placeholder="8자리 이상 16자리 이하 영문+숫자"
-            @keydown="update"
-            required />
+            required
+            @change="checkPassword">
           </label>
-            <p id='correct-pw'>비밀번호가 일치합니다.</p>
-            <p id='incorrect-pw'>비밀번호가 일치하지않습니다. 다시 입력해주세요.</p>
+          <div v-if="state.isInput">
+            <p v-if="state.isCorrect" id='correct-pw'>비밀번호가 일치합니다.</p>
+            <p v-else id='incorrect-pw'>영문,숫자를 조합하여 입력해주세요. (8-16자)</p>
+          </div>
         </div>
         <hr>
         <div class='mb-5 mt-5'>
@@ -224,7 +227,7 @@ export default {
     const store = useStore();
     const state = reactive({
       credentials: {
-        userSelectedCompanies: '',
+        userSelectedCompanies: {},
         userSelectedDuties: '',
         userBirth: '',
         userEmail: '',
@@ -241,6 +244,8 @@ export default {
       mobileFirst: '',
       mobileSecond: '',
       mobileLast: '',
+      isInput: false,
+      isCorrect: false,
     });
     const companies = function (data) {
       state.credentials.userSelectedCompanies = data;
@@ -332,6 +337,11 @@ export default {
     const selectedUserClass = function (event) {
       state.credentials.userClass = event.target.value;
     };
+    const update = function () {
+      if (state.credentials.userPassword1.length) {
+        state.isInput = true;
+      }
+    };
     const signupform = function () {
       store.dispatch('signup', {
         email: state.credentials.userEmail,
@@ -349,6 +359,7 @@ export default {
         memberStatus: state.credentials.memberStatus,
       });
     };
+
     return {
       state,
       store,
@@ -365,9 +376,11 @@ export default {
       selectedUserCardinalNumber,
       selectedUserRegion,
       selectedUserClass,
+      update,
     };
   },
 };
+
 </script>
 
 <style scoped>
