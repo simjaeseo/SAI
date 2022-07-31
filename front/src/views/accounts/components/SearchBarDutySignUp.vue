@@ -40,8 +40,8 @@
       <div v-if="selectedCountry">
         <button v-for="country in selectedCountries" :key="country" class='btn'
         id='selected-item'
-        @click.prevent="selectedDeleteItem(country)">
-        #{{ country }}<span id='delete'> x</span></button>
+        @click.prevent="selectedDeleteItem(country.name)">
+        #{{ country.name }}<span id='delete'> x</span></button>
 
       </div>
     </div>
@@ -78,11 +78,13 @@ export default {
         return false;
       });
     });
-    const selectedCountry = ref('');
+    let selectedCountry = {};
     const selectedCountries = [];
     const selectCountry = (country) => {
-      selectedCountry.value = country;
-      selectedCountries.push(selectedCountry.value);
+      selectedCountry = {
+        name: country,
+      };
+      selectedCountries.push(selectedCountry);
       searchTerm.value = '';
     };
 

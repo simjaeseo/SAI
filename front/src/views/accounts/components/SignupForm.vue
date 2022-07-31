@@ -224,8 +224,8 @@ export default {
     const store = useStore();
     const state = reactive({
       credentials: {
-        userSelectedCompanies: '',
-        userSelectedDuties: '',
+        userSelectedCompanies: [],
+        userSelectedDuties: [],
         userBirth: '',
         userEmail: '',
         userPassword1: '',
@@ -343,8 +343,8 @@ export default {
           city: state.credentials.userRegion,
           classNumber: state.credentials.userClass,
         },
-        interestedJobs: state.credentials.userSelectedCompanies,
-        interestedEnterprises: state.credentials.userSelectedDuties,
+        interestedJobs: state.credentials.userSelectedDuties,
+        interestedEnterprises: state.credentials.userSelectedCompanies,
         phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
         memberStatus: state.credentials.memberStatus,
       });
