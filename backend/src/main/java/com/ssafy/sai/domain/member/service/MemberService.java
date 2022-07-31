@@ -6,6 +6,9 @@ import com.ssafy.sai.domain.job.repository.EnterpriseRepository;
 import com.ssafy.sai.domain.job.repository.InterestedEnterpriseRepository;
 import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
+import com.ssafy.sai.domain.member.domain.Campus;
+import com.ssafy.sai.domain.member.dto.ConsultantSignUpRequest;
+import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.domain.job.dto.EnterpriseId;
@@ -22,12 +25,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -35,7 +39,11 @@ public class MemberService {
     private final EnterpriseRepository enterpriseRepository;
     private final JobRepository jobRepository;
     private final InterestedJobRepository interestedJobRepository;
+    private final CampusRepository campusRepository;
 
+    public Member findMember(Long memberId) {
+        return memberRepository.findMemberById(memberId);
+    }
 
     /**
      * 회원가입
@@ -66,6 +74,24 @@ public class MemberService {
             interestedJobRepository.save(interestedJob);
         }
 
+        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
+        findMember.updateCampus(campus.get());
+
+        return findMember.getId();
+    }
+
+    @Transactional
+    public Long signUpConsultant(ConsultantSignUpRequest request) throws Exception {
+        Member member = request.toEntity();
+
+        if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
+        }
+
+        Member findMember = memberRepository.saveAndFlush(member);
+        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
+        findMember.updateCampus(campus.get());
+
         return findMember.getId();
     }
 
@@ -75,5 +101,25 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 
         findMember.updateMember(request);
+        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
+        findMember.updateCampus(campus.get());
+
+        interestedJobRepository.deleteByMemberId(findMember.getId());
+        for (JobId jobId : request.getInterestedJobs()) {
+            Optional<Job> job = jobRepository.findById(jobId.getId());
+
+            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job.get(), findMember);
+            InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
+            interestedJobRepository.save(interestedJob);
+        }
+
+        interestedEnterpriseRepository.deleteByMemberId(findMember.getId());
+        for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
+            Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
+
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
+            InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
+            interestedEnterpriseRepository.save(interestedEnterprise);
+        }
     }
 }

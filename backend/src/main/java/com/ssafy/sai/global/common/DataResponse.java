@@ -1,5 +1,8 @@
 package com.ssafy.sai.global.common;
 
+import lombok.Getter;
+
+@Getter
 public class DataResponse<T> extends MessageResponse{
     private T data;
 

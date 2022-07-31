@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Campus {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +21,14 @@ public class Campus {
     private String city;
 
     @Column(name = "class")
-    private int classNumber;
+    private Integer classNumber;
 
-    @OneToMany(mappedBy = "campus", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "campus")
     List<Member> members = new ArrayList<>();
+
+    public Campus(String city, Integer classNumber) {
+        this.city = city;
+        this.classNumber = classNumber;
+    }
 }
