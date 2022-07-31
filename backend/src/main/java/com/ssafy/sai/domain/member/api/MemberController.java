@@ -7,6 +7,7 @@ import com.ssafy.sai.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
+import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/member/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DataResponse<MemberDto> findMemberInfo(@PathVariable Long id) {
         Member findMember = memberService.findMember(id);
@@ -30,18 +31,21 @@ public class MemberController {
 
     @PostMapping("/member")
     @ResponseStatus(HttpStatus.OK)
-    public Long singUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
-        return memberService.signUpMember(request);
+    public MessageResponse signUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
+        memberService.signUpMember(request);
+        return new MessageResponse(200, "OK");
     }
 
     @PostMapping("/consultant")
     @ResponseStatus(HttpStatus.OK)
-    public Long singUpConsultant(@RequestBody @Valid ConsultantSignUpRequest request) throws Exception {
-        return memberService.signUpConsultant(request);
+    public MessageResponse signUpConsultant(@RequestBody @Valid ConsultantSignUpRequest request) throws Exception {
+        memberService.signUpConsultant(request);
+        return new MessageResponse(200, "OK");
     }
 
     @PutMapping("/{id}")
-    public void updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
+    public MessageResponse updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
         memberService.updateMember(id, request);
+        return new MessageResponse(200, "OK");
     }
 }

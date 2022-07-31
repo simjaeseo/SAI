@@ -37,6 +37,10 @@ public class MemberSignUpRequest {
     private LocalDate birthday;
 
     private MemberStatus memberStatus;
+
+    @NotNull(message = "기수 정보는 필수 입력값입니다.")
+    private int year;
+
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private CampusDto campus;
 
@@ -51,6 +55,7 @@ public class MemberSignUpRequest {
                 .email(email)
                 .password(password)
                 .memberStatus(memberStatus)
+                .year(year)
                 .name(name)
                 .birthday(birthday)
                 .phone(phone)

@@ -2,7 +2,6 @@ package com.ssafy.sai.domain.member.dto;
 
 import com.ssafy.sai.domain.job.dto.EnterpriseId;
 import com.ssafy.sai.domain.job.dto.JobId;
-import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Builder;
@@ -22,9 +21,9 @@ public class MemberDto {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthday;
     private MemberStatus memberStatus;
+    private int year;
     private CampusDto campus;
     private String phone;
-    private String profilePicture;
 
     private List<JobId> interestedJobs;
     private List<EnterpriseId> interestedEnterprises;
@@ -33,6 +32,7 @@ public class MemberDto {
         return Member.builder()
                 .email(email)
                 .name(name)
+                .year(year)
                 .campus(campus.toEntity())
                 .memberStatus(memberStatus)
                 .birthday(birthday)

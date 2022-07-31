@@ -49,6 +49,7 @@ public class Member extends BaseEntity {
     @Column(name = "profile_picture_url")
     private String profilePicture;
 
+    private int year;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "campus_id")
     private Campus campus;
@@ -66,10 +67,10 @@ public class Member extends BaseEntity {
                 .email(email)
                 .name(name)
                 .phone(phone)
+                .year(year)
                 .campus(new CampusDto(campus.getCity(), campus.getClassNumber()))
                 .memberStatus(memberStatus)
                 .birthday(birthday)
-                .profilePicture(profilePicture)
                 .build();
     }
 
