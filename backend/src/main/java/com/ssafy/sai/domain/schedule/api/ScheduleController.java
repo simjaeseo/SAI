@@ -8,11 +8,8 @@ import com.ssafy.sai.domain.schedule.service.ScheduleService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

@@ -1,22 +1,15 @@
 package com.ssafy.sai.domain.member.dto;
 
-import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
-import com.ssafy.sai.domain.job.domain.InterestedJob;
 import com.ssafy.sai.domain.job.dto.EnterpriseId;
 import com.ssafy.sai.domain.job.dto.JobId;
-import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@NoArgsConstructor
+@Data
 public class MemberUpdateRequest {
 
     private Long id;

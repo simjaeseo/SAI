@@ -1,8 +1,8 @@
 package com.ssafy.sai.domain.schedule.service;
 
-import com.ssafy.sai.domain.campus.repository.CampusRepository;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
+import com.ssafy.sai.domain.member.repository.CampusRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
