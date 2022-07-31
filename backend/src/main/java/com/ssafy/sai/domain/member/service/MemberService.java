@@ -7,12 +7,9 @@ import com.ssafy.sai.domain.job.repository.InterestedEnterpriseRepository;
 import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
-import com.ssafy.sai.domain.member.dto.ConsultantSignUpRequest;
-import com.ssafy.sai.domain.member.dto.MemberDto;
-import com.ssafy.sai.domain.member.dto.MemberSignUpRequest;
-import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
-import com.ssafy.sai.domain.job.dto.EnterpriseId;
-import com.ssafy.sai.domain.job.dto.JobId;
+import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.job.dto.EnterpriseName;
+import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
@@ -42,8 +39,7 @@ public class MemberService {
 
     public MemberDto findMemberOne(Long memberId) {
         Member findMember = memberRepository.findMemberEntityGraph(memberId);
-        MemberDto memberDto = new MemberDto(findMember);
-        return memberDto;
+        return new MemberDto(findMember);
     }
 
     /**
@@ -59,18 +55,19 @@ public class MemberService {
             throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
         }
 
-        Member findMember = memberRepository.saveAndFlush(member);
-        for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
-            Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
 
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
+        Member findMember = memberRepository.saveAndFlush(member);
+        for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
+            Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
+
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
             InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
             interestedEnterpriseRepository.save(interestedEnterprise);
         }
 
-        for (JobId jobId : request.getInterestedJobs()) {
-            Optional<Job> job = jobRepository.findById(jobId.getId());
-            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job.get(), findMember);
+        for (JobName jobName : request.getInterestedJobs()) {
+            Job job = jobRepository.findJobByName(jobName.getName());
+            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job, findMember);
             InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
             interestedJobRepository.save(interestedJob);
         }
@@ -89,11 +86,7 @@ public class MemberService {
             throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
         }
 
-        Member findMember = memberRepository.saveAndFlush(member);
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
-        findMember.updateCampus(campus.get());
-
-        return findMember.getId();
+        return memberRepository.save(member).getId();
     }
 
     @Transactional
@@ -106,21 +99,17 @@ public class MemberService {
         findMember.updateCampus(campus.get());
 
         interestedJobRepository.deleteByMemberId(findMember.getId());
-        for (JobId jobId : request.getInterestedJobs()) {
-            Optional<Job> job = jobRepository.findById(jobId.getId());
-
-            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job.get(), findMember);
-            InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
-            interestedJobRepository.save(interestedJob);
+        for (JobName jobName : request.getInterestedJobs()) {
+            Job job = jobRepository.findJobByName(jobName.getName());
+            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job, findMember);
+            interestedJobRepository.save(interestedJobCreateRequest.toEntity());
         }
 
         interestedEnterpriseRepository.deleteByMemberId(findMember.getId());
-        for (EnterpriseId enterpriseId : request.getInterestedEnterprises()) {
-            Optional<Enterprise> enterprise = enterpriseRepository.findById(enterpriseId.getId());
-
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise.get(), findMember);
-            InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
-            interestedEnterpriseRepository.save(interestedEnterprise);
+        for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
+            Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
+            interestedEnterpriseRepository.save(interestedEnterpriseCreateRequest.toEntity());
         }
     }
 }
