@@ -62,18 +62,6 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
-    public MemberDto toMemberDto() {
-        return MemberDto.builder()
-                .email(email)
-                .name(name)
-                .phone(phone)
-                .year(year)
-                .campus(new CampusDto(campus.getCity(), campus.getClassNumber()))
-                .memberStatus(memberStatus)
-                .birthday(birthday)
-                .build();
-    }
-
     public void updateCampus(Campus campus) {
         this.campus = campus;
     }

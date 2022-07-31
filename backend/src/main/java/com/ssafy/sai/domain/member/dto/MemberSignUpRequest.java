@@ -2,7 +2,6 @@ package com.ssafy.sai.domain.member.dto;
 
 import com.ssafy.sai.domain.job.dto.EnterpriseId;
 import com.ssafy.sai.domain.job.dto.JobId;
-import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Getter;

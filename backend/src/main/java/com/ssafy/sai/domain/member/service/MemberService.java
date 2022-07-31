@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -41,8 +40,10 @@ public class MemberService {
     private final InterestedJobRepository interestedJobRepository;
     private final CampusRepository campusRepository;
 
-    public Member findMember(Long memberId) {
-        return memberRepository.findMemberById(memberId);
+    public MemberDto findMemberOne(Long memberId) {
+        Member findMember = memberRepository.findMemberEntityGraph(memberId);
+        MemberDto memberDto = new MemberDto(findMember);
+        return memberDto;
     }
 
     /**
