@@ -21,14 +21,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-/*    @GetMapping("/member/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public DataResponse<MemberDto> findMemberInfo(@PathVariable Long id) {
-        Member findMember = memberService.findMember(id);
-        MemberDto memberDto = findMember.toMemberDto();
-        return new DataResponse<>(200, "OK", memberDto);
-    }*/
-
     @GetMapping("/member/{id}")
     public DataResponse<MemberDto> findMember(@PathVariable Long id) {
         MemberDto findMember = memberService.findMemberOne(id);

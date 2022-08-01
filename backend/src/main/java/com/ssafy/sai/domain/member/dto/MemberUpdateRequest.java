@@ -12,8 +12,6 @@ import java.util.List;
 @Data
 public class MemberUpdateRequest {
 
-    private Long id;
-
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private CampusDto campus;
 
@@ -27,7 +25,6 @@ public class MemberUpdateRequest {
 
     public Member toEntity() {
         return Member.builder()
-                .id(id)
                 .phone(phone)
                 .profilePicture(profilePicture)
                 .build();
