@@ -4,22 +4,19 @@ import com.ssafy.sai.domain.member.domain.Campus;
 import lombok.Data;
 
 @Data
-public class CampusDto {
+public class CampusConsultantDto {
     private String city;
-    private Integer classNumber;
 
-    public CampusDto() {
-        
+    public CampusConsultantDto() {
     }
-    public CampusDto(String city, Integer classNumber) {
-        this.city = city;
-        this.classNumber = classNumber;
+
+    public CampusConsultantDto(Campus campus) {
+        this.city = campus.getCity();
     }
 
     public Campus toEntity() {
         return Campus.builder()
                 .city(city)
-                .classNumber(classNumber)
                 .build();
     }
 }
