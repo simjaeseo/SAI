@@ -1,8 +1,12 @@
 package com.ssafy.sai.domain.member.api;
 
+import com.ssafy.sai.domain.member.dto.ConsultantSignUpRequest;
+import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.service.MemberService;
+import com.ssafy.sai.global.common.DataResponse;
+import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,19 +14,36 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/members")
 @RestController
+@CrossOrigin("*")
 public class MemberController {
 
     private final MemberService memberService;
-    @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Long singUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
-        return memberService.signUpMember(request);
+
+    @GetMapping("/member/{id}")
+    public DataResponse<MemberDto> findMember(@PathVariable Long id) {
+        MemberDto findMember = memberService.findMemberOne(id);
+        return new DataResponse<>(200, "OK", findMember);
     }
 
-    @PutMapping("/{id}")
-    public void updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
+    @PostMapping("/member")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse signUpMember(@RequestBody @Valid MemberSignUpRequest request) throws Exception {
+        memberService.signUpMember(request);
+        return new MessageResponse(200, "OK");
+    }
+
+    @PostMapping("/consultant")
+    @ResponseStatus(HttpStatus.OK)
+    public MessageResponse signUpConsultant(@RequestBody @Valid ConsultantSignUpRequest request) throws Exception {
+        memberService.signUpConsultant(request);
+        return new MessageResponse(200, "OK");
+    }
+
+    @PutMapping("/member/{id}")
+    public MessageResponse updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
         memberService.updateMember(id, request);
+        return new MessageResponse(200, "OK");
     }
 }
