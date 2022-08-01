@@ -9,7 +9,7 @@
         type="text"
         id="search"
         v-model="searchTerm"
-        placeholder="&#128269;  직무를 검색하세요"
+        placeholder="&#128269;  기업명을검색하세요"
         class="p-3 mb-0.5 w-full form-control"
         style="width:460px"
         @keydown.enter.prevent
@@ -22,7 +22,7 @@
       >
         <li>
           <p id='result-count'>
-            {{ countries.length }} 개의 직무중 {{ searchCountries.length }}개가 검색되었습니다.
+            {{ countries.length }} 개의 기업중 {{ searchCountries.length }}개가 검색되었습니다.
           </p>
         </li>
         <li
@@ -104,7 +104,7 @@ export default {
     selectedDeleteItem(event) {
       this.deleteItem = event;
       for (let i = 0; i < this.selectedCountries.length; i += 1) {
-        if (this.selectedCountries[i] === this.deleteItem) {
+        if (this.selectedCountries[i].name === this.deleteItem) {
           this.selectedCountries.splice(i, 1);
           i -= 1;
         }
