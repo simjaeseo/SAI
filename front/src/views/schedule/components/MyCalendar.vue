@@ -22,7 +22,7 @@
                   {{day}}
                 </button>
                 <button  v-else-if="day"
-                @click.prevent="pickDate(day)">
+                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
                   {{day}}
                 </button>
                 <!-- <div :v-for="schedule in schedules" :key="schedule" id="schedule">

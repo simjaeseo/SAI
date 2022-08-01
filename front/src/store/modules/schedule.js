@@ -17,6 +17,7 @@ export default {
       } else {
         state.selectedDate = false;
       }
+      console.log(state.selectedDate);
     },
     SET_START_TIME(state, startTime) {
       if (state.startTime !== startTime) {
