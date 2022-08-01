@@ -17,12 +17,58 @@
       <p>7월 22일  코카오 서류 마감</p>
       <p>7월 23일  킹카오 서류 마감</p>
     </div>
+    <!-- 주석! -->
+    <!-- <div id="today-schedule">
+        <div v-if="upcomingSchedules[0].schedule_date == myToday">
+          <h3>{{ upcomingSchedules[0].detail }}</h3>
+          <h4>{{ monthDate }} {{ upcomingSchedules[0].start_time }}</h4>
+          <br><br>
+          <p v-if="upcomingSchedules[0].category === '1:1 모의 면접'">
+            담당 컨설턴트 : {{ upcomingSchedules[0].consultant_name }}</p>
+          <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
+          <button v-if="upcomingSchedules[0].category === '1:1 모의 면접'" class="btn">면접 바로가기</button>
+        </div>
+    </div>
+    <div id='layer'>
+      <h5>다가오는 일정</h5>
+    </div>
+    <div>
+      <p v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
+        {{ upcomingSchedule.schedule_date.slice(5, 7) }}월
+         {{ upcomingSchedule.schedule_date.slice(8) }}일
+         {{ upcomingSchedule.detail }}
+      </p>
+    </div> -->
   </div>
 </template>
 
 <script>
+// import { computed } from 'vue';
+// import { useStore } from 'vuex';
+
 export default {
   name: 'ShowEvent',
+  // setup() {
+  //   const store = useStore();
+
+  //   const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
+  //   const fetchUpcomingSchedules = () => {
+  //     store.dispatch('fetchUpcomingSchedules');
+  //   };
+  //   const today = new Date();
+
+  //   const monthDate = `${today.getMonth + 1}월 ${today.getDate}일`;
+  //   const myToday = `${today.getFullYear()}-${today.getMonth + 1}-${today.getDate}`;
+  //   return {
+  //     upcomingSchedules,
+  //     fetchUpcomingSchedules,
+  //     monthDate,
+  //     myToday,
+  //   };
+  // },
+  // created() {
+  //   this.fetchSchedules();
+  // },
 };
 </script>
 
@@ -34,7 +80,7 @@ export default {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-#next-schedule {
+#today-schedule {
   text-align: center;
   margin-top: 50px;
 }

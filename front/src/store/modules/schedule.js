@@ -1,14 +1,21 @@
+import drf from '@/api/api';
+import axios from 'axios';
+
 export default {
   namespace: true,
   state: {
     selectedDate: false,
     startTime: false,
     endTime: false,
+    schedules: [],
+    upcomingSchedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
     selectedStartTime: (state) => state.startTime,
     selectedEndTime: (state) => state.endTime,
+    schedules: (state) => state.schedules,
+    upcomingSchedules: (state) => state.upcomingSchedules,
   },
   mutations: {
     SET_DATE(state, date) {
@@ -32,6 +39,12 @@ export default {
         state.endTime = false;
       }
     },
+    SET_SCHEDULES(state, schedules) {
+      state.schedules = schedules;
+    },
+    SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
+      state.upcomingSchedules = upcomingSchedules;
+    },
   },
   actions: {
     pickDate({ commit }, date) {
@@ -39,6 +52,24 @@ export default {
     },
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
+    },
+    fetchSchedules({ commit, getters }, id) {
+      axios({
+        url: drf.schedule.schedule(id),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_ARTICLES', res.data))
+        .catch((err) => console.error(err.response));
+    },
+    fetchUpcomingSchedules({ commit, getters }, date) {
+      axios({
+        url: drf.schedule.upcomingSchedule(date),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_UPCOMING_ARTICLES', res.data))
+        .catch((err) => console.error(err.response));
     },
   },
   modules: {

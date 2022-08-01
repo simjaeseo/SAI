@@ -8,7 +8,7 @@
       <table class="table">
           <thead>
             <tr>
-              <td id="th" v-for="(weekName, index) in weekNames" v-bind:key="index">
+              <td id="th" v-for="(weekName, index) in weekNames" :key="index">
                 {{weekName}}
               </td>
             </tr>
