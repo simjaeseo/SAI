@@ -25,6 +25,12 @@
                 @click.prevent="pickDate(day)">
                   {{day}}
                 </button>
+                <!-- <div :v-for="schedule in schedules" :key="schedule" id="schedule">
+                  <p v-if="schedule.date === `${currentYear}-${currentMonth}-${day}`"
+                  >
+                    {{ schedule.detail }}
+                  </p>
+                </div> -->
               </td>
             </tr>
           </tbody>
@@ -55,14 +61,20 @@ export default {
   setup() {
     const store = useStore();
 
+    const schedules = computed(() => store.getters.schedules);
     const selectDate = computed(() => store.getters.selectedDate);
     const pickDate = (date) => {
       store.dispatch('pickDate', date);
     };
-    return { pickDate, selectDate };
-  },
-  mounted() {
-    this.init();
+    const fetchSchedules = () => {
+      store.dispatch('fetchSchedules');
+    };
+    return {
+      pickDate,
+      selectDate,
+      schedules,
+      fetchSchedules,
+    };
   },
   methods: {
     init() {
@@ -158,6 +170,12 @@ export default {
       const date = new Date();
       return year === date.getFullYear() && month === date.getMonth() + 1 && day === date.getDate();
     },
+  },
+  mounted() {
+    this.init();
+  },
+  created() {
+    this.fetchSchedules();
   },
 };
 </script>
