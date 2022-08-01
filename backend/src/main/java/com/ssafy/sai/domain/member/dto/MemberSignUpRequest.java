@@ -2,10 +2,10 @@ package com.ssafy.sai.domain.member.dto;
 
 import com.ssafy.sai.domain.job.dto.EnterpriseName;
 import com.ssafy.sai.domain.job.dto.JobName;
-import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class MemberSignUpRequest {
 
@@ -48,16 +49,4 @@ public class MemberSignUpRequest {
 
     private List<JobName> interestedJobs;
     private List<EnterpriseName> interestedEnterprises;
-
-    public Member toEntity() {
-        return Member.builder()
-                .email(email)
-                .password(password)
-                .memberStatus(memberStatus)
-                .year(year)
-                .name(name)
-                .birthday(birthday)
-                .phone(phone)
-                .build();
-    }
 }

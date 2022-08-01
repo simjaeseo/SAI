@@ -12,6 +12,25 @@ export default {
     SET_TOKEN: (state, token) => state.toekn === token,
   },
   actions: {
+    login({commit, dispatch},credential){
+      axios({
+          url: rest.accounts.login(),
+          method: 'post',
+          data: credential
+      })
+      .then(res => {
+          const token = res.data.accessToken
+          dispatch('saveToken', token)
+          dispatch('fetchLoginUser')
+          dispatch('myStudyList')
+          router.push({name: 'Home'})
+      })
+      .catch(err => {
+          console.log("catch")
+          console.error(err.response.data)
+          commit('SET_AUTH_ERROR', err.response.data)
+      })
+  },
     saveToken({ commit }, token) {
       commit('SET_TOKEN', token);
       localStorage.setItem('token', token);
