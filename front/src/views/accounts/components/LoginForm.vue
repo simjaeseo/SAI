@@ -8,14 +8,14 @@
         <label for='user_id' id='id_text'><h6>아이디</h6>
           <input type='text' id='user_id'
           placeholder="아이디를 입력하세요"
-          class='form-control'>
+          class='form-control' v-model="id">
         </label>
       </div>
       <div id='user-pw-wrap'>
         <label for='user_pw'><h6>비밀번호</h6>
           <input type='password' id='user_pw'
           placeholder='비밀번호를 입력하세요'
-          class='form-control'>
+          class='form-control' v-model="password">
         </label>
       </div>
       <div id='help-wrap'>
@@ -35,8 +35,30 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'LoginForm',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      id: '',
+      password: '',
+    });
+    const loginform = function () {
+      console.log(state.id);
+      store.dispatch('login', {
+        id: state.id,
+        password: state.password,
+      });
+    };
+    return {
+      state,
+      store,
+      loginform,
+    };
+  },
 };
 </script>
 

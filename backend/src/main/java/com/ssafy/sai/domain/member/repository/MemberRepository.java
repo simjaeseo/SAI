@@ -19,4 +19,18 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findMemberEntityGraph(@Param("id") Long id);
 
     List<Member> findByCampusAndMemberStatus(Campus campus, MemberStatus memberStatus);
+
+    @Query(value =
+            "select count(*) " +
+            "from member " +
+            "where email = :email ", nativeQuery = true)
+    Integer countByEmail(@Param("email") String email);
+
+    @Query(value =
+            "select count(*) " +
+            "from member " +
+            "where phone = :phone ", nativeQuery = true)
+    Integer countByPhone(@Param("phone") String phone);
+
+    Optional<Member> findMemberByEmail(String email);
 }
