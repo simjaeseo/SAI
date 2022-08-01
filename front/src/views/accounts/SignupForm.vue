@@ -11,7 +11,6 @@
             <input type='text' id='user_signup_email'
             class='form-control'
             v-model="state.credentials.userEmail"
-            @change="checkEmail"
             required />
           </label>
           <button class="btn mx-2" id="double-check-btn">중복확인</button>
@@ -21,21 +20,19 @@
             <input type='password' id='user_signup_pw1'
             class='form-control'
             v-model="state.credentials.userPassword1"
-            maxlength="16"
             placeholder="8자리 이상 16자리 이하 영문+숫자"
-            @change="checkStrNumPasswd1"
             required />
           </label>
           <label for='user_signup_pw2' class="mx-2"><p id="login-text2">비밀번호 확인</p>
             <input type='password' id='user_signup_pw2'
             class='form-control'
             v-model="state.credentials.userPassword2"
-            maxlength="16"
             placeholder="8자리 이상 16자리 이하 영문+숫자"
-            @change="checkStrNumPasswd2"
+            @keydown="update"
             required />
           </label>
-            <p v-if='state.isCorrect' id='correct-pw'>비밀번호가 일치합니다.</p>
+            <p id='correct-pw'>비밀번호가 일치합니다.</p>
+            <p id='incorrect-pw'>비밀번호가 일치하지않습니다. 다시 입력해주세요.</p>
         </div>
         <hr>
         <div class='mb-5 mt-5'>
@@ -162,7 +159,6 @@
               @click.prevent='setOptions'
               @change="selectedUserRegion"
               required>
-                <option :value="null" >지역</option>
                 <option value='서울'>서울</option>
                 <option value='대전'>대전</option>
                 <option value='광주'>광주</option>
@@ -173,7 +169,6 @@
               aria-label='Default select example'
               @change="selectedUserClass"
               required>
-                <option :value="null" >반</option>
                 <option v-for='option in state.options' :key="option">{{option}}</option>
               </select>
             </div>
@@ -194,20 +189,18 @@
                   <input type="text" class="form-control" id='user_signup_number1'
                 @change="UserMobileSecond"
                 v-model="mobileSecond"
-                maxlength="4"
                 required>
               </label>
               <label for="user_signup_number2">
                 <input type="text" class="form-control" id='user_signup_number2'
                 @change="UserMobileLast"
-                maxlength="4"
                 required>
               </label>
             </div>
           </div>
         </div>
         <div id='user-signup-btn'>
-          <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
+          <button class='btn' id='signup-btn' type="submit">회원가입</button>
         </div>
       </form>
         <router-link to='/helpPassword' id='sign-up-text'>
@@ -248,50 +241,7 @@ export default {
       mobileFirst: '',
       mobileSecond: '',
       mobileLast: '',
-      isCorrect: false,
-      isEmailCorrect: false,
     });
-    const checkEmail = function () {
-      if (/^[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/.test(state.credentials.userEmail)) {
-        state.isEmailCorrect = true;
-        console.log('정규식 통과');
-      } else {
-        state.isEmailCorrect = false;
-        alert('이메일 형식에 맞게 입력하세요. 예)example@google.com');
-      }
-    };
-    const checkStrNumPasswd1 = function () {
-      if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword1)) {
-        if (state.credentials.userPassword1 === state.credentials.userPassword2) {
-          state.isCorrect = true;
-          console.log('비번1정규식통과&같음');
-        } else {
-          state.isCorrect = false;
-          console.log('비번1정규식통과ㄴㄴ');
-          alert('비밀번호가 올바르지 않습니다.');
-        }
-      } else {
-        state.isCorrect = false;
-        console.log('비번1정규식통과ㄴㄴ');
-        alert('비밀번호가 올바르지 않습니다.');
-      }
-    };
-    const checkStrNumPasswd2 = function () {
-      if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword2)) {
-        if (state.credentials.userPassword1 === state.credentials.userPassword2) {
-          state.isCorrect = true;
-          console.log('비번2정규식통과&같음');
-        } else {
-          state.isCorrect = false;
-          console.log('비번2정규식통과ㄴㄴ');
-          alert('비밀번호가 올바르지 않습니다.');
-        }
-      } else {
-        state.isCorrect = false;
-        console.log('비번2정규식통과ㄴㄴ');
-        alert('비밀번호가 올바르지 않습니다.');
-      }
-    };
     const companies = function (data) {
       state.credentials.userSelectedCompanies = data;
       console.log(state.credentials.userSelectedCompanies);
@@ -354,37 +304,23 @@ export default {
       }
     };
     const UserMobileSecond = function (event) {
-      console.log(event.target.value);
-      if (/^([0-9]{3,4})$/.test(event.target.value) === true) {
-        console.log('유효합니다');
-        if (state.mobileSecond.length === 0) {
-          state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
-        } else {
-          state.mobileSecond = '';
-          state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
-        }
+      if (state.mobileSecond.length === 0) {
+        state.mobileSecond = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileSecond;
       } else {
         state.mobileSecond = '';
-        alert('숫자만 입력 가능합니다.');
+        state.mobileSecond = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileSecond;
       }
     };
     const UserMobileLast = function (event) {
-      console.log(event.target.value);
-      if (/^([0-9]{4})$/.test(event.target.value) === true) {
-        console.log('유효합니다');
-        if (state.mobileLast.length === 0) {
-          state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
-        } else {
-          state.mobileLast = '';
-          state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
-        }
+      if (state.mobileLast.length === 0) {
+        state.mobileLast = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileLast;
       } else {
         state.mobileLast = '';
-        alert('숫자만 입력 가능합니다.');
+        state.mobileLast = event.target.value;
+        state.credentials.userPhoneNumber = state.mobileLast;
       }
     };
     const selectedUserCardinalNumber = function (event) {
@@ -429,9 +365,6 @@ export default {
       selectedUserCardinalNumber,
       selectedUserRegion,
       selectedUserClass,
-      checkStrNumPasswd1,
-      checkStrNumPasswd2,
-      checkEmail,
     };
   },
 };
