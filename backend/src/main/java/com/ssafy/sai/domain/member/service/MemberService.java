@@ -19,9 +19,11 @@ import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Optional;
 
 
@@ -40,53 +42,6 @@ public class MemberService {
     public MemberDto findMemberOne(Long memberId) {
         Member findMember = memberRepository.findMemberEntityGraph(memberId);
         return new MemberDto(findMember);
-    }
-
-    /**
-     * 회원가입
-     * @param request 회원 가입 폼 양식
-     * @throws Exception 이미 존재하는 이메일인 경우 예외 처리
-     */
-    @Transactional
-    public Long signUpMember(MemberSignUpRequest request) throws Exception {
-        Member member = request.toEntity();
-
-        if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
-        }
-
-
-        Member findMember = memberRepository.saveAndFlush(member);
-        for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
-            Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
-
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
-            InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
-            interestedEnterpriseRepository.save(interestedEnterprise);
-        }
-
-        for (JobName jobName : request.getInterestedJobs()) {
-            Job job = jobRepository.findJobByName(jobName.getName());
-            InterestedJobCreateRequest interestedJobCreateRequest = new InterestedJobCreateRequest(job, findMember);
-            InterestedJob interestedJob = interestedJobCreateRequest.toEntity();
-            interestedJobRepository.save(interestedJob);
-        }
-
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
-        findMember.updateCampus(campus.get());
-
-        return findMember.getId();
-    }
-
-    @Transactional
-    public Long signUpConsultant(ConsultantSignUpRequest request) throws Exception {
-        Member member = request.toEntity();
-
-        if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
-        }
-
-        return memberRepository.save(member).getId();
     }
 
     @Transactional

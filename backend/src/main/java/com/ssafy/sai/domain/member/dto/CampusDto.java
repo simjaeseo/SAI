@@ -15,11 +15,4 @@ public class CampusDto {
         this.city = city;
         this.classNumber = classNumber;
     }
-
-    public Campus toEntity() {
-        return Campus.builder()
-                .city(city)
-                .classNumber(classNumber)
-                .build();
-    }
 }
