@@ -5,6 +5,7 @@ import com.ssafy.sai.domain.member.domain.MemberStatus;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import com.ssafy.sai.global.common.DataResponse;
@@ -26,9 +27,10 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final CampusRepository campusRepository;
 
-    public DataResponse<List<Schedule>> selectAll(Long id){
+    public DataResponse<List<ScheduleAllByStudentResponse>> selectAll(Long id){
         // 날짜 정렬?
-        List<Schedule> data = scheduleRepository.findAll();
+//        List<Schedule> data = scheduleRepository.findAll();
+        List<ScheduleAllByStudentResponse> data = scheduleRepository.selectAllByStudent(id);
         return new DataResponse<>(200, "일정 전체 조회 성공", data);
     }
 

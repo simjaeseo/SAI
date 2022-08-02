@@ -3,6 +3,7 @@ package com.ssafy.sai.domain.schedule.api;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
 import com.ssafy.sai.domain.schedule.service.ScheduleService;
 import com.ssafy.sai.global.common.DataResponse;
@@ -22,7 +23,7 @@ public class ScheduleController {
 
     // 일정 전체 조회
     @GetMapping("/{member_id}")
-    public DataResponse<List<Schedule>> getScheduleList(@PathVariable Long member_id){
+    public DataResponse<List<ScheduleAllByStudentResponse>> getScheduleList(@PathVariable Long member_id){
         return scheduleService.selectAll(member_id);
     }
     
