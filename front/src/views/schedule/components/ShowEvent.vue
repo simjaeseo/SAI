@@ -2,11 +2,12 @@
   <div>
     <div id="today-schedule">
         <div v-if="upcomingSchedules[0].scheduleDate == myToday">
-          <h3>{{ upcomingSchedules[0].detail }}</h3>
-          <h4>{{ monthDate }} {{ upcomingSchedules[0].start_time }}</h4>
+          <h3>{{ upcomingSchedules[0].category }}</h3>
+          <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
           <br><br>
           <p v-if="upcomingSchedules[0].category === '1:1 모의 면접'">
-            담당 컨설턴트 : {{ upcomingSchedules[0].consultant_name }}</p>
+            담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
+          </p>
           <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
           <button v-if="upcomingSchedules[0].category === '1:1 모의 면접'" class="btn">면접 바로가기</button>
         </div>
@@ -17,7 +18,7 @@
     <div>
       <p v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
         {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
-         {{ upcomingSchedule.scheduleDate.slice(8) }}일
+         {{ upcomingSchedule.scheduleDate.slice(-2) }}일
          {{ upcomingSchedule.detail }}
       </p>
     </div>
@@ -32,7 +33,7 @@ export default {
   name: 'ShowEvent',
   data() {
     return {
-      yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
+      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
     };
   },
   setup() {

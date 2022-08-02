@@ -37,12 +37,12 @@ public class Schedule {
 
     private String detail;
 
-//    @JsonBackReference
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="member_student_id")
     private Member memberStudent;
 
-//    @JsonBackReference
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="member_consultant_id")
     private Member memberConsultant;

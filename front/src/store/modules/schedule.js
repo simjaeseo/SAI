@@ -1,4 +1,5 @@
 import drf from '@/api/api';
+import router from '@/router';
 import axios from 'axios';
 
 export default {
@@ -54,7 +55,6 @@ export default {
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
-      console.log(state.myConsultants);
     },
     SET_MY_CONSULTANT(state, consultant) {
       state.myConsultant = consultant;
@@ -93,7 +93,7 @@ export default {
     },
     fetchMyConsultants({ commit, getters }) {
       axios({
-        url: drf.schedule.myConsultants(getters.currentUser.id),
+        url: drf.schedule.myConsultant(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
@@ -109,7 +109,7 @@ export default {
     selectCategory({ commit }, category) {
       commit('SET_SELECTED_CATEGORY', category);
     },
-    createSchedule({ dispatch, getters }) {
+    createSchedule({ getters }) {
       axios({
         url: drf.schedule.schedule(getters.currentUser.id),
         method: 'post',
@@ -125,18 +125,19 @@ export default {
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch('fetchSchedules');
+          // dispatch('fetchSchedules');
+          router.push({ name: 'ScheduleHome' });
         });
     },
-    deleteSchedule({ dispatch, getters }, scheduleId) {
+    deleteSchedule({ getters }, scheduleId) {
       axios({
         url: drf.schedule.scheduleDelete(getters.currentUser.id, scheduleId),
         method: 'delete',
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch('fetchSchedules');
-          // 안되면 라우터푸시?
+          // dispatch('fetchSchedules');
+          router.push({ name: 'ScheduleHome' });
         });
     },
   },
