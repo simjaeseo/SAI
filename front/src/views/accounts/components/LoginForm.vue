@@ -3,19 +3,19 @@
     <div id='wrap-div2'>
       <img src='@/assets/logo1.png' alt='logo' id='logo-image'>
     </div>
-    <form id='form-wrap1'>
+    <form @submit.prevent="loginform">
       <div id='user-id-wrap'>
         <label for='user_id' id='id_text'><h6>아이디</h6>
           <input type='text' id='user_id'
           placeholder="아이디를 입력하세요"
-          class='form-control' v-model="id">
+          class='form-control' v-model="state.credentials.email">
         </label>
       </div>
       <div id='user-pw-wrap'>
         <label for='user_pw'><h6>비밀번호</h6>
           <input type='password' id='user_pw'
           placeholder='비밀번호를 입력하세요'
-          class='form-control' v-model="password">
+          class='form-control' v-model="state.credentials.password">
         </label>
       </div>
       <div id='help-wrap'>
@@ -43,14 +43,15 @@ export default {
   setup() {
     const store = useStore();
     const state = reactive({
-      id: '',
-      password: '',
+      credentials: {
+        email: '',
+        password: '',
+      },
     });
     const loginform = function () {
-      console.log(state.id);
       store.dispatch('login', {
-        id: state.id,
-        password: state.password,
+        email: state.credentials.email,
+        password: state.credentials.password,
       });
     };
     return {
