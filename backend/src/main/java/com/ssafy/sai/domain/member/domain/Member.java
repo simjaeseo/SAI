@@ -79,5 +79,6 @@ public class Member extends BaseEntity {
 
     public void updateMember(MemberUpdateRequest request) {
         this.profilePicture = request.getProfilePicture();
+        this.phone = request.getPhone();
     }
 }
