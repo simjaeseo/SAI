@@ -1,21 +1,21 @@
 <template>
   <div id='wrap-div1'>
     <div id='wrap-div2'>
-      <img src='@/assets/SAI-logo.png' alt='logo' id='logo-image'>
+      <img src='@/assets/logo1.png' alt='logo' id='logo-image'>
     </div>
     <form id='form-wrap1'>
       <div id='user-id-wrap'>
         <label for='user_id' id='id_text'><h6>아이디</h6>
           <input type='text' id='user_id'
           placeholder="아이디를 입력하세요"
-          class='form-control'>
+          class='form-control' v-model="id">
         </label>
       </div>
       <div id='user-pw-wrap'>
         <label for='user_pw'><h6>비밀번호</h6>
           <input type='password' id='user_pw'
           placeholder='비밀번호를 입력하세요'
-          class='form-control'>
+          class='form-control' v-model="password">
         </label>
       </div>
       <div id='help-wrap'>
@@ -35,8 +35,30 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'LoginForm',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      id: '',
+      password: '',
+    });
+    const loginform = function () {
+      console.log(state.id);
+      store.dispatch('login', {
+        id: state.id,
+        password: state.password,
+      });
+    };
+    return {
+      state,
+      store,
+      loginform,
+    };
+  },
 };
 </script>
 
@@ -117,7 +139,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #logo-image {
   width: 20%;

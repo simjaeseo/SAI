@@ -1,0 +1,4 @@
+## JWT Custom
+jwt:
+  secret:
+    signature: "JIGEUN"

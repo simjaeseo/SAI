@@ -63,7 +63,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #find-pw-btn{
   margin-top: 20px;
