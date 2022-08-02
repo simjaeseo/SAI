@@ -5,8 +5,10 @@ import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,5 +34,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "where phone = :phone ", nativeQuery = true)
     Integer countByPhone(@Param("phone") String phone);
 
-    Optional<Member> findMemberByEmail(String email);
+    @Modifying
+    @Transactional
+    @Query(value = "update member m set m.password=?1 where m.email=?2", nativeQuery = true)
+    void updatePassword(String newPasswordCheck, String email);
+
+    Member findMemberByEmail(String email);
 }
