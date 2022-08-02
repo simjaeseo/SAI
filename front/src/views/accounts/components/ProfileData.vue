@@ -26,8 +26,8 @@
                 <p id='data-name'>이메일</p>
                 <p id="user-data">{{ currentUser.email }}</p>
                 <p id='data-name'>관심직무</p>
-                <p id="user-data" :v-for="(job, index) in currentUser.interestedJobs" :key="index">
-                  {{ job }}
+                <p id="user-job" v-for="(job, index) in currentUser.interestedJobs" :key="index">
+                  #{{ job.jobName }}
                 </p>
             </div>
           </div>
@@ -40,8 +40,10 @@
         <p>관심기업/직무</p>
           <div id='personal-video-box2'>
             <div v-if="currentUser.interestedEnterprises">
-              <p :v-for="(enterprises, index) in currentUser.interestedEnterprises" :key="index">
-                {{ currentUser.interestedEnterprises }}</p>
+              <p v-for="(enterprise, index) in currentUser.interestedEnterprises"
+              :key="index"
+              id="user-enterprise">
+                {{ enterprise.enterpriseName }}</p>
             </div>
             <p v-else id='none-data-text1'>관심기업/직무를 등록하세요!</p>
           </div>
@@ -65,17 +67,34 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   name: 'ProfileView',
-  computed: {
-    ...mapGetters(['currentUser', 'isLoggedIn']),
+  setup() {
+    const store = useStore();
+
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    return {
+      isLoggedIn,
+      currentUser,
+    };
   },
 };
 </script>
 
 <style scoped>
+#user-job {
+  display: inline;
+  margin-right: 10px;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+#user-enterprise {
+  display: inline;
+}
 #none-data-text1{
   color: rgb(167, 167, 167);
   line-height: 250px;
