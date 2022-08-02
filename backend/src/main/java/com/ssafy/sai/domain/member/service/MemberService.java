@@ -13,11 +13,11 @@ import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.*;
 import com.ssafy.sai.global.config.SpringSecurityConfig;
-import com.ssafy.sai.global.util.auth.CustomUserDetailService;
 import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -73,7 +73,7 @@ public class MemberService {
     public boolean updatedPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, PasswordDto passwordDto) {
         try {
             // 현재 접속중인 회원의 이메일과 일치하는 회원을 찾는다
-            Member member = memberRepository.findMemberByEmail(customUserDetails.getUsername());
+            Member member = memberRepository.findMemberById(customUserDetails.getId());
             BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
 
             // 입력한 현재 비밀번호와 접속중인 회원의 비밀번호가 일치하고,

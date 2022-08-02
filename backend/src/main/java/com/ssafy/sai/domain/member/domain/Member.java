@@ -1,26 +1,17 @@
 package com.ssafy.sai.domain.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.ssafy.sai.domain.job.domain.Enterprise;
-import com.ssafy.sai.domain.job.domain.Job;
-import com.ssafy.sai.domain.member.dto.CampusDto;
-import com.ssafy.sai.domain.member.dto.MemberDto;
-import com.ssafy.sai.domain.member.dto.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.EAGER;

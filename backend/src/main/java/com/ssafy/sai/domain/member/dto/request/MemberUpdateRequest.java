@@ -1,8 +1,9 @@
-package com.ssafy.sai.domain.member.dto;
+package com.ssafy.sai.domain.member.dto.request;
 
 import com.ssafy.sai.domain.job.dto.EnterpriseName;
 import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.CampusDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
