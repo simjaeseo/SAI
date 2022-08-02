@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="today-schedule">
-        <div v-if="upcomingSchedules[0].schedule_date == myToday">
+        <div v-if="upcomingSchedules[0].scheduleDate == myToday">
           <h3>{{ upcomingSchedules[0].detail }}</h3>
           <h4>{{ monthDate }} {{ upcomingSchedules[0].start_time }}</h4>
           <br><br>
@@ -16,8 +16,8 @@
     </div>
     <div>
       <p v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
-        {{ upcomingSchedule.schedule_date.slice(5, 7) }}월
-         {{ upcomingSchedule.schedule_date.slice(8) }}일
+        {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
+         {{ upcomingSchedule.scheduleDate.slice(8) }}일
          {{ upcomingSchedule.detail }}
       </p>
     </div>
@@ -30,6 +30,11 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'ShowEvent',
+  data() {
+    return {
+      yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
+    };
+  },
   setup() {
     const store = useStore();
 
@@ -37,23 +42,13 @@ export default {
     const fetchUpcomingSchedules = (today) => {
       store.dispatch('fetchUpcomingSchedules', today);
     };
-    const today = new Date();
-
-    const year = today.getFullYear();
-    const month = (`0${today.getMonth() + 1}`).slice(-2);
-    const day = (`0${today.getDate()}`).slice(-2);
-
-    const monthDate = `${month}월 ${day}일`;
-    const myToday = `${year}-${month}-${day}`;
     return {
       upcomingSchedules,
       fetchUpcomingSchedules,
-      monthDate,
-      myToday,
     };
   },
   created() {
-    this.fetchUpcomingSchedules(this.myToday);
+    this.fetchUpcomingSchedules();
   },
 };
 </script>

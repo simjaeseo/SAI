@@ -26,11 +26,13 @@
                   {{day}}
                 </button>
                 <div v-for="schedule in schedules" :key="schedule" id="schedule">
-                  <div v-if="schedule.scheduleDate === `${currentYear}-${currentMonth}-${day}`"
+                  <div
+                  v-if="schedule.scheduleDate === `${yearMonth}-${`0${day}`.slice(-2)}`"
                   class="schedule-summary">
                     {{ schedule.detail }}
                     <div class="schedule-detail">
-                      {{ schedule.scheduleDate.slice(5, 7) }}월 {{ schedule.scheduleDate(-2) }}일
+                      {{ schedule.scheduleDate.slice(5, 7) }}월
+                      {{ schedule.scheduleDate.slice(-2) }}일
                       {{ schedule.startTime }}<br>
                       {{ schedule.detail }}<br>
                       <button
@@ -66,6 +68,7 @@ export default {
       currentCalendarMatrix: [],
       endOfDay: null,
       memoDatas: [],
+      yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}`,
     };
   },
   setup() {

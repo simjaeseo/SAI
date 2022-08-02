@@ -48,14 +48,13 @@ export default {
     },
     SET_SCHEDULES(state, schedules) {
       state.schedules = schedules;
-      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      // console.log(state.schedules);
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
+      console.log(state.myConsultants);
     },
     SET_MY_CONSULTANT(state, consultant) {
       state.myConsultant = consultant;
@@ -80,18 +79,17 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_SCHEDULES', res.data.data))
-        .catch((err) => console.error(err));
+        .then((res) => commit('SET_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
     },
-    fetchUpcomingSchedules({ commit, getters }, date) {
+    fetchUpcomingSchedules({ commit, getters }) {
       axios({
-        url: drf.schedule.upcomingSchedule(date),
+        url: drf.schedule.upcomingSchedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => console.log(res))
-        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err.response));
     },
     fetchMyConsultants({ commit, getters }) {
       axios({
@@ -99,11 +97,11 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_MY_CONSULTANTS', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_MY_CONSULTANTS', res.data));
+      // .catch((err) => console.error(err.response));
     },
     pickMyconsultant({ commit }, consultant) {
-      commit('SET_START_TIME', consultant);
+      commit('SET_MY_CONSULTANT', consultant);
     },
     entryScheduleDetail({ commit }, detail) {
       commit('SET_SCHEDULE_DETAIL', detail.target.value);

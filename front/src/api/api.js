@@ -20,5 +20,6 @@ export default {
     schedule: (id) => HOST + SCHEDULE + id,
     scheduleDelete: (id, scheduleId) => `${HOST + SCHEDULE + id}/${scheduleId}`,
     myConsultant: (id) => `${HOST + SCHEDULE + id}/consultant`,
+    upcomingSchedule: (id) => `${HOST + SCHEDULE + id}/recent`,
   },
 };
