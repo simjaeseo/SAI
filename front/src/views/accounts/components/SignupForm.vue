@@ -389,7 +389,7 @@ export default {
       state.credentials.userClass = event.target.value;
     };
     const signupform = function () {
-      console.log('회원가입요청');
+      console.log(state.credentials.userEmail);
       store.dispatch('signup', {
         email: state.credentials.userEmail,
         password: state.credentials.userPassword1,

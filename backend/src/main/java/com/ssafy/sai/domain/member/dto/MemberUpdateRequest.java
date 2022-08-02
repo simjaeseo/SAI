@@ -15,18 +15,8 @@ public class MemberUpdateRequest {
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private CampusDto campus;
 
-    @NotBlank(message = "연락처는 필수 입력값입니다.")
-    private String phone;
-
     private String profilePicture;
 
     private List<EnterpriseName> interestedEnterprises;
     private List<JobName> interestedJobs;
-
-    public Member toEntity() {
-        return Member.builder()
-                .phone(phone)
-                .profilePicture(profilePicture)
-                .build();
-    }
 }
