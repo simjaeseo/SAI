@@ -97,6 +97,24 @@ export default {
           console.log(err.response);
         });
     },
+    changePassword({ getters, dispatch }, credential) {
+      axios({
+        url: drf.member.updatePassword(),
+        method: 'post',
+        headers: getters.authHeader,
+        data: credential,
+      })
+        .then((res) => {
+          dispatch('fetchCurrentUser');
+          console.log(credential);
+          console.log(res);
+          console.log('성공!');
+        })
+        .catch((err) => {
+          console.log('에러발생');
+          console.log(err.response.data);
+        });
+    },
   },
   modules: {},
 };

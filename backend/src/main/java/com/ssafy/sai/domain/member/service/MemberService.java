@@ -73,6 +73,7 @@ public class MemberService {
     public boolean updatedPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, PasswordDto passwordDto) {
         try {
             // 현재 접속중인 회원의 이메일과 일치하는 회원을 찾는다
+            System.out.println(customUserDetails.getId());
             Member member = memberRepository.findMemberById(customUserDetails.getId());
             BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
 
