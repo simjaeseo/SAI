@@ -1,24 +1,6 @@
 <template>
   <div>
-    <div id="next-schedule">
-      <h3>1:1 모의 화상 면접</h3>
-      <h4>7월 30일 11 : 30</h4>
-      <button class="btn">면접 바로가기</button>
-      <br><br>
-      <p>담당 컨설턴트 : 류채윤<br>타겟 기업 : 카카오<br>면접 분류 : 직무</p>
-      <br>
-    </div>
-    <div id='layer'>
-      <h5>다가오는 일정</h5>
-    </div>
-    <div>
-      <p>7월 20일  카카오 서류 마감</p>
-      <p>7월 21일  마카오 서류 마감</p>
-      <p>7월 22일  코카오 서류 마감</p>
-      <p>7월 23일  킹카오 서류 마감</p>
-    </div>
-    <!-- 주석! -->
-    <!-- <div id="today-schedule">
+    <div id="today-schedule">
         <div v-if="upcomingSchedules[0].schedule_date == myToday">
           <h3>{{ upcomingSchedules[0].detail }}</h3>
           <h4>{{ monthDate }} {{ upcomingSchedules[0].start_time }}</h4>
@@ -38,37 +20,37 @@
          {{ upcomingSchedule.schedule_date.slice(8) }}일
          {{ upcomingSchedule.detail }}
       </p>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
-// import { computed } from 'vue';
-// import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   name: 'ShowEvent',
-  // setup() {
-  //   const store = useStore();
+  setup() {
+    const store = useStore();
 
-  //   const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-  //   const fetchUpcomingSchedules = () => {
-  //     store.dispatch('fetchUpcomingSchedules');
-  //   };
-  //   const today = new Date();
+    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
+    const fetchUpcomingSchedules = () => {
+      store.dispatch('fetchUpcomingSchedules');
+    };
+    const today = new Date();
 
-  //   const monthDate = `${today.getMonth + 1}월 ${today.getDate}일`;
-  //   const myToday = `${today.getFullYear()}-${today.getMonth + 1}-${today.getDate}`;
-  //   return {
-  //     upcomingSchedules,
-  //     fetchUpcomingSchedules,
-  //     monthDate,
-  //     myToday,
-  //   };
-  // },
-  // created() {
-  //   this.fetchSchedules();
-  // },
+    const monthDate = `${today.getMonth + 1}월 ${today.getDate}일`;
+    const myToday = `${today.getFullYear()}-${today.getMonth + 1}-${today.getDate}`;
+    return {
+      upcomingSchedules,
+      fetchUpcomingSchedules,
+      monthDate,
+      myToday,
+    };
+  },
+  created() {
+    this.fetchSchedules();
+  },
 };
 </script>
 

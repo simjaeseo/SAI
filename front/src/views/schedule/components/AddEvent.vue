@@ -3,24 +3,6 @@
     <div id="btn-box">
       <select class="form-select" aria-label="Default select example">
         <option selected>컨설턴트상담</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
-        <button class="btn">개인일정추가</button>
-    </div>
-    <div>
-      <div id="time-picker">
-        <time-picker></time-picker>
-      </div>
-      <div id="event-detail-input">
-        <event-detail-input></event-detail-input>
-      </div>
-    </div>
-    <!-- 주석! -->
-    <!-- <div id="btn-box">
-      <select class="form-select" aria-label="Default select example">
-        <option selected>컨설턴트상담</option>
         <option
         v-for="myConsultant in myConsultants"
         :key="myConsultant"
@@ -42,7 +24,7 @@
       <div id="event-detail-input">
         <event-detail-input></event-detail-input>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
