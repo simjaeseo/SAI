@@ -38,6 +38,11 @@
                       <!-- {{ schedule.currentMonth }}월 {{ schedule.day }}일
                       {{ schedule.startTime }}<br>
                       {{ schedule.detail }}<br> -->
+                      <!-- <button
+                      class="btn btn-danger"
+                      @click="deleteSchedule(schedule.schedule_id)">
+                      삭 제
+                      </button> -->
                       <button class="btn btn-danger">삭 제</button>
                     </div>
                   </div>
@@ -80,11 +85,15 @@ export default {
     const fetchSchedules = () => {
       store.dispatch('fetchSchedules');
     };
+    const deleteSchedule = (scheduleId) => {
+      store.dispatch('deleteSchedule', scheduleId);
+    };
     return {
       pickDate,
       selectDate,
       schedules,
       fetchSchedules,
+      deleteSchedule,
     };
   },
   methods: {

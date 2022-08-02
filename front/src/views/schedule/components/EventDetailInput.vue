@@ -1,25 +1,63 @@
 <template>
   <div>
     <div id="div-category">
-      <label for="category">상담분야<select name="category" id="category" class="form-select mb-3">
-        <option value="practice">1:1 모의 면접</option>
-        <option value="consulting-job">직무 상담</option>
-        <option value="consulting-introduction">자소서 상담</option>
-        <option value="else">기타</option>
-      </select></label>
+      <label for="category">분류
+        <select
+        v-if="selectedConsultant"
+        name="category"
+        id="category"
+        class="form-select mb-3"
+        @change="selectCategory">
+          <option value="practice">1:1 모의 면접</option>
+          <option value="consulting-job">직무 상담</option>
+          <option value="consulting-introduction">자소서 상담</option>
+          <option value="else">기타</option>
+        </select>
+        <select v-else name="category" id="category" class="form-select mb-3">
+          <option value="document">서류 지원</option>
+          <option value="coding-test">코딩 테스트</option>
+          <option value="interview">면접</option>
+          <option value="else">기타</option>
+        </select>
+      </label>
     </div>
     <div id="div-category">
-      <label for="detail">상세정보 <input type="text" id="detail" class="form-control"></label>
+      <label for="detail">상세정보
+        <input @change="entryScheduleDetail" type="text" id="detail" class="form-control">
+      </label>
     </div>
     <div id="add-button">
-      <button class="btn">등록</button>
+      <button class="btn" @click="createSchedule()">등록</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
+export default {
+  name: 'EventDetailInput',
+  setup() {
+    const store = useStore();
+
+    const selectedConsultant = computed(() => store.getters.selectedConsultant);
+    const entryScheduleDetail = (detail) => {
+      store.dispatch('entryScheduleDetail', detail);
+    };
+    const selectCategory = (category) => {
+      store.dispatch('selectCategory', category);
+    };
+    const createSchedule = () => {
+      store.dispatch('createSchedule');
+    };
+    return {
+      selectedConsultant,
+      entryScheduleDetail,
+      selectCategory,
+      createSchedule,
+    };
+  },
 };
 </script>
 
