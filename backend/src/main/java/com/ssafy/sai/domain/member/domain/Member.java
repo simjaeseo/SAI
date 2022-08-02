@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -55,11 +57,11 @@ public class Member extends BaseEntity {
     private String profilePicture;
 
     private int year;
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "campus_id")
     private Campus campus;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
@@ -76,7 +78,6 @@ public class Member extends BaseEntity {
     }
 
     public void updateMember(MemberUpdateRequest request) {
-        this.phone = request.getPhone();
         this.profilePicture = request.getProfilePicture();
     }
 }

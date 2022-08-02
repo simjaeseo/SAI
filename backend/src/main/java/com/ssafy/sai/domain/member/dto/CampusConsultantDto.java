@@ -13,10 +13,4 @@ public class CampusConsultantDto {
     public CampusConsultantDto(Campus campus) {
         this.city = campus.getCity();
     }
-
-    public Campus toEntity() {
-        return Campus.builder()
-                .city(city)
-                .build();
-    }
 }

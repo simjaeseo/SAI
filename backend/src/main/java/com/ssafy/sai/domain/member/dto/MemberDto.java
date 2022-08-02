@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 public class MemberDto {
 
+    private Long id;
     private String email;
     private String name;
 
@@ -28,6 +29,7 @@ public class MemberDto {
     private List<InterestedEnterpriseDto> interestedEnterprises;
 
     public MemberDto(Member member) {
+        id = member.getId();
         email = member.getEmail();
         name = member.getName();
         birthday = member.getBirthday();
