@@ -1,13 +1,14 @@
-const HOST = 'http://localhost:8080/';
+const HOST = 'http://localhost:8081/';
 
-const MEMBER = 'member/';
+const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
 
 export default {
   member: {
-    login: () => `${HOST + MEMBER}login`,
-    studentSignup: () => `${HOST + MEMBER}studentsignup`,
-    ctSignup: () => `${HOST + MEMBER}consultantsignup`,
+    login: () => `${HOST}login`,
+    studentSignup: () => `${HOST}signup/member`,
+    currentUserInfo: (id) => `${HOST + MEMBER}member/ + ${id}`,
+    ctSignup: () => `${HOST + MEMBER}/consultant`,
     profile: (id) => HOST + MEMBER + id,
     updatePassword: (id) => `${HOST + MEMBER + id}/password`,
     updateProfile: (id) => `${HOST + MEMBER + id}/modify`,

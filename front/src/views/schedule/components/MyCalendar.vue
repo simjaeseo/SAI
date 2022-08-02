@@ -8,7 +8,7 @@
       <table class="table">
           <thead>
             <tr>
-              <td id="th" v-for="(weekName, index) in weekNames" v-bind:key="index">
+              <td id="th" v-for="(weekName, index) in weekNames" :key="index">
                 {{weekName}}
               </td>
             </tr>
@@ -22,9 +22,26 @@
                   {{day}}
                 </button>
                 <button  v-else-if="day"
-                @click.prevent="pickDate(day)">
+                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
                   {{day}}
                 </button>
+                <div>
+                <!-- <div :v-for="schedule in schedules" :key="schedule" id="schedule"> -->
+                  <!-- <div v-if="schedule.date === `${currentYear}-${currentMonth}-${day}`" -->
+                  <div v-if="day === 31"
+                  class="schedule-summary">
+                    <!-- {{ schedule.detail }} -->
+                    <p>생일~!</p>
+                    <div class="schedule-detail">
+                      <p>8월 31일 00시</p>
+                      <p>생일이다~!</p>
+                      <!-- {{ schedule.currentMonth }}월 {{ schedule.day }}일
+                      {{ schedule.startTime }}<br>
+                      {{ schedule.detail }}<br> -->
+                      <button class="btn btn-danger">삭 제</button>
+                    </div>
+                  </div>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -55,14 +72,20 @@ export default {
   setup() {
     const store = useStore();
 
+    const schedules = computed(() => store.getters.schedules);
     const selectDate = computed(() => store.getters.selectedDate);
     const pickDate = (date) => {
       store.dispatch('pickDate', date);
     };
-    return { pickDate, selectDate };
-  },
-  mounted() {
-    this.init();
+    const fetchSchedules = () => {
+      store.dispatch('fetchSchedules');
+    };
+    return {
+      pickDate,
+      selectDate,
+      schedules,
+      fetchSchedules,
+    };
   },
   methods: {
     init() {
@@ -159,6 +182,12 @@ export default {
       return year === date.getFullYear() && month === date.getMonth() + 1 && day === date.getDate();
     },
   },
+  mounted() {
+    this.init();
+  },
+  created() {
+    this.fetchSchedules();
+  },
 };
 </script>
 
@@ -207,4 +236,40 @@ h2 {
   color: #5a5a5a;
 }
 
+.schedule-summary {
+  position: relative;
+  display: block;
+  border-radius: 5%;
+  background: deepskyblue;
+  color: white;
+}
+
+.schedule-detail {
+  visibility: hidden;
+  width: 5vw;
+  background-color: gray;
+  color: white;
+  text-align: center;
+  border-radius: 5%;
+  padding: 1vw;
+  position: absolute;
+  z-index: 1;
+}
+
+.schedule-summary:hover .schedule-detail {
+  visibility: visible;
+}
+
+.schedule-summary .schedule-detail::after {
+  position: absolute;
+  border-style: solid;
+  border-width: 2vw;
+}
+
+.schedule-summary .schedule-detail {
+  width: 120px;
+  top: 105%;
+  left: 50%;
+  margin-left: -60px;
+}
 </style>
