@@ -220,7 +220,6 @@
 <script>
 import { reactive } from 'vue';
 import { useStore } from 'vuex';
-// import router from '@/router';
 import SearchBar from './SearchBar.vue';
 import SearchBarDutySignUp from './SearchBarDutySignUp.vue';
 
@@ -390,6 +389,7 @@ export default {
       state.credentials.userClass = event.target.value;
     };
     const signupform = function () {
+      console.log('회원가입요청');
       store.dispatch('signup', {
         email: state.credentials.userEmail,
         password: state.credentials.userPassword1,

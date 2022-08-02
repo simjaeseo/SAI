@@ -1,54 +1,42 @@
 import drf from '@/api/api';
 import axios from 'axios';
+import router from '@/router/index';
 
 export default {
   state: {
     token: localStorage.getItem('token') || '',
+    currentUser: {},
   },
   getters: {
-
+    isLoggenIn: (state) => !!state.token,
   },
   mutations: {
     SET_TOKEN: (state, token) => state.toekn === token,
+    SET_CURRENT_USER: (state, user) => state.currentUser === user,
   },
   actions: {
-    login({commit, dispatch},credential){
+    login({ dispatch }, credential) {
       axios({
-          url: rest.accounts.login(),
-          method: 'post',
-          data: credential
+        url: drf.member.login(),
+        method: 'post',
+        data: credential,
       })
-      .then(res => {
-          const token = res.data.accessToken
-          dispatch('saveToken', token)
-          dispatch('fetchLoginUser')
-          dispatch('myStudyList')
-          router.push({name: 'Home'})
-      })
-      .catch(err => {
-          console.log("catch")
-          console.error(err.response.data)
-          commit('SET_AUTH_ERROR', err.response.data)
-      })
-  },
+        .then((res) => {
+          const token = res.data.accessToken;
+          console.log(res);
+          dispatch('saveToken', token);
+          dispatch('fetchCurrentUser', credential.id);
+          router.push({ name: 'Main' });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     saveToken({ commit }, token) {
       commit('SET_TOKEN', token);
       localStorage.setItem('token', token);
     },
-    signup({ dispatch }, credentials) {
-      // const newForm = {
-      //   userSelectedCompanies: credentials.userSelectedCompanies,
-      //   userSelectedDuties: credentials.userSelectedDuties,
-      //   userBirth: credentials.userBirth,
-      //   userPhoneNumber: credentials.userPhoneNumber,
-      //   userEmail: credentials.userEmail,
-      //   userPassword1: credentials.userPassword1,
-      //   userPassword2: credentials.userPassword2,
-      //   username: credentials.username,
-      //   selectedUserCardinalNumber: credentials.selectedUserCardinalNumber,
-      //   selectedUserRegion: credentials.selectedUserRegion,
-      //   selectedUserClass: credentials.selectedUserClass,
-      // };
+    signup(credentials) {
       console.log('엑시오스전');
       axios({
         url: drf.member.studentSignup(),
@@ -57,14 +45,31 @@ export default {
       })
         .then((res) => {
           console.log(res.data);
-          const token = res.data.accessToken;
-          dispatch('saveToken', token);
           alert('회원가입이 완료되었습니다.');
+          router.push({ name: 'Login' });
         })
         .catch((err) => {
           console.log(err);
+          console.log(err.response.data);
           alert('에러가 발생했습니다.');
         });
+    },
+    fetchCurrentUser({ getters }, userid) {
+      if (getters.isLoggenIn) {
+        axios({
+          url: drf.member.currentUserInfo(),
+          method: 'get',
+          header: getters.authHeader,
+          params: {
+            id: userid,
+          },
+        })
+          .then((r) => console.log(r))
+          .catch((err) => {
+            console.log(err);
+            console.log('오류발생');
+          });
+      }
     },
   },
   modules: {},
