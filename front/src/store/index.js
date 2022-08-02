@@ -12,7 +12,11 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      paths: ['accounts'],
+      paths: [
+        'accounts',
+        'interview',
+        'schedule',
+      ],
     }),
   ],
 });
