@@ -45,4 +45,9 @@ public class ScheduleController {
         return scheduleService.selectConsultants(member_id);
     }
 
+    @GetMapping("/{member_id}/recent")
+    public DataResponse<List<Schedule>> getScheduleSinceToday(@PathVariable Long member_id){
+        return scheduleService.selectScheduleSinceToday(member_id);
+    }
+
 }
