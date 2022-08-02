@@ -12,11 +12,15 @@
           <main-calendar></main-calendar>
         </router-link>
       </div>
+      <div>
+        {{ currentUser.name }}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import RouteButton from './components/RouteButton.vue';
 import MainCalendar from './components/MainCalendar.vue';
 
@@ -25,6 +29,9 @@ export default {
   components: {
     RouteButton,
     MainCalendar,
+  },
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
   },
 };
 </script>

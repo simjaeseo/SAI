@@ -9,10 +9,15 @@ export default {
   },
   getters: {
     isLoggenIn: (state) => !!state.token,
+    currentUser: (state) => state.currentUser,
   },
   mutations: {
-    SET_TOKEN: (state, token) => state.toekn === token,
-    SET_CURRENT_USER: (state, user) => state.currentUser === user,
+    SET_TOKEN(state, token) {
+      state.token = token;
+    },
+    SET_CURRENT_USER(state, user) {
+      state.currentUser = user;
+    },
   },
   actions: {
     login({ dispatch }, credential) {
@@ -22,49 +27,44 @@ export default {
         data: credential,
       })
         .then((res) => {
-          const token = res.data.accessToken;
-          console.log(res);
-          dispatch('saveToken', token);
-          dispatch('fetchCurrentUser', credential.id);
+          dispatch('fetchCurrentUser', res.data.id);
           router.push({ name: 'Main' });
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          alert('아이디와 비밀번호를 확인해주세요.');
         });
     },
     saveToken({ commit }, token) {
       commit('SET_TOKEN', token);
       localStorage.setItem('token', token);
     },
-    signup(credentials) {
-      console.log('엑시오스전');
+    signup({ dispatch }, credentials) {
       axios({
         url: drf.member.studentSignup(),
         method: 'post',
         data: credentials,
       })
         .then((res) => {
-          console.log(res.data);
+          const token = res.data.accessToken;
+          dispatch('saveToken', token);
           alert('회원가입이 완료되었습니다.');
           router.push({ name: 'Login' });
         })
         .catch((err) => {
           console.log(err);
-          console.log(err.response.data);
           alert('에러가 발생했습니다.');
         });
     },
-    fetchCurrentUser({ getters }, userid) {
+    fetchCurrentUser({ getters, commit }, userid) {
+      console.log(userid);
       if (getters.isLoggenIn) {
+        console.log(userid);
         axios({
-          url: drf.member.currentUserInfo(),
+          url: drf.member.currentUserInfo(userid),
           method: 'get',
           header: getters.authHeader,
-          params: {
-            id: userid,
-          },
         })
-          .then((r) => console.log(r))
+          .then((res) => commit('SET_CURRENT_USER', res.data.data))
           .catch((err) => {
             console.log(err);
             console.log('오류발생');

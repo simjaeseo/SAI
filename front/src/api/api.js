@@ -7,7 +7,7 @@ export default {
   member: {
     login: () => `${HOST}login`,
     studentSignup: () => `${HOST}signup/member`,
-    currentUserInfo: (id) => `${HOST + MEMBER}member/ + ${id}`,
+    currentUserInfo: (id) => `${HOST + MEMBER}member/${id}`,
     ctSignup: () => `${HOST + MEMBER}/consultant`,
     profile: (id) => HOST + MEMBER + id,
     updatePassword: (id) => `${HOST + MEMBER + id}/password`,
