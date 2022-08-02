@@ -2,6 +2,7 @@ package com.ssafy.sai.domain.schedule.service;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
+import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
@@ -86,7 +87,7 @@ public class ScheduleService {
 
 
     //테스트해야함
-    public DataResponse<List<Member>> selectConsultants(Long id){
+    public DataResponse<List<ConsultantAllByCampusResponse>> selectConsultants(Long id){
 
         // 아이디를 통해서 멤버객체 가져온후
         Optional<Member> findMember = memberRepository.findById(id);
@@ -94,7 +95,7 @@ public class ScheduleService {
 
 
         // 해당 멤버의 캠퍼스 식별키를 통해
-        List<Member> findConsultant = memberRepository.findByCampusAndMemberStatus(findMember.get().getCampus(), MemberStatus.CONSULTANT);
+        List<ConsultantAllByCampusResponse> findConsultant = memberRepository.findConsultantByCampus(findMember.get().getCampus().getCity(), MemberStatus.CONSULTANT);
 
         return new DataResponse<>(200,"담당 컨설턴트 조회 성공",findConsultant );
     }

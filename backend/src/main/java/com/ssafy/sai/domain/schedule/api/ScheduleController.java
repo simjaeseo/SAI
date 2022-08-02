@@ -2,6 +2,7 @@ package com.ssafy.sai.domain.schedule.api;
 
 
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
 import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
@@ -42,7 +43,7 @@ public class ScheduleController {
 
     // 담당 컨설턴트 조회
     @GetMapping("/{member_id}/consultant")
-    public DataResponse<List<Member>> getConsultantList(@PathVariable Long member_id){
+    public DataResponse<List<ConsultantAllByCampusResponse>> getConsultantList(@PathVariable Long member_id){
         return scheduleService.selectConsultants(member_id);
     }
 
