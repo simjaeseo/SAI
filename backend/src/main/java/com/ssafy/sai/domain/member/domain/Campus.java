@@ -24,11 +24,6 @@ public class Campus {
     private Integer classNumber;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "campus")
+    @OneToMany(mappedBy = "campus", cascade = CascadeType.ALL)
     List<Member> members = new ArrayList<>();
-
-    public Campus(String city, Integer classNumber) {
-        this.city = city;
-        this.classNumber = classNumber;
-    }
 }
