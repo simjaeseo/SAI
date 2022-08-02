@@ -11,7 +11,7 @@ export default {
     currentUserInfo: (id) => `${HOST + MEMBER}member/${id}`,
     ctSignup: () => `${HOST + MEMBER}/consultant`,
     profile: (id) => HOST + MEMBER + id,
-    updatePassword: (id) => `${HOST + MEMBER + id}/password`,
+    updatePassword: () => `${HOST + MEMBER}updatePassword`,
     updateProfile: (id) => `${HOST + MEMBER + id}/modify`,
     findId: () => `${HOST + MEMBER}find/id`,
     findPassword: () => `${HOST + MEMBER}find/password`,
