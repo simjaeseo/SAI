@@ -34,13 +34,17 @@ export default {
     const store = useStore();
 
     const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-    const fetchUpcomingSchedules = () => {
-      store.dispatch('fetchUpcomingSchedules');
+    const fetchUpcomingSchedules = (today) => {
+      store.dispatch('fetchUpcomingSchedules', today);
     };
     const today = new Date();
 
-    const monthDate = `${today.getMonth + 1}월 ${today.getDate}일`;
-    const myToday = `${today.getFullYear()}-${today.getMonth + 1}-${today.getDate}`;
+    const year = today.getFullYear();
+    const month = (`0${today.getMonth() + 1}`).slice(-2);
+    const day = (`0${today.getDate()}`).slice(-2);
+
+    const monthDate = `${month}월 ${day}일`;
+    const myToday = `${year}-${month}-${day}`;
     return {
       upcomingSchedules,
       fetchUpcomingSchedules,
@@ -49,7 +53,7 @@ export default {
     };
   },
   created() {
-    this.fetchSchedules();
+    this.fetchUpcomingSchedules(this.myToday);
   },
 };
 </script>

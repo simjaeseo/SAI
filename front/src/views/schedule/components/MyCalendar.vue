@@ -25,17 +25,17 @@
                 @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
                   {{day}}
                 </button>
-                <div :v-for="schedule in schedules" :key="schedule" id="schedule">
-                  <div v-if="schedule.date === `${currentYear}-${currentMonth}-${day}`"
+                <div v-for="schedule in schedules" :key="schedule" id="schedule">
+                  <div v-if="schedule.scheduleDate === `${currentYear}-${currentMonth}-${day}`"
                   class="schedule-summary">
                     {{ schedule.detail }}
                     <div class="schedule-detail">
-                      {{ schedule.currentMonth }}월 {{ schedule.day }}일
+                      {{ schedule.scheduleDate.slice(5, 7) }}월 {{ schedule.scheduleDate(-2) }}일
                       {{ schedule.startTime }}<br>
                       {{ schedule.detail }}<br>
                       <button
                       class="btn btn-danger"
-                      @click="deleteSchedule(schedule.schedule_id)">
+                      @click="deleteSchedule(schedule.id)">
                       삭 제
                       </button>
                     </div>

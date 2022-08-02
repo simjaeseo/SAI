@@ -48,6 +48,8 @@ export default {
     },
     SET_SCHEDULES(state, schedules) {
       state.schedules = schedules;
+      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      // console.log(state.schedules);
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
@@ -72,14 +74,14 @@ export default {
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
     },
-    fetchSchedules({ commit, state, getters }) {
+    fetchSchedules({ commit, getters }) {
       axios({
-        url: drf.schedule.schedule(state.currentUser.id),
+        url: drf.schedule.schedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_SCHEDULES', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_SCHEDULES', res.data.data))
+        .catch((err) => console.error(err));
     },
     fetchUpcomingSchedules({ commit, getters }, date) {
       axios({
@@ -87,12 +89,13 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
+        .then((res) => console.log(res))
         .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data))
         .catch((err) => console.error(err.response));
     },
-    fetchMyConsultants({ commit, state, getters }) {
+    fetchMyConsultants({ commit, getters }) {
       axios({
-        url: drf.schedule.myConsultants(state.currentUser.id),
+        url: drf.schedule.myConsultants(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
@@ -108,9 +111,9 @@ export default {
     selectCategory({ commit }, category) {
       commit('SET_SELECTED_CATEGORY', category);
     },
-    createSchedule({ dispatch, state, getters }) {
+    createSchedule({ dispatch, getters }) {
       axios({
-        url: drf.schedule.schedule(state.currentUser.id),
+        url: drf.schedule.schedule(getters.currentUser.id),
         method: 'post',
         data: {
           scheduleDate: getters.selectedDate,
@@ -118,23 +121,23 @@ export default {
           endTime: getters.selectedEndTime,
           category: getters.selectCategory,
           detail: getters.scheduleDetail,
-          memberStudentId: state.currentUser.id,
+          memberStudentId: getters.currentUser.id,
           memberConsultantId: getters.selectedConsultant,
         },
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch(this.fetchSchedules);
+          dispatch('fetchSchedules');
         });
     },
-    deleteSchedule({ dispatch, state, getters }, scheduleId) {
+    deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({
-        url: drf.schedule.scheduleDelete(state.currentUser.id, scheduleId),
+        url: drf.schedule.scheduleDelete(getters.currentUser.id, scheduleId),
         method: 'delete',
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch(this.fetchSchedules);
+          dispatch('fetchSchedules');
           // 안되면 라우터푸시?
         });
     },
