@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,6 +95,13 @@ public class ScheduleService {
         List<Member> findConsultant = memberRepository.findByCampusAndMemberStatus(findMember.get().getCampus(), MemberStatus.CONSULTANT);
 
         return new DataResponse<>(200,"담당 컨설턴트 조회 성공",findConsultant );
+    }
+
+    public DataResponse<List<Schedule>> selectScheduleSinceToday(Long id){
+
+        List<Schedule> schedulesSinceToday = scheduleRepository.selectScheduleSinceToday(LocalDate.now());
+
+        return new DataResponse<>(200,"일정 조회 성공", schedulesSinceToday);
     }
 
 }
