@@ -12,20 +12,23 @@
           <div class='row' id='personal-data-box2'>
             <div class='col-lg-6'>
                 <p id='data-name'>이름</p>
-                <p id="user-data">김지수</p>
+                <p id="user-data">{{ currentUser.name }}</p>
                 <p id='data-name'>소속</p>
-                <p id="user-data">7기 광주 2반</p>
+                <p id="user-data">{{ currentUser.year}}기 {{ currentUser.campus.city }}
+                  {{ currentUser.campus.classNumber }}반</p>
                 <p id='data-name'>연락처</p>
-                <p id="user-data">010-4619-4596</p>
+                <p id="user-data">{{ currentUser.phone }}</p>
             </div>
           <!-- 오른쪽 -->
             <div class='col-lg-6'>
                 <p id='data-name'>생년월일</p>
-                <p id="user-data">19980422</p>
+                <p id="user-data">{{ currentUser.birthday }}</p>
                 <p id='data-name'>이메일</p>
-                <p id="user-data">google@naver.com</p>
+                <p id="user-data">{{ currentUser.email }}</p>
                 <p id='data-name'>관심직무</p>
-                <p id="user-data">웹개발</p>
+                <p id="user-data" :v-for="(job, index) in currentUser.interestedJobs" :key="index">
+                  {{ job }}
+                </p>
             </div>
           </div>
         </div>
@@ -36,7 +39,11 @@
       <div id='personal-video-box1' class='container'>
         <p>관심기업/직무</p>
           <div id='personal-video-box2'>
-            <p id='none-data-text1'>관심기업/직무를 등록하세요!</p>
+            <div v-if="currentUser.interestedEnterprises">
+              <p :v-for="(enterprises, index) in currentUser.interestedEnterprises" :key="index">
+                {{ currentUser.interestedEnterprises }}</p>
+            </div>
+            <p v-else id='none-data-text1'>관심기업/직무를 등록하세요!</p>
           </div>
       </div>
     </div>
@@ -46,6 +53,7 @@
         <p>내 동영상</p>
           <div id='personal-video-box2'>
             <p id='none-data-text1'>아직 저장된 영상이 없어요</p>
+            <!-- 동영상 구현 필요 -->
           </div>
         <p>컨설팅 영상</p>
           <div id='personal-video-box3'>
@@ -57,8 +65,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'ProfileView',
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
+  },
 };
 </script>
 

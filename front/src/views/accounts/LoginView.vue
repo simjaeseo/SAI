@@ -16,11 +16,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import LoginForm from '@/views/accounts/components/LoginForm.vue';
 
 export default {
   name: 'LoginView',
   components: { LoginForm },
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
+  },
 };
 </script>
 
