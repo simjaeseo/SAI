@@ -1,254 +1,275 @@
 <template>
-  <div>
-    <div class="container">
-      <h1>April</h1>
-      <div class="calender cal-view" data-component="calender-module">
-        <a href="#" class="toggle">toggle view</a>
-        <div class='calender__month'>
-          <div class='calender__week'>
-            <div class='calender__day--hidden'>
-              <span class="date">29</span>
-            </div>
-            <div class='calender__day--hidden'>
-              <span class="date">30</span>
-            </div>
-            <div class='calender__day--hidden'>
-              <span class="date">31</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">01</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">02</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">03</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">04</span>
-            </div>
-          </div>
-          <div class='calender__week'>
-            <div class='calender__day--empty'>
-              <span class="date">05</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">06</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">07</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">08</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">09</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">10</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">11</span>
-            </div>
-          </div>
-          <div class='calender__week'>
-            <div class='calender__day'>
-              <span class="date">12</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">13</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">14</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">15</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">16</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">17</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">18</span>
-            </div>
-          </div>
-          <div class='calender__week'>
-            <div class='calender__day'>
-              <span class="date">19</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">20</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">21</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">22</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">23</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">24</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">25</span>
-            </div>
-          </div>
-          <div class='calender__week'>
-            <div class='calender__day'>
-              <span class="date">26</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">27</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">28</span>
-            </div>
-            <div class='calender__day'>
-              <span class="date">29</span>
-              <div class="event-list">
-                <div class="event-list__event">
-                  <a href="#">2 Unlimited: Reach for the sky</a>
+  <div class="calendar">
+      <h2>
+        <a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
+        {{currentYear}}년 {{currentMonth}}월
+        <a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
+      </h2>
+      <table class="table">
+          <thead>
+            <tr>
+              <td id="th" v-for="(weekName, index) in weekNames" :key="index">
+                {{weekName}}
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
+              <td v-for="(day, index2) in row" :key="index2">
+                <button v-if="selectDate === day"
+                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)"
+                id="picked">
+                  {{day}}
+                </button>
+                <button  v-else-if="day"
+                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
+                  {{day}}
+                </button>
+                <div>
+                <!-- <div :v-for="schedule in schedules" :key="schedule" id="schedule"> -->
+                  <!-- <div v-if="schedule.date === `${currentYear}-${currentMonth}-${day}`" -->
+                  <div v-if="day === 31"
+                  class="schedule-summary">
+                    <!-- {{ schedule.detail }} -->
+                    <p>생일~!</p>
+                    <div class="schedule-detail">
+                      <p>8월 31일 00시</p>
+                      <p>생일이다~!</p>
+                      <!-- {{ schedule.currentMonth }}월 {{ schedule.day }}일
+                      {{ schedule.startTime }}<br>
+                      {{ schedule.detail }}<br> -->
+                      <button class="btn btn-danger">삭 제</button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">30</span>
-            </div>
-            <div class='calender__day--empty'>
-              <span class="date">31</span>
-            </div>
-            <div class='calender__day--hidden'>
-              <span class="date">1</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </td>
+            </tr>
+          </tbody>
+      </table>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'MyCalendar',
-  mounted() {
-    const toggle = document.querySelector('.toggle');
-    const calender = document.querySelector('.calender');
-
-    const toggleClass = (el, className) => {
-      if (el.classList) {
-        el.classList.toggle(className);
-      } else {
-        const classes = el.className.split(' ');
-        const existingIndex = classes.indexOf(className);
-
-        if (existingIndex >= 0) {
-          classes.splice(existingIndex, 1);
-        } else {
-          classes.push(className);
-        }
-
-        const tmp = el;
-        tmp.className = classes.join(' ');
-      }
+  data() {
+    return {
+      weekNames: ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
+      rootYear: 1904,
+      rootDayOfWeekIndex: 4, // 2000년 1월 1일은 토요일
+      currentYear: new Date().getFullYear(),
+      currentMonth: new Date().getMonth() + 1,
+      currentDay: new Date().getDate(),
+      currentMonthStartWeekIndex: null,
+      currentCalendarMatrix: [],
+      endOfDay: null,
+      memoDatas: [],
     };
+  },
+  setup() {
+    const store = useStore();
 
-    toggle.addEventListener('click', (e) => {
-      console.log(e);
-      toggleClass(calender, 'cal-view');
-    });
+    const schedules = computed(() => store.getters.schedules);
+    const selectDate = computed(() => store.getters.selectedDate);
+    const pickDate = (date) => {
+      store.dispatch('pickDate', date);
+    };
+    const fetchSchedules = () => {
+      store.dispatch('fetchSchedules');
+    };
+    return {
+      pickDate,
+      selectDate,
+      schedules,
+      fetchSchedules,
+    };
+  },
+  methods: {
+    init() {
+      this.currentMonthStartWeekIndex = this.getStartWeek(this.currentYear, this.currentMonth);
+      this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
+      this.initCalendar();
+    },
+    initCalendar() {
+      this.currentCalendarMatrix = [];
+      let day = 1;
+      for (let i = 0; i < 6; i += 1) {
+        const calendarRow = [];
+        for (let j = 0; j < 7; j += 1) {
+          if (i === 0 && j < this.currentMonthStartWeekIndex) {
+            calendarRow.push('');
+          } else if (day <= this.endOfDay) {
+            calendarRow.push(day);
+            day += 1;
+          } else {
+            calendarRow.push('');
+          }
+        }
+        this.currentCalendarMatrix.push(calendarRow);
+      }
+    },
+    getEndOfDay(year, month) {
+      switch (month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+          return 31;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+          return 30;
+        case 2:
+          if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+            return 29;
+          }
+
+          return 28;
+
+        default:
+          return 0;
+      }
+    },
+    getStartWeek(targetYear, targetMonth) {
+      let year = this.rootYear;
+      let month = 1;
+      let sumOfDay = this.rootDayOfWeekIndex;
+      while (true) {
+        if (targetYear > year) {
+          for (let i = 0; i < 12; i += 1) {
+            sumOfDay += this.getEndOfDay(year, month + i);
+          }
+          year += 1;
+        } else if (targetYear === year) {
+          if (targetMonth > month) {
+            sumOfDay += this.getEndOfDay(year, month);
+            month += 1;
+          } else if (targetMonth === month) {
+            return (sumOfDay) % 7;
+          }
+        }
+      }
+    },
+    onClickPrev(month) {
+      this.month -= 1;
+      if (month <= 0) {
+        this.currentMonth = 12;
+        this.currentYear -= 1;
+      } else {
+        this.currentMonth -= 1;
+      }
+      this.init();
+    },
+    onClickNext(month) {
+      this.month += 1;
+      if (month > 12) {
+        this.currentMonth = 1;
+        this.currentYear += 1;
+      } else {
+        this.currentMonth += 1;
+      }
+      this.init();
+    },
+    isToday(year, month, day) {
+      const date = new Date();
+      return year === date.getFullYear() && month === date.getMonth() + 1 && day === date.getDate();
+    },
+  },
+  mounted() {
+    this.init();
+  },
+  created() {
+    this.fetchSchedules();
   },
 };
 </script>
 
 <style scoped>
-
-template {
-  box-sizing: border-box;
-  background: #000000;
-  color: #ffffff;
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 10px;
 }
-
-/**
-   * calender
-   *
-   */
+button:hover {
+  color: white;
+}
 .calender {
-  max-width: 62.5em;
-  margin: auto;
+  height: 600px;
 }
-.calender__month {
-  background: #2f2f2f;
-  height: 100%;
+#picked {
+  /* border-radius: 50%; */
 }
 
-.calender__day, .calender__day--empty, .calender__day--hidden {
-  background: rgba(255, 255, 255, 0.1);
-  flex: 1 1 0;
-  /* padding: 0.625em; */
-  border: 0.0625em solid rgba(255, 255, 255, 0.2);
-  /* margin: 0.125em; */
-  height: 6em;
-  /* min-height: 5.75em;
-  max-height: 7em; */
+td {
+  height: 100px;
+  font-size: 10px;
 }
-.calender__day--hidden {
-  opacity: 0.3;
-  display: none;
+td:hover {
+  background-color: #5c6ac475;
 }
 
-.calender__day--empty {
-  display: none;
+a {
+  text-decoration: none;
+  color: #5a5a5a7a;
 }
 
-.calender__day .date, .calender__day--hidden .date, .calender__day--empty .date {
-  color: #ffffff;
+h2 {
   display: flex;
-  padding: 0.25em 0em 0em 0.25em;
-  justify-content: start;
+  justify-content: space-between;
+  text-align: center;
+  padding-top: 20px;
+  color: #5a5a5a;
 }
 
-@media screen and (min-width: 48em) {
-  .calender.cal-view .calender__week {
-    display: flex;
-  }
-}
-.calender.cal-view .calender__day--hidden,
-.calender.cal-view .calender__day--empty {
-  display: none;
-}
-@media screen and (min-width: 48em) {
-  .calender.cal-view .calender__day--hidden,
-.calender.cal-view .calender__day--empty {
-    display: block;
-  }
-}
-.calender .toggle {
-  display: none;
-  color: #ffffff;
-  text-decoration: none;
-  margin-bottom: 0.625em;
-  text-align: right;
-}
-@media screen and (min-width: 48em) {
-  .calender .toggle {
-    display: block;
-  }
+#th {
+  height: 100px;
+  text-align: center;
+  font-weight: 500;
+  color: #5a5a5a;
 }
 
-/**
-   * event-list
-   *
-   */
-.event-list__event a {
-  font-size: 0.75em;
-  color: #ffffff;
-  text-decoration: none;
+.schedule-summary {
+  position: relative;
+  display: block;
+  border-radius: 5%;
+  background: deepskyblue;
+  color: white;
 }
-.event-list__event + .event-list__event {
-  margin-top: 0.625em;
+
+.schedule-detail {
+  visibility: hidden;
+  width: 5vw;
+  background-color: gray;
+  color: white;
+  text-align: center;
+  border-radius: 5%;
+  padding: 1vw;
+  position: absolute;
+  z-index: 1;
+}
+
+.schedule-summary:hover .schedule-detail {
+  visibility: visible;
+}
+
+.schedule-summary .schedule-detail::after {
+  position: absolute;
+  border-style: solid;
+  border-width: 2vw;
+}
+
+.schedule-summary .schedule-detail {
+  width: 120px;
+  top: 105%;
+  left: 50%;
+  margin-left: -60px;
 }
 </style>

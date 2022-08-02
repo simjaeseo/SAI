@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div>
-        <button>컨설턴트 선택</button>
-        <button>일정 추가</button>
+    <div id="btn-box">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>컨설턴트상담</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+        <button class="btn">개인일정추가</button>
     </div>
     <div>
       <div id="time-picker">
@@ -29,27 +34,28 @@ export default {
 </script>
 
 <style scoped>
-#time-picker {
-    position: relative;
-    border: 1px solid black;
-    margin-top: 3%;
-    padding-top: 1.5vw;
-    padding-bottom: 1.5vw;
-    width: 25vw;
-    height: 20vw;
-    left: 50%;
-    transform: translate(-50%);
+#btn-box {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+.btn {
+  width: 150px;
+  border: 1px solid #ced4da;
+  color: #141414;
+}
+.btn:focus{
+  width: 150px;
+  border: 1px solid #5c6ac4;
+  color: #141414;
 }
 
-#event-detail-input {
-    position: relative;
-    border: 1px solid black;
-    margin-top: 7%;
-    padding-top: 1.5vw;
-    padding-bottom: 1.5vw;
-    width: 25vw;
-    height: 13vw;
-    left: 50%;
-    transform: translate(-50%);
+.form-select {
+  width: 150px;
+  display: inline;
+}
+.form-select:focus {
+  box-shadow: none;
+  border: 1px solid #5c6ac4;
 }
 </style>
