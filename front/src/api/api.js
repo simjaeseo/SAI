@@ -6,6 +6,7 @@ const SCHEDULE = 'schedule/';
 export default {
   member: {
     login: () => `${HOST}login`,
+    logout: () => `${HOST}logout`,
     studentSignup: () => `${HOST}signup/member`,
     currentUserInfo: (id) => `${HOST + MEMBER}member/${id}`,
     ctSignup: () => `${HOST + MEMBER}/consultant`,

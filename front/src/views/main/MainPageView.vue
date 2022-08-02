@@ -1,7 +1,7 @@
 <template>
   <div id="main-page-view" class="container">
     <div id="route-button" class="row">
-      <p id='main-text1'>안녕하세요 user님!</p>
+      <p id='main-text1'>{{ currentUser.name }}님 안녕하세요!</p>
       <div class="col-lg-7" id='user-schedule-box1'>
         <route-button></route-button>
       </div>
@@ -11,9 +11,6 @@
         <router-link to="schedule" id="main-calendar">
           <main-calendar></main-calendar>
         </router-link>
-      </div>
-      <div>
-        {{ currentUser.name }}
       </div>
     </div>
   </div>

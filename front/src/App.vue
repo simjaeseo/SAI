@@ -53,9 +53,9 @@
                   </router-link>
                 </li>
                 <li id='dropdown-li'>
-                  <router-link to='/login' id='dropdown-router'>
+                  <a href="#" @click="logout()" @keyup="logout()">
                     <p id='dropdown-link-text'>로그아웃</p>
-                  </router-link>
+                  </a>
                 </li>
               </ul>
             </li>
@@ -98,8 +98,13 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'App',
+  methods: {
+    ...mapActions(['logout']),
+  },
 };
 </script>
 
