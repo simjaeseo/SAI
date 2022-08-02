@@ -17,12 +17,12 @@
             <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
               <td v-for="(day, index2) in row" :key="index2">
                 <button v-if="selectDate === day"
-                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)"
+                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)"
                 id="picked">
                   {{day}}
                 </button>
                 <button  v-else-if="day"
-                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
+                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)">
                   {{day}}
                 </button>
                 <div v-for="schedule in schedules" :key="schedule" id="schedule">

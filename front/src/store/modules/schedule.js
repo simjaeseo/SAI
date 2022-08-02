@@ -13,7 +13,7 @@ export default {
     myConsultants: [],
     selectedConsultant: false,
     scheduleDetail: '',
-    selectedCategory: false,
+    selectedCategory: '',
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -57,7 +57,7 @@ export default {
       state.myConsultants = myConsultants;
     },
     SET_MY_CONSULTANT(state, consultant) {
-      state.myConsultant = consultant;
+      state.selectedConsultant = consultant;
     },
     SET_SCHEDULE_DETAIL(state, datail) {
       state.scheduleDetail = datail;
@@ -97,10 +97,10 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_MY_CONSULTANTS', res.data));
+        .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    pickMyconsultant({ commit }, consultant) {
+    pickMyConsultant({ commit }, consultant) {
       commit('SET_MY_CONSULTANT', consultant);
     },
     entryScheduleDetail({ commit }, detail) {
@@ -109,7 +109,14 @@ export default {
     selectCategory({ commit }, category) {
       commit('SET_SELECTED_CATEGORY', category);
     },
-    createSchedule({ getters }) {
+    createSchedule({ dispatch, getters }) {
+      console.log(getters.selectedDate);
+      console.log(getters.selectedStartTime);
+      console.log(getters.selectedEndTime);
+      console.log(getters.selectedCategory);
+      console.log(getters.scheduleDetail);
+      console.log(getters.currentUser.id);
+      console.log(getters.selectedConsultant);
       axios({
         url: drf.schedule.schedule(getters.currentUser.id),
         method: 'post',
@@ -117,7 +124,7 @@ export default {
           scheduleDate: getters.selectedDate,
           startTime: getters.selectedStartTime,
           endTime: getters.selectedEndTime,
-          category: getters.selectCategory,
+          category: getters.selectedCategory,
           detail: getters.scheduleDetail,
           memberStudentId: getters.currentUser.id,
           memberConsultantId: getters.selectedConsultant,
@@ -125,18 +132,19 @@ export default {
         headers: getters.authHeader,
       })
         .then(() => {
-          // dispatch('fetchSchedules');
+          dispatch('fetchSchedules');
           router.push({ name: 'ScheduleHome' });
-        });
+        })
+        .catch((err) => console.log(err));
     },
-    deleteSchedule({ getters }, scheduleId) {
+    deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({
         url: drf.schedule.scheduleDelete(getters.currentUser.id, scheduleId),
         method: 'delete',
         headers: getters.authHeader,
       })
         .then(() => {
-          // dispatch('fetchSchedules');
+          dispatch('fetchSchedules');
           router.push({ name: 'ScheduleHome' });
         });
     },
