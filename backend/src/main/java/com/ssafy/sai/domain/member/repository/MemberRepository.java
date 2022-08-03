@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
+    Member findMemberById(Long id);
+
     @EntityGraph(attributePaths = {"campus"})
     @Query("select m from Member m where m.id = :id")
     Member findMemberEntityGraph(@Param("id") Long id);

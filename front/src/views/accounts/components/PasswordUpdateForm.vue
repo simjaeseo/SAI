@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { reactive, computed } from 'vue';
+import { reactive, computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -59,6 +59,8 @@ export default {
         newpw2: '',
       },
       isCorrect: false,
+      currentUserId: '',
+      currentUserEmail: '',
     });
     const checkStrNumPasswd1 = function () {
       if (!(/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.newpw1))) {
@@ -85,15 +87,21 @@ export default {
         alert('비밀번호가 올바르지 않습니다.');
       }
     };
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    onBeforeMount(() => {
+      state.currentUserEmail = currentUser.value.email;
+      state.currentUserId = currentUser.value.id;
+      console.log(state.currentUserEmail);
+    });
     const passwordupdateform = function () {
       store.dispatch('changePassword', {
+        id: state.currentUserId,
         password: state.credentials.oldpw,
         newPassword: state.credentials.newpw1,
         newPasswordCheck: state.credentials.newpw2,
       });
     };
-    const isLoggedIn = computed(() => store.getters.isLoggedIn);
-    const currentUser = computed(() => store.getters.currentUser);
     return {
       state,
       store,
