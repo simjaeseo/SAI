@@ -22,7 +22,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
 
-    // 일정 전체 조회
+/*    // 일정 전체 조회
     @GetMapping("/{member_id}")
     public DataResponse<?> getScheduleList(@PathVariable Long member_id){
         return scheduleService.selectAll(member_id);
@@ -50,6 +50,6 @@ public class ScheduleController {
     @GetMapping("/{member_id}/recent")
     public DataResponse<List<Schedule>> getScheduleSinceToday(@PathVariable Long member_id){
         return scheduleService.selectScheduleSinceToday(member_id);
-    }
+    }*/
 
 }
