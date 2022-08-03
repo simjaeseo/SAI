@@ -6,12 +6,15 @@ import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
 import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
+import com.ssafy.sai.domain.schedule.dto.ScheduleSinceTodayByStudentResponse;
 import com.ssafy.sai.domain.schedule.service.ScheduleService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -48,8 +51,16 @@ public class ScheduleController {
     }
 
     @GetMapping("/{member_id}/recent")
-    public DataResponse<List<Schedule>> getScheduleSinceToday(@PathVariable Long member_id){
+    public DataResponse<?> getScheduleSinceToday(@PathVariable Long member_id){
         return scheduleService.selectScheduleSinceToday(member_id);
+    }
+
+    // 여기서 member_id는 일정을 알고싶어하는 멤버의 id
+    @GetMapping("/{member_id}/{date}")
+    public DataResponse<?> selectScheduleOnSpecificDay(@PathVariable Long member_id, @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date){
+        System.out.println(member_id);
+        System.out.println(date.getClass().getName());
+        return scheduleService.selectScheduleDay(member_id, date);
     }
 
 }
