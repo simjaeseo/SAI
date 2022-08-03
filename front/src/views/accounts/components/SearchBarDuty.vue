@@ -11,7 +11,7 @@
         v-model="searchTerm"
         placeholder="&#128269;  직무를 검색하세요"
         class="p-3 mb-0.5 w-full form-control"
-        style="width:460px"
+        style="width:300px; height:36px"
         @keydown.enter.prevent
       >
       </label>
@@ -115,6 +115,9 @@ export default {
 </script>
 
 <style scoped>
+#search::placeholder {
+  font-size: 14px;
+}
 #delete {
   font-size: 5px;
   vertical-align: top;

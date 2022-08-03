@@ -16,6 +16,7 @@ public class MemberUpdateRequest {
     private CampusDto campus;
 
     private String profilePicture;
+    private String phone;
 
     private List<EnterpriseName> interestedEnterprises;
     private List<JobName> interestedJobs;
