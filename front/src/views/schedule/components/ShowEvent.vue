@@ -1,26 +1,32 @@
 <template>
   <div>
-    <div id="today-schedule">
-        <div v-if="upcomingSchedules[0].scheduleDate == myToday">
-          <h3>{{ upcomingSchedules[0].category }}</h3>
-          <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
-          <br><br>
-          <p v-if="upcomingSchedules[0].category === '1:1 모의 면접'">
-            담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
-          </p>
-          <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
-          <button v-if="upcomingSchedules[0].category === '1:1 모의 면접'" class="btn">면접 바로가기</button>
-        </div>
-    </div>
-    <div id='layer'>
-      <h5>다가오는 일정</h5>
-    </div>
-    <div>
-      <p v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
-        {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
-         {{ upcomingSchedule.scheduleDate.slice(-2) }}일
-         {{ upcomingSchedule.detail }}
-      </p>
+    <div v-if="upcomingSchedules">
+      <div id="today-schedule">
+          <div v-if="upcomingSchedules[0].scheduleDate == myToday">
+            <h3>{{ upcomingSchedules[0].category }}</h3>
+            <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
+            <br><br>
+            <p v-if="upcomingSchedules[0].category === '1:1 모의 면접'">
+              담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
+            </p>
+            <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
+            <button
+            v-if="upcomingSchedules[0].category === '1:1 모의 면접'"
+            class="btn">
+              면접 바로가기
+            </button>
+          </div>
+      </div>
+      <div id='layer'>
+        <h5>다가오는 일정</h5>
+      </div>
+      <div>
+        <p v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
+          {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
+          {{ upcomingSchedule.scheduleDate.slice(-2) }}일
+          {{ upcomingSchedule.detail }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -40,16 +46,9 @@ export default {
     const store = useStore();
 
     const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-    const fetchUpcomingSchedules = (today) => {
-      store.dispatch('fetchUpcomingSchedules', today);
-    };
     return {
       upcomingSchedules,
-      fetchUpcomingSchedules,
     };
-  },
-  created() {
-    this.fetchUpcomingSchedules();
   },
 };
 </script>

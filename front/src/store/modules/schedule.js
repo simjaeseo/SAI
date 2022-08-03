@@ -5,15 +5,15 @@ import axios from 'axios';
 export default {
   namespace: true,
   state: {
-    selectedDate: false,
-    startTime: false,
-    endTime: false,
+    selectedDate: null,
+    startTime: null,
+    endTime: null,
     schedules: [],
     upcomingSchedules: [],
     myConsultants: [],
-    selectedConsultant: false,
+    selectedConsultant: null,
     scheduleDetail: '',
-    selectedCategory: '',
+    selectedCategory: null,
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -21,6 +21,7 @@ export default {
     selectedEndTime: (state) => state.endTime,
     schedules: (state) => state.schedules,
     upcomingSchedules: (state) => state.upcomingSchedules,
+    isUpcomingSchedules: (state) => state.upcomingSchedules.length,
     myConsultants: (state) => state.myConsultants,
     selectedConsultant: (state) => state.selectedConsultant,
     scheduleDetail: (state) => state.scheduleDetail,
