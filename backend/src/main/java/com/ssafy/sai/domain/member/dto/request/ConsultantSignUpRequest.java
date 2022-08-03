@@ -34,6 +34,7 @@ public class ConsultantSignUpRequest {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthday;
 
+    @NotNull(message = "회원 분류는 필수 저장값입니다.")
     private MemberStatus memberStatus;
 
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
