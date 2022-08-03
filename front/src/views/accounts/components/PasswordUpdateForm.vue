@@ -1,30 +1,39 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="passwordupdateform">
       <div class="mt-5">
         <label for='find_user_input_name'>
           <p id='find_user_input_text'>현재비밀번호</p>
-          <input type='password' id='find_user_input_name' class='form-control'>
+          <input type='password' id='find_user_input_name' class='form-control'
+          v-model="state.credentials.oldpw"
+          required/>
         </label>
       </div>
       <div>
         <label for='find_user_input_email'>
           <p id='find_user_input_text'>변경할 비밀번호</p>
           <input type='password' id='find_user_input_email'
-          class='form-control'>
+          class='form-control'
+          placeholder="8이상 16자리 이하 영문+숫자"
+          @change="checkStrNumPasswd1"
+          v-model="state.credentials.newpw1"
+          required/>
         </label>
       </div>
       <div>
         <label for='find_user_input_email'>
-          <p id='find_user_input_text'>변경할 비밀번호</p>
+          <p id='find_user_input_text'>비밀번호 재확인</p>
           <input type='password' id='find_user_input_email'
-          class='form-control'>
+          class='form-control'
+          placeholder="8이상 16자리 이하 영문+숫자"
+          @change="checkStrNumPasswd2"
+          v-model="state.credentials.newpw2"
+          required/>
         </label>
+            <p v-if='state.isCorrect' id='correct-pw'>비밀번호가 일치합니다.</p>
       </div>
       <div>
-        <router-link to='/'>
-        <button class='btn' id='find-pw-btn' type='submit'>
-        변경완료</button></router-link>
+        <button v-if='state.isCorrect' class='btn' id='find-pw-btn' type='submit'>변경하기</button>
       </div>
     </form>
       <div>
@@ -36,8 +45,65 @@
 </template>
 
 <script>
+import { reactive, computed } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'PasswordUpdateForm',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      credentials: {
+        oldpw: '',
+        newpw1: '',
+        newpw2: '',
+      },
+      isCorrect: false,
+    });
+    const checkStrNumPasswd1 = function () {
+      if (!(/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.newpw1))) {
+        state.isCorrect = false;
+        console.log('비번1정규식통과ㄴㄴ');
+        alert('8자리 이상 16자리 이하 영문+숫자.');
+        state.credentials.newpw1 = '';
+        document.getElementById('user_signup_pw1').focus();
+      }
+    };
+    const checkStrNumPasswd2 = function () {
+      if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.newpw2)) {
+        if (state.credentials.newpw1 === state.credentials.newpw2) {
+          state.isCorrect = true;
+          console.log('비번2정규식통과&같음');
+        } else {
+          state.isCorrect = false;
+          console.log('비번2정규식통과ㄴㄴ');
+          alert('비밀번호가 올바르지 않습니다.');
+        }
+      } else {
+        state.isCorrect = false;
+        console.log('비번2정규식통과ㄴㄴ');
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    };
+    const passwordupdateform = function () {
+      store.dispatch('changePassword', {
+        password: state.credentials.oldpw,
+        newPassword: state.credentials.newpw1,
+        newPasswordCheck: state.credentials.newpw2,
+      });
+    };
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    return {
+      state,
+      store,
+      checkStrNumPasswd1,
+      checkStrNumPasswd2,
+      passwordupdateform,
+      isLoggedIn,
+      currentUser,
+    };
+  },
 };
 </script>
 

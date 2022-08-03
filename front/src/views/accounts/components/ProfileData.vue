@@ -3,14 +3,14 @@
     <div class='container'>
       <div class='row'>
         <!-- 프로필이미지 -->
-        <div id='profile_image_box' class='col-sm-2'>
+        <div id='profile_image_box' class='d-none d-md-block col-md-2'>
           <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
         </div>
         <!-- 프로필인적사항 -->
-        <div id='personal-data-box1' class='col-sm-10'>
+        <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
           <!-- 왼쪽 -->
           <div class='row' id='personal-data-box2'>
-            <div class='col-lg-6'>
+            <div class='col-lg-6 mt-4'>
                 <p id='data-name'>이름</p>
                 <p id="user-data">{{ currentUser.name }}</p>
                 <p id='data-name'>소속</p>
@@ -20,7 +20,7 @@
                 <p id="user-data">{{ currentUser.phone }}</p>
             </div>
           <!-- 오른쪽 -->
-            <div class='col-lg-6'>
+            <div class='col-lg-6 mt-4'>
                 <p id='data-name'>생년월일</p>
                 <p id="user-data">{{ currentUser.birthday }}</p>
                 <p id='data-name'>이메일</p>
