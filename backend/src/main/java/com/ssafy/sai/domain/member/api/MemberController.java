@@ -1,12 +1,13 @@
 package com.ssafy.sai.domain.member.api;
 
 import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
+import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,5 +34,14 @@ public class MemberController {
     public MessageResponse updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
         memberService.updateMember(id, request);
         return new MessageResponse(200, "OK");
+    }
+
+    @PostMapping("/password")
+    public MessageResponse updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+        if (memberService.updatedPassword(passwordDto)) {
+            return new MessageResponse(200, "OK");
+        }
+
+        return new MessageResponse(404, "Fail");
     }
 }

@@ -11,19 +11,20 @@ import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.job.dto.EnterpriseName;
 import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
-import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
-import com.ssafy.sai.domain.job.domain.InterestedJob;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.*;
+import com.ssafy.sai.global.config.SpringSecurityConfig;
+import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Optional;
 
 
@@ -38,6 +39,7 @@ public class MemberService {
     private final JobRepository jobRepository;
     private final InterestedJobRepository interestedJobRepository;
     private final CampusRepository campusRepository;
+    private final SpringSecurityConfig security;
 
     public MemberDto findMemberOne(Long memberId) {
         Member findMember = memberRepository.findMemberEntityGraph(memberId);
@@ -66,5 +68,31 @@ public class MemberService {
             InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
             interestedEnterpriseRepository.save(interestedEnterpriseCreateRequest.toEntity());
         }
+    }
+
+    @Transactional
+    public boolean updatedPassword(PasswordDto passwordDto) {
+        try {
+            // 현재 접속중인 회원의 이메일과 일치하는 회원을 찾는다
+            Member member = memberRepository.findMemberById(passwordDto.getId());
+            BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
+
+            // 입력한 현재 비밀번호와 접속중인 회원의 비밀번호가 일치하고,
+            if (bCryptPasswordEncoder.matches(passwordDto.getPassword(), member.getPassword())) {
+                // 새로운 비밀번호와 비밀번호 확인 값이 같으면
+                if (passwordDto.getNewPassword().equals(passwordDto.getNewPasswordCheck())) {
+                    // 새로운 비밀번호 값을 암호화한뒤
+                    String hashPassword = bCryptPasswordEncoder.encode(passwordDto.getNewPasswordCheck());
+
+                    // native 쿼리로 회원 비밀번호 업데이트
+                    memberRepository.updatePassword(hashPassword, member.getEmail());
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

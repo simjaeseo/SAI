@@ -18,31 +18,31 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.name"></label>
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected>기수</option>
-                        <option value='1'>1기</option>
-                        <option value='2'>2기</option>
-                        <option value='3'>3기</option>
-                        <option value='4'>4기</option>
-                        <option value='5'>5기</option>
-                        <option value='6'>6기</option>
-                        <option value='7'>7기</option>
+                        <option selected disabled>기수</option>
+                        <option value='1' disabled>1기</option>
+                        <option value='2' disabled>2기</option>
+                        <option value='3' disabled>3기</option>
+                        <option value='4' disabled>4기</option>
+                        <option value='5' disabled>5기</option>
+                        <option value='6' disabled>6기</option>
+                        <option value='7' disabled>7기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
                     aria-label='Default select example'>
-                        <option selected>지역</option>
-                        <option value='1'>서울</option>
-                        <option value='2'>대전</option>
-                        <option value='3'>광주</option>
-                        <option value='4'>구미</option>
-                        <option value='5'>부울경</option>
+                        <option selected disabled>지역</option>
+                        <option value='1' disabled>서울</option>
+                        <option value='2' disabled>대전</option>
+                        <option value='3' disabled>광주</option>
+                        <option value='4' disabled>구미</option>
+                        <option value='5' disabled>부울경</option>
                     </select>
                     <select class='form-select' id='form-select-class'
                     aria-label='Default select example'>
-                        <option selected>반</option>
+                        <option selected disabled>반</option>
                         <option value='1'>1반</option>
                         <option value='2'>2반</option>
                         <option value='3'>3반</option>
@@ -60,20 +60,22 @@
                         <option value='5'>019</option>
                     </select>
                     <label for="user_signup_number1">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileSecond">
                     </label>
                     <label for="user_signup_number2">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileLast">
                     </label>
                 </div>
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.birthday" readonly></label>
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.email" readonly></label>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -141,12 +143,36 @@
 </template>
 
 <script>
+import { computed, reactive, onBeforeMount } from 'vue';
+import { useStore } from 'vuex';
 import SearchBar from './SearchBar.vue';
 import SearchBarDuty from './SearchBarDuty.vue';
 
 export default {
   components: { SearchBar, SearchBarDuty },
   name: 'ProfileDataUpdate',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      mobileSecond: '',
+      mobileLast: '',
+    });
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    onBeforeMount(() => {
+      console.log(currentUser.value.phone);
+      const userPhone = currentUser.value.phone;
+      state.mobileSecond = userPhone.substr(3, 4);
+      console.log(state.mobileSecond);
+      state.mobileLast = userPhone.substr(7);
+      console.log(state.mobileLast);
+    });
+    return {
+      isLoggedIn,
+      currentUser,
+      state,
+    };
+  },
 };
 </script>
 
