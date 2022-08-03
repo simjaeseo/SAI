@@ -40,8 +40,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "update member m set m.password=?1 where m.email=?2", nativeQuery = true)
-    void updatePassword(String newPasswordCheck, String email);
+    @Query(value = "update member m set m.password= :newPasswordCheck where m.email= :email", nativeQuery = true)
+    void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
 
     Member findMemberByEmail(String email);
 

@@ -37,8 +37,8 @@ public class MemberController {
     }
 
     @PostMapping("/password")
-    public MessageResponse updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody PasswordDto passwordDto) {
-        if (memberService.updatedPassword(customUserDetails, passwordDto)) {
+    public MessageResponse updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+        if (memberService.updatedPassword(passwordDto)) {
             return new MessageResponse(200, "OK");
         }
 

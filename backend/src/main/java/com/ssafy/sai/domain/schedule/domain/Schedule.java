@@ -38,11 +38,7 @@ public class Schedule {
     private String detail;
 
     @JsonBackReference
-<<<<<<< HEAD
     @ManyToOne(fetch = FetchType.EAGER)
-=======
-    @ManyToOne(fetch =   FetchType.EAGER)
->>>>>>> 72995383960237406d552c4930163477bab1fcda
     @JoinColumn(name="member_student_id")
     private Member memberStudent;
 
