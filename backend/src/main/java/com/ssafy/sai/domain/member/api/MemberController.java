@@ -2,11 +2,15 @@ package com.ssafy.sai.domain.member.api;
 
 import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.exception.MemberException;
+import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,27 +25,51 @@ public class MemberController {
     private final MemberService memberService;
 
     /**
-     * @param id : 조회할 회원의 pk값
-     * @return
+     * @메소드 교육생 정보 조회 컨트롤러
+     * @param id 조회할 교육생의 PK
+     * @return 조회한 교육생의 정보
+     * @throws Exception 잘못된 접근일 때 예외 발생
      */
     @GetMapping("/member/{id}")
-    public DataResponse<MemberDto> findMember(@PathVariable Long id) {
-        MemberDto findMember = memberService.findMemberOne(id);
-        return new DataResponse<>(200, "OK", findMember);
+    public ResponseEntity<? extends MessageResponse> findMember(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok().body(new MessageResponse<>(memberService.findMemberOne(id)));
     }
 
+    /**
+     * @메소드 컨설턴트 정보 조회 컨트롤러
+     * @param id 조회할 컨설턴트의 PK
+     * @return 조회한 컨설턴트의 정보
+     * @throws Exception 잘못된 접근일 때 예외 발생
+     */
+    @GetMapping("consultant/{id}")
+    public ResponseEntity<? extends MessageResponse> findConsultant(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok().body(new MessageResponse<>(memberService.findConsultantOne(id)));
+    }
+
+    /**
+     * @메소드 회원 정보 수정 컨트롤러
+     * @param id 정보를 수정할 회원의 PK
+     * @param request 회원 정보 수정 폼 양식
+     * @return 변경한 회원의 이메일과 이름
+     * @throws Exception 잘못된 접근, 이미 존재하는 휴대전화 번호로 변겅할 때 예외 발생
+     */
     @PutMapping("/member/{id}")
-    public MessageResponse updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
-        memberService.updateMember(id, request);
-        return new MessageResponse(200, "OK");
+    public ResponseEntity<? extends MessageResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
+        return ResponseEntity.ok().body(new MessageResponse<>(memberService.updateMember(id, request)));
     }
 
+    /**
+     * @메소드 회원 비밀번호 변경 컨트롤러
+     * @param passwordDto 비밀번호 변경 폼 양식(old password, new password, new password check)
+     * @return 변경한 회원의 이메일과 이름
+     * @throws Exception 잘못된 접근일 때 예외 발생
+     */
     @PostMapping("/password")
-    public MessageResponse updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
-        if (memberService.updatedPassword(passwordDto)) {
-            return new MessageResponse(200, "OK");
+    public ResponseEntity<? extends MessageResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+        if (memberService.updatePassword(passwordDto) == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-        return new MessageResponse(404, "Fail");
+        return ResponseEntity.ok().body(new MessageResponse<>(memberService.updatePassword(passwordDto)));
     }
 }

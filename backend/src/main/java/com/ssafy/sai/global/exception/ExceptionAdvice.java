@@ -1,5 +1,7 @@
 package com.ssafy.sai.global.exception;
 
+import com.ssafy.sai.domain.member.exception.MemberException;
+import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ public class ExceptionAdvice {
     public ResponseEntity handleValidEx(BindException exception){
 
         log.error("@ValidException 발생! {}", exception.getMessage() );
-        return new ResponseEntity(new ExceptionDto(2000, HttpStatus.BAD_REQUEST, exception.getMessage()),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new ExceptionDto(400, HttpStatus.BAD_REQUEST, exception.getFieldError().getDefaultMessage()),HttpStatus.BAD_REQUEST);
     }
 
     //HttpMessageNotReadableException  => json 파싱 오류
@@ -35,7 +37,7 @@ public class ExceptionAdvice {
     public ResponseEntity httpMessageNotReadableExceptionEx(HttpMessageNotReadableException exception){
 
         log.error("Json을 파싱하는 과정에서 예외 발생! {}", exception.getMessage() );
-        return new ResponseEntity(new ExceptionDto(3000, HttpStatus.BAD_REQUEST, exception.getMessage()),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new ExceptionDto(400, HttpStatus.BAD_REQUEST, "json을 파싱하는 과정에서 예외가 발생했습니다."),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
