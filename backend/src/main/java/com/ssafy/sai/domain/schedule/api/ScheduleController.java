@@ -24,7 +24,7 @@ public class ScheduleController {
 
     // 일정 전체 조회
     @GetMapping("/{member_id}")
-    public DataResponse<List<ScheduleAllByStudentResponse>> getScheduleList(@PathVariable Long member_id){
+    public DataResponse<?> getScheduleList(@PathVariable Long member_id){
         return scheduleService.selectAll(member_id);
     }
     

@@ -6,6 +6,7 @@ import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import com.ssafy.sai.domain.schedule.dto.ScheduleAllByConsultantResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
 import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
@@ -16,8 +17,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.ssafy.sai.domain.member.domain.MemberStatus.TRAINEE;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +33,22 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final CampusRepository campusRepository;
 
-    public DataResponse<List<ScheduleAllByStudentResponse>> selectAll(Long id){
+    public DataResponse<?> selectAll(Long id){
         // 날짜 정렬?
-//        List<Schedule> data = scheduleRepository.findAll();
-        List<ScheduleAllByStudentResponse> data = scheduleRepository.selectAllByStudent(id);
-        return new DataResponse<>(200, "일정 전체 조회 성공", data);
+
+        Optional<Member> findMember = memberRepository.findById(id);
+        System.out.println(findMember.get().getMemberStatus());
+        if(findMember.get().getMemberStatus().equals(TRAINEE)){
+            List<ScheduleAllByStudentResponse> data = scheduleRepository.selectAllByStudent(id);
+            System.out.println(data.toString());
+            return new DataResponse<>(200, "일정 전체 조회 성공", data);
+        }else{
+            List<ScheduleAllByConsultantResponse> data = scheduleRepository.selectAllByConsultant(id);
+            System.out.println(data.toString());
+            return new DataResponse<>(200, "일정 전체 조회 성공", data);
+        }
+
+
     }
 
     public MessageResponse insert(Long id, ScheduleCreateRequest request){
@@ -45,18 +61,16 @@ public class ScheduleService {
         // null 로직 나누기 -> 교육생
         if(request.getMemberConsultantId() == null){
             // 교육생 개인 일정 추가하는 경우
-            System.out.println(1);
+
             // 교육생 객체를 엔티티에 추가
             schedule.addMemberStudent(findMember.get());
         }else if(request.getMemberStudentId() == null){
             // 컨설턴트 개인 일정 추가하는 경우
-            System.out.println(2);
 
             // 엔티티에 교육생 객체 추가
             schedule.addMemberConsultant(findMember.get());
         }else{
             // 교육생 면접 일정 추가하는 경우
-            System.out.println(3);
 
             // 컨설턴트 객체 가져오기
             Optional<Member> findMemberConsultant = memberRepository.findById(request.getMemberConsultantId());
