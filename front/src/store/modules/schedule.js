@@ -11,9 +11,10 @@ export default {
     schedules: [],
     upcomingSchedules: [],
     myConsultants: [],
-    selectedConsultant: null,
+    selectedConsultant: false,
     scheduleDetail: '',
     selectedCategory: null,
+    dayschedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -53,6 +54,7 @@ export default {
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
+      console.log(state.upcomingSchedules);
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
@@ -111,32 +113,33 @@ export default {
       commit('SET_SELECTED_CATEGORY', category);
     },
     createSchedule({ dispatch, getters }) {
-      console.log(getters.selectedDate);
-      console.log(getters.selectedStartTime);
-      console.log(getters.selectedEndTime);
-      console.log(getters.selectedCategory);
-      console.log(getters.scheduleDetail);
-      console.log(getters.currentUser.id);
-      console.log(getters.selectedConsultant);
-      axios({
-        url: drf.schedule.schedule(getters.currentUser.id),
-        method: 'post',
-        data: {
-          scheduleDate: getters.selectedDate,
-          startTime: getters.selectedStartTime,
-          endTime: getters.selectedEndTime,
-          category: getters.selectedCategory,
-          detail: getters.scheduleDetail,
-          memberStudentId: getters.currentUser.id,
-          memberConsultantId: getters.selectedConsultant,
-        },
-        headers: getters.authHeader,
-      })
-        .then(() => {
-          dispatch('fetchSchedules');
-          router.push({ name: 'Schedule' });
+      if (getters.selectedDate
+        && getters.selectedStartTime
+        && getters.selectedCategory
+        && getters.scheduleDetail
+        && getters.selectedConsultant !== false) {
+        axios({
+          url: drf.schedule.schedule(getters.currentUser.id),
+          method: 'post',
+          data: {
+            scheduleDate: getters.selectedDate,
+            startTime: getters.selectedStartTime,
+            endTime: getters.selectedEndTime,
+            category: getters.selectedCategory,
+            detail: getters.scheduleDetail,
+            memberStudentId: getters.currentUser.id,
+            memberConsultantId: getters.selectedConsultant,
+          },
+          headers: getters.authHeader,
         })
-        .catch((err) => console.log(err));
+          .then(() => {
+            dispatch('fetchSchedules');
+            router.push({ name: 'Schedule' });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert('빠짐없이 입력해주세요');
+      }
     },
     deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({

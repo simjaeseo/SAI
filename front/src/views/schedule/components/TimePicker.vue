@@ -41,9 +41,9 @@ export default {
           i = 0;
         }
         if (i === 0) {
-          this.times.push(`${this.hour}:00`);
+          this.times.push(`${`0${this.hour}`.slice(-2)}:00`);
         } else {
-          this.times.push(`${this.hour}:${i}`);
+          this.times.push(`${`0${this.hour}`.slice(-2)}:${i}`);
         }
       }
     },

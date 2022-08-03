@@ -20,7 +20,6 @@
 v-if="selectedDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
 @click.prevent="pickDate(`${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`)"
                 id="picked">
-                  {{`${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`}}
                   {{day}}
                 </button>
                 <button  v-else-if="day"
@@ -215,7 +214,8 @@ button:hover {
   height: 600px;
 }
 #picked {
-  /* border-radius: 50%; */
+  border-radius: 50%;
+  background-color: aqua;
 }
 
 td {

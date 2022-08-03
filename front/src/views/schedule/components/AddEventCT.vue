@@ -5,7 +5,7 @@
         개인일정추가
       </p>
     </div>
-    <p>{{ selectedDate }}</p>
+    <!-- <p>{{ selectedDate }}</p> -->
     <div>
       <div id="time-picker">
         <time-picker></time-picker>

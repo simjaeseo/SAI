@@ -1,7 +1,11 @@
 <template>
   <div>
     <div id="btn-box">
-      <select class="form-select" aria-label="Default select example" @change="pickMyConsultant">
+      <select
+      class="form-select"
+      aria-label="Default select example"
+      @change="pickMyConsultant"
+      required>
         <option selected disabled>컨설턴트상담</option>
         <option
         v-for="myConsultant in myConsultants"
@@ -16,7 +20,6 @@
           개인일정추가
         </button>
     </div>
-    <p>{{ selectedDate }}</p>
     <div>
       <div id="time-picker">
         <time-picker></time-picker>
