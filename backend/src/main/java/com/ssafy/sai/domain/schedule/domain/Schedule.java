@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.schedule.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.sai.domain.member.domain.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,10 +27,12 @@ public class Schedule {
     private LocalDate scheduleDate;
 
     @DateTimeFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "hh:mm")
     @Column(name="start_time")
     private LocalTime startTime;
 
     @DateTimeFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "hh:mm")
     @Column(name="end_time")
     private LocalTime endTime;
 
