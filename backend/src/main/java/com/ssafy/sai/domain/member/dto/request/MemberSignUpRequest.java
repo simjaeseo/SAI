@@ -37,10 +37,11 @@ public class MemberSignUpRequest {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate birthday;
 
+    @NotNull(message = "회원 분류는 필수 저장값입니다.")
     private MemberStatus memberStatus;
 
     @NotNull(message = "기수 정보는 필수 입력값입니다.")
-    private int year;
+    private Integer year;
 
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
     private CampusDto campus;
