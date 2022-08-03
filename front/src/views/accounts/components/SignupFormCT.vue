@@ -4,26 +4,38 @@
       <p id='signup-text1'>회원가입 컨설턴트용</p>
     </div>
     <div id='form-input-wrap'>
-      <form action=''>
+      <form @submit.prevent="signupformCT">
         <p id='login-text1' class="mb-4">로그인 정보</p>
         <div>
           <label for='user_signup_email'><p id="login-text2">이메일</p>
             <input type='text' id='user_signup_email'
-            class='form-control'>
+            class='form-control'
+            v-model="state.credentials.userEmail"
+            @change="checkEmail"
+            required />
           </label>
           <button class="btn mx-2" id="double-check-btn">중복확인</button>
         </div>
         <div class='mt-5 mb-5' id='pw-input-wrap'>
           <label for='user_signup_pw1'><p id="login-text2">비밀번호</p>
             <input type='password' id='user_signup_pw1'
-            placeholder='8자 이상 영문,숫자,특수문자 조합'
-            class='form-control'>
+            class='form-control'
+            v-model="state.credentials.userPassword1"
+            maxlength="16"
+            placeholder="8자리 이상 16자리 이하 영문+숫자"
+            @change="checkStrNumPasswd1"
+            required />
           </label>
           <label for='user_signup_pw2' class="mx-2"><p id="login-text2">비밀번호 확인</p>
             <input type='password' id='user_signup_pw2'
-            placeholder='8자 이상 영문,숫자,특수문자 조합'
-            class='form-control'>
+            class='form-control'
+            v-model="state.credentials.userPassword2"
+            maxlength="16"
+            placeholder="8자리 이상 16자리 이하 영문+숫자"
+            @change="checkStrNumPasswd2"
+            required />
           </label>
+            <p v-if='state.isCorrect' id='correct-pw'>비밀번호가 일치합니다.</p>
         </div>
         <hr>
         <div class='mt-5 mb-5'>
@@ -31,23 +43,102 @@
           <div>
             <label for='user_signup_name'><p id='login-text2'>이름</p>
               <input type='text' id='user_signup_name'
-              class='form-control'>
+              class='form-control'
+              v-model="state.credentials.username"
+              required />
             </label>
-            <label for='user_signup_date_of_birth' class="mx-2"><p id='login-text2'>생년월일</p>
-              <input type='text' id='user_signup_date_of_birth'
-              class='form-control'>
-            </label>
+            <div id='form-select-wrap1'>
+              <p id='login-text3'>생년월일</p>
+              <select class='form-select' id='form-select-cardinal-number'
+              aria-label='Default select example'
+              @change="selectedUserYear" required>
+                <option selected disabled>연도</option>
+                <option value='1990'>1990</option>
+                <option value='1991'>1991</option>
+                <option value='1992'>1992</option>
+                <option value='1992'>1993</option>
+                <option value='1994'>1994</option>
+                <option value='1995'>1995</option>
+                <option value='1996'>1996</option>
+                <option value='1997'>1997</option>
+                <option value='1998'>1998</option>
+                <option value='1999'>1999</option>
+                <option value='2000'>2000</option>
+                <option value='2001'>2001</option>
+                <option value='2002'>2002</option>
+                <option value='2003'>2003</option>
+              </select>
+              <select class='form-select' id='form-select-region'
+              aria-label='Default select example'
+              @change="selectedUserMonth"
+              required>
+                <option selected disabled>월</option>
+                <option value='01'>01</option>
+                <option value='02'>02</option>
+                <option value='03'>03</option>
+                <option value='04'>04</option>
+                <option value='05'>05</option>
+                <option value='06'>06</option>
+                <option value='07'>07</option>
+                <option value='08'>08</option>
+                <option value='09'>09</option>
+                <option value='10'>10</option>
+                <option value='11'>11</option>
+                <option value='12'>12</option>
+              </select>
+              <select class='form-select' id='form-select-class'
+              aria-label='Default select example'
+              @change="selectedUserDay"
+              required>
+                <option selected disabled>일</option>
+                <option value='01'>01</option>
+                <option value='02'>02</option>
+                <option value='03'>03</option>
+                <option value='04'>04</option>
+                <option value='05'>05</option>
+                <option value='06'>06</option>
+                <option value='07'>07</option>
+                <option value='08'>08</option>
+                <option value='09'>09</option>
+                <option value='10'>10</option>
+                <option value='11'>11</option>
+                <option value='12'>12</option>
+                <option value='13'>13</option>
+                <option value='14'>14</option>
+                <option value='15'>15</option>
+                <option value='16'>16</option>
+                <option value='17'>17</option>
+                <option value='18'>18</option>
+                <option value='19'>19</option>
+                <option value='20'>20</option>
+                <option value='21'>21</option>
+                <option value='22'>22</option>
+                <option value='23'>23</option>
+                <option value='24'>24</option>
+                <option value='25'>25</option>
+                <option value='26'>26</option>
+                <option value='27'>27</option>
+                <option value='28'>28</option>
+                <option value='29'>29</option>
+                <option value='30'>30</option>
+                <option value='31'>31</option>
+              </select>
+            </div>
           </div>
           <div>
             <div id='form-select-wrap'>
-              <p id='login-text3'>지역</p>
-              <select class='form-select' id='form-select' aria-label='Default select example'>
-                <option selected>지역</option>
-                <option value='1'>서울</option>
-                <option value='2'>대전</option>
-                <option value='3'>광주</option>
-                <option value='4'>구미</option>
-                <option value='5'>부울경</option>
+              <select class='form-select' id='form-select-region'
+              aria-label='Default select example'
+              v-model="state.selected"
+              @click.prevent='setOptions'
+              @change="selectedUserRegion"
+              required>
+                <option selected disabled>지역</option>
+                <option value='서울'>서울</option>
+                <option value='대전'>대전</option>
+                <option value='광주'>광주</option>
+                <option value='구미'>구미</option>
+                <option value='부울경'>부울경</option>
               </select>
             </div>
             <div id='form-select-wrap' class="mx-2">
