@@ -72,4 +72,8 @@ public class Member extends BaseEntity {
         this.profilePicture = request.getProfilePicture();
         this.phone = request.getPhone();
     }
+
+    public Member(String password) {
+        this.password = password;
+    }
 }
