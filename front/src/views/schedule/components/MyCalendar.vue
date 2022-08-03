@@ -88,12 +88,16 @@ export default {
     const deleteSchedule = (scheduleId) => {
       store.dispatch('deleteSchedule', scheduleId);
     };
+    const fetchCTDaySchedules = (date) => {
+      store.dispatch('fetchCTDaySchedules', date);
+    };
     return {
       pickDate,
       selectedDate,
       schedules,
       fetchSchedules,
       deleteSchedule,
+      fetchCTDaySchedules,
     };
   },
   methods: {

@@ -1,13 +1,20 @@
 <template>
   <div id='time-box' class="container">
-    <button v-for="time in times"
-    :key="time"
-    @click.prevent="pickTime(time)"
-    :style="[selectStartTime == time ?
-    {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
-    >
-      {{ time }}
-    </button>
+    <div v-for="time in times" :key="time">
+      <button
+      v-if="time in CTDaySchedules"
+      id="disable-time"
+      >
+        {{ time }}
+      </button>
+      <button
+      @click.prevent="pickTime(time)"
+      :style="[selectStartTime == time ?
+      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
+      >
+        {{ time }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -27,11 +34,18 @@ export default {
   setup() {
     const store = useStore();
 
+    const selectedDate = computed(() => store.getters.selectedDate);
+    const CTDaySchedules = computed(() => store.getters.CTDaySchedules);
     const selectStartTime = computed(() => store.getters.selectedStartTime);
     const pickTime = (time) => {
       store.dispatch('pickTime', time);
     };
-    return { pickTime, selectStartTime };
+    return {
+      pickTime,
+      selectStartTime,
+      selectedDate,
+      CTDaySchedules,
+    };
   },
   methods: {
     timeSet() {
@@ -74,6 +88,7 @@ export default {
   },
   mounted() {
     this.timeSet();
+    console.log(this.CTDaySchedules);
   },
 };
 </script>
@@ -89,5 +104,9 @@ button {
   height: 40px;
   margin: 5px 5px 10px 5px;
   border-radius: 10px;
+}
+
+#disable-time {
+  background-color: red;
 }
 </style>

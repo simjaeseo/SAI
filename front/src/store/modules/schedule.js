@@ -14,7 +14,7 @@ export default {
     selectedConsultant: false,
     scheduleDetail: '',
     selectedCategory: null,
-    dayschedules: [],
+    CTDaySchedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -27,6 +27,7 @@ export default {
     selectedConsultant: (state) => state.selectedConsultant,
     scheduleDetail: (state) => state.scheduleDetail,
     selectedCategory: (state) => state.selectedCategory,
+    CTDaySchedules: (state) => state.CTDaySchedules,
   },
   mutations: {
     SET_DATE(state, date) {
@@ -54,7 +55,6 @@ export default {
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
-      console.log(state.upcomingSchedules);
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
@@ -67,6 +67,12 @@ export default {
     },
     SET_SELECTED_CATEGORY(state, category) {
       state.selectedCategory = category;
+    },
+    SET_CT_DAY_SCHEDULES(state, CTDaySchedules) {
+      state.CTDaySchedules = [];
+      for (let i = 0; i < CTDaySchedules.length; i += 1) {
+        state.CTDaySchedules.push(CTDaySchedules[i].startTime);
+      }
     },
   },
   actions: {
@@ -103,8 +109,13 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    pickMyConsultant({ commit }, consultant) {
+    pickMyConsultant({ commit, dispatch, getters }, consultant) {
       commit('SET_MY_CONSULTANT', consultant);
+      const data = {
+        consultant,
+        date: getters.selectedDate,
+      };
+      dispatch('fetchCTDaySchedules', data);
     },
     entryScheduleDetail({ commit }, detail) {
       commit('SET_SCHEDULE_DETAIL', detail.target.value);
@@ -151,6 +162,15 @@ export default {
           dispatch('fetchSchedules');
           router.push({ name: 'Schedule' });
         });
+    },
+    fetchCTDaySchedules({ commit, getters }, data) {
+      axios({
+        url: drf.schedule.daySchedule(data.consultant, data.date),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_CT_DAY_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
     },
   },
   modules: {
