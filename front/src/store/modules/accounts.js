@@ -104,11 +104,9 @@ export default {
         headers: getters.authHeader,
         data: credential,
       })
-        .then((res) => {
-          dispatch('fetchCurrentUser');
-          console.log(credential);
-          console.log(res);
-          console.log('성공!');
+        .then(() => {
+          alert('비밀번호가 변경되었습니다. 로그인창으로 이동합니다.');
+          dispatch('logout');
         })
         .catch((err) => {
           console.log('에러발생');
