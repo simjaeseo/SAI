@@ -1,7 +1,6 @@
-package com.ssafy.sai.domain.job.domain;
+package com.ssafy.sai.domain.interview.domain;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,13 +8,16 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Job {
+public class InterviewQuestion {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "job_id")
+    @Column(name = "interview_question_id")
     private Long id;
 
-    private String name;
+    private String question;
+
+    private QuestionType questionType;
+
+
 }

@@ -65,6 +65,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/static/img/**",
                 "/static/**"
         );
+
     }
 
     @Override
@@ -82,6 +83,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/login/**").permitAll()   // 로그인
                 .antMatchers("/exception/**").permitAll()   // 예외처리 포인트
                 .anyRequest().hasRole("USER")   // 이외 나머지는 USER 권한 필요함
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true).deleteCookies("token")
                 .and()
                 .cors()
                 .and()

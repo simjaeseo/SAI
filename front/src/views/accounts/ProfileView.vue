@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class='container' id='my_page1'>
-      <p id='profile_text1'>~~님의 마이페이지</p>
+      <p id='profile_text1'>{{ currentUser.name }}님의 마이페이지</p>
       <hr>
       <div class='container'>
         <profile-data></profile-data>
@@ -17,12 +17,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ProfileData from '@/views/accounts/components/ProfileData.vue';
 
 export default {
   name: 'ProfileView',
   components: {
     ProfileData,
+  },
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
   },
 };
 </script>

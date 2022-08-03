@@ -1,7 +1,7 @@
 <template>
   <div id="main-page-view" class="container">
     <div id="route-button" class="row">
-      <p id='main-text1'>안녕하세요 user님!</p>
+      <p id='main-text1'>{{ currentUser.name }}님 안녕하세요!</p>
       <div class="col-lg-7" id='user-schedule-box1'>
         <route-button></route-button>
       </div>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import RouteButton from './components/RouteButton.vue';
 import MainCalendar from './components/MainCalendar.vue';
 
@@ -25,6 +26,9 @@ export default {
   components: {
     RouteButton,
     MainCalendar,
+  },
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
   },
 };
 </script>

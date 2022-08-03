@@ -17,28 +17,29 @@
             <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
               <td v-for="(day, index2) in row" :key="index2">
                 <button v-if="selectDate === day"
-                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)"
+                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)"
                 id="picked">
                   {{day}}
                 </button>
                 <button  v-else-if="day"
-                @click.prevent="pickDate(`${currentYear}-${currentMonth}-${day}`)">
+                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)">
                   {{day}}
                 </button>
-                <div>
-                <!-- <div :v-for="schedule in schedules" :key="schedule" id="schedule"> -->
-                  <!-- <div v-if="schedule.date === `${currentYear}-${currentMonth}-${day}`" -->
-                  <div v-if="day === 31"
+                <div v-for="schedule in schedules" :key="schedule" id="schedule">
+                  <div
+                  v-if="schedule.scheduleDate === `${yearMonth}-${`0${day}`.slice(-2)}`"
                   class="schedule-summary">
-                    <!-- {{ schedule.detail }} -->
-                    <p>생일~!</p>
+                    {{ schedule.detail }}
                     <div class="schedule-detail">
-                      <p>8월 31일 00시</p>
-                      <p>생일이다~!</p>
-                      <!-- {{ schedule.currentMonth }}월 {{ schedule.day }}일
+                      {{ schedule.scheduleDate.slice(5, 7) }}월
+                      {{ schedule.scheduleDate.slice(-2) }}일
                       {{ schedule.startTime }}<br>
-                      {{ schedule.detail }}<br> -->
-                      <button class="btn btn-danger">삭 제</button>
+                      {{ schedule.detail }}<br>
+                      <button
+                      class="btn btn-danger"
+                      @click="deleteSchedule(schedule.id)">
+                      삭 제
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -67,6 +68,7 @@ export default {
       currentCalendarMatrix: [],
       endOfDay: null,
       memoDatas: [],
+      yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}`,
     };
   },
   setup() {
@@ -80,11 +82,15 @@ export default {
     const fetchSchedules = () => {
       store.dispatch('fetchSchedules');
     };
+    const deleteSchedule = (scheduleId) => {
+      store.dispatch('deleteSchedule', scheduleId);
+    };
     return {
       pickDate,
       selectDate,
       schedules,
       fetchSchedules,
+      deleteSchedule,
     };
   },
   methods: {

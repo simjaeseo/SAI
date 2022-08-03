@@ -1,6 +1,5 @@
-package com.ssafy.sai.domain.member.dto;
+package com.ssafy.sai.domain.member.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 public class AuthenticationConDto {
-    @JsonIgnore
+
     private Long id;
     private String email;
     private String name;

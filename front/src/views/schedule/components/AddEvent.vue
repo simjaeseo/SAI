@@ -1,14 +1,22 @@
 <template>
   <div>
     <div id="btn-box">
-      <select class="form-select" aria-label="Default select example">
-        <option selected>컨설턴트상담</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+      <select class="form-select" aria-label="Default select example" @change="pickMyConsultant">
+        <option selected disabled>컨설턴트상담</option>
+        <option
+        v-for="myConsultant in myConsultants"
+        :key="myConsultant"
+        :value="myConsultant.id">
+          {{ myConsultant.name }}
+        </option>
       </select>
-        <button class="btn">개인일정추가</button>
+        <button
+        class="btn"
+        @click.prevent="noConsultant(null)">
+          개인일정추가
+        </button>
     </div>
+    <p>{{ selectedDate }}</p>
     <div>
       <div id="time-picker">
         <time-picker></time-picker>
@@ -21,6 +29,8 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 import TimePicker from './TimePicker.vue';
 import EventDetailInput from './EventDetailInput.vue';
 
@@ -29,6 +39,31 @@ export default {
   components: {
     TimePicker,
     EventDetailInput,
+  },
+  setup() {
+    const store = useStore();
+
+    const selectedDate = computed(() => store.getters.selectedDate);
+    const myConsultants = computed(() => store.getters.myConsultants);
+    const fetchMyConsultants = () => {
+      store.dispatch('fetchMyConsultants');
+    };
+    const pickMyConsultant = (e) => {
+      store.dispatch('pickMyConsultant', e.target.value);
+    };
+    const noConsultant = (value) => {
+      store.dispatch('pickMyConsultant', value);
+    };
+    return {
+      selectedDate,
+      myConsultants,
+      fetchMyConsultants,
+      pickMyConsultant,
+      noConsultant,
+    };
+  },
+  created() {
+    this.fetchMyConsultants();
   },
 };
 </script>
