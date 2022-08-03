@@ -49,7 +49,7 @@ public class MemberService {
      * @return 조회한 교육생의 정보 DTO
      * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
      */
-    public MemberDto findMemberOne(Long id) throws Exception {
+    public MemberDto findMemberOne(Long id) {
         memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         Member findMember = memberRepository.findMemberEntityGraph(id);
         return new MemberDto(findMember);
@@ -75,7 +75,7 @@ public class MemberService {
      * @throws Exception 회원 PK를 찾을 수 없는 경우, 이미 존재하는 휴대전화 번호로 변경하는 경우 예외 발생
      */
     @Transactional
-    public MemberResponse updateMember(Long id, MemberUpdateRequest request) throws Exception {
+    public MemberResponse updateMember(Long id, MemberUpdateRequest request) {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 

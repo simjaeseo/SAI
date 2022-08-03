@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -121,11 +122,11 @@ public class ScheduleService {
 
         Optional<Member> findMember = memberRepository.findById(id);
         if(findMember.get().getMemberStatus().equals(TRAINEE)){
-            List<ScheduleSinceTodayByStudentResponse> data = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), PageRequest.of(0,5));
-            return new DataResponse2<>(200, "특정 날짜 일정 조회", data);
+            List<ScheduleSinceTodayByStudentResponse> data = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0,5));
+            return new DataResponse2<>(200, "최근 날짜 일정 조회", data);
         }else{
-            List<ScheduleSinceTodayByConsultantResponse> data = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), PageRequest.of(0,5));
-            return new DataResponse2<>(200, "특정 날짜 일정 조회", data);
+            List<ScheduleSinceTodayByConsultantResponse> data = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0,5));
+            return new DataResponse2<>(200, "최근 날짜 일정 조회", data);
         }
 
 
