@@ -6,14 +6,18 @@ import com.ssafy.sai.domain.member.domain.MemberStatus;
 import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
+
+    Member findMemberById(Long id);
 
     @EntityGraph(attributePaths = {"campus"})
     @Query("select m from Member m where m.id = :id")
@@ -34,5 +38,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "where phone = :phone ", nativeQuery = true)
     Integer countByPhone(@Param("phone") String phone);
 
-    Optional<Member> findMemberByEmail(String email);
+    @Modifying
+    @Transactional
+    @Query(value = "update member m set m.password= :newPasswordCheck where m.email= :email", nativeQuery = true)
+    void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
+
+    Member findMemberByEmail(String email);
+
+    Member findMemberById(long id);
 }

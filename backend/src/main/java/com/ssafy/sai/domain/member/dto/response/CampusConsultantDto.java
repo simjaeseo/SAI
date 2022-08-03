@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.member.dto;
+package com.ssafy.sai.domain.member.dto.response;
 
 import com.ssafy.sai.domain.member.domain.Campus;
 import lombok.Data;
@@ -12,11 +12,5 @@ public class CampusConsultantDto {
 
     public CampusConsultantDto(Campus campus) {
         this.city = campus.getCity();
-    }
-
-    public Campus toEntity() {
-        return Campus.builder()
-                .city(city)
-                .build();
     }
 }

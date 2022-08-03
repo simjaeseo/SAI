@@ -2,7 +2,11 @@ package com.ssafy.sai.domain.member.api;
 
 import javax.validation.Valid;
 
-import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
+import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
+import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
+import com.ssafy.sai.domain.member.dto.response.AuthenticationConDto;
+import com.ssafy.sai.domain.member.dto.response.AuthenticationDto;
 import com.ssafy.sai.domain.member.service.SignService;
 import com.ssafy.sai.global.util.auth.AuthProvider;
 import lombok.RequiredArgsConstructor;
