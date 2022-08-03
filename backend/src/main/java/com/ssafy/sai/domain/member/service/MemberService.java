@@ -70,11 +70,11 @@ public class MemberService {
         }
     }
 
-    public boolean updatedPassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, PasswordDto passwordDto) {
+    @Transactional
+    public boolean updatedPassword(PasswordDto passwordDto) {
         try {
             // 현재 접속중인 회원의 이메일과 일치하는 회원을 찾는다
-            System.out.println(customUserDetails.getId());
-            Member member = memberRepository.findMemberById(customUserDetails.getId());
+            Member member = memberRepository.findMemberById(passwordDto.getId());
             BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
 
             // 입력한 현재 비밀번호와 접속중인 회원의 비밀번호가 일치하고,
@@ -86,8 +86,6 @@ public class MemberService {
 
                     // native 쿼리로 회원 비밀번호 업데이트
                     memberRepository.updatePassword(hashPassword, member.getEmail());
-                    // 접속중인 회원 비밀번호 변경
-                    customUserDetails.setPassword(hashPassword);
                     return true;
                 }
             }

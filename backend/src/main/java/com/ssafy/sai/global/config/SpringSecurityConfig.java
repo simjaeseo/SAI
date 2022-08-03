@@ -87,6 +87,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true).deleteCookies("token")
                 .and()
                 .cors()
                 .and()
