@@ -57,11 +57,5 @@ public class ExceptionAdvice {
         private Integer errorCode;
         private HttpStatus httpStatus;
         private String errorMessage;
-
-        public ExceptionDto(MemberExceptionType memberExceptionType) {
-            this.errorCode = memberExceptionType.getErrorCode();
-            this.httpStatus = memberExceptionType.getHttpStatus();
-            this.errorMessage = memberExceptionType.getErrorMessage();
-        }
     }
 }
