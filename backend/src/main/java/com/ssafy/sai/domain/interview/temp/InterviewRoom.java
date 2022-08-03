@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.interview.domain;
+package com.ssafy.sai.domain.interview.temp;
 
 import com.ssafy.sai.global.common.BaseEntity;
 import lombok.AccessLevel;

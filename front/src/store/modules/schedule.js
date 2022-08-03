@@ -1,4 +1,5 @@
 import drf from '@/api/api';
+import router from '@/router';
 import axios from 'axios';
 
 export default {
@@ -12,7 +13,7 @@ export default {
     myConsultants: [],
     selectedConsultant: false,
     scheduleDetail: '',
-    selectedCategory: false,
+    selectedCategory: '',
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -56,7 +57,7 @@ export default {
       state.myConsultants = myConsultants;
     },
     SET_MY_CONSULTANT(state, consultant) {
-      state.myConsultant = consultant;
+      state.selectedConsultant = consultant;
     },
     SET_SCHEDULE_DETAIL(state, datail) {
       state.scheduleDetail = datail;
@@ -72,35 +73,35 @@ export default {
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
     },
-    fetchSchedules({ commit, state, getters }) {
+    fetchSchedules({ commit, getters }) {
       axios({
-        url: drf.schedule.schedule(state.currentUser.id),
+        url: drf.schedule.schedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_SCHEDULES', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
     },
-    fetchUpcomingSchedules({ commit, getters }, date) {
+    fetchUpcomingSchedules({ commit, getters }) {
       axios({
-        url: drf.schedule.upcomingSchedule(date),
+        url: drf.schedule.upcomingSchedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err.response));
     },
-    fetchMyConsultants({ commit, state, getters }) {
+    fetchMyConsultants({ commit, getters }) {
       axios({
-        url: drf.schedule.myConsultants(state.currentUser.id),
+        url: drf.schedule.myConsultant(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_MY_CONSULTANTS', res.data))
-        .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
+      // .catch((err) => console.error(err.response));
     },
-    pickMyconsultant({ commit }, consultant) {
-      commit('SET_START_TIME', consultant);
+    pickMyConsultant({ commit }, consultant) {
+      commit('SET_MY_CONSULTANT', consultant);
     },
     entryScheduleDetail({ commit }, detail) {
       commit('SET_SCHEDULE_DETAIL', detail.target.value);
@@ -108,34 +109,43 @@ export default {
     selectCategory({ commit }, category) {
       commit('SET_SELECTED_CATEGORY', category);
     },
-    createSchedule({ dispatch, state, getters }) {
+    createSchedule({ dispatch, getters }) {
+      console.log(getters.selectedDate);
+      console.log(getters.selectedStartTime);
+      console.log(getters.selectedEndTime);
+      console.log(getters.selectedCategory);
+      console.log(getters.scheduleDetail);
+      console.log(getters.currentUser.id);
+      console.log(getters.selectedConsultant);
       axios({
-        url: drf.schedule.schedule(state.currentUser.id),
+        url: drf.schedule.schedule(getters.currentUser.id),
         method: 'post',
         data: {
           scheduleDate: getters.selectedDate,
           startTime: getters.selectedStartTime,
           endTime: getters.selectedEndTime,
-          category: getters.selectCategory,
+          category: getters.selectedCategory,
           detail: getters.scheduleDetail,
-          memberStudentId: state.currentUser.id,
+          memberStudentId: getters.currentUser.id,
           memberConsultantId: getters.selectedConsultant,
         },
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch(this.fetchSchedules);
-        });
+          dispatch('fetchSchedules');
+          router.push({ name: 'ScheduleHome' });
+        })
+        .catch((err) => console.log(err));
     },
-    deleteSchedule({ dispatch, state, getters }, scheduleId) {
+    deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({
-        url: drf.schedule.scheduleDelete(state.currentUser.id, scheduleId),
+        url: drf.schedule.scheduleDelete(getters.currentUser.id, scheduleId),
         method: 'delete',
         headers: getters.authHeader,
       })
         .then(() => {
-          dispatch(this.fetchSchedules);
-          // 안되면 라우터푸시?
+          dispatch('fetchSchedules');
+          router.push({ name: 'ScheduleHome' });
         });
     },
   },

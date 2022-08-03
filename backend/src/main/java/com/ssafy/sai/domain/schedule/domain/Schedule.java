@@ -38,12 +38,16 @@ public class Schedule {
     private String detail;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+<<<<<<< HEAD
+    @ManyToOne(fetch = FetchType.EAGER)
+=======
+    @ManyToOne(fetch =   FetchType.EAGER)
+>>>>>>> 72995383960237406d552c4930163477bab1fcda
     @JoinColumn(name="member_student_id")
     private Member memberStudent;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="member_consultant_id")
     private Member memberConsultant;
 
