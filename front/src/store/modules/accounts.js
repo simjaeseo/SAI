@@ -40,8 +40,7 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          console.log(res.data);
-          dispatch('fetchCurrentUser', res.data.id);
+          dispatch('fetchCurrentUser', res.data.data.id);
           router.push({ name: 'Main' });
         })
         .catch(() => {
