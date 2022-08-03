@@ -1,5 +1,6 @@
 package com.ssafy.sai.global.util.auth;
 
+import com.ssafy.sai.domain.member.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Setter
 public class CustomUserDetails implements UserDetails {
 
+    private Member member;
     private long id;
 
     private String username;
@@ -23,6 +25,10 @@ public class CustomUserDetails implements UserDetails {
     private String password;
 
     private List<String> roles = new ArrayList<>();
+
+    public CustomUserDetails(Member member) {
+        this.member = member;
+    }
 
     public CustomUserDetails(
             long id,
@@ -46,7 +52,16 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toList());
 
         return roles;
+    }
 
+    @Override
+    public String getPassword() {
+        return member.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return member.getEmail();
     }
 
     // 계정 만료여부
