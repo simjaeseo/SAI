@@ -32,7 +32,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
     private final CampusRepository campusRepository;
-
+/*
     public DataResponse<?> selectAll(Long id){
         // 날짜 정렬?
 

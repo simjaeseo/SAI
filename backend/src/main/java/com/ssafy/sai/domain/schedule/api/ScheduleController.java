@@ -25,7 +25,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
 
-    // 일정 전체 조회
+/*    // 일정 전체 조회
     @GetMapping("/{member_id}")
     public DataResponse<?> getScheduleList(@PathVariable Long member_id){
         return scheduleService.selectAll(member_id);
@@ -53,7 +53,7 @@ public class ScheduleController {
     @GetMapping("/{member_id}/recent")
     public DataResponse<?> getScheduleSinceToday(@PathVariable Long member_id){
         return scheduleService.selectScheduleSinceToday(member_id);
-    }
+    }*/
 
     // 여기서 member_id는 일정을 알고싶어하는 멤버의 id
     @GetMapping("/{member_id}/{date}")
