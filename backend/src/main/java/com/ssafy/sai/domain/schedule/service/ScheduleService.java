@@ -32,7 +32,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
     private final CampusRepository campusRepository;
-
+/*
     public DataResponse<?> selectAll(Long id){
         // 날짜 정렬?
 
@@ -119,6 +119,6 @@ public class ScheduleService {
         List<Schedule> schedulesSinceToday = scheduleRepository.selectScheduleSinceToday(LocalDate.now());
 
         return new DataResponse<>(200,"일정 조회 성공", schedulesSinceToday);
-    }
+    }*/
 
 }
