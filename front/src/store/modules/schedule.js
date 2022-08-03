@@ -134,7 +134,7 @@ export default {
       })
         .then(() => {
           dispatch('fetchSchedules');
-          router.push({ name: 'ScheduleHome' });
+          router.push({ name: 'Schedule' });
         })
         .catch((err) => console.log(err));
     },
@@ -146,7 +146,7 @@ export default {
       })
         .then(() => {
           dispatch('fetchSchedules');
-          router.push({ name: 'ScheduleHome' });
+          router.push({ name: 'Schedule' });
         });
     },
   },
