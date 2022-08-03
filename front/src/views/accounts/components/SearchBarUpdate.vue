@@ -9,9 +9,9 @@
         type="text"
         id="search"
         v-model="searchTerm"
-        placeholder="&#128269;  직무를검색하세요"
+        placeholder="&#128269;  기업검색하세요"
         class="p-3 mb-0.5 w-full form-control"
-        style="width:300px; height:36px"
+        style="width:460px; height:50px"
         @keydown.enter.prevent
       >
       </label>
@@ -44,18 +44,18 @@
         @click="[selectedDeleteItem(country.name), deleteNewEnter(country.name)]">
         #{{ country.name }}<span id='delete'> x</span></p>
 
-        <p v-for="(user, index) in Jobs" :key="index" class='btn'
+        <p v-for="(user, index) in Enters" :key="index" class='btn'
         id='selected-item'
         @click="selectedDeleteItem2(user)"
         @keydown="selectedDeleteItem2(user)">
-        #{{ user.jobName }}<span id='delete'> x</span></p>
+        #{{ user.enterpriseName }}<span id='delete'> x</span></p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import countries from '@/data/duty.json';
+import countries from '@/data/countries.json';
 import {
   ref,
   computed,
@@ -72,6 +72,7 @@ export default {
     });
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const Enters = computed(() => store.getters.userEnter);
     const Jobs = computed(() => store.getters.userJob);
     const searchTerm = ref('');
 
@@ -101,7 +102,7 @@ export default {
     };
     const addEnter = function (event) {
       state.newEnter.push(event);
-      store.dispatch('newJob', {
+      store.dispatch('newEnter', {
         enter: state.newEnter,
       });
     };
@@ -111,7 +112,7 @@ export default {
           state.newEnter.splice(i, 1);
           i -= 1;
         }
-        store.dispatch('newJob', {
+        store.dispatch('newEnter', {
           enter: state.newEnter,
         });
       }
@@ -128,6 +129,7 @@ export default {
       selectedCountries,
       addEnter,
       deleteNewEnter,
+      Enters,
       Jobs,
     };
   },
@@ -142,14 +144,14 @@ export default {
       }
     },
     selectedDeleteItem2(event) {
-      const data = event.jobName;
-      for (let i = 0; i < this.Jobs.length; i += 1) {
-        if (this.Jobs[i].jobName === data) {
-          this.Jobs.splice(i, 1);
+      const data = event.enterpriseName;
+      for (let i = 0; i < this.Enters.length; i += 1) {
+        if (this.Enters[i].enterpriseName === data) {
+          this.Enters.splice(i, 1);
           i -= 1;
         } this.$forceUpdate();
       }
-      this.$emit('jobs', this.Jobs);
+      this.$emit('enterprises', this.Enters);
     },
   },
   // updated() {
@@ -177,7 +179,7 @@ export default {
   // // 유저가 관심기업 업데이트 안했을때 자동 에밋
   created() {
     if (this.selectedCountries.length === 0) {
-      this.$emit('jobs', this.Jobs);
+      this.$emit('enterprises', this.Enters);
     }
   },
 };
@@ -225,7 +227,7 @@ ul {
 }
 ul {
   background-color: white;
-  width: 300px;
+  width: 460px;
   list-style:none;
   padding-left: 0;
 }

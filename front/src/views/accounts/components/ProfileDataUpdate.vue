@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="userUpdate">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
@@ -22,32 +22,17 @@
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected disabled>기수</option>
-                        <option value='1' disabled>1기</option>
-                        <option value='2' disabled>2기</option>
-                        <option value='3' disabled>3기</option>
-                        <option value='4' disabled>4기</option>
-                        <option value='5' disabled>5기</option>
-                        <option value='6' disabled>6기</option>
-                        <option value='7' disabled>7기</option>
+                        <option selected disabled>{{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
                     aria-label='Default select example'>
-                        <option selected disabled>지역</option>
-                        <option value='1' disabled>서울</option>
-                        <option value='2' disabled>대전</option>
-                        <option value='3' disabled>광주</option>
-                        <option value='4' disabled>구미</option>
-                        <option value='5' disabled>부울경</option>
+                        <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
-                    aria-label='Default select example'>
-                        <option selected disabled>반</option>
-                        <option value='1'>1반</option>
-                        <option value='2'>2반</option>
-                        <option value='3'>3반</option>
-                        <option value='4'>4반</option>
-                        <option value='5'>5반</option>
+                    aria-label='Default select example'
+                    @click="setOptions">
+                      <option selected>{{ currentUser.campus.classNumber}}</option>
+                      <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
                     <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
@@ -72,12 +57,14 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday" readonly></label>
+                    class='form-control' v-model="currentUser.birthday" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email" readonly></label>
+                    class='form-control' v-model="currentUser.email" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
-                    <search-bar-duty></search-bar-duty>
+                    <search-bar-duty @jobs='jobs'></search-bar-duty>
                 </div>
               </div>
             </div>
@@ -105,7 +92,7 @@
                       aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <search-bar></search-bar>
+                      <search-bar-update @enterprises='enterprises'></search-bar-update>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn" id='cancel-btn2'
@@ -134,43 +121,97 @@
         <!-- 버튼 -->
         <div id='btn-box'>
             <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <router-link to="profile"><button class='btn'
-            type='submit'
-            id='update-btn'>완료</button></router-link>
+            <button class='btn' type='submit' id='update-btn'>완료</button>
         </div>
     </form>
+    <!-- 데이터확인용 -->
+    <div v-for="(job, index) in newJob" :key=index>{{ job }}</div>
+    <div v-for="(oldjob, index) in state.userJob" :key=index>{{ oldjob.jobName }}</div>
+    <div v-for="(ent, index) in newEnter" :key=index>{{ ent }}</div>
+    <div v-for="(oldent, index) in state.userEnter" :key=index>{{ oldent.enterpriseName }}</div>
   </div>
 </template>
 
 <script>
 import { computed, reactive, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
-import SearchBar from './SearchBar.vue';
 import SearchBarDuty from './SearchBarDuty.vue';
+import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
-  components: { SearchBar, SearchBarDuty },
+  components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
     const state = reactive({
+      mobileFirst: '',
       mobileSecond: '',
       mobileLast: '',
+      options: [],
+      currentUserData: {},
+      userEnter: [],
+      userJob: [],
     });
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const newEnter = computed(() => store.getters.setNewEnter.enter);
+    const newJob = computed(() => store.getters.setJob.enter);
+
     onBeforeMount(() => {
-      console.log(currentUser.value.phone);
       const userPhone = currentUser.value.phone;
+      state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
-      console.log(state.mobileSecond);
       state.mobileLast = userPhone.substr(7);
-      console.log(state.mobileLast);
+      state.currentUserData = currentUser;
     });
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    const setOptions = function () {
+      if (state.currentUserData.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (state.currentUserData.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (state.currentUserData.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (state.currentUserData.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (state.currentUserData.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
+    };
+    const userUpdate = function () {
+      store.dispatch('userUpdate', {
+        campus: {
+          city: state.currentUserData.campus.city,
+          classNumber: state.currentUserData.campus.classNumber,
+        },
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        profilePicture: 'none',
+      });
+    };
+    const enterprises = function (data) {
+      state.userEnter = data;
+    };
+    const jobs = function (data) {
+      state.userJob = data;
+    };
+
     return {
       isLoggedIn,
       currentUser,
       state,
+      noChange,
+      setOptions,
+      userUpdate,
+      enterprises,
+      newEnter,
+      jobs,
+      newJob,
     };
   },
 };

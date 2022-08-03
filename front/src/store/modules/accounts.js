@@ -6,10 +6,18 @@ export default {
   state: {
     token: localStorage.getItem('token') || '',
     currentUser: {},
+    userEnter: {},
+    userJob: {},
+    setNewEnter: [],
+    setJob: [],
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
     currentUser: (state) => state.currentUser,
+    userEnter: (state) => state.userEnter,
+    userJob: (state) => state.userJob,
+    setNewEnter: (state) => state.setNewEnter,
+    setJob: (state) => state.setJob,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -17,9 +25,17 @@ export default {
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
+      state.userEnter = user.interestedEnterprises;
+      state.userJob = user.interestedJobs;
     },
     REMOVE_CURRENT_USER(state) {
       state.currentUser = {};
+    },
+    SET_NEW_ENTER(state, enter) {
+      state.setNewEnter = enter;
+    },
+    SET_NEW_JOB(state, job) {
+      state.setJob = job;
     },
   },
   actions: {
@@ -40,7 +56,6 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          console.log(res.data);
           dispatch('fetchCurrentUser', res.data.id);
           router.push({ name: 'Main' });
         })
@@ -57,12 +72,11 @@ export default {
         .then((res) => {
           const token = res.data.key;
           dispatch('saveToken', token);
-          alert('회원가입이 완료되었습니다.');
+          alert('교육생님의 회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
           router.push({ name: 'Login' });
         })
-        .catch((err) => {
-          alert('에러가 발생했습니다.');
-          console.log(err);
+        .catch(() => {
+          alert('올바르지 않은 요청입니다. 회원가입을 다시 시도하세요.');
         });
     },
     fetchCurrentUser({ getters, commit }, userid) {
@@ -73,27 +87,24 @@ export default {
           header: getters.authHeader,
         })
           .then((res) => commit('SET_CURRENT_USER', res.data.data))
-          .catch((err) => {
-            console.log(err);
+          .catch(() => {
+            alert('오류발생');
           });
       }
     },
     logout({ getters, dispatch, commit }) {
-      console.log('일단오긴왔음?0');
       axios({
         url: drf.member.logout(),
         method: 'post',
         headers: getters.authHeader,
       })
         .then(() => {
-          console.log('요청왔니?');
           dispatch('removeToken');
           commit('REMOVE_CURRENT_USER');
           alert('로그아웃 되었습니다.');
           router.push({ name: 'Login' });
         })
         .catch((err) => {
-          console.log('요청안왔다!');
           console.log(err.response);
         });
     },
@@ -108,10 +119,31 @@ export default {
           alert('비밀번호가 변경되었습니다. 로그인창으로 이동합니다.');
           dispatch('logout');
         })
-        .catch((err) => {
-          console.log('에러발생');
-          console.log(err.response.data);
+        .catch(() => {
+          alert('오류발생');
         });
+    },
+    signupformCT({ dispatch }, credentials) {
+      axios({
+        url: drf.member.ctSignup(),
+        method: 'post',
+        data: credentials,
+      })
+        .then((res) => {
+          const token = res.data.key;
+          dispatch('saveToken', token);
+          alert('컨설턴트님의 회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+          router.push({ name: 'Login' });
+        })
+        .catch(() => {
+          alert('올바르지 않은 요청입니다. 회원가입을 다시 시도하세요.');
+        });
+    },
+    newEnter({ commit }, enter) {
+      commit('SET_NEW_ENTER', enter);
+    },
+    newJob({ commit }, enter) {
+      commit('SET_NEW_JOB', enter);
     },
   },
   modules: {},

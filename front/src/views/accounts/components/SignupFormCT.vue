@@ -127,7 +127,8 @@
           </div>
           <div>
             <div id='form-select-wrap'>
-              <select class='form-select' id='form-select-region'
+              <p id='login-text3'>소속</p>
+              <select class='form-select' id='form-select-region1'
               aria-label='Default select example'
               v-model="state.selected"
               @click.prevent='setOptions'
@@ -143,25 +144,35 @@
             </div>
             <div id='form-select-wrap' class="mx-2">
               <p id='login-text4'>연락처</p>
-              <select class='form-select' id='form-select3' aria-label='Default select example'>
-                <option value='1'>010</option>
-                <option value='2'>011</option>
-                <option value='3'>016</option>
-                <option value='4'>017</option>
-                <option value='5'>018</option>
-                <option value='5'>019</option>
+              <select class='form-select' id='form-select3' aria-label='Default select example'
+              @change="UserMobileFirst"
+              required>
+                <option selected disabled>선택</option>
+                <option value='010'>010</option>
+                <option value='011'>011</option>
+                <option value='016'>016</option>
+                <option value='017'>017</option>
+                <option value='018'>018</option>
+                <option value='019'>019</option>
               </select>
               <label for="user_signup_number1">
-                <input type="text" class="form-control" id='user_signup_number1'>
+                  <input type="text" class="form-control" id='user_signup_number1'
+                @change="UserMobileSecond"
+                v-model="mobileSecond"
+                maxlength="4"
+                required>
               </label>
               <label for="user_signup_number2">
-                <input type="text" class="form-control" id='user_signup_number2'>
+                <input type="text" class="form-control" id='user_signup_number2'
+                @change="UserMobileLast"
+                maxlength="4"
+                required>
               </label>
             </div>
           </div>
         </div>
         <div id='user-signup-btn'>
-          <button class='btn' id='signup-btn'>회원가입</button>
+          <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
         </div>
       </form>
         <router-link to='/helpPassword' id='sign-up-text'>
@@ -172,13 +183,199 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
-  name: 'SignupForm',
+  name: 'SignupFormCT',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      credentials: {
+        userEmail: '',
+        userPassword1: '',
+        userPassword2: '',
+        username: '',
+        userBirth: '',
+        memberStatus: 'CONSULTANT',
+        userRegion: '',
+      },
+      selected: '',
+      options: [],
+      mobileFirst: '',
+      mobileSecond: '',
+      mobileLast: '',
+      isCorrect: false,
+      isEmailCorrect: false,
+    });
+    const checkEmail = function () {
+      if (/^[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/.test(state.credentials.userEmail)) {
+        state.isEmailCorrect = true;
+        console.log('정규식 통과');
+      } else {
+        state.isEmailCorrect = false;
+        alert('이메일 형식에 맞게 입력하세요. 예)example@google.com');
+      }
+    };
+    const checkStrNumPasswd1 = function () {
+      if (!(/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword1))) {
+        state.isCorrect = false;
+        console.log('비번1정규식통과ㄴㄴ');
+        alert('8자리 이상 16자리 이하 영문+숫자.');
+        state.credentials.userPassword1 = '';
+        document.getElementById('user_signup_pw1').focus();
+      }
+    };
+    const checkStrNumPasswd2 = function () {
+      if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword2)) {
+        if (state.credentials.userPassword1 === state.credentials.userPassword2) {
+          state.isCorrect = true;
+          console.log('비번2정규식통과&같음');
+        } else {
+          state.isCorrect = false;
+          console.log('비번2정규식통과ㄴㄴ');
+          alert('비밀번호가 올바르지 않습니다.');
+        }
+      } else {
+        state.isCorrect = false;
+        console.log('비번2정규식통과ㄴㄴ');
+        alert('비밀번호가 올바르지 않습니다.');
+      }
+    };
+    const selectedUserYear = function (event) {
+      const dash = '-';
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        state.credentials.userBirth = '';
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserMonth = function (event) {
+      const dash = '-';
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        const updateMonth = state.credentials.userBirth.substr(0, 5);
+        state.credentials.userBirth = updateMonth;
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserDay = function (event) {
+      state.credentials.userBirth += event.target.value;
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value;
+      } else {
+        const updateDay = state.credentials.userBirth.substr(0, 8);
+        state.credentials.userBirth = updateDay;
+        state.credentials.userBirth += event.target.value;
+      }
+    };
+    const UserMobileFirst = function (event) {
+      if (state.mobileFirst.length === 0) {
+        state.mobileFirst = event.target.value;
+      } else {
+        state.mobileFirst = '';
+        state.mobileFirst = event.target.value;
+      }
+    };
+    const UserMobileSecond = function (event) {
+      console.log(event.target.value);
+      if (/^([0-9]{3,4})$/.test(event.target.value) === true) {
+        console.log('유효합니다');
+        if (state.mobileSecond.length === 0) {
+          state.mobileSecond = event.target.value;
+        } else {
+          state.mobileSecond = '';
+          state.mobileSecond = event.target.value;
+        }
+      } else {
+        state.mobileSecond = '';
+        alert('숫자만 입력 가능합니다.');
+      }
+    };
+    const UserMobileLast = function (event) {
+      console.log(event.target.value);
+      if (/^([0-9]{4})$/.test(event.target.value) === true) {
+        console.log('유효합니다');
+        if (state.mobileLast.length === 0) {
+          state.mobileLast = event.target.value;
+        } else {
+          state.mobileLast = '';
+          state.mobileLast = event.target.value;
+        }
+      } else {
+        state.mobileLast = '';
+        alert('숫자만 입력 가능합니다.');
+      }
+    };
+    const selectedUserRegion = function (event) {
+      state.credentials.userRegion = event.target.value;
+    };
+
+    const signupformCT = function () {
+      console.log(
+        state.credentials.userEmail,
+        state.credentials.userPassword1,
+        state.credentials.username,
+        state.credentials.userBirth,
+        state.credentials.userRegion,
+        state.mobileFirst + state.mobileSecond + state.mobileLast,
+        state.credentials.memberStatus,
+      );
+      store.dispatch('signupformCT', {
+        email: state.credentials.userEmail,
+        password: state.credentials.userPassword1,
+        name: state.credentials.username,
+        birthday: state.credentials.userBirth,
+        campus: {
+          city: state.credentials.userRegion,
+        },
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        memberStatus: state.credentials.memberStatus,
+      });
+    };
+    return {
+      state,
+      store,
+      selectedUserYear,
+      selectedUserMonth,
+      selectedUserDay,
+      UserMobileFirst,
+      UserMobileSecond,
+      UserMobileLast,
+      signupformCT,
+      selectedUserRegion,
+      checkStrNumPasswd1,
+      checkStrNumPasswd2,
+      checkEmail,
+    };
+  },
 };
 </script>
 
 <style scoped>
+#form-select-region1 {
+  width: 342px;
+  height: 50px;
+}
+#incorrect-pw {
+  color: #fd0606;
+}
+#correct-pw {
+  color: #5c6ac4;
+}
+#search-bar-box {
+  height: 110px;
+  position: relative;
+  z-index: 1000;
+  margin-top: 20px;
+}
+#search-bar-box2 {
+  height: 110px;
+  position: relative;
+  z-index: 900;
+}
 #signup-text-wrap {
   text-align: center;
   margin-bottom: 100px;
@@ -208,7 +405,7 @@ export default {
   line-height: 7;
   color: #000000;
   background-clip: padding-box;
-  border: 1.9px solid #cecece;
+  border: 1px solid #ced4da;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -237,13 +434,14 @@ export default {
   appearance: none;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid #ced4da;
 }
 #user_signup_number1:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #user_signup_number2 {
   margin-bottom: 3px;
@@ -259,14 +457,15 @@ export default {
   -moz-appearance: none;
   appearance: none;
   border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  border: 1px solid #ced4da;
+ transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 #user_signup_number2:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #double-check-btn{
   z-index: 1000;
@@ -326,16 +525,35 @@ export default {
   margin: 0;
 }
 #form-select {
-  width: 342px;
+  width: 105px;
   height: 50px;
   display: inline-block;
+}
+#form-select-cardinal-number{
+  width: 107px;
+  height: 50px;
+  display: inline-block;
+
+}
+#form-select-region{
+  width: 107px;
+  height: 50px;
+  display: inline-block;
+  margin-left: 10px;
+}
+#form-select-class{
+  width: 107px;
+  height: 50px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 1px;
 }
 #form-select:focus {
   color: #000000;
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select2 {
   width: 167px;
@@ -348,7 +566,7 @@ export default {
   background-color: rgb(255, 255, 255);
   border-color: #ffffff;
   outline: 0;
-  box-shadow: 0 0 0 0.1rem #5c6ac4;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
 #form-select3 {
   width: 100px;
@@ -362,8 +580,19 @@ export default {
   outline: 0;
   box-shadow: 0 0 0 0.1rem #5c6ac4;
 }
+.form-select:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
+}
 #form-select-wrap{
   display: inline-block;
+}
+#form-select-wrap1{
+  display: inline-block;
+  margin-left: 9px;
 }
 #user-signup-btn {
   display: flex;

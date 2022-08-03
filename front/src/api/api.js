@@ -9,7 +9,7 @@ export default {
     logout: () => `${HOST}logout`,
     studentSignup: () => `${HOST}signup/member`,
     currentUserInfo: (id) => `${HOST + MEMBER}member/${id}`,
-    ctSignup: () => `${HOST + MEMBER}/consultant`,
+    ctSignup: () => `${HOST}signup/consultant`,
     profile: (id) => HOST + MEMBER + id,
     updatePassword: () => `${HOST + MEMBER}password`,
     updateProfile: (id) => `${HOST + MEMBER + id}/modify`,
