@@ -1,13 +1,12 @@
 package com.ssafy.sai.domain.member.api;
 
 import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +36,8 @@ public class MemberController {
         return new MessageResponse(200, "OK");
     }
 
-    @PostMapping("/updatePassword")
+    @PostMapping("/password")
     public MessageResponse updatePassword(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody PasswordDto passwordDto) {
-
         if (memberService.updatedPassword(customUserDetails, passwordDto)) {
             return new MessageResponse(200, "OK");
         }

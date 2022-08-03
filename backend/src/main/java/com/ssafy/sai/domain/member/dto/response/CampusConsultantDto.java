@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.member.dto;
+package com.ssafy.sai.domain.member.dto.response;
 
 import com.ssafy.sai.domain.member.domain.Campus;
 import lombok.Data;
