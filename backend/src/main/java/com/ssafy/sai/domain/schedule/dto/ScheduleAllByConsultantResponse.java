@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.schedule.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,8 +13,10 @@ public class ScheduleAllByConsultantResponse {
 
     private LocalDate scheduleDate;
 
+    @JsonFormat(pattern = "hh:mm")
     private LocalTime startTime;
 
+    @JsonFormat(pattern = "hh:mm")
     private LocalTime endTime;
 
     private String category;
