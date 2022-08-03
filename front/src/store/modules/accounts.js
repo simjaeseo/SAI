@@ -72,7 +72,7 @@ export default {
           method: 'get',
           header: getters.authHeader,
         })
-          .then((res) => commit('SET_CURRENT_USER', res.data.data))
+          .then((res) => commit('SET_CURRENT_USER', res.data))
           .catch((err) => {
             console.log(err);
           });
