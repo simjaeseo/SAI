@@ -3,6 +3,7 @@ package com.ssafy.sai.domain.member.repository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
+import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,7 +23,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.id = :id")
     Member findMemberEntityGraph(@Param("id") Long id);
 
-    List<Member> findByCampusAndMemberStatus(Campus campus, MemberStatus memberStatus);
+    @Query("select new com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse(m.id, m.name) from Member as m where m.campus.city = :city and m.memberStatus = :memberStatus")
+    List<ConsultantAllByCampusResponse> findConsultantByCampus(@Param("city") String city, @Param("memberStatus") MemberStatus memberStatus);
 
     @Query(value =
             "select count(*) " +
@@ -38,8 +40,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "update member m set m.password=?1 where m.email=?2", nativeQuery = true)
-    void updatePassword(String newPasswordCheck, String email);
+    @Query(value = "update member m set m.password= :newPasswordCheck where m.email= :email", nativeQuery = true)
+    void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
 
     Member findMemberByEmail(String email);
 
