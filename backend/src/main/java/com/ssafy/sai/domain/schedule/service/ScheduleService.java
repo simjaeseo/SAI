@@ -6,13 +6,13 @@ import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
-import com.ssafy.sai.domain.schedule.dto.ScheduleAllByConsultantResponse;
-import com.ssafy.sai.domain.schedule.dto.ScheduleAllByStudentResponse;
-import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
+import com.ssafy.sai.domain.schedule.dto.*;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,14 +37,11 @@ public class ScheduleService {
         // 날짜 정렬?
 
         Optional<Member> findMember = memberRepository.findById(id);
-        System.out.println(findMember.get().getMemberStatus());
         if(findMember.get().getMemberStatus().equals(TRAINEE)){
             List<ScheduleAllByStudentResponse> data = scheduleRepository.selectAllByStudent(id);
-            System.out.println(data.toString());
             return new DataResponse<>(200, "일정 전체 조회 성공", data);
         }else{
             List<ScheduleAllByConsultantResponse> data = scheduleRepository.selectAllByConsultant(id);
-            System.out.println(data.toString());
             return new DataResponse<>(200, "일정 전체 조회 성공", data);
         }
 
@@ -114,11 +111,36 @@ public class ScheduleService {
         return new DataResponse<>(200,"담당 컨설턴트 조회 성공",findConsultant );
     }
 
-    public DataResponse<List<Schedule>> selectScheduleSinceToday(Long id){
 
-        List<Schedule> schedulesSinceToday = scheduleRepository.selectScheduleSinceToday(LocalDate.now());
 
-        return new DataResponse<>(200,"일정 조회 성공", schedulesSinceToday);
-    }*/
+
+    // 최근 일정 5개 받아오기!
+    public DataResponse<?> selectScheduleSinceToday(Long id){
+
+        Optional<Member> findMember = memberRepository.findById(id);
+        if(findMember.get().getMemberStatus().equals(TRAINEE)){
+            List<ScheduleSinceTodayByStudentResponse> data = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), PageRequest.of(0,5));
+            return new DataResponse<>(200, "특정 날짜 일정 조회", data);
+        }else{
+            List<ScheduleSinceTodayByConsultantResponse> data = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), PageRequest.of(0,5));
+            return new DataResponse<>(200, "특정 날짜 일정 조회", data);
+        }
+
+
+    }
+
+    // 특정 날짜 조회
+    public DataResponse<?> selectScheduleDay(Long id, LocalDate date){
+
+        Optional<Member> findMember = memberRepository.findById(id);
+        if(findMember.get().getMemberStatus().equals(TRAINEE)){
+            List<ScheduleOnSpecificDayByStudentResponse> data = scheduleRepository.selectScheduleOnSpecificDayByStudent(id, date);
+            return new DataResponse<>(200, "특정 날짜 일정 조회", data);
+        }else{
+            List<ScheduleOnSpecificDayByConsultantResponse> data = scheduleRepository.selectScheduleOnSpecificDayByConsultant(id, date);
+            return new DataResponse<>(200, "특정 날짜 일정 조회", data);
+        }
+
+    }
 
 }
