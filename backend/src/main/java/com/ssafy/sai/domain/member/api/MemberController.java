@@ -1,20 +1,13 @@
 package com.ssafy.sai.domain.member.api;
 
-import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
-import com.ssafy.sai.domain.member.exception.MemberException;
-import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
-import com.ssafy.sai.global.common.MessageResponse;
-import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,9 +27,8 @@ public class MemberController {
      * @메소드 교육생 정보 조회 컨트롤러
      */
     @GetMapping("/member/{id}")
-    public ResponseEntity<? extends MessageResponse> findMember(@PathVariable Long id) {
-        MemberDto findMember = memberService.findMemberOne(id);
-        return ResponseEntity.ok().body(new MessageResponse<>(findMember));
+    public ResponseEntity<? extends DataResponse> findMember(@PathVariable Long id) {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.findMemberOne(id)));
     }
 
     /**
@@ -46,9 +38,8 @@ public class MemberController {
      * @메소드 컨설턴트 정보 조회 컨트롤러
      */
     @GetMapping("consultant/{id}")
-    public ResponseEntity<? extends MessageResponse> findConsultant(@PathVariable Long id) {
-        ConsultantDto findMember = memberService.findConsultantOne(id);
-        return ResponseEntity.ok().body(new MessageResponse<>(findMember));
+    public ResponseEntity<? extends DataResponse> findConsultant(@PathVariable Long id) {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.findConsultantOne(id)));
     }
 
     /**
@@ -59,9 +50,8 @@ public class MemberController {
      * @메소드 회원 정보 수정 컨트롤러
      */
     @PutMapping("/member/{id}")
-    public ResponseEntity<? extends MessageResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) {
-        MemberResponse findMember = memberService.updateMember(id, request);
-        return ResponseEntity.ok().body(new MessageResponse<>(findMember));
+    public ResponseEntity<? extends DataResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.updateMember(id, request)));
     }
 
     /**
@@ -71,14 +61,23 @@ public class MemberController {
      * @메소드 회원 비밀번호 변경 컨트롤러
      */
     @PostMapping("/password")
-    public ResponseEntity<? extends MessageResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
-        MemberResponse findMember = memberService.updatePassword(passwordDto);
-        return ResponseEntity.ok().body(new MessageResponse<>(findMember));
+    public ResponseEntity<? extends DataResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+        if (memberService.updatePassword(passwordDto) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.updatePassword(passwordDto)));
     }
 
+    /**
+     * @메소드 회원 아이디 찾기 컨트롤러
+     * @param request 아이디 찾기 폼 양식
+     * @return 조회된 회원의 이름과 이메일
+     */
     @PostMapping
-    public ResponseEntity<? extends MessageResponse> findMemberId(@Valid @RequestBody FindIdRequest request) {
+    public ResponseEntity<? extends DataResponse> findMemberId(@Valid @RequestBody FindIdRequest request) {
         MemberResponse findMember = memberService.findMemberId(request);
-        return ResponseEntity.ok().body(new MessageResponse<>(findMember));
+        return ResponseEntity.ok().body(new DataResponse<>(findMember));
     }
+
 }

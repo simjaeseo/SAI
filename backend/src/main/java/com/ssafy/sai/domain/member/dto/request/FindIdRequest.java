@@ -14,6 +14,6 @@ public class FindIdRequest {
     String name;
 
     @NotNull(message = "생년월일은 필수 입력값입니다.")
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
 }

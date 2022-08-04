@@ -6,11 +6,10 @@ import com.ssafy.sai.domain.member.dto.AuthenticationMember;
 import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
-import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.service.SignService;
-import com.ssafy.sai.global.common.MessageResponse;
+import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.util.auth.AuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -32,11 +31,10 @@ public class SignController {
      * @메소드 교육생 회원가입 컨트롤러
      */
     @PostMapping(value = {"signup/member"})
-    public ResponseEntity<? extends MessageResponse> signUpMember(
-            @Valid @RequestBody MemberSignUpRequest request) {
-        MemberResponse findMember = signService.signUpMember(request);
+    public ResponseEntity<? extends DataResponse> signUpMember(
+            @Valid @RequestBody MemberSignUpRequest request) throws MemberException {
         return ResponseEntity.ok()
-                .body(new MessageResponse<>(findMember));
+                .body(new DataResponse<>(signService.signUpMember(request)));
     }
 
     /**
@@ -45,11 +43,10 @@ public class SignController {
      * @메소드 컨설턴트 회원가입 컨트롤러
      */
     @PostMapping(value = {"signup/consultant"})
-    public ResponseEntity<? extends MessageResponse> signUpConsultant(
-            @Valid @RequestBody ConsultantSignUpRequest request) {
-        MemberResponse findMember = signService.signUpConsultant(request);
+    public ResponseEntity<? extends DataResponse> signUpConsultant(
+            @Valid @RequestBody ConsultantSignUpRequest request) throws MemberException {
         return ResponseEntity.ok()
-                .body(new MessageResponse<>(findMember));
+                .body(new DataResponse<>(signService.signUpConsultant(request)));
     }
 
 
@@ -59,9 +56,9 @@ public class SignController {
      * @throws Exception 아이디 불일치, 비밀번호 불일치시 예외 발생
      * @메소드 회원 로그인 컨트롤러
      */
-    @RequestMapping(value = {"/login"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<? extends MessageResponse> login(
-            @Valid @RequestBody MemberLoginRequest request) {
+    @PostMapping(value = {"/login"})
+    public ResponseEntity<? extends DataResponse> login(
+            @Valid @RequestBody MemberLoginRequest request) throws MemberException {
         AuthenticationMember authentication = signService.loginMember(request);
 
         if (authentication == null) {
@@ -74,6 +71,6 @@ public class SignController {
                                 authentication.getId(),
                                 authentication.getEmail(),
                                 "USER"))
-                .body(new MessageResponse<>(authentication));
+                .body(new DataResponse<>(authentication));
     }
 }

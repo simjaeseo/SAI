@@ -14,7 +14,8 @@ import java.sql.Blob;
 @Builder
 public class Image extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
     private Long id;
     private Long size;

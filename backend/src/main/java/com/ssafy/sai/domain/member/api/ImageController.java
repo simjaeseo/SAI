@@ -1,6 +1,5 @@
 package com.ssafy.sai.domain.member.api;
 
-import com.ssafy.sai.domain.member.repository.ImageRepository;
 import com.ssafy.sai.domain.member.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
