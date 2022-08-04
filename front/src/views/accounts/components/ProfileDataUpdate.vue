@@ -65,7 +65,7 @@
                     class='form-control' v-model="currentUser.email" readonly
                     @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
-                    <search-bar-duty></search-bar-duty>
+                    <search-bar-duty @jobs='jobs'></search-bar-duty>
                 </div>
               </div>
             </div>
