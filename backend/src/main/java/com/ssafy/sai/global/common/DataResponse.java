@@ -1,14 +1,19 @@
 package com.ssafy.sai.global.common;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
+@NoArgsConstructor
 public class DataResponse<T> extends MessageResponse {
-    private T data;
-    private int count;
 
-    public DataResponse(T data, int count) {
-        super(data);
-        this.count = count;
+    private HttpStatus httpStatus;
+    private String message;
+    private T data;
+
+    public DataResponse(T data){
+        super();
+        this.data = data;
     }
 }
