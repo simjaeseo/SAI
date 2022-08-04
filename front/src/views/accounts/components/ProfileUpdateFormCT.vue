@@ -16,10 +16,20 @@
               <!-- 왼쪽 -->
               <div class='row' id='personal-data-box2'>
                 <div class='col-lg-6'>
-                    <p id='data-name1'>이름</p>
+                    <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
-                    <p id='data-name1'>연락처</p>
+                    class='form-control' v-model="currentUser.name"></label>
+                    <p id='data-name'>소속</p>
+                    <select class='form-select' id='form-select-region'
+                    aria-label='Default select example'>
+                        <option selected disabled>지역</option>
+                        <option value='1'>서울</option>
+                        <option value='2'>대전</option>
+                        <option value='3'>광주</option>
+                        <option value='4'>구미</option>
+                        <option value='5'>부울경</option>
+                    </select>
+                    <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
@@ -30,32 +40,31 @@
                         <option value='5'>019</option>
                     </select>
                     <label for="user_signup_number1">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileSecond">
                     </label>
                     <label for="user_signup_number2">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileLast">
                     </label>
                 </div>
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
-                    <p id='data-name1'>이메일</p>
+                    <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
-                    <p id='data-name1'>소속</p>
-                    <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
-                        <option selected>지역</option>
-                        <option value='1'>서울</option>
-                        <option value='2'>대전</option>
-                        <option value='3'>광주</option>
-                        <option value='4'>구미</option>
-                        <option value='5'>부울경</option>
-                    </select>
+                    class='form-control' v-model="currentUser.birthday"
+                    readonly @click="noChange"></label>
+                    <p id='data-name'>이메일</p>
+                    <label for='user-update-name'><input type='text' id='user-update-name'
+                    class='form-control' v-model="currentUser.email"
+                    readonly @click="noChange"></label>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- 버튼 -->
         <div id='btn-box'>
             <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
             <router-link to="profile"><button class='btn'
@@ -67,8 +76,37 @@
 </template>
 
 <script>
+import { computed, reactive, onBeforeMount } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
-  name: 'ProfileDataUpdateCT',
+  name: 'ProfileDataUpdate',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      mobileSecond: '',
+      mobileLast: '',
+    });
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    onBeforeMount(() => {
+      console.log(currentUser.value.phone);
+      const userPhone = currentUser.value.phone;
+      state.mobileSecond = userPhone.substr(3, 4);
+      console.log(state.mobileSecond);
+      state.mobileLast = userPhone.substr(7);
+      console.log(state.mobileLast);
+    });
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    return {
+      isLoggedIn,
+      currentUser,
+      state,
+      noChange,
+    };
+  },
 };
 </script>
 
@@ -263,11 +301,11 @@ export default {
     margin-top: 40px;
 }
 #form-select-region {
-    width: 95px;
+    width: 300px;
     display: inline;
 }
 #form-select-region:hover {
-    width: 95px;
+    width: 300px;
     display: inline;
     box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
@@ -325,9 +363,8 @@ export default {
     outline: 0;
     box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
-#data-name1 {
+#data-name {
   font-size: 12px;
-  margin-top: 30px;
 }
 #user-data {
   font-size: 20px;

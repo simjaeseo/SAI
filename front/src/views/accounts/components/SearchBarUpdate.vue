@@ -9,9 +9,9 @@
         type="text"
         id="search"
         v-model="searchTerm"
-        placeholder="&#128269;  직무를검색하세요"
+        placeholder="&#128269;  직업을검색하세요"
         class="p-3 mb-0.5 w-full form-control"
-        style="width:300px; height:36px"
+        style="width:460px; height:50px"
         @keydown.enter.prevent
       >
       </label>
@@ -22,7 +22,7 @@
       >
         <li>
           <p id='result-count'>
-            {{ countries.length }} 개의 직무중 {{ searchCountries.length }}개가 검색되었습니다.
+            {{ countries.length }} 개의 직업중 {{ searchCountries.length }}개가 검색되었습니다.
           </p>
         </li>
         <li
@@ -32,7 +32,7 @@
             @keydown="selectCountry(country.name)"
             @keyup="selectCountry(country.name)"
         >
-          <p id='result' @click="addJob(country.name)" @keydown="addJob(country.name)">
+          <p id='result' @click="addEnter(country.name)" @keydown="addEnter(country.name)">
             {{ country.name }}
           </p>
         </li>
@@ -44,18 +44,18 @@
         @click="[selectedDeleteItem(country.name), deleteplus(country.name)]">
         #{{ country.name }}<span id='delete'> x</span></p>
 
-        <p v-for="(user, index) in Jobs" :key="index" class='btn'
+        <p v-for="(user, index) in Enters" :key="index" class='btn'
         id='selected-item'
         @click="selectedDeleteItem2(user)"
         @keydown="selectedDeleteItem2(user)">
-        #{{ user.jobName }}<span id='delete'> x</span></p>
+        #{{ user.enterpriseName }}<span id='delete'> x</span></p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import countries from '@/data/duty.json';
+import countries from '@/data/countries.json';
 import {
   ref,
   computed,
@@ -66,10 +66,10 @@ export default {
   name: 'SearchBar',
   setup() {
     const store = useStore();
-    const plusJob = [];
+    const plusEnter = [];
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
-    const Jobs = computed(() => store.getters.userJob);
+    const Enters = computed(() => store.getters.userEnter);
     const searchTerm = ref('');
 
     const searchCountries = computed(() => {
@@ -97,24 +97,22 @@ export default {
       searchTerm.value = '';
     };
     // 이름을 클릭하면
-    const addJob = function (event) {
+    const addEnter = function (event) {
       // { name : '직업명' } 으로 state의 plusjob에 저장
       const name = event;
-      plusJob.push({ name });
-      store.dispatch('newJob', {
-        plusJob,
+      plusEnter.push({ name });
+      store.dispatch('newEnter', {
+        plusEnter,
       });
-      console.log(plusJob[0].name);
     };
     const deleteplus = function (event) {
-      console.log(plusJob);
-      for (let i = 0; i < plusJob.length; i += 1) {
-        if (plusJob[i].name === event) {
-          plusJob.splice(i, 1);
+      for (let i = 0; i < plusEnter.length; i += 1) {
+        if (plusEnter[i].name === event) {
+          plusEnter.splice(i, 1);
           i -= 1;
         }
-        store.dispatch('newJob', {
-          plusJob,
+        store.dispatch('newEnter', {
+          plusEnter,
         });
       }
     };
@@ -127,9 +125,9 @@ export default {
       selectCountry,
       selectedCountry,
       selectedCountries,
-      addJob,
+      addEnter,
       deleteplus,
-      Jobs,
+      Enters,
     };
   },
   methods: {
@@ -143,15 +141,15 @@ export default {
       }
     },
     selectedDeleteItem2(event) {
-      const data = event.jobName;
-      for (let i = 0; i < this.Jobs.length; i += 1) {
-        if (this.Jobs[i].jobName === data) {
-          this.Jobs.splice(i, 1);
+      const data = event.enterpriseName;
+      for (let i = 0; i < this.Enters.length; i += 1) {
+        if (this.Enters[i].enterpriseName === data) {
+          this.Enters.splice(i, 1);
           i -= 1;
         } this.$forceUpdate();
       }
-      const newJobs = JSON.parse(JSON.stringify(this.Jobs));
-      this.$store.dispatch('updateJob', newJobs);
+      const newEnters = JSON.parse(JSON.stringify(this.Enters));
+      this.$store.dispatch('updateEnter', newEnters);
     },
   },
   // updated() {
@@ -178,8 +176,8 @@ export default {
   // },
   // // 유저가 관심기업 업데이트 안했을때 자동 에밋
   created() {
-    const originalJobs = JSON.parse(JSON.stringify(this.Jobs));
-    this.$store.dispatch('updateJob', originalJobs);
+    const originalEnters = JSON.parse(JSON.stringify(this.Enters));
+    this.$store.dispatch('updateEnter', originalEnters);
   },
 };
 </script>
