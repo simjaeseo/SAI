@@ -32,7 +32,7 @@
             @keydown="selectCountry(country.name)"
             @keyup="selectCountry(country.name)"
         >
-          <p id='result' @click="addEnter(country.name)" @keydown="addEnter(country.name)">
+          <p id='result' @click="addJob(country.name)" @keydown="addJob(country.name)">
             {{ country.name }}
           </p>
         </li>
@@ -41,7 +41,7 @@
         <p v-for="country in selectedCountries" :key="country" class='btn'
         id='selected-item'
         @keydown="selectedDeleteItem(country.name)"
-        @click="[selectedDeleteItem(country.name), deleteNewEnter(country.name)]">
+        @click="[selectedDeleteItem(country.name), deleteplus(country.name)]">
         #{{ country.name }}<span id='delete'> x</span></p>
 
         <p v-for="(user, index) in Jobs" :key="index" class='btn'
@@ -59,7 +59,6 @@ import countries from '@/data/duty.json';
 import {
   ref,
   computed,
-  reactive,
 } from 'vue';
 import { useStore } from 'vuex';
 
@@ -67,9 +66,7 @@ export default {
   name: 'SearchBar',
   setup() {
     const store = useStore();
-    const state = reactive({
-      newEnter: [],
-    });
+    const plusJob = [];
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
     const Jobs = computed(() => store.getters.userJob);
@@ -99,25 +96,27 @@ export default {
       selectedCountries.push(selectedCountry);
       searchTerm.value = '';
     };
-    const addEnter = function (event) {
-      state.newEnter.push(event);
+    // 이름을 클릭하면
+    const addJob = function (event) {
+      // { name : '직업명' } 으로 state의 plusjob에 저장
+      const name = event;
+      plusJob.push({ name });
       store.dispatch('newJob', {
-        enter: state.newEnter,
+        plusJob,
       });
     };
-    const deleteNewEnter = function (event) {
-      for (let i = 0; i < state.newEnter.length; i += 1) {
-        if (state.newEnter[i] === event) {
-          state.newEnter.splice(i, 1);
+    const deleteplus = function (event) {
+      for (let i = 0; i < plusJob.length; i += 1) {
+        if (plusJob[i].name === event) {
+          plusJob.splice(i, 1);
           i -= 1;
         }
         store.dispatch('newJob', {
-          enter: state.newEnter,
+          plusJob,
         });
       }
     };
     return {
-      state,
       isLoggedIn,
       currentUser,
       countries,
@@ -126,8 +125,8 @@ export default {
       selectCountry,
       selectedCountry,
       selectedCountries,
-      addEnter,
-      deleteNewEnter,
+      addJob,
+      deleteplus,
       Jobs,
     };
   },
@@ -149,7 +148,8 @@ export default {
           i -= 1;
         } this.$forceUpdate();
       }
-      this.$emit('jobs', this.Jobs);
+      const newJobs = JSON.parse(JSON.stringify(this.Jobs));
+      this.$store.dispatch('updateJob', newJobs);
     },
   },
   // updated() {
@@ -176,9 +176,8 @@ export default {
   // },
   // // 유저가 관심기업 업데이트 안했을때 자동 에밋
   created() {
-    if (this.selectedCountries.length === 0) {
-      this.$emit('jobs', this.Jobs);
-    }
+    const originalJobs = JSON.parse(JSON.stringify(this.Jobs));
+    this.$store.dispatch('updateJob', originalJobs);
   },
 };
 </script>

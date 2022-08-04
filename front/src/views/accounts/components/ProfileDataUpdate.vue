@@ -22,7 +22,8 @@
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected disabled>{{ currentUser.year}}기</option>
+                        <option selected disabled>
+                        {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
                     aria-label='Default select example'>
@@ -97,7 +98,8 @@
                     <div class="modal-footer">
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
-                      <button type="button" class="btn" id='update-btn2'>확인</button>
+                      <button type="button" class="btn" id='update-btn2'
+                      aria-label="Close" data-bs-dismiss="modal">확인</button>
                     </div>
                   </div>
                 </div>
@@ -124,11 +126,6 @@
             <button class='btn' type='submit' id='update-btn'>완료</button>
         </div>
     </form>
-    <!-- 데이터확인용 -->
-    <div v-for="(job, index) in newJob" :key=index>{{ job }}</div>
-    <div v-for="(oldjob, index) in state.userJob" :key=index>{{ oldjob.jobName }}</div>
-    <div v-for="(ent, index) in newEnter" :key=index>{{ ent }}</div>
-    <div v-for="(oldent, index) in state.userEnter" :key=index>{{ oldent.enterpriseName }}</div>
   </div>
 </template>
 
@@ -149,20 +146,18 @@ export default {
       mobileLast: '',
       options: [],
       currentUserData: {},
-      userEnter: [],
-      userJob: [],
     });
+    const goal = computed(() => store.getters.setJob);
+    const goal2 = computed(() => store.getters.userJob);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
-    const newEnter = computed(() => store.getters.setNewEnter.enter);
-    const newJob = computed(() => store.getters.setJob.enter);
 
     onBeforeMount(() => {
+      const originalJobs = JSON.parse(JSON.stringify(goal2));
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
       state.mobileLast = userPhone.substr(7);
-      state.currentUserData = currentUser;
     });
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
@@ -184,40 +179,39 @@ export default {
         state.options.push('1', '2', '3', '4', '5', '6');
       }
     };
-    const userUpdate = function () {
-      store.dispatch('userUpdate', {
-        campus: {
-          city: state.currentUserData.campus.city,
-          classNumber: state.currentUserData.campus.classNumber,
-        },
-        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
-        profilePicture: 'none',
-      });
-    };
-    const enterprises = function (data) {
-      state.userEnter = data;
-    };
-    const jobs = function (data) {
-      state.userJob = data;
-    };
 
+    // const userUpdate = function () {
+    //   store.dispatch('userUpdate', {
+    //     campus: {
+    //       city: state.currentUserData.campus.city,
+    //       classNumber: state.currentUserData.campus.classNumber,
+    //     },
+    //     phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+    //     profilePicture: 'none',
+    //     interestedJobs: {
+    //       // name: state.userJob[0].jobName + state.newJob,
+    //     },
+    //     // interestedJobs: state.userJob[0].jobName + newJob.value,
+    //     interestedEnterprises: state.userEnter + newEnter.value,
+    //   });
+    // };
     return {
       isLoggedIn,
       currentUser,
       state,
       noChange,
       setOptions,
-      userUpdate,
-      enterprises,
-      newEnter,
-      jobs,
-      newJob,
+      goal,
+      goal2,
     };
   },
 };
 </script>
 
 <style scoped>
+#nocheck {
+  color: gray;
+}
 .modal-body {
   height: 500px;
 }

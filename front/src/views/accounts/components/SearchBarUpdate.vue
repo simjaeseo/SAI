@@ -68,7 +68,7 @@ export default {
   setup() {
     const store = useStore();
     const state = reactive({
-      newEnter: [],
+      newEnter: {},
     });
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
@@ -84,7 +84,7 @@ export default {
       let matches = 0;
 
       return countries.filter((country) => {
-        if (country.name.toLowerCase().includes(searchTerm.value.toLowerCase()) && matches < 10) {
+        if (country.name.includes(searchTerm.value.toLowerCase()) && matches < 10) {
           matches += 1;
           return country;
         }

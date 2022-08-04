@@ -8,8 +8,8 @@ export default {
     currentUser: {},
     userEnter: {},
     userJob: {},
-    setNewEnter: [],
-    setJob: [],
+    setNewEnter: {},
+    setJob: {},
   },
   getters: {
     isLoggedIn: (state) => !!state.token,
@@ -36,6 +36,9 @@ export default {
     },
     SET_NEW_JOB(state, job) {
       state.setJob = job;
+    },
+    CHANGE_USER_JOB(state, update) {
+      state.userJob = update;
     },
   },
   actions: {
@@ -93,10 +96,12 @@ export default {
       }
     },
     logout({ getters, dispatch, commit }) {
+      const userId = getters.currentUser.id;
       axios({
         url: drf.member.logout(),
         method: 'post',
         headers: getters.authHeader,
+        data: userId,
       })
         .then(() => {
           dispatch('removeToken');
@@ -144,6 +149,19 @@ export default {
     },
     newJob({ commit }, enter) {
       commit('SET_NEW_JOB', enter);
+    },
+    userUpdate({ getters }, credentials) {
+      const userId = getters.currentUser.id;
+      axios({
+        url: drf.member.updateProfile(userId),
+        method: 'put',
+        data: credentials,
+      })
+        .then(() => console.log('성공'))
+        .catch((err) => console.log(err));
+    },
+    updateJob({ commit }, data) {
+      commit('CHANGE_USER_JOB', data);
     },
   },
   modules: {},

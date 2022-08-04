@@ -12,7 +12,7 @@ export default {
     ctSignup: () => `${HOST}signup/consultant`,
     profile: (id) => HOST + MEMBER + id,
     updatePassword: () => `${HOST + MEMBER}password`,
-    updateProfile: (id) => `${HOST + MEMBER + id}/modify`,
+    updateProfile: (id) => `${HOST + MEMBER}member/${id}`,
     findId: () => `${HOST + MEMBER}find/id`,
     findPassword: () => `${HOST + MEMBER}find/password`,
   },
