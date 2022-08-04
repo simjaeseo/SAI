@@ -2,16 +2,10 @@ package com.ssafy.sai.domain.member.api;
 
 import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
-import com.ssafy.sai.domain.member.exception.MemberException;
-import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
-import com.ssafy.sai.global.common.MessageResponse;
-import com.ssafy.sai.global.util.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +25,8 @@ public class MemberController {
      * @throws Exception 잘못된 접근일 때 예외 발생
      */
     @GetMapping("/member/{id}")
-    public ResponseEntity<? extends MessageResponse> findMember(@PathVariable Long id) throws Exception {
-        return ResponseEntity.ok().body(new MessageResponse<>(memberService.findMemberOne(id)));
+    public ResponseEntity<? extends DataResponse> findMember(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.findMemberOne(id)));
     }
 
     /**
@@ -42,8 +36,8 @@ public class MemberController {
      * @throws Exception 잘못된 접근일 때 예외 발생
      */
     @GetMapping("consultant/{id}")
-    public ResponseEntity<? extends MessageResponse> findConsultant(@PathVariable Long id) throws Exception {
-        return ResponseEntity.ok().body(new MessageResponse<>(memberService.findConsultantOne(id)));
+    public ResponseEntity<? extends DataResponse> findConsultant(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.findConsultantOne(id)));
     }
 
     /**
@@ -54,8 +48,8 @@ public class MemberController {
      * @throws Exception 잘못된 접근, 이미 존재하는 휴대전화 번호로 변겅할 때 예외 발생
      */
     @PutMapping("/member/{id}")
-    public ResponseEntity<? extends MessageResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
-        return ResponseEntity.ok().body(new MessageResponse<>(memberService.updateMember(id, request)));
+    public ResponseEntity<? extends DataResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) throws Exception {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.updateMember(id, request)));
     }
 
     /**
@@ -65,11 +59,11 @@ public class MemberController {
      * @throws Exception 잘못된 접근일 때 예외 발생
      */
     @PostMapping("/password")
-    public ResponseEntity<? extends MessageResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+    public ResponseEntity<? extends DataResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
         if (memberService.updatePassword(passwordDto) == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().body(new MessageResponse<>(memberService.updatePassword(passwordDto)));
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.updatePassword(passwordDto)));
     }
 }
