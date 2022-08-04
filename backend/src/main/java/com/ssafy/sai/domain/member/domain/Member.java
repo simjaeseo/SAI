@@ -36,7 +36,7 @@ public class Member extends BaseEntity {
 
     private String name;
 
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private String phone;
 
