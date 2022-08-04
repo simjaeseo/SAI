@@ -1,13 +1,14 @@
 <template>
-  <div id='time-box' class="container">
-    <div v-for="time in times" :key="time">
+  <div>
+    <div v-for="time in times" :key="time" id='time-box' class="container">
       <button
-      v-if="time in CTDaySchedules"
-      id="disable-time"
+      v-if="CTDaySchedules.includes(time)"
+      class="btn btn-danger"
       >
         {{ time }}
       </button>
       <button
+      v-else
       @click.prevent="pickTime(time)"
       :style="[selectStartTime == time ?
       {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
@@ -97,6 +98,7 @@ export default {
 #time-box {
   margin-top: 40px;
   margin-bottom: 20px;
+  display: inline;
 }
 button {
   border: 1px solid #ced4da;
