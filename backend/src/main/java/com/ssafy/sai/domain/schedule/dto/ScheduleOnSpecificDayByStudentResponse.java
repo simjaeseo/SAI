@@ -13,7 +13,7 @@ public class ScheduleOnSpecificDayByStudentResponse {
 
     private LocalDate scheduleDate;
 
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
 //    private LocalTime endTime;

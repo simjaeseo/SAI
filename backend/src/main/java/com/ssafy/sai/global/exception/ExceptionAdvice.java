@@ -1,8 +1,7 @@
 package com.ssafy.sai.global.exception;
 
-import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
-import com.ssafy.sai.global.common.MessageResponse;
+import com.ssafy.sai.domain.schedule.exception.ScheduleException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +43,22 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(new ExceptionDto(500, HttpStatus.INTERNAL_SERVER_ERROR, "null 값을 참조하여 예외가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ScheduleException.class)
+    public ResponseEntity handleScheduleEx(ScheduleException exception){
+        log.error("Schedule Exception 발생 ! {}", exception.getMessage());
+        return new ResponseEntity<>(new ExceptionDto(exception.getExceptionType().getErrorCode(),
+                exception.getExceptionType().getHttpStatus(),
+                exception.getExceptionType().getErrorMessage()),
+                exception.getExceptionType().getHttpStatus());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleMemberEx(Exception exception) {
         exception.printStackTrace();
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    //org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' not supported
 
     @Data
     @AllArgsConstructor

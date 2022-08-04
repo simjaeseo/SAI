@@ -13,17 +13,17 @@ public class ScheduleCreateRequest {
 
     @NotNull
     // datetime 형식 지정하기
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduleDate;
 
     @NotNull
     // LocalTime 형식 지정하기
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
     @NotNull
     // LocalTime 형식 지정하기
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     private String category;
