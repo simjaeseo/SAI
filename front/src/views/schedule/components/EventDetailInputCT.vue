@@ -7,6 +7,7 @@
         id="category"
         class="form-select mb-3"
         @change.prevent="selectCategory">
+          <option selected disabled>분류</option>
           <option value="block">상담 신청 막기</option>
           <option value="else">기타</option>
         </select>
@@ -18,7 +19,7 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click.prevent="createSchedule">등록</button>
+      <button class="btn" @click.prevent="createScheduleCT">등록</button>
     </div>
   </div>
 </template>
@@ -37,13 +38,13 @@ export default {
     const selectCategory = (e) => {
       store.dispatch('selectCategory', e.target.value);
     };
-    const createSchedule = () => {
-      store.dispatch('createSchedule');
+    const createScheduleCT = () => {
+      store.dispatch('createScheduleCT');
     };
     return {
       entryScheduleDetail,
       selectCategory,
-      createSchedule,
+      createScheduleCT,
     };
   },
 };

@@ -2,14 +2,8 @@
   <div>
     <div v-for="time in times" :key="time" id='time-box' class="container">
       <button
-      v-if="CTDaySchedules.includes(time)"
+      v-if="daySchedules.includes(time)"
       class="btn btn-danger"
-      >
-        {{ time }}
-      </button>
-      <button
-      v-else-if="daySchedules.includes(time)"
-      class="btn btn-primary"
       >
         {{ time }}
       </button>

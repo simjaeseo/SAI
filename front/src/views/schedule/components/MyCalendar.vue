@@ -31,7 +31,11 @@ v-if="selectedDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day
                     <div
 v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
                     class="schedule-summary">
-                      {{ sc.detail }}
+                      <div
+                      :style="[sc.category == '1:1 모의 면접' ?
+                      {background:'#deepblue'} : {background:'#deeppink'}]">
+                        {{ sc.detail }}
+                      </div>
                       <div class="schedule-detail">
                         {{ sc.scheduleDate.slice(5, 7) }}월
                         {{ sc.scheduleDate.slice(-2) }}일
@@ -60,6 +64,7 @@ import { useStore } from 'vuex';
 export default {
   name: 'MyCalendar',
   data() {
+    const cKey = 0;
     return {
       weekNames: ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
       rootYear: 1904,
@@ -72,6 +77,7 @@ export default {
       endOfDay: null,
       memoDatas: [],
       yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}`,
+      cKey,
     };
   },
   setup() {

@@ -1,14 +1,15 @@
 <template>
   <div>
     <div id="btn-box">
-      <p class="btn">
+      <button class="btn"
+      @click.prevent="noConsultant(null)">
         개인일정추가
-      </p>
+      </button>
     </div>
     <!-- <p>{{ selectedDate }}</p> -->
     <div>
       <div id="time-picker">
-        <time-picker></time-picker>
+        <time-picker-CT></time-picker-CT>
       </div>
       <div id="event-detail-input">
         <event-detail-input-CT></event-detail-input-CT>
@@ -20,21 +21,25 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import TimePicker from './TimePicker.vue';
+import TimePickerCT from './TimePickerCT.vue';
 import EventDetailInputCT from './EventDetailInputCT.vue';
 
 export default {
   name: 'AddEvent',
   components: {
-    TimePicker,
+    TimePickerCT,
     EventDetailInputCT,
   },
   setup() {
     const store = useStore();
 
     const selectedDate = computed(() => store.getters.selectedDate);
+    const noConsultant = (value) => {
+      store.dispatch('pickMyConsultant', value);
+    };
     return {
       selectedDate,
+      noConsultant,
     };
   },
 };

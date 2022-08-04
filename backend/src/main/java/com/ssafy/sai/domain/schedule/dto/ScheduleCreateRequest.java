@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.schedule.dto;
 
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,17 +14,17 @@ public class ScheduleCreateRequest {
 
     @NotNull
     // datetime 형식 지정하기
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduleDate;
 
     @NotNull
     // LocalTime 형식 지정하기
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
     @NotNull
     // LocalTime 형식 지정하기
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     private String category;

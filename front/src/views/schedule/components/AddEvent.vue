@@ -39,6 +39,7 @@ import EventDetailInput from './EventDetailInput.vue';
 
 export default {
   name: 'AddEvent',
+  props: ['cKey'],
   components: {
     TimePicker,
     EventDetailInput,

@@ -8,7 +8,7 @@
       </div>
       <div id="sidebar" class="col-lg-4">
         <show-event v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event>
-        <add-event v-show="selectedDate || !isUpcomingSchedules"></add-event>
+        <add-event v-show="selectedDate || !isUpcomingSchedules" :cKey="cKey"></add-event>
       </div>
     </div>
   </div>
@@ -29,6 +29,11 @@ export default {
     AddEvent,
     ShowEvent,
   },
+  data() {
+    return {
+      cKey: 0,
+    };
+  },
   setup() {
     const store = useStore();
 
@@ -45,6 +50,11 @@ export default {
   },
   created() {
     this.fetchUpcomingSchedules();
+  },
+  methods: {
+    forceRerender() {
+      this.cKey += 1;
+    },
   },
 };
 </script>

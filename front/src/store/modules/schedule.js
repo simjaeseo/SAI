@@ -15,6 +15,7 @@ export default {
     scheduleDetail: '',
     selectedCategory: null,
     CTDaySchedules: [],
+    daySchedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
@@ -28,6 +29,7 @@ export default {
     scheduleDetail: (state) => state.scheduleDetail,
     selectedCategory: (state) => state.selectedCategory,
     CTDaySchedules: (state) => state.CTDaySchedules,
+    daySchedules: (state) => state.daySchedules,
   },
   mutations: {
     SET_DATE(state, date) {
@@ -36,6 +38,11 @@ export default {
       } else {
         state.selectedDate = false;
       }
+      state.startTime = null;
+      state.endTime = null;
+      state.selectedConsultant = false;
+      state.scheduleDetail = '';
+      state.selectedCategory = null;
     },
     SET_START_TIME(state, startTime) {
       if (state.startTime !== startTime) {
@@ -55,6 +62,7 @@ export default {
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
+      console.log(state.upcomingSchedules);
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
@@ -74,10 +82,17 @@ export default {
         state.CTDaySchedules.push(CTDaySchedules[i].startTime);
       }
     },
+    SET_DAY_SCHEDULES(state, daySchedules) {
+      state.daySchedules = [];
+      for (let i = 0; i < daySchedules.length; i += 1) {
+        state.daySchedules.push(daySchedules[i].startTime);
+      }
+    },
   },
   actions: {
-    pickDate({ commit }, date) {
+    pickDate({ commit, dispatch }, date) {
       commit('SET_DATE', date);
+      dispatch('fetchDaySchedules', date);
     },
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
@@ -115,7 +130,9 @@ export default {
         consultant,
         date: getters.selectedDate,
       };
-      dispatch('fetchCTDaySchedules', data);
+      if (consultant) {
+        dispatch('fetchCTDaySchedules', data);
+      }
     },
     entryScheduleDetail({ commit }, detail) {
       commit('SET_SCHEDULE_DETAIL', detail.target.value);
@@ -152,6 +169,33 @@ export default {
         alert('빠짐없이 입력해주세요');
       }
     },
+    createScheduleCT({ dispatch, getters }) {
+      if (getters.selectedDate
+        && getters.selectedStartTime
+        && getters.selectedCategory
+        && getters.scheduleDetail) {
+        axios({
+          url: drf.schedule.schedule(getters.currentUser.id),
+          method: 'post',
+          data: {
+            scheduleDate: getters.selectedDate,
+            startTime: getters.selectedStartTime,
+            endTime: getters.selectedEndTime,
+            category: getters.selectedCategory,
+            detail: getters.scheduleDetail,
+            memberConsultantId: getters.currentUser.id,
+          },
+          headers: getters.authHeader,
+        })
+          .then(() => {
+            dispatch('fetchSchedules');
+            router.push({ name: 'ScheduleCT' });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert('빠짐없이 입력해주세요');
+      }
+    },
     deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({
         url: drf.schedule.scheduleDelete(getters.currentUser.id, scheduleId),
@@ -170,6 +214,15 @@ export default {
         headers: getters.authHeader,
       })
         .then((res) => commit('SET_CT_DAY_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
+    },
+    fetchDaySchedules({ commit, getters }, date) {
+      axios({
+        url: drf.schedule.daySchedule(getters.currentUser.id, date),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_DAY_SCHEDULES', res.data.data));
       // .catch((err) => console.error(err));
     },
   },
