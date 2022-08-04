@@ -9,8 +9,9 @@ public class CampusDto {
     private Integer classNumber;
 
     public CampusDto() {
-        
+
     }
+
     public CampusDto(String city, Integer classNumber) {
         this.city = city;
         this.classNumber = classNumber;
