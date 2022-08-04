@@ -44,6 +44,14 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(new ExceptionDto(500, HttpStatus.INTERNAL_SERVER_ERROR, "null 값을 참조하여 예외가 발생했습니다."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity handleMemberEx(MemberException exception) {
+        log.error("MemberExceptio 발생 ! {}", exception.getMessage());
+        return new ResponseEntity<>(new ExceptionDto(exception.getExceptionType().getErrorCode(),
+                exception.getExceptionType().getHttpStatus(),
+                exception.getExceptionType().getErrorMessage()), exception.getExceptionType().getHttpStatus());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleMemberEx(Exception exception) {
         exception.printStackTrace();

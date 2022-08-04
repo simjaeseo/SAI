@@ -7,6 +7,8 @@ import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
+import com.ssafy.sai.domain.member.exception.MemberException;
+import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.service.SignService;
 import com.ssafy.sai.global.common.MessageResponse;
 import com.ssafy.sai.global.util.auth.AuthProvider;
@@ -31,9 +33,10 @@ public class SignController {
      */
     @PostMapping(value = {"signup/member"})
     public ResponseEntity<? extends MessageResponse> signUpMember(
-            @Valid @RequestBody MemberSignUpRequest request) throws Exception {
+            @Valid @RequestBody MemberSignUpRequest request) {
+        MemberResponse findMember = signService.signUpMember(request);
         return ResponseEntity.ok()
-                .body(new MessageResponse<>(signService.signUpMember(request)));
+                .body(new MessageResponse<>(findMember));
     }
 
     /**
@@ -43,9 +46,10 @@ public class SignController {
      */
     @PostMapping(value = {"signup/consultant"})
     public ResponseEntity<? extends MessageResponse> signUpConsultant(
-            @Valid @RequestBody ConsultantSignUpRequest request) throws Exception {
+            @Valid @RequestBody ConsultantSignUpRequest request) {
+        MemberResponse findMember = signService.signUpConsultant(request);
         return ResponseEntity.ok()
-                .body(new MessageResponse<>(signService.signUpConsultant(request)));
+                .body(new MessageResponse<>(findMember));
     }
 
 
@@ -55,10 +59,15 @@ public class SignController {
      * @throws Exception 아이디 불일치, 비밀번호 불일치시 예외 발생
      * @메소드 회원 로그인 컨트롤러
      */
-    @PostMapping(value = {"/login"})
+    @RequestMapping(value = {"/login"}, method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<? extends MessageResponse> login(
-            @Valid @RequestBody MemberLoginRequest request) throws Exception {
+            @Valid @RequestBody MemberLoginRequest request) {
         AuthenticationMember authentication = signService.loginMember(request);
+
+        if (authentication == null) {
+            throw new MemberException(MemberExceptionType.NOT_FOUND_MEMBER);
+        }
+
         return ResponseEntity.ok()
                 .header("accesstoken", authProvider
                         .createToken(
