@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +43,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Transactional
     @Query(value = "update member m set m.password= :newPasswordCheck where m.email= :email", nativeQuery = true)
     void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
+
+    Member findMemberByNameAndBirthday(String name, LocalDate birthday);
 
     Member findMemberByEmail(String email);
 
