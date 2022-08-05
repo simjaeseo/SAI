@@ -2,24 +2,8 @@
   <form>
 
     <div id="btn-box">
-      <select
-      class="form-select"
-      aria-label="Default select example"
-      @change="pickMyConsultant"
-      :style="[Credential.selectedConsultant ?
-      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
-      required>
-        <option selected disabled>컨설턴트상담</option>
-        <option
-        v-for="myConsultant in myConsultants"
-        :key="myConsultant"
-        :value="myConsultant.id">
-          {{ myConsultant.name }}
-        </option>
-      </select>
         <button
         class="btn"
-        @click.prevent="pickMyConsultant"
         :style="[Credential.selectedConsultant == '' ?
         {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
           개인일정추가
@@ -29,13 +13,7 @@
     <div>
       <div v-for="time in times" :key="time" id='time-box' class="container">
         <button
-        v-if="CTDaySchedules.includes(time)"
-        class="btn btn-danger"
-        >
-          {{ time }}
-        </button>
-        <button
-        v-else-if="daySchedules.includes(time)"
+        v-if="daySchedules.includes(time)"
         class="btn btn-primary"
         >
           {{ time }}
@@ -53,29 +31,13 @@
     <div id="div-category">
       <label for="category">분류
         <select
-        v-if="Credential.selectedConsultant"
         name="category"
         id="category"
         class="form-select mb-3"
         @change="selectCategory"
         required>
           <option selected disabled>분류</option>
-          <option value="practice">1:1 모의 면접</option>
-          <option value="consulting-job">직무 상담</option>
-          <option value="consulting-introduction">자소서 상담</option>
-          <option value="else">기타</option>
-        </select>
-        <select
-        v-else
-        name="category"
-        id="category"
-        class="form-select mb-3"
-        @change="selectCategory"
-        required>
-          <option selected disabled>분류</option>
-          <option value="document">서류 지원</option>
-          <option value="coding-test">코딩 테스트</option>
-          <option value="interview">면접</option>
+          <option value="block">신청 막기</option>
           <option value="else">기타</option>
         </select>
       </label>
@@ -86,7 +48,7 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click="createSchedule(Credential)">등록</button>
+      <button class="btn" @click="createScheduleCT(Credential)">등록</button>
     </div>
 
     <button @click="check(Credential)"></button>
@@ -107,7 +69,7 @@ export default {
       selectedTime: '',
       Credential: {
         startTime: null,
-        selectedConsultant: null,
+        selectedConsultant: '',
         scheduleDetail: '',
         selectedCategory: null,
       },
@@ -116,31 +78,17 @@ export default {
   setup() {
     const store = useStore();
 
-    const myConsultants = computed(() => store.getters.myConsultants);
-    const fetchMyConsultants = () => {
-      store.dispatch('fetchMyConsultants');
-    };
-
     // time picker
-    const CTDaySchedules = computed(() => store.getters.CTDaySchedules);
     const daySchedules = computed(() => store.getters.daySchedules);
-    const pickTime = (time) => {
-      store.dispatch('pickTime', time);
-    };
 
     // detail
-    const createSchedule = (detail) => {
-      store.dispatch('createSchedule', detail);
+    const createScheduleCT = (detail) => {
+      store.dispatch('createScheduleCT', detail);
     };
     return {
-      myConsultants,
-      fetchMyConsultants,
-
-      pickTime,
-      CTDaySchedules,
       daySchedules,
 
-      createSchedule,
+      createScheduleCT,
     };
   },
   methods: {
@@ -180,18 +128,12 @@ export default {
 
       init();
     },
-    pickMyConsultant(e) {
-      this.Credential.selectedConsultant = e.target.value;
-    },
     selectCategory(e) {
       this.Credential.selectedCategory = e.target.value;
     },
     check(item) {
       console.log(item);
     },
-  },
-  created() {
-    this.fetchMyConsultants();
   },
   mounted() {
     this.timeSet();

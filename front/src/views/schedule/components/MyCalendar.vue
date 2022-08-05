@@ -1,9 +1,9 @@
 <template>
   <div class="calendar">
       <h2>
-        <a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
+        <a href="#" @click="onClickPrev(currentMonth)">◀</a>
         {{currentYear}}년 {{currentMonth}}월
-        <a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
+        <a href="#" @click="onClickNext(currentMonth)">▶</a>
       </h2>
       <table class="table">
           <thead>
@@ -16,30 +16,37 @@
           <tbody>
             <tr v-for="(row, index) in currentCalendarMatrix" :key="index">
               <td v-for="(day, index2) in row" :key="index2">
-                <button v-if="selectDate === day"
-                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)"
+                <button
+v-if="selectedDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
+@click.prevent="pickDate(`${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`)"
                 id="picked">
                   {{day}}
                 </button>
                 <button  v-else-if="day"
-                @click.prevent="pickDate(`${yearMonth}-${`0${day}`.slice(-2)}`)">
+@click.prevent="pickDate(`${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`)">
                   {{day}}
                 </button>
-                <div v-for="schedule in schedules" :key="schedule" id="schedule">
-                  <div
-                  v-if="schedule.scheduleDate === `${yearMonth}-${`0${day}`.slice(-2)}`"
-                  class="schedule-summary">
-                    {{ schedule.detail }}
-                    <div class="schedule-detail">
-                      {{ schedule.scheduleDate.slice(5, 7) }}월
-                      {{ schedule.scheduleDate.slice(-2) }}일
-                      {{ schedule.startTime }}<br>
-                      {{ schedule.detail }}<br>
-                      <button
-                      class="btn btn-danger"
-                      @click="deleteSchedule(schedule.id)">
-                      삭 제
-                      </button>
+                <div v-for="sc in schedules" :key="sc" id="schedule">
+                  <div v-if="sc.category !== 'block'">
+                    <div
+v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
+                    class="schedule-summary">
+                      <div
+                      :style="[sc.category == '1:1 모의 면접' ?
+                      {background:'#deepblue'} : {background:'#deeppink'}]">
+                        {{ sc.detail }}
+                      </div>
+                      <div class="schedule-detail">
+                        {{ sc.scheduleDate.slice(5, 7) }}월
+                        {{ sc.scheduleDate.slice(-2) }}일
+                        {{ sc.startTime }}<br>
+                        {{ sc.detail }}<br>
+                        <button
+                        class="btn btn-danger"
+                        @click="deleteSchedule(sc.id)">
+                        삭 제
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -57,6 +64,7 @@ import { useStore } from 'vuex';
 export default {
   name: 'MyCalendar',
   data() {
+    const cKey = 0;
     return {
       weekNames: ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
       rootYear: 1904,
@@ -69,13 +77,14 @@ export default {
       endOfDay: null,
       memoDatas: [],
       yearMonth: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}`,
+      cKey,
     };
   },
   setup() {
     const store = useStore();
 
     const schedules = computed(() => store.getters.schedules);
-    const selectDate = computed(() => store.getters.selectedDate);
+    const selectedDate = computed(() => store.getters.selectedDate);
     const pickDate = (date) => {
       store.dispatch('pickDate', date);
     };
@@ -85,12 +94,16 @@ export default {
     const deleteSchedule = (scheduleId) => {
       store.dispatch('deleteSchedule', scheduleId);
     };
+    const fetchCTDaySchedules = (date) => {
+      store.dispatch('fetchCTDaySchedules', date);
+    };
     return {
       pickDate,
-      selectDate,
+      selectedDate,
       schedules,
       fetchSchedules,
       deleteSchedule,
+      fetchCTDaySchedules,
     };
   },
   methods: {
@@ -211,7 +224,8 @@ button:hover {
   height: 600px;
 }
 #picked {
-  /* border-radius: 50%; */
+  border-radius: 50%;
+  background-color: aqua;
 }
 
 td {

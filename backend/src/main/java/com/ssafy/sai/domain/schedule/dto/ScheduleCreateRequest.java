@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.schedule.dto;
 
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import lombok.Data;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
