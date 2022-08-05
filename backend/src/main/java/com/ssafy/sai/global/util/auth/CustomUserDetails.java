@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Setter
 public class CustomUserDetails implements UserDetails {
 
-    private Member member;
     private long id;
 
     private String username;
@@ -26,15 +25,7 @@ public class CustomUserDetails implements UserDetails {
 
     private List<String> roles = new ArrayList<>();
 
-    public CustomUserDetails(Member member) {
-        this.member = member;
-    }
-
-    public CustomUserDetails(
-            long id,
-            String email,
-            String role) {
-
+    public CustomUserDetails(long id, String email, String role) {
         this.id = id;
         this.username = email;
 
@@ -46,22 +37,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         List<SimpleGrantedAuthority> roles = this.roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return member.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return member.getEmail();
     }
 
     // 계정 만료여부
