@@ -1,7 +1,9 @@
 package com.ssafy.sai.domain.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.response.CampusConsultantDto;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
@@ -71,6 +73,10 @@ public class Member extends BaseEntity {
     }
 
     public void updateMember(MemberUpdateRequest request) {
+        this.phone = request.getPhone();
+    }
+
+    public void updateMember(ConsultantUpdateRequest request) {
         this.phone = request.getPhone();
     }
 

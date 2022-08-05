@@ -14,6 +14,7 @@ import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
@@ -139,6 +140,48 @@ public class MemberService {
     }
 
     /**
+     * @param file    컨설턴트 프로필 이미지 파일
+     * @param id      수정할 컨설턴트의 PK
+     * @param request 컨설턴트 정보 수정 폼 양식
+     * @return 수정된 컨설턴트의 이름과 이메일
+     * @throws MemberException 회원 PK를 찾을 수 없는 경우, 이미 존재하는 휴대전화 번호로 변경하는 경우 예외 발생
+     * @메소드 컨설턴트 정보 수정 서비스
+     */
+    @Transactional
+    public ConsultantDto updateConsultant(MultipartFile file, Long id, ConsultantUpdateRequest request) throws MemberException {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        if (!Empty.validation(memberRepository.countByPhone(request.getPhone())) && !request.getPhone().equals(findMember.getPhone())) {
+            throw new MemberException(MemberExceptionType.ALREADY_EXIST_PHONE);
+        }
+
+        findMember.updateMember(request);
+        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
+        findMember.updateCampus(campus.get());
+
+        if (!file.isEmpty()) {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+                profilePictureRepository.deleteById(findMember.getProfilePicture().getId());
+            }
+
+            ProfilePicture profilePicture = uploadImage(file);
+            findMember.updateProfilePicture(profilePicture);
+        } else {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+            }
+
+            findMember.updateProfilePicture(null);
+        }
+
+        return new ConsultantDto(findMember);
+    }
+
+    /**
      * @param passwordDto 비밀번호 변경 폼 양식 (기존 비밀번호, 새로운 비밀번호, 비밀번호 확인)
      * @return 비밀번호가 일치하면 비밀번호 암호화 후 회원 정보 DTO 반환
      * @return 비밀번호가 일치하지 않으면 null 반환
@@ -176,9 +219,9 @@ public class MemberService {
     }
 
     /**
-     * @메소드 프로필 사진 업로드
      * @param file 프로필 사진
      * @return ProfilePicture
+     * @메소드 프로필 사진 업로드
      */
     public ProfilePicture uploadImage(MultipartFile file) {
         try {
