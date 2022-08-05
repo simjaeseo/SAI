@@ -4,23 +4,26 @@ import com.ssafy.sai.global.common.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.nio.file.Path;
-import java.sql.Blob;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
-public class Image extends BaseEntity {
+public class ProfilePicture extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
     private Long id;
     private Long size;
-    private String mimetype;
-    private String originalName;
+    private String contentType;
     private String fileName;
-    private String url;
+    private String originalName;
+
+    @OneToOne(mappedBy = "profilePicture")
+    private Member member;
+
+    public void updateMember(Member member) {
+        this.member = member;
+    }
 }
