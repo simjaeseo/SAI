@@ -38,11 +38,6 @@ export default {
       } else {
         state.selectedDate = false;
       }
-      state.startTime = null;
-      state.endTime = null;
-      state.selectedConsultant = false;
-      state.scheduleDetail = '';
-      state.selectedCategory = null;
     },
     SET_START_TIME(state, startTime) {
       if (state.startTime !== startTime) {
@@ -88,14 +83,39 @@ export default {
         state.daySchedules.push(daySchedules[i].startTime);
       }
     },
+    RESET_SELECTED_DATE(state) {
+      state.selectedDate = null;
+    },
+    RESET_START_TIME(state) {
+      state.startTime = null;
+    },
+    RESET_END_TIME(state) {
+      state.endTime = null;
+    },
+    RESET_SELECTED_CONSULTANT(state) {
+      state.selectedConsultant = false;
+    },
+    RESET_SCHEDULE_DETAIL(state) {
+      state.scheduleDetail = '';
+    },
+    RESET_SELECTED_CATEGORY(state) {
+      state.selectedCategory = null;
+    },
   },
   actions: {
     pickDate({ commit, dispatch }, date) {
+      commit('RESET_SELECTED_CONSULTANT');
+      commit('RESET_START_TIME');
+      commit('RESET_END_TIME');
+      commit('RESET_SELECTED_CATEGORY');
+      commit('RESET_SCHEDULE_DETAIL');
       commit('SET_DATE', date);
       dispatch('fetchDaySchedules', date);
     },
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
+      commit('RESET_SELECTED_CATEGORY');
+      commit('RESET_SCHEDULE_DETAIL');
     },
     fetchSchedules({ commit, getters }) {
       axios({
@@ -125,6 +145,10 @@ export default {
       // .catch((err) => console.error(err.response));
     },
     pickMyConsultant({ commit, dispatch, getters }, consultant) {
+      commit('RESET_START_TIME');
+      commit('RESET_END_TIME');
+      commit('RESET_SELECTED_CATEGORY');
+      commit('RESET_SCHEDULE_DETAIL');
       commit('SET_MY_CONSULTANT', consultant);
       const data = {
         consultant,
@@ -140,7 +164,7 @@ export default {
     selectCategory({ commit }, category) {
       commit('SET_SELECTED_CATEGORY', category);
     },
-    createSchedule({ dispatch, getters }) {
+    createSchedule({ dispatch, getters, commit }) {
       if (getters.selectedDate
         && getters.selectedStartTime
         && getters.selectedCategory
@@ -162,6 +186,12 @@ export default {
         })
           .then(() => {
             dispatch('fetchSchedules');
+            commit('RESET_SELECTED_DATE');
+            commit('RESET_SELECTED_CONSULTANT');
+            commit('RESET_START_TIME');
+            commit('RESET_END_TIME');
+            commit('RESET_SELECTED_CATEGORY');
+            commit('RESET_SCHEDULE_DETAIL');
             router.push({ name: 'Schedule' });
           })
           .catch((err) => console.log(err));
@@ -169,7 +199,7 @@ export default {
         alert('빠짐없이 입력해주세요');
       }
     },
-    createScheduleCT({ dispatch, getters }) {
+    createScheduleCT({ dispatch, getters, commit }) {
       if (getters.selectedDate
         && getters.selectedStartTime
         && getters.selectedCategory
@@ -195,6 +225,12 @@ export default {
       } else {
         alert('빠짐없이 입력해주세요');
       }
+      commit('RESET_SELECTED_DATE');
+      commit('RESET_SELECTED_CONSULTANT');
+      commit('RESET_START_TIME');
+      commit('RESET_END_TIME');
+      commit('RESET_SELECTED_CATEGORY');
+      commit('RESET_SCHEDULE_DETAIL');
     },
     deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({

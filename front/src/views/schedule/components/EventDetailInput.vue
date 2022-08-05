@@ -32,11 +32,11 @@
     </div>
     <div id="div-category">
       <label for="detail">상세정보
-        <input @change="entryScheduleDetail" type="text" id="detail" class="form-control">
+        <input v-model="scheduleDetail" type="text" id="detail" class="form-control">
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click.prevent="createSchedule">등록</button>
+      <button class="btn" @click.prevent="createSchedule(scheduleDetail)">등록</button>
     </div>
   </div>
 </template>
@@ -47,6 +47,11 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'EventDetailInput',
+  data() {
+    return {
+      scheduleDetail: '',
+    };
+  },
   setup() {
     const store = useStore();
 
@@ -57,8 +62,8 @@ export default {
     const selectCategory = (e) => {
       store.dispatch('selectCategory', e.target.value);
     };
-    const createSchedule = () => {
-      store.dispatch('createSchedule');
+    const createSchedule = (detail) => {
+      store.dispatch('createSchedule', detail);
     };
     return {
       selectedConsultant,

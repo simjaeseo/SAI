@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div id="btn-box">
       <select
       class="form-select"
@@ -20,13 +21,16 @@
           개인일정추가
         </button>
     </div>
+
     <div>
       <div id="time-picker">
         <time-picker></time-picker>
       </div>
+
       <div id="event-detail-input">
         <event-detail-input></event-detail-input>
       </div>
+
     </div>
   </div>
 </template>
