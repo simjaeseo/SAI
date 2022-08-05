@@ -6,28 +6,20 @@ export default {
   namespace: true,
   state: {
     selectedDate: null,
-    startTime: null,
     endTime: null,
     schedules: [],
     upcomingSchedules: [],
     myConsultants: [],
-    selectedConsultant: false,
-    scheduleDetail: '',
-    selectedCategory: null,
     CTDaySchedules: [],
     daySchedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
-    selectedStartTime: (state) => state.startTime,
     selectedEndTime: (state) => state.endTime,
     schedules: (state) => state.schedules,
     upcomingSchedules: (state) => state.upcomingSchedules,
     isUpcomingSchedules: (state) => state.upcomingSchedules.length,
     myConsultants: (state) => state.myConsultants,
-    selectedConsultant: (state) => state.selectedConsultant,
-    scheduleDetail: (state) => state.scheduleDetail,
-    selectedCategory: (state) => state.selectedCategory,
     CTDaySchedules: (state) => state.CTDaySchedules,
     daySchedules: (state) => state.daySchedules,
   },
@@ -39,19 +31,19 @@ export default {
         state.selectedDate = false;
       }
     },
-    SET_START_TIME(state, startTime) {
-      if (state.startTime !== startTime) {
-        state.startTime = startTime;
-        if (startTime.includes('30')) {
-          state.endTime = `${Number(startTime.slice(0, -3)) + 1}:00`;
-        } else {
-          state.endTime = `${startTime.slice(0, -3)}:30`;
-        }
-      } else {
-        state.startTime = false;
-        state.endTime = false;
-      }
-    },
+    // SET_START_TIME(state, startTime) {
+    //   if (state.startTime !== startTime) {
+    //     state.startTime = startTime;
+    //     if (startTime.includes('30')) {
+    //       state.endTime = `${Number(startTime.slice(0, -3)) + 1}:00`;
+    //     } else {
+    //       state.endTime = `${startTime.slice(0, -3)}:30`;
+    //     }
+    //   } else {
+    //     state.startTime = false;
+    //     state.endTime = false;
+    //   }
+    // },
     SET_SCHEDULES(state, schedules) {
       state.schedules = schedules;
     },
@@ -61,15 +53,6 @@ export default {
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
-    },
-    SET_MY_CONSULTANT(state, consultant) {
-      state.selectedConsultant = consultant;
-    },
-    SET_SCHEDULE_DETAIL(state, datail) {
-      state.scheduleDetail = datail;
-    },
-    SET_SELECTED_CATEGORY(state, category) {
-      state.selectedCategory = category;
     },
     SET_CT_DAY_SCHEDULES(state, CTDaySchedules) {
       state.CTDaySchedules = [];
@@ -86,36 +69,17 @@ export default {
     RESET_SELECTED_DATE(state) {
       state.selectedDate = null;
     },
-    RESET_START_TIME(state) {
-      state.startTime = null;
-    },
     RESET_END_TIME(state) {
       state.endTime = null;
-    },
-    RESET_SELECTED_CONSULTANT(state) {
-      state.selectedConsultant = false;
-    },
-    RESET_SCHEDULE_DETAIL(state) {
-      state.scheduleDetail = '';
-    },
-    RESET_SELECTED_CATEGORY(state) {
-      state.selectedCategory = null;
     },
   },
   actions: {
     pickDate({ commit, dispatch }, date) {
-      commit('RESET_SELECTED_CONSULTANT');
-      commit('RESET_START_TIME');
-      commit('RESET_END_TIME');
-      commit('RESET_SELECTED_CATEGORY');
-      commit('RESET_SCHEDULE_DETAIL');
       commit('SET_DATE', date);
       dispatch('fetchDaySchedules', date);
     },
     pickTime({ commit }, startTime) {
       commit('SET_START_TIME', startTime);
-      commit('RESET_SELECTED_CATEGORY');
-      commit('RESET_SCHEDULE_DETAIL');
     },
     fetchSchedules({ commit, getters }) {
       axios({
@@ -132,6 +96,7 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
+        .then((res) => console.log(res.data))
         .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data));
       // .catch((err) => console.error(err.response));
     },
@@ -144,54 +109,28 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    pickMyConsultant({ commit, dispatch, getters }, consultant) {
-      commit('RESET_START_TIME');
-      commit('RESET_END_TIME');
-      commit('RESET_SELECTED_CATEGORY');
-      commit('RESET_SCHEDULE_DETAIL');
-      commit('SET_MY_CONSULTANT', consultant);
-      const data = {
-        consultant,
-        date: getters.selectedDate,
-      };
-      if (consultant) {
-        dispatch('fetchCTDaySchedules', data);
-      }
-    },
-    entryScheduleDetail({ commit }, detail) {
-      commit('SET_SCHEDULE_DETAIL', detail.target.value);
-    },
-    selectCategory({ commit }, category) {
-      commit('SET_SELECTED_CATEGORY', category);
-    },
-    createSchedule({ dispatch, getters, commit }) {
+    createSchedule({ dispatch, getters }, Credential) {
       if (getters.selectedDate
-        && getters.selectedStartTime
-        && getters.selectedCategory
-        && getters.scheduleDetail
-        && getters.selectedConsultant !== false) {
+        && Credential.startTime
+        && Credential.selectedConsultant !== null
+        && Credential.scheduleDetail
+        && Credential.selectedCategory) {
         axios({
           url: drf.schedule.schedule(getters.currentUser.id),
           method: 'post',
           data: {
             scheduleDate: getters.selectedDate,
-            startTime: getters.selectedStartTime,
+            startTime: Credential.startTime,
             endTime: getters.selectedEndTime,
-            category: getters.selectedCategory,
-            detail: getters.scheduleDetail,
+            category: Credential.selectedCategory,
+            detail: Credential.scheduleDetail,
             memberStudentId: getters.currentUser.id,
-            memberConsultantId: getters.selectedConsultant,
+            memberConsultantId: Credential.selectedConsultant,
           },
           headers: getters.authHeader,
         })
           .then(() => {
             dispatch('fetchSchedules');
-            commit('RESET_SELECTED_DATE');
-            commit('RESET_SELECTED_CONSULTANT');
-            commit('RESET_START_TIME');
-            commit('RESET_END_TIME');
-            commit('RESET_SELECTED_CATEGORY');
-            commit('RESET_SCHEDULE_DETAIL');
             router.push({ name: 'Schedule' });
           })
           .catch((err) => console.log(err));
