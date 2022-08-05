@@ -1,7 +1,9 @@
 package com.ssafy.sai.domain.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.response.CampusConsultantDto;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
@@ -22,6 +24,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 public class Member extends BaseEntity {
 
     @Id
@@ -44,8 +47,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
-    @Column(name = "profile_picture_url")
-    private String profilePicture;
+    @OneToOne(fetch = LAZY, cascade = ALL)
+    @JoinColumn(name = "profile_picture_id")
+    private ProfilePicture profilePicture;
 
     private int year;
     @ManyToOne(fetch = LAZY, cascade = ALL)
@@ -69,11 +73,22 @@ public class Member extends BaseEntity {
     }
 
     public void updateMember(MemberUpdateRequest request) {
-        this.profilePicture = request.getProfilePicture();
+        this.phone = request.getPhone();
+    }
+
+    public void updateMember(ConsultantUpdateRequest request) {
         this.phone = request.getPhone();
     }
 
     public Member(String password) {
         this.password = password;
+    }
+
+    public void updateProfilePicture(ProfilePicture profilePicture) {
+        this.profilePicture = profilePicture;
+
+        if (profilePicture != null) {
+            profilePicture.updateMember(this);
+        }
     }
 }
