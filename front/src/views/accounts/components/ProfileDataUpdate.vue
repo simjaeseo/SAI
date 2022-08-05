@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="userUpdate">
+    <form @submit.prevent="userUpdate" enctyle="multipart/form-data" id="form">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
@@ -8,7 +8,7 @@
               <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                    ref='image' class='upload-box'>파일선택</label>
+                    ref='image' class='upload-box' @change="onInputImage">파일선택</label>
                 </div>
             </div>
             <!-- 프로필인적사항 -->
@@ -151,6 +151,11 @@ import SearchBarUpdate from './SearchBarUpdate.vue';
 export default {
   components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
+  data() {
+    return {
+      image: '',
+    };
+  },
   setup() {
     const store = useStore();
     const state = reactive({
@@ -227,7 +232,7 @@ export default {
     };
 
     const userUpdate = function () {
-      store.dispatch('userUpdate', {
+      const data = {
         campus: {
           city: currentUser.value.campus.city,
           classNumber: currentUser.value.campus.classNumber,
@@ -237,6 +242,13 @@ export default {
           newUpdateJob,
         interestedEnterprises:
           newUpdateEnter,
+      };
+      const formData = new FormData();
+      formData.append('file', this.image);
+      formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      // Object.keys(formData.keys()).forEach((key) => console.log(key));
+      // Object.keys(formData.values()).forEach((value) => console.log(value));
+      store.dispatch('userUpdate', {
       });
     };
     return {
@@ -254,7 +266,12 @@ export default {
       newUpdateEnter,
     };
   },
-
+  methods: {
+    onInputImage() {
+      this.image = this.$refs.image.file;
+      console.log(this.image);
+    },
+  },
   updated() {
   },
 };
