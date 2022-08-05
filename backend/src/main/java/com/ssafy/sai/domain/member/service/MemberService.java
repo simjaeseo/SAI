@@ -13,6 +13,7 @@ import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
@@ -49,7 +50,7 @@ public class MemberService {
      * @return 조회한 교육생의 정보 DTO
      * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
      */
-    public MemberDto findMemberOne(Long id) {
+    public MemberDto findMemberOne(Long id) throws MemberException {
         memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         Member findMember = memberRepository.findMemberEntityGraph(id);
         return new MemberDto(findMember);
@@ -61,7 +62,7 @@ public class MemberService {
      * @return 조회한 컨설턴트 정보 DTO
      * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
      */
-    public ConsultantDto findConsultantOne(Long id) {
+    public ConsultantDto findConsultantOne(Long id) throws MemberException {
         memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         Member findMember = memberRepository.findMemberById(id);
         return new ConsultantDto(findMember);
@@ -75,7 +76,7 @@ public class MemberService {
      * @throws Exception 회원 PK를 찾을 수 없는 경우, 이미 존재하는 휴대전화 번호로 변경하는 경우 예외 발생
      */
     @Transactional
-    public MemberResponse updateMember(Long id, MemberUpdateRequest request) {
+    public MemberResponse updateMember(Long id, MemberUpdateRequest request) throws MemberException {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 
@@ -112,7 +113,7 @@ public class MemberService {
      * @throws Exception 접속중인 회원과 이메일이 일치하지 않으면 예외 발생
      */
     @Transactional
-    public MemberResponse updatePassword(PasswordDto passwordDto) {
+    public MemberResponse updatePassword(PasswordDto passwordDto) throws MemberException {
         Member findMember = memberRepository.findById(passwordDto.getId())
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
         BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
@@ -128,5 +129,10 @@ public class MemberService {
         }
 
         return null;
+    }
+
+    public MemberResponse findMemberId(FindIdRequest request) throws MemberException {
+        Member findMember = memberRepository.findMemberByNameAndBirthday(request.getName(), request.getBirthday());
+        return new MemberResponse(findMember);
     }
 }

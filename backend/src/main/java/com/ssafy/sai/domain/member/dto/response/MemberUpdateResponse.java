@@ -11,7 +11,7 @@ public class MemberUpdateResponse {
 
     private Long id;
     private String email;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private Campus campus;
     private String phone;

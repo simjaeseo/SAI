@@ -14,7 +14,8 @@ import java.util.List;
 @Builder
 public class Campus {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "campus_id")
     private Long id;
 
