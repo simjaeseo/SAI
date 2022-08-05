@@ -14,7 +14,7 @@ public class ConsultantDto {
     private String email;
     private String name;
 
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private MemberStatus memberStatus;
     private CampusConsultantDto campus;
