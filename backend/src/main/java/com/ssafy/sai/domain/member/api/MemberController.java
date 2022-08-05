@@ -6,9 +6,11 @@ import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
+import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -50,8 +52,8 @@ public class MemberController {
      * @메소드 회원 정보 수정 컨트롤러
      */
     @PutMapping("/member/{id}")
-    public ResponseEntity<? extends DataResponse> updateMember(@PathVariable("id") Long id, @RequestBody @Valid MemberUpdateRequest request) {
-        return ResponseEntity.ok().body(new DataResponse<>(memberService.updateMember(id, request)));
+    public ResponseEntity<? extends DataResponse> updateMember(@RequestPart("file") MultipartFile file, @PathVariable("id") Long id, @RequestPart("request") @Valid MemberUpdateRequest request) {
+        return ResponseEntity.ok().body(new DataResponse<>(memberService.updateMember(file, id, request)));
     }
 
     /**
@@ -61,12 +63,12 @@ public class MemberController {
      * @메소드 회원 비밀번호 변경 컨트롤러
      */
     @PostMapping("/password")
-    public ResponseEntity<? extends DataResponse> updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
+    public ResponseEntity updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
         if (memberService.updatePassword(passwordDto) == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().body(new DataResponse<>(memberService.updatePassword(passwordDto)));
+        return ResponseEntity.ok().body(new MessageResponse<>());
     }
 
     /**
