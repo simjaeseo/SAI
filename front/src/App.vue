@@ -77,7 +77,8 @@
     </nav>
     <nav>
       <router-link to="/">Main</router-link> |
-      <router-link to="/schedule">Schdule</router-link> |
+      <router-link to="/schedule">Schedule</router-link> |
+      <router-link to="/scheduleCT">ScheduleCT</router-link> |
       <router-link to="/login">login</router-link> |
       <router-link to="/signup">signup</router-link> |
       <router-link to="/signupCT">signupCT</router-link> |
