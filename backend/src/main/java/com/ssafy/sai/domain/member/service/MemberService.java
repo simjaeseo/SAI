@@ -80,7 +80,7 @@ public class MemberService {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 
-        if (!Empty.validation(memberRepository.countByPhone(request.getPhone()))) {
+        if (!Empty.validation(memberRepository.countByPhone(request.getPhone())) && !request.getPhone().equals(findMember.getPhone())) {
             throw new MemberException(MemberExceptionType.ALREADY_EXIST_PHONE);
         }
 
