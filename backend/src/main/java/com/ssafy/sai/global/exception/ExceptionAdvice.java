@@ -46,10 +46,11 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity handleMemberEx(MemberException exception) {
-        log.error("MemberExceptio 발생 ! {}", exception.getMessage());
+        log.error("MemberException 발생 ! {}", exception.getMessage());
         return new ResponseEntity<>(new ExceptionDto(exception.getExceptionType().getErrorCode(),
                 exception.getExceptionType().getHttpStatus(),
-                exception.getExceptionType().getErrorMessage()), exception.getExceptionType().getHttpStatus());
+                exception.getExceptionType().getErrorMessage()),
+                exception.getExceptionType().getHttpStatus());
     }
 
     @ExceptionHandler(ScheduleException.class)

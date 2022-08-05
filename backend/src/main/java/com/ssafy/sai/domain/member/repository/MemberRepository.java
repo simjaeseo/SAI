@@ -1,6 +1,5 @@
 package com.ssafy.sai.domain.member.repository;
 
-import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
 import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
@@ -18,9 +17,11 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
-    Member findMemberById(Long id);
+    @EntityGraph(attributePaths = {"profilePicture"})
+    @Query("select m from Member m where m.id = :id")
+    Member findMemberById(@Param("id") Long id);
 
-    @EntityGraph(attributePaths = {"campus"})
+    @EntityGraph(attributePaths = {"campus", "profilePicture"})
     @Query("select m from Member m where m.id = :id")
     Member findMemberEntityGraph(@Param("id") Long id);
 
@@ -45,8 +46,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
 
     Member findMemberByNameAndBirthday(String name, LocalDate birthday);
-
-    Member findMemberByEmail(String email);
-
-    Member findMemberById(long id);
 }
