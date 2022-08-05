@@ -59,6 +59,7 @@ import countries from '@/data/duty.json';
 import {
   ref,
   computed,
+  // onBeforeMount,
 } from 'vue';
 import { useStore } from 'vuex';
 
@@ -72,6 +73,14 @@ export default {
     const Jobs = computed(() => store.getters.userJob);
     const searchTerm = ref('');
 
+    // const Jobs = [];
+    // onBeforeMount(() => {
+    //   Job.value.forEach((el) => {
+    //     if (!Jobs.includes(el)) {
+    //       Jobs.push(el);
+    //     }
+    //   });
+    // });
     const searchCountries = computed(() => {
       if (searchTerm.value === '') {
         return [];
@@ -104,10 +113,8 @@ export default {
       store.dispatch('newJob', {
         plusJob,
       });
-      console.log(plusJob[0].name);
     };
     const deleteplus = function (event) {
-      console.log(plusJob);
       for (let i = 0; i < plusJob.length; i += 1) {
         if (plusJob[i].name === event) {
           plusJob.splice(i, 1);

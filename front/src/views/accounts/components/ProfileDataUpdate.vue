@@ -65,7 +65,7 @@
                     class='form-control' v-model="currentUser.email" readonly
                     @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
-                    <search-bar-duty @jobs='jobs'></search-bar-duty>
+                    <search-bar-duty></search-bar-duty>
                 </div>
               </div>
             </div>
@@ -99,7 +99,8 @@
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
                       <button type="button" class="btn" id='update-btn2'
-                      aria-label="Close" data-bs-dismiss="modal">확인</button>
+                      aria-label="Close" data-bs-dismiss="modal"
+                      >확인</button>
                     </div>
                   </div>
                 </div>
@@ -123,13 +124,16 @@
         <!-- 버튼 -->
         <div id='btn-box'>
             <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <button class='btn' type='submit' id='update-btn'>완료</button>
+            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
     <div>
-      {{ oldJobs }}
       {{ newJobs.plusJob }}
+      {{ oldJobs }}
+      {{ newEnters.plusEnter }}
+      {{ oldEnters }}
     </div>
+
   </div>
 </template>
 
@@ -164,66 +168,43 @@ export default {
     const oldEnters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const allJobs = [];
+    const allEnters = [];
 
     onBeforeMount(() => {
-      // const originalJobs = JSON.parse(JSON.stringify(oldJobs));
-      // console.log(originalJobs);
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
       state.mobileLast = userPhone.substr(7);
     });
 
-    let updateJobs = [];
-    let newUpdateJobs = [];
-    let updateEnters = [];
-    let newUpdateEnters = [];
-    let jobData = null;
-    let enterData = null;
+    let newUpdateJob = [];
+    let newUpdateEnter = [];
     onUpdated(() => {
-      // allJobs 배열에 모든 직무 객체 추가
-      const allJobs = [];
-      // 추가된 직무 길이
-      if (!newJobs.value.plusJob) {
-        for (let i = 0; i < newJobs.value.length; i += 1) {
-          allJobs.push(newJobs.value.plusJob[i].name);
-        }
+      for (let i = 0; i < newJobs.value.length; i += 1) {
+        allJobs.push(newJobs.value.plusJob[i].name);
+        console.log('실행됨??');
       }
       // 유저가 원래 가지고있던 직무 길이 (수정 됐을수도 안됐을수도)
-      if (oldJobs.value.length !== 0) {
-        for (let i = 0; i < oldJobs.value.length; i += 1) {
-          allJobs.push(oldJobs.value[i].jobName);
-        }
+      for (let i = 0; i < oldJobs.value.length; i += 1) {
+        allJobs.push(oldJobs.value[i].jobName);
+        console.log('실행됨??');
       }
-      updateJobs = allJobs;
-      newUpdateJobs = updateJobs.map((item) => ({ name: item }));
-      // proxy 변환 후 전송해도 오류
-      const jobProxy = new Proxy(newUpdateJobs, {});
-      jobData = jobProxy;
-      console.log(jobData);
-      console.log(jobProxy);
-      const allEnters = [];
-      // 추가된 회사 길이
-      if (!newEnters.value.plusEnter) {
-        for (let i = 0; i < newEnters.value.length; i += 1) {
-          allEnters.push(newEnters.value.plusEnter[i].name);
-        }
+      for (let i = 0; i < newEnters.value.length; i += 1) {
+        allEnters.push(newEnters.value.plusEnter[i].name);
+        console.log('실행됨??');
       }
       // 유저가 원래 가지고있던 회사 길이 (수정 됐을수도 안됐을수도)
-      if (oldEnters.value.length !== 0) {
-        for (let i = 0; i < oldEnters.value.length; i += 1) {
-          allEnters.push(oldEnters.value[i].enterpriseName);
-        }
+      for (let i = 0; i < oldEnters.value.length; i += 1) {
+        allEnters.push(oldEnters.value[i].enterpriseName);
+        console.log('실행됨??');
       }
-      updateEnters = allEnters;
-      newUpdateEnters = updateEnters.map((item) => ({ name: item }));
-      // proxy 변환 후 전송해도 오류
-      const enterProxy = new Proxy(newUpdateEnters, {});
-      enterData = enterProxy;
-      console.log(enterData);
-      console.log(enterProxy);
+      const newUpdateJobs = allJobs.map((item) => ({ name: item }));
+      newUpdateJob = newUpdateJobs;
+      console.log(newUpdateJob);
+      const newUpdateEnters = allEnters.map((item) => ({ name: item }));
+      newUpdateEnter = newUpdateEnters;
     });
-
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
     };
@@ -252,13 +233,10 @@ export default {
           classNumber: currentUser.value.campus.classNumber,
         },
         phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
-        profilePicture: 'none',
-        interestedJobs: {
-          name: jobData,
-        },
-        interestedEnterprises: {
-          name: enterData,
-        },
+        interestedJobs:
+          newUpdateJob,
+        interestedEnterprises:
+          newUpdateEnter,
       });
     };
     return {
@@ -270,15 +248,13 @@ export default {
       newJobs,
       oldJobs,
       userUpdate,
-      updateJobs,
       newEnters,
       oldEnters,
-      updateEnters,
-      newUpdateEnters,
-      jobData,
-      enterData,
+      newUpdateJob,
+      newUpdateEnter,
     };
   },
+
   updated() {
   },
 };

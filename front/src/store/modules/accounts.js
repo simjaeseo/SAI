@@ -1,6 +1,7 @@
 import drf from '@/api/api';
 import axios from 'axios';
 import router from '@/router/index';
+import _uniqBy from 'lodash/uniqBy';
 
 export default {
   state: {
@@ -16,6 +17,7 @@ export default {
     setNewJob: {},
   },
   getters: {
+    authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
     isLoggedIn: (state) => !!state.token,
     currentUser: (state) => state.currentUser,
     // 원래회사
@@ -33,8 +35,12 @@ export default {
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
-      state.userEnter = user.interestedEnterprises;
-      state.userJob = user.interestedJobs;
+      const arr = user.interestedEnterprises;
+      const array1 = _uniqBy(arr, 'name');
+      state.userEnter = array1;
+      const arr2 = user.interestedJob;
+      const array2 = _uniqBy(arr2, 'name');
+      state.userJob = array2;
     },
     REMOVE_CURRENT_USER(state) {
       state.currentUser = {};
@@ -102,8 +108,10 @@ export default {
           header: getters.authHeader,
         })
           .then((res) => commit('SET_CURRENT_USER', res.data.data))
-          .catch(() => {
-            alert('오류발생');
+          .catch((err) => {
+            console.log('에러베러');
+            console.log(err);
+            console.log('에러베러');
           });
       }
     },
@@ -157,7 +165,6 @@ export default {
         });
     },
     newEnter({ commit }, enter) {
-      console.log(enter);
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
@@ -167,10 +174,9 @@ export default {
       commit('CHANGE_USER_JOB', data);
     },
     updateEnter({ commit }, data) {
-      console.log(data);
       commit('CHANGE_USER_ENTER', data);
     },
-    userUpdate({ getters }, credentials) {
+    userUpdate({ dispatch, getters }, credentials) {
       console.log(credentials);
       const userId = getters.currentUser.id;
       axios({
@@ -178,8 +184,11 @@ export default {
         method: 'put',
         data: credentials,
       })
-        .then(() => console.log('성공'))
-        .catch(() => console.log(credentials))
+        .then(() => {
+          alert('수정되었습니다.');
+          dispatch('fetchCurrentUser', userId);
+          router.push({ name: 'Profile' });
+        })
         .catch((err) => console.log(err));
     },
   },
