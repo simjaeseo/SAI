@@ -37,7 +37,7 @@
     <!-- 관심기업/직무 -->
     <div>
       <div id='personal-video-box1' class='container'>
-        <p>관심기업/직무</p>
+        <p>관심기업</p>
           <div id='personal-video-box2'>
             <div v-if="currentUser.interestedEnterprises">
               <p v-for="(enterprise, index) in currentUser.interestedEnterprises"

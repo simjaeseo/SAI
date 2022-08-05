@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="userUpdate">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
@@ -22,32 +22,18 @@
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected disabled>기수</option>
-                        <option value='1' disabled>1기</option>
-                        <option value='2' disabled>2기</option>
-                        <option value='3' disabled>3기</option>
-                        <option value='4' disabled>4기</option>
-                        <option value='5' disabled>5기</option>
-                        <option value='6' disabled>6기</option>
-                        <option value='7' disabled>7기</option>
+                        <option selected disabled>
+                        {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
                     aria-label='Default select example'>
-                        <option selected disabled>지역</option>
-                        <option value='1' disabled>서울</option>
-                        <option value='2' disabled>대전</option>
-                        <option value='3' disabled>광주</option>
-                        <option value='4' disabled>구미</option>
-                        <option value='5' disabled>부울경</option>
+                        <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
-                    aria-label='Default select example'>
-                        <option selected disabled>반</option>
-                        <option value='1'>1반</option>
-                        <option value='2'>2반</option>
-                        <option value='3'>3반</option>
-                        <option value='4'>4반</option>
-                        <option value='5'>5반</option>
+                    aria-label='Default select example'
+                    @click="setOptions">
+                      <option selected>{{ currentUser.campus.classNumber}}</option>
+                      <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
                     <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
@@ -72,10 +58,12 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday" readonly></label>
+                    class='form-control' v-model="currentUser.birthday" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email" readonly></label>
+                    class='form-control' v-model="currentUser.email" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -105,12 +93,14 @@
                       aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <search-bar></search-bar>
+                      <search-bar-update></search-bar-update>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
-                      <button type="button" class="btn" id='update-btn2'>확인</button>
+                      <button type="button" class="btn" id='update-btn2'
+                      aria-label="Close" data-bs-dismiss="modal"
+                      >확인</button>
                     </div>
                   </div>
                 </div>
@@ -134,49 +124,146 @@
         <!-- 버튼 -->
         <div id='btn-box'>
             <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <router-link to="profile"><button class='btn'
-            type='submit'
-            id='update-btn'>완료</button></router-link>
+            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
+    <div>
+      {{ newJobs.plusJob }}
+      {{ oldJobs }}
+      {{ newEnters.plusEnter }}
+      {{ oldEnters }}
+    </div>
+
   </div>
 </template>
 
 <script>
-import { computed, reactive, onBeforeMount } from 'vue';
+import {
+  computed,
+  reactive,
+  onBeforeMount,
+  onUpdated,
+} from 'vue';
 import { useStore } from 'vuex';
-import SearchBar from './SearchBar.vue';
 import SearchBarDuty from './SearchBarDuty.vue';
+import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
-  components: { SearchBar, SearchBarDuty },
+  components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
     const state = reactive({
+      mobileFirst: '',
       mobileSecond: '',
       mobileLast: '',
+      options: [],
     });
+
+    // store에서 넘어온 새로 추가 된 직무
+    const newJobs = computed(() => store.getters.setNewJob);
+    const newEnters = computed(() => store.getters.setNewEnter);
+    // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
+    const oldJobs = computed(() => store.getters.userJob);
+    const oldEnters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const allJobs = [];
+    const allEnters = [];
+
     onBeforeMount(() => {
-      console.log(currentUser.value.phone);
       const userPhone = currentUser.value.phone;
+      state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
-      console.log(state.mobileSecond);
       state.mobileLast = userPhone.substr(7);
-      console.log(state.mobileLast);
     });
+
+    let newUpdateJob = [];
+    let newUpdateEnter = [];
+    onUpdated(() => {
+      for (let i = 0; i < newJobs.value.length; i += 1) {
+        allJobs.push(newJobs.value.plusJob[i].name);
+        console.log('실행됨??');
+      }
+      // 유저가 원래 가지고있던 직무 길이 (수정 됐을수도 안됐을수도)
+      for (let i = 0; i < oldJobs.value.length; i += 1) {
+        allJobs.push(oldJobs.value[i].jobName);
+        console.log('실행됨??');
+      }
+      for (let i = 0; i < newEnters.value.length; i += 1) {
+        allEnters.push(newEnters.value.plusEnter[i].name);
+        console.log('실행됨??');
+      }
+      // 유저가 원래 가지고있던 회사 길이 (수정 됐을수도 안됐을수도)
+      for (let i = 0; i < oldEnters.value.length; i += 1) {
+        allEnters.push(oldEnters.value[i].enterpriseName);
+        console.log('실행됨??');
+      }
+      const newUpdateJobs = allJobs.map((item) => ({ name: item }));
+      newUpdateJob = newUpdateJobs;
+      console.log(newUpdateJob);
+      const newUpdateEnters = allEnters.map((item) => ({ name: item }));
+      newUpdateEnter = newUpdateEnters;
+    });
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    const setOptions = function () {
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
+    };
+
+    const userUpdate = function () {
+      store.dispatch('userUpdate', {
+        campus: {
+          city: currentUser.value.campus.city,
+          classNumber: currentUser.value.campus.classNumber,
+        },
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        interestedJobs:
+          newUpdateJob,
+        interestedEnterprises:
+          newUpdateEnter,
+      });
+    };
     return {
       isLoggedIn,
       currentUser,
       state,
+      noChange,
+      setOptions,
+      newJobs,
+      oldJobs,
+      userUpdate,
+      newEnters,
+      oldEnters,
+      newUpdateJob,
+      newUpdateEnter,
     };
+  },
+
+  updated() {
   },
 };
 </script>
 
 <style scoped>
+#nocheck {
+  color: gray;
+}
 .modal-body {
   height: 500px;
 }
