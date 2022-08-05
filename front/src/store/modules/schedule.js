@@ -66,20 +66,11 @@ export default {
         state.daySchedules.push(daySchedules[i].startTime);
       }
     },
-    RESET_SELECTED_DATE(state) {
-      state.selectedDate = null;
-    },
-    RESET_END_TIME(state) {
-      state.endTime = null;
-    },
   },
   actions: {
     pickDate({ commit, dispatch }, date) {
       commit('SET_DATE', date);
       dispatch('fetchDaySchedules', date);
-    },
-    pickTime({ commit }, startTime) {
-      commit('SET_START_TIME', startTime);
     },
     fetchSchedules({ commit, getters }) {
       axios({
@@ -96,7 +87,6 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => console.log(res.data))
         .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data));
       // .catch((err) => console.error(err.response));
     },
@@ -138,20 +128,19 @@ export default {
         alert('빠짐없이 입력해주세요');
       }
     },
-    createScheduleCT({ dispatch, getters, commit }) {
+    createScheduleCT({ dispatch, getters }, Credential) {
       if (getters.selectedDate
-        && getters.selectedStartTime
-        && getters.selectedCategory
-        && getters.scheduleDetail) {
+        && Credential.startTime
+        && Credential.scheduleDetail
+        && Credential.selectedCategory) {
         axios({
           url: drf.schedule.schedule(getters.currentUser.id),
           method: 'post',
           data: {
             scheduleDate: getters.selectedDate,
-            startTime: getters.selectedStartTime,
-            endTime: getters.selectedEndTime,
-            category: getters.selectedCategory,
-            detail: getters.scheduleDetail,
+            startTime: Credential.startTime,
+            category: Credential.selectedCategory,
+            detail: Credential.scheduleDetail,
             memberConsultantId: getters.currentUser.id,
           },
           headers: getters.authHeader,
@@ -164,12 +153,6 @@ export default {
       } else {
         alert('빠짐없이 입력해주세요');
       }
-      commit('RESET_SELECTED_DATE');
-      commit('RESET_SELECTED_CONSULTANT');
-      commit('RESET_START_TIME');
-      commit('RESET_END_TIME');
-      commit('RESET_SELECTED_CATEGORY');
-      commit('RESET_SCHEDULE_DETAIL');
     },
     deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({

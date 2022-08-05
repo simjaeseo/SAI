@@ -6,6 +6,8 @@
       class="form-select"
       aria-label="Default select example"
       @change="pickMyConsultant"
+      :style="[Credential.selectedConsultant ?
+      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
       required>
         <option selected disabled>컨설턴트상담</option>
         <option
@@ -17,7 +19,9 @@
       </select>
         <button
         class="btn"
-        @click.prevent="pickMyConsultant">
+        @click.prevent="pickMyConsultant"
+        :style="[Credential.selectedConsultant == '' ?
+        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
           개인일정추가
         </button>
     </div>
@@ -116,9 +120,6 @@ export default {
     const fetchMyConsultants = () => {
       store.dispatch('fetchMyConsultants');
     };
-    const noConsultant = (value) => {
-      store.dispatch('pickMyConsultant', value);
-    };
 
     // time picker
     const CTDaySchedules = computed(() => store.getters.CTDaySchedules);
@@ -128,22 +129,17 @@ export default {
     };
 
     // detail
-    const entryScheduleDetail = (detail) => {
-      store.dispatch('entryScheduleDetail', detail);
-    };
     const createSchedule = (detail) => {
       store.dispatch('createSchedule', detail);
     };
     return {
       myConsultants,
       fetchMyConsultants,
-      noConsultant,
 
       pickTime,
       CTDaySchedules,
       daySchedules,
 
-      entryScheduleDetail,
       createSchedule,
     };
   },
