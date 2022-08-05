@@ -15,6 +15,7 @@ import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.dto.AuthenticationMember;
+import com.ssafy.sai.domain.member.dto.ConsultantDto;
 import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
@@ -117,7 +118,7 @@ public class SignService {
      * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
      */
     @Transactional
-    public MemberResponse signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
+    public ConsultantDto signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -147,7 +148,7 @@ public class SignService {
         Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
         findMember.updateCampus(campus.get());
 
-        return new MemberResponse(findMember);
+        return new ConsultantDto(findMember);
     }
 
     /**
