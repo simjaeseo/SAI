@@ -8,7 +8,7 @@ public class CampusDto {
     private String city;
     private Integer classNumber;
 
-    public CampusDto() {
+    private CampusDto() {
 
     }
 

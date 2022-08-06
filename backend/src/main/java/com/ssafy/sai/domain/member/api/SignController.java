@@ -32,7 +32,7 @@ public class SignController {
      */
     @PostMapping(value = {"signup/member"})
     public ResponseEntity<? extends DataResponse> signUpMember(
-            @Valid @RequestBody MemberSignUpRequest request) throws MemberException {
+            @Valid @RequestBody MemberSignUpRequest request) {
         return ResponseEntity.ok()
                 .body(new DataResponse<>(signService.signUpMember(request)));
     }
@@ -44,7 +44,7 @@ public class SignController {
      */
     @PostMapping(value = {"signup/consultant"})
     public ResponseEntity<? extends DataResponse> signUpConsultant(
-            @Valid @RequestBody ConsultantSignUpRequest request) throws MemberException {
+            @Valid @RequestBody ConsultantSignUpRequest request) {
         return ResponseEntity.ok()
                 .body(new DataResponse<>(signService.signUpConsultant(request)));
     }
@@ -58,7 +58,7 @@ public class SignController {
      */
     @PostMapping(value = {"/login"})
     public ResponseEntity<? extends DataResponse> login(
-            @Valid @RequestBody MemberLoginRequest request) throws MemberException {
+            @Valid @RequestBody MemberLoginRequest request) {
         AuthenticationMember authentication = signService.loginMember(request);
 
         if (authentication == null) {
