@@ -55,7 +55,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "C:/Users/Geun/Documents/S07P12C206/image";
+    private String dir = "/Users/inho/Desktop/World/S07P12C206/image";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 

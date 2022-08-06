@@ -127,6 +127,7 @@
             <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
+    <button @click="check"></button>
     <div>
       {{ newJobs.plusJob }}
       {{ oldJobs }}
@@ -151,11 +152,11 @@ import SearchBarUpdate from './SearchBarUpdate.vue';
 export default {
   components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
-  data() {
-    return {
-      image: '',
-    };
-  },
+  // data() {
+  //   return {
+  //     image: '',
+  //   };
+  // },
   setup() {
     const store = useStore();
     const state = reactive({
@@ -231,7 +232,8 @@ export default {
       }
     };
 
-    const userUpdate = function () {
+    let img = null;
+    const userUpdate = () => {
       const data = {
         campus: {
           city: currentUser.value.campus.city,
@@ -243,13 +245,15 @@ export default {
         interestedEnterprises:
           newUpdateEnter,
       };
+      console.log(img);
       const formData = new FormData();
-      formData.append('file', this.image);
+      formData.append('file', img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-      // Object.keys(formData.keys()).forEach((key) => console.log(key));
-      // Object.keys(formData.values()).forEach((value) => console.log(value));
-      store.dispatch('userUpdate', {
-      });
+      store.dispatch('userUpdate', formData);
+    };
+
+    const onInputImage = (e) => {
+      [img] = e.target.files;
     };
     return {
       isLoggedIn,
@@ -264,13 +268,20 @@ export default {
       oldEnters,
       newUpdateJob,
       newUpdateEnter,
+      onInputImage,
     };
   },
   methods: {
-    onInputImage() {
-      this.image = this.$refs.image.file;
-      console.log(this.image);
-    },
+    // onInputImage(e) {
+    //   console.log(e.target.files[0]);
+    //   const img = e.target.files[0];
+    //   return {
+    //     img,
+    //   };
+    // },
+    // check() {
+    //   console.log(this.img);
+    // },
   },
   updated() {
   },
