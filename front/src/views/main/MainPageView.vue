@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 import RouteButton from './components/RouteButton.vue';
 import MainCalendar from './components/MainCalendar.vue';
 
@@ -27,8 +28,15 @@ export default {
     RouteButton,
     MainCalendar,
   },
-  computed: {
-    ...mapGetters(['currentUser', 'isLoggedIn']),
+  setup() {
+    const store = useStore();
+
+    const currentUser = computed(() => store.getters.currentUser);
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    return {
+      currentUser,
+      isLoggedIn,
+    };
   },
 };
 </script>

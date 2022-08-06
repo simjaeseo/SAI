@@ -6,7 +6,7 @@
             <h3>{{ upcomingSchedules[0].category }}</h3>
             <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
             <br><br>
-            <p v-if="upcomingSchedules[0].category === '1:1 모의 면접'">
+            <p v-if="upcomingSchedules[0].consultantName">
               담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
             </p>
             <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>

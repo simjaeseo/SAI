@@ -1,83 +1,94 @@
 <template>
   <div id='app'>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white" id='sai-nav'>
-      <div class="container-fluid">
-        <router-link to='/'>
-          <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
-        </router-link>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarNavDropdown"
-        aria-controls="navbarNavDropdown"
-        aria-expanded="false"
-        aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <!-- 네브바 링크 뭐 추가할지 생각 해봐야 함 -->
-            <!-- v-if써서 컨설턴트님일경우 교육생관리 링크 필요 -->
-            <!-- <li class="nav-item" id='nav-router'>
-              <router-link to='/' id='router-inner-text'>
-                <p>메인페이지</p>
-              </router-link>
-            </li> -->
-            <!-- <li class="nav-item" id='nav-router'>
-              <router-link to='/interview' id='router-inner-text'>
-                <p>모의면접</p>
-              </router-link>
-            </li> -->
-            <li class="nav-item">
-              <img src="@/assets/icon-head-dm2.png" alt="notice-icon" id='notice-icon2'>
-            </li>
-            <li class="nav-item">
-              <img src="@/assets/icon-head-push-bell.jpg" alt="notice-icon" id='notice-icon'>
-            </li>
-            <li class="nav-item dropdown" id='user-icon'>
-              <a class="nav-link dropdown-toggle"
-              href="#" id="navbarDropdownMenuLink"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-                <img src="@/assets/profile2.png" alt="" id='nav-user-profile-img'>
-                user님
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" id='dropdown-ul'>
-                <li id='dropdown-li'>
-                  <router-link to='/profile' id='dropdown-router'>
-                    <p id='dropdown-link-text'>마이페이지</p>
+    <div style="border-bottom: 1px solid #e9eef1;">
+      <nav class="navbar navbar-light navbar-expand-lg sticky-top container pb-0 pt-0">
+          <router-link to='/'>
+            <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
+          </router-link>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="navbarOffcanvasLg"
+          aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">SAI</h5>
+              <button type="button" class="btn-close text-reset"
+              data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1">
+                <li class="nav-item">
+                  <router-link to='/' id='dropdown-router'>
+                    <p id='dropdown-link-text-out'>HOME</p>
                   </router-link>
                 </li>
-                <li id='dropdown-li'>
-                  <router-link to='/password/update' id='dropdown-router'>
-                    <p id='dropdown-link-text'>비밀번호수정</p>
+                <li class="nav-item" v-if="currentUser.memberStatus === 'TRAINEE'">
+                  <router-link to='/interview' id='dropdown-router'>
+                    <p id='dropdown-link-text-out'>모의면접</p>
                   </router-link>
                 </li>
-                <li id='dropdown-li'>
-                  <a href="#" @click="logout()" @keyup="logout()">
-                    <p id='dropdown-link-text'>로그아웃</p>
+                <li class="nav-item" v-if="currentUser.memberStatus === 'CONSULTANT'">
+                  <router-link to='/management' id='dropdown-router'>
+                    <p id='dropdown-link-text-out'>교육생관리</p>
+                  </router-link>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown"
+                  role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                  >
+                    마이페이지
                   </a>
+                  <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+                    <li v-if="currentUser.memberStatus === 'TRAINEE'">
+                    <router-link to='/profile' id='dropdown-router'
+                    class="dropdown-item">
+                    <p id='dropdown-link-text'>회원정보</p></router-link>
+                    </li>
+                    <li v-if="currentUser.memberStatus === 'CONSULTANT'">
+                    <router-link to='/profile/update/ct' id='dropdown-router'
+                    class="dropdown-item">
+                    <p id='dropdown-link-text'>회원정보 수정</p></router-link>
+                    </li>
+                    <li><router-link to='/schedule' id='dropdown-router'
+                    class="dropdown-item">
+                    <p id='dropdown-link-text'>일정관리</p></router-link>
+                    </li>
+                    <li><router-link to='/password/update' id='dropdown-router'
+                    class="dropdown-item">
+                    <p id='dropdown-link-text'>비밀번호변경</p></router-link>
+                    </li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                    <li><router-link to='/login' id='dropdown-router'
+                    class="dropdown-item">
+                    <p id='dropdown-link-text' @click="logout()" @keyup="logout()">
+                    로그아웃</p></router-link>
+                    </li>
+                  </ul>
                 </li>
+                <div id='job'>
+                  <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='job-ssafy-link'>
+                  <span id='link-text'>JOB<br>SSAFY</span></a>
+                </div>
+                <div id='git'>
+                  <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='ssafy-git-link'>
+                  <span id='link-text2'>SSAFY<br>GIT</span></a>
+                </div>
+                <div id='most'>
+                  <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='meeting-ssafy-link'>
+                  <span id='link-text3'>Meeting!<br>SSAFY</span></a>
+                </div>
               </ul>
-            </li>
-            <div id='job'>
-              <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='job-ssafy-link'>
-              <span id='link-text'>JOB<br>SSAFY</span></a>
             </div>
-            <div id='git'>
-              <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='ssafy-git-link'>
-              <span id='link-text2'>SSAFY<br>GIT</span></a>
-            </div>
-            <div id='most'>
-              <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='meeting-ssafy-link'>
-              <span id='link-text3'>Meeting!<br>SSAFY</span></a>
-            </div>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <nav>
+          </div>
+      </nav>
+    </div>
+    <!-- <div>
       <router-link to="/">Main</router-link> |
-      <router-link to="/schedule">Schdule</router-link> |
+      <router-link to="/schedule">Schedule</router-link> |
+      <router-link to="/scheduleCT">ScheduleCT</router-link> |
       <router-link to="/login">login</router-link> |
       <router-link to="/signup">signup</router-link> |
       <router-link to="/signupCT">signupCT</router-link> |
@@ -92,62 +103,42 @@
       <router-link to="/interview/ct">InterviewCt</router-link> |
       <router-link to="/analysis/comprehensive">AnalysisComprehensive</router-link> |
       <router-link to="/analysis/detail">AnalysisDetail</router-link>
-    </nav>
+    </div> -->
   <router-view/>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
+
   name: 'App',
   methods: {
     ...mapActions(['logout']),
+  },
+  computed: {
+    ...mapGetters(['currentUser', 'isLoggedIn']),
   },
 };
 </script>
 
 <style scoped>
-#dropdown-link-text {
-  padding-top: 7px;
-  padding-bottom: 7px;
-  margin: 0;
+.nav-link {
+  color: rgba(0, 0, 0, 0.753);
+  font-weight: 500;
 }
-#dropdown-ul {
-  padding: 0px;
+#dropdown-link-text-out {
+  margin-top: 40px;
+  margin-left: 30px;
 }
-#dropdown-li {
-  text-align: center;
+#offcanvasNavbarDropdown {
+  margin-top: 32px;
+  margin-left: 25px;
+  margin-right: 10px;
 }
-#dropdown-li:hover {
-  text-align: center;
-  background-color: #f6f5f5a2;
-}
-#dropdown-router {
-  text-decoration: none;
-  color: #1f2328;
-}
-#router-inner-text {
-  text-decoration: none;
-  color: #4f5256;
-  font-weight: bold;
-}
-#router-inner-text:hover {
-  text-decoration: none;
-  color:  #5c6ac4;
-  font-weight: bold;
-}
-#nav-router {
-  margin-left: 20px;
-  font-size: 20px;
-}
-#user-icon {
-  margin-right: 20px;
-}
-#sai-nav {
-  border-bottom: 1px solid rgb(202, 202, 202);
-  padding: 0;
+#offcanvasNavbarDropdown:hover {
+  color:#5c6ac4;
 }
 #link-text3 {
   display: inline-block;
@@ -156,6 +147,7 @@ export default {
   vertical-align: top;
   text-align: left;
 }
+
 #meeting-ssafy-link {
   display: block;
   width: 93.38px;
@@ -165,13 +157,6 @@ export default {
   text-decoration: none;
 }
 
-#ssafy-git-link {
-  display: block;
-  width: 93.38px;
-  height: 101px;
-  padding: 30px 18px 0 19px;
-  color: #fafafa;
-}
 #most {
   display: block;
   top: 0;
@@ -182,6 +167,23 @@ export default {
   font-weight: 700;
   text-align: right;
 }
+
+#link-text2 {
+  display: inline-block;
+  padding: 0 10px 8px 0;
+  border-bottom: 2px solid #fff;
+  vertical-align: top;
+  text-align: left;
+}
+
+#ssafy-git-link {
+  display: block;
+  width: 93.38px;
+  height: 101px;
+  padding: 30px 18px 0 19px;
+  color: #fafafa;
+}
+
 #git {
   display: block;
   top: 0;
@@ -198,13 +200,7 @@ export default {
   border-bottom: 2px solid #080808;
   vertical-align: top;
 }
-#link-text2 {
-  display: inline-block;
-  padding: 0 10px 8px 0;
-  border-bottom: 2px solid #fff;
-  vertical-align: top;
-  text-align: left;
-}
+
 #job-ssafy-link {
   display: block;
   width: 93.38px;
@@ -222,35 +218,58 @@ export default {
   font-weight: 700;
   text-align: right;
 }
-#notice-icon {
-  width: 33px;
-  height: 33px;
-  margin-top: 35px;
-  margin-right: 20px;
-  cursor: pointer;
+
+#offcanvasNavbarDropdown {
+  padding-left: 8px;
+  padding-right: 8px;
 }
-#notice-icon2{
-  width: 30px;
-  height: 30px;
-  margin-top: 38px;
-  margin-right: 20px;
-  margin-left: 20px;
-  cursor: pointer;
+#dropdown-link-text {
+  padding-bottom: 7px;
+  margin: 0;
+  padding: 8px;
 }
-.dropdown {
-  margin-top: 25px;
+#dropdown-router {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.753);
+  font-weight: 500;
 }
-#nav-user-profile-img {
-  border-radius: 100%;
-  width: 40px;
-  height: 40px;
+#dropdown-router:hover {
+  text-decoration: none;
+  color: #5c6ac4;
+}
+@media screen and (max-width: 1000px) {
+  #job {
+    display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #git {
+    display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #most {
+    display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #dm-icon {
+    display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #alrert-icon {
+    display: none;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #user-icon {
+    display: none;
+  }
 }
 #logo-img {
   width: 74.5px;
   height: 48.5px;
   cursor: pointer;
-}
-p {
-  margin-top: 40px;
 }
 </style>
