@@ -1,7 +1,7 @@
 import drf from '@/api/api';
 import axios from 'axios';
 import router from '@/router/index';
-import _uniqBy from 'lodash/uniqBy';
+import { uniq } from 'lodash';
 
 export default {
   state: {
@@ -21,9 +21,9 @@ export default {
     isLoggedIn: (state) => !!state.token,
     currentUser: (state) => state.currentUser,
     // 원래회사
-    userEnter: (state) => state.userEnter,
+    userEnter: (state) => uniq(state.userEnter),
     // 원래직무
-    userJob: (state) => state.userJob,
+    userJob: (state) => uniq(state.userJob),
     // 새로운회사
     setNewEnter: (state) => state.setNewEnter,
     // 새로운직무
@@ -35,21 +35,21 @@ export default {
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
-      const arr = user.interestedEnterprises;
-      const array1 = _uniqBy(arr, 'name');
-      state.userEnter = array1;
-      const arr2 = user.interestedJob;
-      const array2 = _uniqBy(arr2, 'name');
-      state.userJob = array2;
+      state.userJob = user.interestedJobs.map((item) => ({ name: item.jobName }));
+      state.userEnter = user.interestedEnterprises.map((item) => ({ name: item.enterpriseName }));
     },
     REMOVE_CURRENT_USER(state) {
       state.currentUser = {};
     },
     SET_NEW_ENTER(state, enter) {
-      state.setNewEnter = enter;
+      for (let i = 0; i < enter.plusEnter.length; i += 1) {
+        state.userEnter.push(...enter.plusEnter);
+      }
     },
     SET_NEW_JOB(state, job) {
-      state.setNewJob = job;
+      for (let i = 0; i < job.plusJob.length; i += 1) {
+        state.userJob.push(...job.plusJob);
+      }
     },
     CHANGE_USER_JOB(state, update) {
       state.userJob = update;

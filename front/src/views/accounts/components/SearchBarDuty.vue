@@ -38,17 +38,17 @@
         </li>
       </ul>
       <div v-if="selectedCountry">
-        <p v-for="country in selectedCountries" :key="country" class='btn'
+        <!-- <p v-for="country in selectedCountries" :key="country" class='btn'
         id='selected-item'
         @keydown="selectedDeleteItem(country.name)"
         @click="[selectedDeleteItem(country.name), deleteplus(country.name)]">
-        #{{ country.name }}<span id='delete'> x</span></p>
+        {{ country.name }}</p> -->
 
         <p v-for="(user, index) in Jobs" :key="index" class='btn'
         id='selected-item'
         @click="selectedDeleteItem2(user)"
         @keydown="selectedDeleteItem2(user)">
-        #{{ user.jobName }}<span id='delete'> x</span></p>
+        {{ user.name }}</p>
       </div>
     </div>
   </div>
@@ -161,29 +161,6 @@ export default {
       this.$store.dispatch('updateJob', newJobs);
     },
   },
-  // updated() {
-  //   // 유저가 추가를 하면 즉 추가선택한 리스트의 길이가 0이 아니라면
-  //   this.$nextTick(function () {
-  //     if (this.selectedCountries.length !== 0) {
-  //       for (let i = 0; i < this.selectedCountries.length; i += 1) {
-  //         this.allEnterprises.push(this.selectedCountries[i].name);
-  //       }
-  //       const unique = {};
-  //       this.allEnterprises.forEach((el) => {
-  //         unique[el] = true;
-  //       });
-  //       for (let i = 0; i < this.userPickList.length; i += 1) {
-  //         this.allEnterprises.push(this.userPickList[i]);
-  //       }
-  //       const unique3 = {};
-  //       this.allEnterprises.forEach((el) => {
-  //         unique3[el] = true;
-  //       });
-  //     }
-  //     this.$emit('enterprises', this.allEnterprises);
-  //   });
-  // },
-  // // 유저가 관심기업 업데이트 안했을때 자동 에밋
   created() {
     const originalJobs = JSON.parse(JSON.stringify(this.Jobs));
     this.$store.dispatch('updateJob', originalJobs);
