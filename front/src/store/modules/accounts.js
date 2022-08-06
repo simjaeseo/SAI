@@ -38,9 +38,12 @@ export default {
       const arr = user.interestedEnterprises;
       const array1 = _uniqBy(arr, 'name');
       state.userEnter = array1;
-      const arr2 = user.interestedJob;
+      const arr2 = user.interestedJobs;
       const array2 = _uniqBy(arr2, 'name');
       state.userJob = array2;
+      console.log(array1);
+      console.log('!!!!!!!!!!!!!!!!!');
+      console.log(array2);
     },
     REMOVE_CURRENT_USER(state) {
       state.currentUser = {};
@@ -57,6 +60,9 @@ export default {
     CHANGE_USER_ENTER(state, update) {
       state.userEnter = update;
     },
+    // COMBINE_USER_JOB(state) {
+    //   state.userJob = state.user
+    // },
   },
   actions: {
     saveToken({ commit }, token) {
@@ -168,6 +174,7 @@ export default {
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
+      console.log(enter);
       commit('SET_NEW_JOB', enter);
     },
     updateJob({ commit }, data) {
@@ -191,6 +198,13 @@ export default {
           router.push({ name: 'Profile' });
         })
         .catch((err) => console.log(err));
+    },
+    check({ state }) {
+      // state.setNewJob.plusJob.array.forEach(element => {
+      // });
+      // state.userJob.push()
+      console.log(state.userJob);
+      console.log(state.setNewJob.plusJob);
     },
   },
   modules: {},

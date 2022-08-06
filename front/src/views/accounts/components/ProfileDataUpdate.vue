@@ -255,7 +255,12 @@ export default {
     const onInputImage = (e) => {
       [img] = e.target.files;
     };
+
+    const check = () => {
+      store.dispatch('check');
+    };
     return {
+      check,
       isLoggedIn,
       currentUser,
       state,
@@ -270,20 +275,6 @@ export default {
       newUpdateEnter,
       onInputImage,
     };
-  },
-  methods: {
-    // onInputImage(e) {
-    //   console.log(e.target.files[0]);
-    //   const img = e.target.files[0];
-    //   return {
-    //     img,
-    //   };
-    // },
-    // check() {
-    //   console.log(this.img);
-    // },
-  },
-  updated() {
   },
 };
 </script>
