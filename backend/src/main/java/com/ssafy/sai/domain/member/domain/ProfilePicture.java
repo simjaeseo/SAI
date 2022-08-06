@@ -19,11 +19,4 @@ public class ProfilePicture extends BaseEntity {
     private String contentType;
     private String fileName;
     private String originalName;
-
-    @OneToOne(mappedBy = "profilePicture")
-    private Member member;
-
-    public void updateMember(Member member) {
-        this.member = member;
-    }
 }
