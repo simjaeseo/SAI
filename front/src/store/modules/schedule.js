@@ -6,26 +6,22 @@ export default {
   namespace: true,
   state: {
     selectedDate: null,
-    startTime: null,
     endTime: null,
     schedules: [],
     upcomingSchedules: [],
     myConsultants: [],
-    selectedConsultant: null,
-    scheduleDetail: '',
-    selectedCategory: null,
+    CTDaySchedules: [],
+    daySchedules: [],
   },
   getters: {
     selectedDate: (state) => state.selectedDate,
-    selectedStartTime: (state) => state.startTime,
     selectedEndTime: (state) => state.endTime,
     schedules: (state) => state.schedules,
     upcomingSchedules: (state) => state.upcomingSchedules,
     isUpcomingSchedules: (state) => state.upcomingSchedules.length,
     myConsultants: (state) => state.myConsultants,
-    selectedConsultant: (state) => state.selectedConsultant,
-    scheduleDetail: (state) => state.scheduleDetail,
-    selectedCategory: (state) => state.selectedCategory,
+    CTDaySchedules: (state) => state.CTDaySchedules,
+    daySchedules: (state) => state.daySchedules,
   },
   mutations: {
     SET_DATE(state, date) {
@@ -35,44 +31,46 @@ export default {
         state.selectedDate = false;
       }
     },
-    SET_START_TIME(state, startTime) {
-      if (state.startTime !== startTime) {
-        state.startTime = startTime;
-        if (startTime.includes('30')) {
-          state.endTime = `${Number(startTime.slice(0, -3)) + 1}:00`;
-        } else {
-          state.endTime = `${startTime.slice(0, -3)}:30`;
-        }
-      } else {
-        state.startTime = false;
-        state.endTime = false;
-      }
-    },
+    // SET_START_TIME(state, startTime) {
+    //   if (state.startTime !== startTime) {
+    //     state.startTime = startTime;
+    //     if (startTime.includes('30')) {
+    //       state.endTime = `${Number(startTime.slice(0, -3)) + 1}:00`;
+    //     } else {
+    //       state.endTime = `${startTime.slice(0, -3)}:30`;
+    //     }
+    //   } else {
+    //     state.startTime = false;
+    //     state.endTime = false;
+    //   }
+    // },
     SET_SCHEDULES(state, schedules) {
       state.schedules = schedules;
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
       state.upcomingSchedules = upcomingSchedules;
+      console.log(state.upcomingSchedules);
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
     },
-    SET_MY_CONSULTANT(state, consultant) {
-      state.selectedConsultant = consultant;
+    SET_CT_DAY_SCHEDULES(state, CTDaySchedules) {
+      state.CTDaySchedules = [];
+      for (let i = 0; i < CTDaySchedules.length; i += 1) {
+        state.CTDaySchedules.push(CTDaySchedules[i].startTime);
+      }
     },
-    SET_SCHEDULE_DETAIL(state, datail) {
-      state.scheduleDetail = datail;
-    },
-    SET_SELECTED_CATEGORY(state, category) {
-      state.selectedCategory = category;
+    SET_DAY_SCHEDULES(state, daySchedules) {
+      state.daySchedules = [];
+      for (let i = 0; i < daySchedules.length; i += 1) {
+        state.daySchedules.push(daySchedules[i].startTime);
+      }
     },
   },
   actions: {
-    pickDate({ commit }, date) {
+    pickDate({ commit, dispatch }, date) {
       commit('SET_DATE', date);
-    },
-    pickTime({ commit }, startTime) {
-      commit('SET_START_TIME', startTime);
+      dispatch('fetchDaySchedules', date);
     },
     fetchSchedules({ commit, getters }) {
       axios({
@@ -101,42 +99,60 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    pickMyConsultant({ commit }, consultant) {
-      commit('SET_MY_CONSULTANT', consultant);
-    },
-    entryScheduleDetail({ commit }, detail) {
-      commit('SET_SCHEDULE_DETAIL', detail.target.value);
-    },
-    selectCategory({ commit }, category) {
-      commit('SET_SELECTED_CATEGORY', category);
-    },
-    createSchedule({ dispatch, getters }) {
-      console.log(getters.selectedDate);
-      console.log(getters.selectedStartTime);
-      console.log(getters.selectedEndTime);
-      console.log(getters.selectedCategory);
-      console.log(getters.scheduleDetail);
-      console.log(getters.currentUser.id);
-      console.log(getters.selectedConsultant);
-      axios({
-        url: drf.schedule.schedule(getters.currentUser.id),
-        method: 'post',
-        data: {
-          scheduleDate: getters.selectedDate,
-          startTime: getters.selectedStartTime,
-          endTime: getters.selectedEndTime,
-          category: getters.selectedCategory,
-          detail: getters.scheduleDetail,
-          memberStudentId: getters.currentUser.id,
-          memberConsultantId: getters.selectedConsultant,
-        },
-        headers: getters.authHeader,
-      })
-        .then(() => {
-          dispatch('fetchSchedules');
-          router.push({ name: 'ScheduleHome' });
+    createSchedule({ dispatch, getters }, Credential) {
+      if (getters.selectedDate
+        && Credential.startTime
+        && Credential.selectedConsultant !== null
+        && Credential.scheduleDetail
+        && Credential.selectedCategory) {
+        axios({
+          url: drf.schedule.schedule(getters.currentUser.id),
+          method: 'post',
+          data: {
+            scheduleDate: getters.selectedDate,
+            startTime: Credential.startTime,
+            endTime: getters.selectedEndTime,
+            category: Credential.selectedCategory,
+            detail: Credential.scheduleDetail,
+            memberStudentId: getters.currentUser.id,
+            memberConsultantId: Credential.selectedConsultant,
+          },
+          headers: getters.authHeader,
         })
-        .catch((err) => console.log(err));
+          .then(() => {
+            dispatch('fetchSchedules');
+            router.push({ name: 'Schedule' });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert('빠짐없이 입력해주세요');
+      }
+    },
+    createScheduleCT({ dispatch, getters }, Credential) {
+      if (getters.selectedDate
+        && Credential.startTime
+        && Credential.scheduleDetail
+        && Credential.selectedCategory) {
+        axios({
+          url: drf.schedule.schedule(getters.currentUser.id),
+          method: 'post',
+          data: {
+            scheduleDate: getters.selectedDate,
+            startTime: Credential.startTime,
+            category: Credential.selectedCategory,
+            detail: Credential.scheduleDetail,
+            memberConsultantId: getters.currentUser.id,
+          },
+          headers: getters.authHeader,
+        })
+          .then(() => {
+            dispatch('fetchSchedules');
+            router.push({ name: 'ScheduleCT' });
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert('빠짐없이 입력해주세요');
+      }
     },
     deleteSchedule({ dispatch, getters }, scheduleId) {
       axios({
@@ -146,8 +162,26 @@ export default {
       })
         .then(() => {
           dispatch('fetchSchedules');
-          router.push({ name: 'ScheduleHome' });
+          router.push({ name: 'Schedule' });
         });
+    },
+    fetchCTDaySchedules({ commit, getters }, data) {
+      axios({
+        url: drf.schedule.daySchedule(data.consultant, data.date),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_CT_DAY_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
+    },
+    fetchDaySchedules({ commit, getters }, date) {
+      axios({
+        url: drf.schedule.daySchedule(getters.currentUser.id, date),
+        method: 'get',
+        headers: getters.authHeader,
+      })
+        .then((res) => commit('SET_DAY_SCHEDULES', res.data.data));
+      // .catch((err) => console.error(err));
     },
   },
   modules: {
