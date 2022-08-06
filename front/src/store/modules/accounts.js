@@ -178,6 +178,7 @@ export default {
     },
     userUpdate({ dispatch, getters }, credentials) {
       console.log(credentials);
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       const userId = getters.currentUser.id;
       axios({
         url: drf.member.updateProfile(userId),
