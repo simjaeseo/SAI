@@ -21,4 +21,8 @@ public class CustomInterviewQuestion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
+
+    public static void setQuestion(String question) {
+        this.question = question;
+    }
 }

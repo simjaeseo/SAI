@@ -333,3 +333,45 @@ INSERT INTO campus(campus_id,city,class) VALUES (47,'구미',3);
 INSERT INTO campus(campus_id,city,class) VALUES (48,'구미',4);
 INSERT INTO campus(campus_id,city,class) VALUES (49,'구미',5);
 INSERT INTO campus(campus_id,city,class) VALUES (50,'구미',6);
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지원 동기가 무엇인가요?', '인성', NULL);
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('성격의 장점과 단점은 무엇이 있나요?', '인성', NULL);
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('같이 일하고 싶은/싫은 스타일의 사람은 누구인가요?', '인성', NULL);
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('상사와 의견차가 좁혀지지 않는다면 어떻게 해결할것인가요?', '인성', NULL);
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인생에서 가장 열심히 했던 일이나 순간은 언제인가요?', '인성', NULL);
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 프로젝트들을 진행했었나요? ', '직무', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('트러블 슈팅 경험이 있으신가요?', '직무', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 언어를 가장 많이 사용하시나요? 그 이유는?', '직무', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('좋은 소프트웨어란 무엇이라고 생각하나요?', '직무', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 개발자가 되고 싶으신가요?', '직무', '공통');
+
+INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('추상화에 대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('MVC패턴에 대해 설명해주세요', '직무', 'Backend');
+INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('JWT에 대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('세션과 쿠키의 차이점에대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('Spring DI에 대해 설명해주세요.', '직무', 'Backend');
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('GET,POST를 어떻게 다르게 쓰는지 말씀해 주세요.', '직무', 'Frontend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('호이스팅에 대해서 설명해보세요.', '직무', 'Frontend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('this의 용법 아는대로 설명해주세요.', '직무', 'Frontend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('SPA에대해 설명해 주세요.', '직무', 'Frontend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('var let const 의 차이점에대해 설명해주세요.', '직무', 'Frontend');
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('리플렉션이란 무엇인가요?', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('constraint layout에대해 설명해주세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('액티비티와 프래그먼트에 대해 설명해주세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드 빌드 프로세스에대해 설명해주세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Bounds 와 Frame 의 차이점을 설명해주세요.', '직무', 'Android/iOS');
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('고유값(eigen value)와 고유벡터(eigen vector)에 대해 설명해주세요. 그리고 왜 중요할까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('확률 모형과 확률 변수는 무엇일까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('좋은 feature란 무엇인가요. 이 feature의 성능을 판단하기 위한 방법에는 어떤 것이 있나요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('상관관계는 인과관계를 의미하지 않는다”라는 말이 있습니다. 설명해주실 수 있나요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('나만의 feature selection 방식을 설명해봅시다.', '직무', 'Data Scientist');
+
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps를 설명해주세요..', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps 구현을위한 모범 사례는 무엇인가요?', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps의 주요 구성 요소는 무엇입니까?', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지속적인 통합을 설명해주세요.', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('프로젝트에서 DevOps를 구현해야 할 때 어떻게 접근 하시겠습니까?', '직무', 'DevOps');
