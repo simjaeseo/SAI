@@ -37,6 +37,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -118,21 +120,25 @@ public class MemberService {
             interestedEnterpriseRepository.save(interestedEnterpriseCreateRequest.toEntity());
         }
 
-        if (!file.isEmpty()) {
+        if (file != null) {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();
                 profilePictureRepository.deleteById(findMember.getProfilePicture().getId());
             }
-
-            ProfilePicture profilePicture = uploadImage(file);
-            findMember.updateProfilePicture(profilePicture);
         } else {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();
             }
 
+            findMember.updateProfilePicture(null);
+        }
+
+        if (!file.isEmpty()) {
+            ProfilePicture profilePicture = uploadImage(file);
+            findMember.updateProfilePicture(profilePicture);
+        } else {
             findMember.updateProfilePicture(null);
         }
 
@@ -216,6 +222,21 @@ public class MemberService {
     public MemberResponse findMemberId(FindIdRequest request) throws MemberException {
         Member findMember = memberRepository.findMemberByNameAndBirthday(request.getName(), request.getBirthday());
         return new MemberResponse(findMember);
+    }
+
+    /**
+     * @param id 프로필 사진 조회할 회원 PK
+     * @return 프로필 사진과 경로를 담은 Map
+     * @메소드 프로필 사진과 경로를 얻기 위한 서비스
+     */
+    public Map<String, Object> getImage(Long id) {
+        ProfilePicture profilePicture = profilePictureRepository.findProfilePictureById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("image", profilePicture);
+        map.put("path", fileDir);
+
+        return map;
     }
 
     /**

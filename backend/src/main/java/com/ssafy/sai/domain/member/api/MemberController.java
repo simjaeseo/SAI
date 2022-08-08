@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.member.api;
 
+import com.ssafy.sai.domain.member.domain.ProfilePicture;
 import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
@@ -9,11 +10,17 @@ import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -54,7 +61,7 @@ public class MemberController {
      * @메소드 교육생 정보 수정 컨트롤러
      */
     @PutMapping("/member/{id}")
-    public ResponseEntity<? extends DataResponse> updateMember(@RequestPart("file") MultipartFile file, @PathVariable("id") Long id, @RequestPart("request") @Valid MemberUpdateRequest request) {
+    public ResponseEntity<? extends DataResponse> updateMember(@RequestPart(value = "file", required = false) MultipartFile file, @PathVariable("id") Long id, @RequestPart("request") @Valid MemberUpdateRequest request) {
         return ResponseEntity.ok().body(new DataResponse<>(memberService.updateMember(file, id, request)));
     }
 
@@ -66,7 +73,7 @@ public class MemberController {
      * @메소드 컨설턴트 정보 수정 컨트롤러
      */
     @PutMapping("consultant/{id}")
-    public ResponseEntity<? extends DataResponse> updateConsultant(@RequestPart("file") MultipartFile file, @PathVariable("id") Long id, @RequestPart("request") @Valid ConsultantUpdateRequest request) {
+    public ResponseEntity<? extends DataResponse> updateConsultant(@RequestPart(value = "file", required = false) MultipartFile file, @PathVariable("id") Long id, @RequestPart("request") @Valid ConsultantUpdateRequest request) {
         return ResponseEntity.ok().body(new DataResponse<>(memberService.updateConsultant(file, id, request)));
     }
 
@@ -83,6 +90,26 @@ public class MemberController {
         }
 
         return ResponseEntity.ok().body(new MessageResponse<>());
+    }
+
+    /**
+     * @param id 프로필 사진 PK
+     * @return 이미지 출력
+     * @throws IOException 입출력 오류시 예외 발생
+     * @메소드 이미지 출력 컨트롤러
+     */
+    @GetMapping(value = "/{id}/profile", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
+    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
+        Map<String, Object> map = memberService.getImage(id);
+        ProfilePicture profilePicture = (ProfilePicture) map.get("image");
+        Object fileDir = map.get("path");
+        String path = profilePicture.getFileName();
+
+        InputStream in = new FileInputStream(fileDir + "\\" + path);
+        byte[] byteArray = IOUtils.toByteArray(in);
+        in.close();
+
+        return ResponseEntity.ok().body(byteArray);
     }
 
     /**
