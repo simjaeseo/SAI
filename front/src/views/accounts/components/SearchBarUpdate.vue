@@ -38,17 +38,11 @@
         </li>
       </ul>
       <div v-if="selectedCountry">
-        <p v-for="country in selectedCountries" :key="country" class='btn'
-        id='selected-item'
-        @keydown="selectedDeleteItem(country.name)"
-        @click="[selectedDeleteItem(country.name), deleteplus(country.name)]">
-        #{{ country.name }}<span id='delete'> x</span></p>
-
         <p v-for="(user, index) in Enters" :key="index" class='btn'
         id='selected-item'
         @click="selectedDeleteItem2(user)"
         @keydown="selectedDeleteItem2(user)">
-        #{{ user.enterpriseName }}<span id='delete'> x</span></p>
+        {{ user.name }}</p>
       </div>
     </div>
   </div>
@@ -66,7 +60,7 @@ export default {
   name: 'SearchBar',
   setup() {
     const store = useStore();
-    const plusEnter = [];
+    let plusEnter = [];
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
     const Enters = computed(() => store.getters.userEnter);
@@ -104,6 +98,7 @@ export default {
       store.dispatch('newEnter', {
         plusEnter,
       });
+      plusEnter = [];
     };
     const deleteplus = function (event) {
       for (let i = 0; i < plusEnter.length; i += 1) {
@@ -114,6 +109,7 @@ export default {
         store.dispatch('newEnter', {
           plusEnter,
         });
+        plusEnter = [];
       }
     };
     return {
