@@ -25,6 +25,6 @@ export default {
     daySchedule: (id, date) => `${HOST + SCHEDULE + id}/${date}`,
   },
   interview: {
-    questions: () => `${HOST + INTERVIEW}question/personality`,
+    questionList: (type, detail) => `${HOST + INTERVIEW}question/list?questionType=${type}&questionDetailType=${detail}`,
   },
 };

@@ -1,35 +1,38 @@
 <template>
     <div class="container">
       <div id="session" v-if="session">
-      <div id="session-header">
-      </div>
-      <div id="main-video">
-        <user-video :stream-manager="mainStreamManager"/>
-        <div class="d-flex flex-row-reverse">
-          <input class="btn btn-light me-2" type="button"
-          id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
+        <div id="session-header">
         </div>
-      </div>
-      <!-- <div id="video-container" class="col-md-6">
-        <user-video :stream-manager="publisher"
-        @click="updateMainVideoStreamManager(publisher)"/>
-        <user-video v-for="sub in subscribers"
-        :key="sub.stream.connection.connectionId"
-        :stream-manager="sub"
-        @click="updateMainVideoStreamManager(sub)"/>
-      </div> -->
+        <div id="main-video">
+          <user-video :stream-manager="mainStreamManager"/>
+          <div class="d-flex flex-row-reverse">
+            <input class="btn btn-light me-2" type="button"
+            id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
+          </div>
+        </div>
+        <div>{{ questionList }}</div>
+        <!-- <div id="video-container" class="col-md-6">
+          <user-video :stream-manager="publisher"
+          @click="updateMainVideoStreamManager(publisher)"/>
+          <user-video v-for="sub in subscribers"
+          :key="sub.stream.connection.connectionId"
+          :stream-manager="sub"
+          @click="updateMainVideoStreamManager(sub)"/>
+        </div> -->
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 import UserVideo from './components/UserVideo.vue';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const OPENVIDU_SERVER_URL = `https://${window.location.hostname}:4443`;
+const OPENVIDU_SERVER_URL = 'https://i7c206.p.ssafy.io:8083';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 export default {
@@ -48,7 +51,15 @@ export default {
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
-  setup() {},
+  setup() {
+    const store = useStore();
+
+    const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
+
+    return {
+      selectedQuestionList,
+    };
+  },
   created() {}, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
