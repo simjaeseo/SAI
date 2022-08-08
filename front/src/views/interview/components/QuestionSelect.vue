@@ -36,6 +36,9 @@
           v-for="(category, i) in selected" :key="i"
           @click="selectQuestion(category)">
             {{ category.question }}</button>
+          <label class="btn btn-outline-primary" for="btn-check-outlined">
+            <input type="checkbox" class="btn-check" id="btn-check-outlined" autocomplete="off">
+            Single toggle</label><br>
         </div>
         <!-- <div v-show="selected==myQuestion">
           <label for="myQuestion"><input type="text" class='form-control'></label>
@@ -72,7 +75,9 @@
           </div>
           <div class="d-flex align-items-center">
             <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-            <button class="start-btn">시작하기</button>
+            <router-link to='/interview/room' id='routerlink'>
+              <button class="start-btn">시작하기</button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -106,9 +111,9 @@ export default {
   computed() {},
   methods: {
     selectQuestion(category) {
-      if (this.category in this.selectedQuestionList) {
-        this.selectedQuestionList.pop(category);
-        console.log(category);
+      const index = this.selectedQuestionList.indexOf(this.category, 0);
+      if (index >= 0) {
+        this.selectedQuestionList.splice(index, 1);
       } else {
         this.selectedQuestionList.push(category);
       }

@@ -3,7 +3,7 @@
     <div class="card">
         <div class="content">
             <h2 class="title">나 혼자 연습</h2>
-            <router-link to='/interview/setting' id='routerlink'>
+            <router-link to='/interview/question' id='routerlink'>
               <button class="start-btn">시작하기</button>
             </router-link>
         </div>
@@ -15,7 +15,7 @@
               <router-link to='#' id='routerlink'>
                 <button class="start-btn">1:1 면접 신청</button>
               </router-link>
-              <router-link to='/interview/setting' id='routerlink'>
+              <router-link to='/interview/question' id='routerlink'>
                <button class="start-btn">--월 --일 --시 --분<br>1:1 면접 시작하기</button>
               </router-link>
             </div>
