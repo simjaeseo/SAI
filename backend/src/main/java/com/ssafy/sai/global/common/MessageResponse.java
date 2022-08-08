@@ -10,7 +10,7 @@ public class MessageResponse<T> {
     private HttpStatus httpStatus;
     private String message;
 
-    public MessageResponse(){
+    public MessageResponse() {
         this.httpStatus = HttpStatus.OK;
         this.message = "success";
     }

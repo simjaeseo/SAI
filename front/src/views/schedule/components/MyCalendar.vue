@@ -224,8 +224,10 @@ button:hover {
   height: 600px;
 }
 #picked {
-  border-radius: 50%;
-  background-color: aqua;
+  width: 15px;
+  border-radius: 50px;
+  background-color: rgb(192, 191, 191);
+  color: white;
 }
 
 td {
@@ -260,7 +262,7 @@ h2 {
   position: relative;
   display: block;
   border-radius: 5%;
-  background: deepskyblue;
+  background: rgba(0, 191, 255, 0.459);
   color: white;
 }
 
