@@ -74,6 +74,8 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
+              <img src="
+              a481f6bc-e7e9-4c01-b5d8-6c100cf96c90_profile.jpg" alt="profile"/>
               <p id='for-inline'>관심기업</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
