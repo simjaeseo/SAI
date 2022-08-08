@@ -15,13 +15,13 @@ public class CustomQuestionDto {
 
     private CustomInterviewQuestion customInterviewQuestion;
 
-
     @Getter
-    @AllArgsConstructor
-    public static class data{
+    @Setter
+    public class data{
         private Long id;
         private String question;
         private Member member;
 
     }
+
 }
