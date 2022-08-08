@@ -32,6 +32,11 @@ public class InterviewService {
         Optional<InterviewQuestion> question = questionRepository.findById(id);
         return question;
     }
+    @Transactional
+    public Optional<CustomInterviewQuestion> getCustomQuestion(Long id){
+        Optional<CustomInterviewQuestion> question = customQuestionRepository.findById(id);
+        return question;
+    }
 
     @Transactional
     public List<InterviewQuestion> getQuestionList(String questionType,String questionDetailType){

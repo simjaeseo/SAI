@@ -4,6 +4,7 @@ import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
 import com.ssafy.sai.domain.interview.dto.CustomQuestionDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
+import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
 import com.ssafy.sai.domain.interview.service.InterviewService;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.global.common.MessageResponse;
@@ -35,6 +36,11 @@ public class InterviewController {
         return ResponseEntity.ok().body(new MessageResponse<>());
     }
 
+    //질문 조회
+    @GetMapping("/customQuestion")
+    public Optional<CustomInterviewQuestion> getCustomQuestion(@RequestParam Long id){
+        return interviewService.getCustomQuestion(id);
+    }
     
     //사용자 질문 목록 조회
     @GetMapping("/customQuestion/list")
