@@ -73,7 +73,9 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <button class="start-btn" @click="joinSession()">시작하기</button>
+              <router-link to="room">
+                <button class="start-btn">시작하기</button>
+              </router-link>
             </div>
           </div>
         </div>

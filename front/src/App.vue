@@ -1,6 +1,6 @@
 <template>
   <div id='app'>
-    <div style="border-bottom: 1px solid #e9eef1;" v-if="isLoggedIn">
+    <div style="border-bottom: 1px solid #e9eef1;">
       <nav class="navbar navbar-light navbar-expand-lg sticky-top container pb-0 pt-0">
           <router-link to='/'>
             <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
