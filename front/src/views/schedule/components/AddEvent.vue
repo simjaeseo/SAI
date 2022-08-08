@@ -1,20 +1,20 @@
 <template>
   <form>
-
     <div id="btn-box">
       <select
+      id="select-ct"
       class="form-select"
       aria-label="Default select example"
       @change="pickMyConsultant"
       :style="[Credential.selectedConsultant ?
       {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
       required>
-        <option selected disabled>컨설턴트상담</option>
+        <option selected disabled>상담 예약</option>
         <option
         v-for="myConsultant in myConsultants"
         :key="myConsultant"
         :value="myConsultant.id">
-          {{ myConsultant.name }}
+          {{ myConsultant.name }} 컨설턴트
         </option>
       </select>
         <button
@@ -22,25 +22,28 @@
         @click.prevent="pickMyConsultant"
         :style="[Credential.selectedConsultant == '' ?
         {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
-          개인일정추가
+          개인 일정
         </button>
     </div>
 
-    <div>
-      <div v-for="time in times" :key="time" id='time-box' class="container">
+    <div class="mt-4">
+      <div v-for="time in times" :key="time" id='time-box'>
         <button
+        id="time-btn"
         v-if="CTDaySchedules.includes(time)"
         class="btn btn-danger"
         >
           {{ time }}
         </button>
         <button
+        id="time-btn"
         v-else-if="daySchedules.includes(time)"
         class="btn btn-primary"
         >
           {{ time }}
         </button>
         <button
+        id="time-btn"
         v-else
         @click.prevent="Credential.startTime = time"
         :style="[Credential.startTime == time ?
@@ -51,7 +54,7 @@
       </div>
 
     <div id="div-category">
-      <label for="category">분류
+      <label for="category">
         <select
         v-if="Credential.selectedConsultant"
         name="category"
@@ -59,7 +62,7 @@
         class="form-select mb-3"
         @change="selectCategory"
         required>
-          <option selected disabled>분류</option>
+          <option selected disabled>상담 분야</option>
           <option value="practice">1:1 모의 면접</option>
           <option value="consulting-job">직무 상담</option>
           <option value="consulting-introduction">자소서 상담</option>
@@ -72,7 +75,7 @@
         class="form-select mb-3"
         @change="selectCategory"
         required>
-          <option selected disabled>분류</option>
+          <option selected disabled>선택</option>
           <option value="document">서류 지원</option>
           <option value="coding-test">코딩 테스트</option>
           <option value="interview">면접</option>
@@ -82,14 +85,13 @@
     </div>
     <div id="div-category">
       <label for="detail">상세정보
-        <input v-model="Credential.scheduleDetail" type="text" id="detail" class="form-control">
+        <textarea v-model="Credential.scheduleDetail" type="text" id="detail"
+        class="form-control" row="3"></textarea>
       </label>
     </div>
     <div id="add-button">
       <button class="btn" @click="createSchedule(Credential)">등록</button>
     </div>
-
-    <button @click="check(Credential)"></button>
     </div>
   </form>
 </template>
@@ -200,6 +202,36 @@ export default {
 </script>
 
 <style scoped>
+#category {
+  margin-top: 30px;
+  width: 100%;
+}
+#time-btn {
+  display: inline;
+  width: 70px;
+  height: 40px;
+  margin-right: 7px;
+}
+#select-ct {
+  height: 40px;
+  margin: 10px 5px 10px 5px;
+  border-radius: 10px;
+  border-color: #5c6ac4;
+  text-align: center;
+  padding: 0;
+  color: #5c6ac4;
+}
+#select-ct:hover {
+  height: 40px;
+  margin: 10px 5px 10px 5px;
+  border-radius: 10px;
+  border-color: #5c6ac4;
+  text-align: center;
+  padding: 0;
+  color: #5c6ac4;
+  font-weight: 500;
+  cursor: pointer;
+}
 #btn-box {
   display: flex;
   justify-content: space-evenly;
@@ -261,13 +293,14 @@ label {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.btn:hover{
+.btn:hover {
   border: 1px solid #5c6ac4;
-  background-color: #5c6ac4;
-  color: #ffffff;
+  color: #5c6ac4;
   margin-top: 10px;
   margin-bottom: 10px;
+  font-weight: 500;
 }
+
 .form-select:focus {
   border: 1px solid #5c6ac4;
   box-shadow: none;

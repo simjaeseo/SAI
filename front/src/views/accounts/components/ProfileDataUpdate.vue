@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="userUpdate">
+    <form @submit.prevent="userUpdate" enctyle="multipart/form-data" id="form">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
@@ -8,7 +8,7 @@
               <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                    ref='image' class='upload-box'>파일선택</label>
+                    ref='image' class='upload-box' @change="onInputImage">파일선택</label>
                 </div>
             </div>
             <!-- 프로필인적사항 -->
@@ -127,13 +127,11 @@
             <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
+    <button @click="check"></button>
     <div>
-      {{ newJobs.plusJob }}
-      {{ oldJobs }}
-      {{ newEnters.plusEnter }}
-      {{ oldEnters }}
+      {{ Jobs }} <br>
+      {{ Enters }}
     </div>
-
   </div>
 </template>
 
@@ -142,15 +140,20 @@ import {
   computed,
   reactive,
   onBeforeMount,
-  onUpdated,
 } from 'vue';
 import { useStore } from 'vuex';
+import _uniq from 'lodash/uniq';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
   components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
+  // data() {
+  //   return {
+  //     image: '',
+  //   };
+  // },
   setup() {
     const store = useStore();
     const state = reactive({
@@ -160,16 +163,11 @@ export default {
       options: [],
     });
 
-    // store에서 넘어온 새로 추가 된 직무
-    const newJobs = computed(() => store.getters.setNewJob);
-    const newEnters = computed(() => store.getters.setNewEnter);
     // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
-    const oldJobs = computed(() => store.getters.userJob);
-    const oldEnters = computed(() => store.getters.userEnter);
+    const Jobs = computed(() => store.getters.userJob);
+    const Enters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
-    const allJobs = [];
-    const allEnters = [];
 
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
@@ -178,33 +176,6 @@ export default {
       state.mobileLast = userPhone.substr(7);
     });
 
-    let newUpdateJob = [];
-    let newUpdateEnter = [];
-    onUpdated(() => {
-      for (let i = 0; i < newJobs.value.length; i += 1) {
-        allJobs.push(newJobs.value.plusJob[i].name);
-        console.log('실행됨??');
-      }
-      // 유저가 원래 가지고있던 직무 길이 (수정 됐을수도 안됐을수도)
-      for (let i = 0; i < oldJobs.value.length; i += 1) {
-        allJobs.push(oldJobs.value[i].jobName);
-        console.log('실행됨??');
-      }
-      for (let i = 0; i < newEnters.value.length; i += 1) {
-        allEnters.push(newEnters.value.plusEnter[i].name);
-        console.log('실행됨??');
-      }
-      // 유저가 원래 가지고있던 회사 길이 (수정 됐을수도 안됐을수도)
-      for (let i = 0; i < oldEnters.value.length; i += 1) {
-        allEnters.push(oldEnters.value[i].enterpriseName);
-        console.log('실행됨??');
-      }
-      const newUpdateJobs = allJobs.map((item) => ({ name: item }));
-      newUpdateJob = newUpdateJobs;
-      console.log(newUpdateJob);
-      const newUpdateEnters = allEnters.map((item) => ({ name: item }));
-      newUpdateEnter = newUpdateEnters;
-    });
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
     };
@@ -225,37 +196,48 @@ export default {
         state.options.push('1', '2', '3', '4', '5', '6');
       }
     };
-
-    const userUpdate = function () {
-      store.dispatch('userUpdate', {
+    let img = null;
+    const userUpdate = () => {
+      const data = {
         campus: {
           city: currentUser.value.campus.city,
           classNumber: currentUser.value.campus.classNumber,
         },
         phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
         interestedJobs:
-          newUpdateJob,
+          _uniq(Jobs.value),
         interestedEnterprises:
-          newUpdateEnter,
-      });
+          _uniq(Enters.value),
+      };
+      console.log(data.campus);
+      console.log(data.phone);
+      console.log(data.interestedJobs);
+      console.log(data.interestedEnterprises);
+      const formData = new FormData();
+      formData.append('file', img);
+      formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      store.dispatch('userUpdate', formData);
+    };
+
+    const onInputImage = (e) => {
+      [img] = e.target.files;
+    };
+
+    const check = () => {
+      store.dispatch('check');
     };
     return {
+      check,
       isLoggedIn,
       currentUser,
       state,
       noChange,
       setOptions,
-      newJobs,
-      oldJobs,
       userUpdate,
-      newEnters,
-      oldEnters,
-      newUpdateJob,
-      newUpdateEnter,
+      onInputImage,
+      Enters,
+      Jobs,
     };
-  },
-
-  updated() {
   },
 };
 </script>
