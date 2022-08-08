@@ -99,17 +99,13 @@ public class MemberController {
      * @메소드 이미지 출력 컨트롤러
      */
     @GetMapping(value = "/{id}/profile", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE})
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) throws IOException {
+    public String getImage(@PathVariable Long id) throws IOException {
         Map<String, Object> map = memberService.getImage(id);
         ProfilePicture profilePicture = (ProfilePicture) map.get("image");
         Object fileDir = map.get("path");
         String path = profilePicture.getFileName();
 
-        InputStream in = new FileInputStream(fileDir + "\\" + path);
-        byte[] byteArray = IOUtils.toByteArray(in);
-        in.close();
-
-        return ResponseEntity.ok().body(byteArray);
+        return path;
     }
 
     /**

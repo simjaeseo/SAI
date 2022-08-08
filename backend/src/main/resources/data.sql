@@ -1,5 +1,4 @@
-
-
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지원 동기가 무엇인가요?', '인성', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('성격의 장점과 단점은 무엇이 있나요?', '인성', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('같이 일하고 싶은/싫은 스타일의 사람은 누구인가요?', '인성', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인생에서 가장 열심히 했던 일이나 순간은 언제인가요?', '인성', '공통');
