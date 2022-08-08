@@ -27,6 +27,9 @@ INSERT INTO interview_question(question, question_type, question_detail_type) VA
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('대인관계에서 가장 중요하게 생각하는 것은 무엇입니까?','인성','공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('하고싶지 않았던 부서에 배정되도 괜찮은가?','인성','공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인생에서 가장 행복했던 경험이 무엇인가요?','인성','공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('존경하는 인물이 누구인가요? 그 이유는 무엇인가요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('남들이 해보지 않은 특별한 경험을 해 본적이 있나요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('최근에 읽은 기사가 있나요? 어떤 내용인가요?', '인성', '공통');
 
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('트러블 슈팅 경험이 있으신가요?', '직무', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 언어를 가장 많이 사용하시나요? 그 이유는?', '직무', '공통');
@@ -105,24 +108,58 @@ INSERT INTO interview_question(question, question_type, question_detail_type) VA
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('주소창에 naver.com을 입력하면 어떤 일이 생기나요?','직무','Frontend');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('AJAX에대해 설명해보세요.','직무','Frontend');
 
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('리플렉션이란 무엇인가요?', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('리플렉션이란 무엇인가요?(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('constraint layout에대해 설명해주세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('액티비티와 프래그먼트에 대해 설명해주세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드 빌드 프로세스에대해 설명해주세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Bounds 와 Frame 의 차이점을 설명해주세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('ARC란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Copy On Write는 어떤 방식으로 동작하는지 설명해주세요.(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Optional 이란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Http Request Code 에 대해 아는대로 설명해 보세요.(ios)', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드 스튜디오의 Thread 에 대해 설명해보세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Android Activity Life Cycle 에 대해 설명해보세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 4대 컴포넌트에 대해서 설명해보세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 액티비티와 액티비티의 수명주기에 대해서 설명해보세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Weak와 Strong에 대해 설명하세요.(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Escaping Closure의 개념이 무엇인가요?(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Swift에서 Class와 Struct의 차이는 무엇인가요?(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Autolayout Constraint의 Priority의 개념이 무엇이고, 어떤상황에 사용하나요?(ios)', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 메니페이스 파일에 대해서 설명해보세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('코틀린의 장점에 대해 설명하세요.', '직무', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 테스크란?', '직무', 'Android/iOS');
 
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('고유값(eigen value)와 고유벡터(eigen vector)에 대해 설명해주세요. 그리고 왜 중요할까요?', '직무', 'Data Scientist');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('확률 모형과 확률 변수는 무엇일까요?', '직무', 'Data Scientist');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('좋은 feature란 무엇인가요. 이 feature의 성능을 판단하기 위한 방법에는 어떤 것이 있나요?', '직무', 'Data Scientist');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('상관관계는 인과관계를 의미하지 않는다”라는 말이 있습니다. 설명해주실 수 있나요?', '직무', 'Data Scientist');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('나만의 feature selection 방식을 설명해봅시다.', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('아웃라이어의 판단하는 기준은 무엇인가요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('평균(mean)과 중앙값(median)중에 어떤 케이스에서 뭐를 써야할까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('신뢰 구간의 정의는 무엇인가요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('샘플링(Sampling)과 리샘플링(Resampling)에 대해 설명해주세요. 리샘플링은 무슨 장점이 있을까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('엔트로피(entropy)에 대해 설명해주세요.', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('회귀 / 분류시 알맞은 metric은 무엇일까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('정규화를 왜 해야할까요? 정규화의 방법은 무엇이 있나요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('텍스트 더미에서 주제를 추출해야 합니다. 어떤 방식으로 접근해 나가시겠나요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('네트워크 관계를 시각화해야 할 경우 어떻게 해야할까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('히스토그램의 가장 큰 문제는 무엇인가요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('워드클라우드는 보기엔 예쁘지만 약점이 있습니다. 어떤 약점일까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('좋은 모델의 정의는 무엇일까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('L1, L2 정규화에 대해 설명해주세요', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인덱스는 크게 Hash 인덱스와 B+Tree 인덱스가 있습니다. 이것은 무엇일까요?', '직무', 'Data Scientist');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('딥러닝은 무엇인가요? 딥러닝과 머신러닝의 차이는?', '직무', 'Data Scientist');
 
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps를 설명해주세요..', '직무', 'DevOps');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps 구현을위한 모범 사례는 무엇인가요?', '직무', 'DevOps');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps의 주요 구성 요소는 무엇입니까?', '직무', 'DevOps');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지속적인 통합을 설명해주세요.', '직무', 'DevOps');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('프로젝트에서 DevOps를 구현해야 할 때 어떻게 접근 하시겠습니까?', '직무', 'DevOps');
-
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('연속 테스트를 설명하세요.', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('오늘날 업계에서 사용되는 10 대 DevOps 도구는 무엇입니까? 아는대로 말씀해주세요.', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps에서 사용되는 스크립팅 도구는 무엇입니까?', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps 성공을 위해 따랐던 몇 가지 지표를 설명하십시오.', '직무', 'DevOps');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('DevOps의 경력 관점에서 기대하는 것은 무엇입니까?', '직무', 'DevOps');
 
 
 

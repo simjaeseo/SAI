@@ -71,7 +71,7 @@ public class InterviewService {
     public void deleteCustomInterviewQuestion(Long id){
             CustomInterviewQuestion customQuestion = customQuestionRepository.findById(id).get();
             customQuestionRepository.delete(customQuestion);
-    }
 
+    }
 
 }
