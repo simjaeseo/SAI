@@ -222,7 +222,12 @@ export default {
     const onInputImage = (e) => {
       [img] = e.target.files;
     };
+
+    const check = () => {
+      store.dispatch('check');
+    };
     return {
+      check,
       isLoggedIn,
       currentUser,
       state,
@@ -233,8 +238,6 @@ export default {
       Enters,
       Jobs,
     };
-  },
-  updated() {
   },
 };
 </script>

@@ -57,6 +57,9 @@ export default {
     CHANGE_USER_ENTER(state, update) {
       state.userEnter = update;
     },
+    // COMBINE_USER_JOB(state) {
+    //   state.userJob = state.user
+    // },
   },
   actions: {
     saveToken({ commit }, token) {
@@ -168,6 +171,7 @@ export default {
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
+      console.log(enter);
       commit('SET_NEW_JOB', enter);
     },
     updateJob({ commit }, data) {
@@ -191,6 +195,13 @@ export default {
           router.push({ name: 'Profile' });
         })
         .catch((err) => console.log(err));
+    },
+    check({ state }) {
+      // state.setNewJob.plusJob.array.forEach(element => {
+      // });
+      // state.userJob.push()
+      console.log(state.userJob);
+      console.log(state.setNewJob.plusJob);
     },
   },
   modules: {},
