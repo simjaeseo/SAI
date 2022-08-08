@@ -16,6 +16,7 @@ export default {
     updateProfile: (id) => `${HOST + MEMBER}member/${id}`,
     findId: () => `${HOST + MEMBER}`,
     findPassword: () => `${HOST + MEMBER}find/password`,
+    getUserImg: (id) => `${HOST + MEMBER + id}/profile`,
   },
   schedule: {
     schedule: (id) => HOST + SCHEDULE + id,
