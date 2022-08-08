@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.interview.dto.questionRequest;
+package com.ssafy.sai.domain.interview.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,5 @@ import lombok.Getter;
 public class QuestionRequest {
 
     private String questionType;
-
     private String questionDetailType;
 }
