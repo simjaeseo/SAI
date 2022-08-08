@@ -57,7 +57,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "C:/Users/Geun/Documents/S07P12C206/image";
+    private String dir = "C:/Users/multicampus/Documents/S07P12C206/image";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 
@@ -126,19 +126,15 @@ public class MemberService {
                 path.delete();
                 profilePictureRepository.deleteById(findMember.getProfilePicture().getId());
             }
+
+            ProfilePicture profilePicture = uploadImage(file);
+            findMember.updateProfilePicture(profilePicture);
         } else {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();
             }
 
-            findMember.updateProfilePicture(null);
-        }
-
-        if (!file.isEmpty()) {
-            ProfilePicture profilePicture = uploadImage(file);
-            findMember.updateProfilePicture(profilePicture);
-        } else {
             findMember.updateProfilePicture(null);
         }
 
@@ -166,7 +162,7 @@ public class MemberService {
         Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
         findMember.updateCampus(campus.get());
 
-        if (!file.isEmpty()) {
+        if (file != null) {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();

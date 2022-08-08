@@ -90,6 +90,10 @@ public class Member extends BaseEntity {
     }
 
     public void updateProfilePicture(ProfilePicture profilePicture) {
-        this.profilePicture = profilePicture;
+        if (profilePicture != null) {
+            this.profilePicture = profilePicture;
+        } else {
+            this.profilePicture = null;
+        }
     }
 }

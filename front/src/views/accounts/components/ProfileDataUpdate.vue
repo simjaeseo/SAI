@@ -235,6 +235,7 @@ export default {
     let img = null;
     const userUpdate = () => {
       const data = {
+        id: currentUser.value.id,
         campus: {
           city: currentUser.value.campus.city,
           classNumber: currentUser.value.campus.classNumber,
