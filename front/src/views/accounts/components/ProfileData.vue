@@ -25,9 +25,9 @@
                 <p id="user-data">{{ currentUser.birthday }}</p>
                 <p id='data-name'>이메일</p>
                 <p id="user-data">{{ currentUser.email }}</p>
-                <p id='data-name'>관심직무</p>
+                <div><p id='data-name2'>관심직무</p></div>
                 <p id="user-job" v-for="(job, index) in currentUser.interestedJobs" :key="index">
-                  #{{ job.jobName }}
+                    #{{ job.jobName }}
                 </p>
             </div>
           </div>
@@ -54,12 +54,12 @@
       <div id='personal-video-box1' class="container">
         <p>내 동영상</p>
           <div id='personal-video-box2'>
-            <p id='none-data-text1'>아직 저장된 영상이 없어요</p>
+            <p id='none-data-text1'>아직 저장된 영상이 없어요 :(</p>
             <!-- 동영상 구현 필요 -->
           </div>
         <p>컨설팅 영상</p>
           <div id='personal-video-box3'>
-            <p id='none-data-text1'>아직 저장된 영상이 없어요</p>
+            <p id='none-data-text1'>아직 저장된 영상이 없어요 :(</p>
           </div>
       </div>
     </div>
@@ -87,10 +87,11 @@ export default {
 
 <style scoped>
 #user-job {
-  display: inline;
   margin-right: 10px;
-  font-size: 20px;
+  font-size: 15px;
   margin-bottom: 10px;
+  display: inline;
+  color: #707070;
 }
 #user-enterprise {
   display: inline;
@@ -226,10 +227,25 @@ export default {
 }
 #data-name {
   font-size: 12px;
+  color: #707070;
+  display: inline;
+  padding: 3px;
+  border-radius: 15px;
+  background-color: #626db325;
+}
+#data-name2 {
+  font-size: 12px;
+  color: #707070;
+  padding: 3px;
+  border-radius: 15px;
+  display: inline;
+  background-color: #626db325;
 }
 #user-data {
   font-size: 20px;
   margin-bottom: 10px;
+  color: #707070;
+  font-size: 15px;
 }
 p {
   margin-bottom: 5px;

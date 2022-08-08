@@ -90,12 +90,9 @@ export default {
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
     onBeforeMount(() => {
-      console.log(currentUser.value.phone);
       const userPhone = currentUser.value.phone;
       state.mobileSecond = userPhone.substr(3, 4);
-      console.log(state.mobileSecond);
       state.mobileLast = userPhone.substr(7);
-      console.log(state.mobileLast);
     });
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
