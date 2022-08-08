@@ -38,16 +38,9 @@
             @click="selectQuestion(category)">
               {{ category.question }}</button>
           </div>
-          <!-- <div v-show="selected==myQuestion">
-            <label for="myQuestion"><input type="text" class='form-control'></label>
+          <div v-show="selected==myQuestion">
+            <input type="text" class='form-control' aria-labelledby="temperature high">>
             <button id="double-check-btn">등록</button>
-          </div> -->
-          <div class="inputBox shadow" v-show="selected==myQuestion">
-            <label for="s">
-              <input type="text" v-model="newQuestion" @keyup.enter="addTodo"></label>
-            <span class="addContainer" @click="addTodo" @keyup.enter="addTodo">
-              <i class="far fa-plus-square addBtn"></i>
-            </span>
           </div>
           <p>{{ selectedQuestionList }}</p>
         </div>
@@ -81,42 +74,6 @@
         </div>
       </div>
     </div>
-  <!-- <div id="join" v-if="!session">
-    <div id="join-dialog" class="jumbotron vertical-center">
-      <h1>Join a video session</h1>
-      <div class="form-group">
-        <p>
-          <input v-model="myUserName">
-        </p>
-        <p>
-          <input v-model="mySessionId">
-        </p>
-        <p class="text-center">
-          <button class="btn btn-lg btn-success" @click="joinSession()">Join!</button>
-        </p>
-      </div>
-    </div>
-  </div> -->
-
-  </div>
-  <div class="container">
-    <div id="session" v-if="session">
-      <div id="session-header">
-        <input class="btn btn-large btn-danger" type="button"
-        id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-      </div>
-      <div id="main-video" class="col-md-6">
-        <user-video :stream-manager="mainStreamManager"/>
-      </div>
-      <div id="video-container" class="col-md-6">
-        <user-video :stream-manager="publisher"
-        @click="updateMainVideoStreamManager(publisher)"/>
-        <user-video v-for="sub in subscribers"
-        :key="sub.stream.connection.connectionId"
-        :stream-manager="sub"
-        @click="updateMainVideoStreamManager(sub)"/>
-      </div>
-    </div>````````````````````````````````````````````````
   </div>
 </template>
 
@@ -129,7 +86,6 @@ import androidquestions from '@/data/androidquestions.json';
 import devopsquestions from '@/data/devopsquestions.json';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import UserVideo from './UserVideo.vue';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -138,7 +94,6 @@ const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 export default {
   components: {
-    UserVideo,
   },
   data() {
     return {
@@ -166,6 +121,10 @@ export default {
   methods: {
     selectQuestion(category) {
       const index = this.selectedQuestionList.indexOf(this.category, 0);
+      console.log(index);
+      console.log(this.selectedQuestionList[0] === this.category);
+      console.log(this.selectedQuestionList[0]);
+      console.log(this.category);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
       } else {
