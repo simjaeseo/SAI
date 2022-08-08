@@ -334,11 +334,11 @@ INSERT INTO campus(campus_id,city,class) VALUES (48,'구미',4);
 INSERT INTO campus(campus_id,city,class) VALUES (49,'구미',5);
 INSERT INTO campus(campus_id,city,class) VALUES (50,'구미',6);
 
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지원 동기가 무엇인가요?', '인성', NULL);
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('성격의 장점과 단점은 무엇이 있나요?', '인성', NULL);
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('같이 일하고 싶은/싫은 스타일의 사람은 누구인가요?', '인성', NULL);
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('상사와 의견차가 좁혀지지 않는다면 어떻게 해결할것인가요?', '인성', NULL);
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인생에서 가장 열심히 했던 일이나 순간은 언제인가요?', '인성', NULL);
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('지원 동기가 무엇인가요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('성격의 장점과 단점은 무엇이 있나요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('같이 일하고 싶은/싫은 스타일의 사람은 누구인가요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('상사와 의견차가 좁혀지지 않는다면 어떻게 해결할것인가요?', '인성', '공통');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('인생에서 가장 열심히 했던 일이나 순간은 언제인가요?', '인성', '공통');
 
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 프로젝트들을 진행했었나요? ', '직무', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('트러블 슈팅 경험이 있으신가요?', '직무', '공통');
@@ -346,11 +346,11 @@ INSERT INTO interview_question(question, question_type, question_detail_type) VA
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('좋은 소프트웨어란 무엇이라고 생각하나요?', '직무', '공통');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('어떤 개발자가 되고 싶으신가요?', '직무', '공통');
 
-INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('추상화에 대해 설명해주세요.', '직무', 'Backend');
-INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('MVC패턴에 대해 설명해주세요', '직무', 'Backend');
-INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('JWT에 대해 설명해주세요.', '직무', 'Backend');
-INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('세션과 쿠키의 차이점에대해 설명해주세요.', '직무', 'Backend');
-INSERT INTO interview_question(interview_question_id, question, question_type, question_detail_type) VALUES ('Spring DI에 대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('추상화에 대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('MVC패턴에 대해 설명해주세요', '직무', 'Backend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('JWT에 대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('세션과 쿠키의 차이점에대해 설명해주세요.', '직무', 'Backend');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Spring DI에 대해 설명해주세요.', '직무', 'Backend');
 
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('GET,POST를 어떻게 다르게 쓰는지 말씀해 주세요.', '직무', 'Frontend');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('호이스팅에 대해서 설명해보세요.', '직무', 'Frontend');
