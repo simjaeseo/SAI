@@ -28,11 +28,12 @@ import ProfileUpdateView from '@/views/accounts/ProfileUpdateView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
 import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
 
-// 스케줄 라우터
-import ScheduleView from '@/views/schedule/ScheduleView.vue';
-
 // 채팅 라우터
 import ChatView from '@/views/chat/ChatView.vue';
+
+// 스케줄 라우터
+import ScheduleView from '@/views/schedule/ScheduleView.vue';
+import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
 const routes = [
   {
@@ -82,8 +83,13 @@ const routes = [
   },
   {
     path: '/schedule',
-    name: 'ScheduleHome',
+    name: 'Schedule',
     component: ScheduleView,
+  },
+  {
+    path: '/scheduleCT',
+    name: 'ScheduleCT',
+    component: ScheduleCTView,
   },
   {
     path: '/interview',
