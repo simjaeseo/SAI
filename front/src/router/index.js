@@ -13,6 +13,7 @@ import AnalysisDetailSttView from '@/views/interview/AnalysisDetailSttView.vue';
 import InterviewView from '@/views/interview/InterviewView.vue';
 import InterviewSettingView from '@/views/interview/InterviewSettingView.vue';
 import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
+import InterviewRoomView from '@/views/interview/InterviewRoomView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
 
@@ -105,6 +106,11 @@ const routes = [
     path: '/interview/question',
     name: 'InterviewQuestion',
     component: InterviewQuestionView,
+  },
+  {
+    path: '/interview/room',
+    name: 'InterviewRoom',
+    component: InterviewRoomView,
   },
   {
     path: '/interview/solo',
