@@ -118,7 +118,7 @@ public class MemberController {
         return ResponseEntity.ok().body(new DataResponse<>(findMember));
     }
 
-    @GetMapping
+    @PostMapping("search")
     public ResponseEntity<? extends DataResponse> findAllMembers(@Valid @RequestBody SearchMemberRequest request) {
         List<MemberDto> list = memberService.searchMember(request);
         return ResponseEntity.ok().body(new DataResponse<>(list));

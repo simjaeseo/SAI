@@ -47,5 +47,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findMemberByNameAndBirthday(String name, LocalDate birthday);
 
-    List<Member> findByNameContaining(String name);
+    @Query("select m from Member m" +
+            " join fetch m.campus" +
+            " where m.name = :name")
+    List<Member> findMembersByName(@Param("name") String name);
 }
