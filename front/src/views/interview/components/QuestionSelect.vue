@@ -49,6 +49,7 @@
           <div class="d-flex">
             <input type="text" class='form-control'
             v-model="myQuestion"
+            @keydown.enter="addQuestion()"
             aria-labelledby="myQuestion">
             <button id="double-check-btn" @click="addQuestion()">등록</button>
           </div>
