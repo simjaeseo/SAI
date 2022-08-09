@@ -6,7 +6,7 @@ export default {
   namespace: true,
   state: {
     selectedDate: null,
-    endTime: null,
+    // endTime: null,
     schedules: [],
     upcomingSchedules: [],
     myConsultants: [],
@@ -26,10 +26,17 @@ export default {
   mutations: {
     SET_DATE(state, date) {
       if (state.selectedDate !== date) {
+        console.log(state.selectedDate);
         state.selectedDate = date;
+        console.log(state.selectedDate);
       } else {
+        console.log(state.selectedDate);
         state.selectedDate = false;
+        console.log(state.selectedDate);
       }
+    },
+    RESET_DATE(state) {
+      state.selectedDate = null;
     },
     // SET_START_TIME(state, startTime) {
     //   if (state.startTime !== startTime) {
@@ -99,7 +106,7 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    createSchedule({ dispatch, getters }, Credential) {
+    createSchedule({ dispatch, getters, commit }, Credential) {
       if (getters.selectedDate
         && Credential.startTime
         && Credential.selectedConsultant !== null
@@ -121,7 +128,8 @@ export default {
         })
           .then(() => {
             dispatch('fetchSchedules');
-            router.push({ name: 'Schedule' });
+            commit('RESET_DATE');
+            // router.push({ name: 'Schedule' });
           })
           .catch((err) => console.log(err));
       } else {
@@ -167,7 +175,7 @@ export default {
     },
     fetchCTDaySchedules({ commit, getters }, data) {
       axios({
-        url: drf.schedule.daySchedule(data.consultant, data.date),
+        url: drf.schedule.daySchedule(data, getters.selectedDate),
         method: 'get',
         headers: getters.authHeader,
       })

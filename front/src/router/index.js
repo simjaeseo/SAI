@@ -36,6 +36,9 @@ import ChatView from '@/views/chat/ChatView.vue';
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
+// test
+import TTSSTT from '@/views/chat/TTSSTT.vue';
+
 const routes = [
   {
     path: '/',
@@ -166,6 +169,11 @@ const routes = [
     path: '/profile/update/ct',
     name: 'ProfileUpdateCTView ',
     component: ProfileUpdateCTView,
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TTSSTT,
   },
 ];
 
