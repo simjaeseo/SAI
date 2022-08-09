@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### GCP storage info ###
-src/main/resources/psychic-habitat-358714-81bd61376e0d.json
+src/**/*.json
