@@ -1,6 +1,6 @@
 <template>
   <div id='app'>
-    <div style="border-bottom: 1px solid #e9eef1;">
+    <div style="border-bottom: 1px solid #e9eef1;" v-if="isLoggedIn">
       <nav class="navbar navbar-light navbar-expand-lg sticky-top container pb-0 pt-0">
           <router-link to='/'>
             <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
@@ -41,12 +41,15 @@
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
                     <li v-if="currentUser.memberStatus === 'TRAINEE'">
-                    <router-link to='/profile' id='dropdown-router'
+                    <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }"
+                    id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보</p></router-link>
                     </li>
                     <li v-if="currentUser.memberStatus === 'CONSULTANT'">
-                    <router-link to='/profile/update/ct' id='dropdown-router'
+                    <router-link
+                    :to="{ name: 'ProfileUpdateCTView', params: { id: `${ currentUser.id }`} }"
+                    id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보 수정</p></router-link>
                     </li>
