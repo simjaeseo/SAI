@@ -22,5 +22,5 @@ public class Feedback extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "interview_video_id")
-    private InterviewVideo interviewVideo;
+    private InterviewVideo2 interviewVideo;
 }
