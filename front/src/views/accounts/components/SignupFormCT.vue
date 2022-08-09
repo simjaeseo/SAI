@@ -51,8 +51,24 @@
               <p id='login-text3'>생년월일</p>
               <select class='form-select' id='form-select-cardinal-number'
               aria-label='Default select example'
-              @change="selectedUserYear" required>
+              @change="selectedUserYear" required
+              >
                 <option selected disabled>연도</option>
+                <option value='1975'>1975</option>
+                <option value='1976'>1976</option>
+                <option value='1977'>1977</option>
+                <option value='1978'>1978</option>
+                <option value='1979'>1979</option>
+                <option value='1980'>1980</option>
+                <option value='1981'>1981</option>
+                <option value='1982'>1982</option>
+                <option value='1983'>1983</option>
+                <option value='1984'>1984</option>
+                <option value='1985'>1985</option>
+                <option value='1986'>1986</option>
+                <option value='1987'>1987</option>
+                <option value='1988'>1988</option>
+                <option value='1989'>1989</option>
                 <option value='1990'>1990</option>
                 <option value='1991'>1991</option>
                 <option value='1992'>1992</option>
@@ -63,10 +79,6 @@
                 <option value='1997'>1997</option>
                 <option value='1998'>1998</option>
                 <option value='1999'>1999</option>
-                <option value='2000'>2000</option>
-                <option value='2001'>2001</option>
-                <option value='2002'>2002</option>
-                <option value='2003'>2003</option>
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'
