@@ -2,6 +2,7 @@ package com.ssafy.sai.global.exception;
 
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.schedule.exception.ScheduleException;
+import com.ssafy.sai.global.common.MessageResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.io.IOException;
 
 @RestControllerAdvice
 @Slf4j
@@ -50,6 +53,18 @@ public class ExceptionAdvice {
                 exception.getExceptionType().getHttpStatus(),
                 exception.getExceptionType().getErrorMessage()),
                 exception.getExceptionType().getHttpStatus());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handleIoEx(IOException exception){
+        log.error("IoException 발생 ! {}", exception.getMessage());
+        return new ResponseEntity<>(new ExceptionDto(400, HttpStatus.BAD_REQUEST, "IoException이 발생하였습니다."), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIoEx(IllegalArgumentException exception){
+        log.error("IllegalArgumentException 발생 ! {}", exception.getMessage());
+        return new ResponseEntity<>(new ExceptionDto(400, HttpStatus.BAD_REQUEST, "IllegalArgumentException이 발생하였습니다."), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

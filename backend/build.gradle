@@ -24,9 +24,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
+	// s3 사용하기 위한 의존성 주입
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// google stt 사용을 위한 의존성 주입
+	implementation 'com.google.cloud:google-cloud-speech'
+	implementation platform('com.google.cloud:libraries-bom:26.0.0')
 
 	// 메일
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// google cloud storage
+	implementation 'com.google.cloud:google-cloud-storage'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
