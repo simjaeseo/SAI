@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.member.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
 import com.ssafy.sai.domain.member.dto.response.CampusConsultantDto;
@@ -61,12 +62,16 @@ public class Member extends BaseEntity {
     private List<String> roles = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = ALL)
     private List<InterestedJob> interestedJobs = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = ALL)
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "member")
+    private List<CustomInterviewQuestion> customInterviewQuestion = new ArrayList<>();
 
     public void updateCampus(Campus campus) {
         this.campus = campus;
@@ -85,10 +90,10 @@ public class Member extends BaseEntity {
     }
 
     public void updateProfilePicture(ProfilePicture profilePicture) {
-        this.profilePicture = profilePicture;
-
         if (profilePicture != null) {
-            profilePicture.updateMember(this);
+            this.profilePicture = profilePicture;
+        } else {
+            this.profilePicture = null;
         }
     }
 }

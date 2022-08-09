@@ -17,6 +17,7 @@ import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.request.SearchMemberRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.dto.response.MemberUpdateResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
@@ -37,8 +38,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,7 +56,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "C:/Users/Geun/Documents/S07P12C206/image";
+    private String dir = "C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 
@@ -118,7 +119,7 @@ public class MemberService {
             interestedEnterpriseRepository.save(interestedEnterpriseCreateRequest.toEntity());
         }
 
-        if (!file.isEmpty()) {
+        if (file != null) {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();
@@ -160,7 +161,7 @@ public class MemberService {
         Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
         findMember.updateCampus(campus.get());
 
-        if (!file.isEmpty()) {
+        if (file != null) {
             if (findMember.getProfilePicture() != null) {
                 File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
                 path.delete();
@@ -179,6 +180,15 @@ public class MemberService {
         }
 
         return new ConsultantDto(findMember);
+    }
+
+    public List<MemberDto> searchMember(SearchMemberRequest request) throws MemberException {
+        List<Member> findMembers = memberRepository.findByNameContaining(request.getName());
+        List<MemberDto> result = findMembers.stream()
+                .map(m -> new MemberDto(m))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
     /**
@@ -216,6 +226,21 @@ public class MemberService {
     public MemberResponse findMemberId(FindIdRequest request) throws MemberException {
         Member findMember = memberRepository.findMemberByNameAndBirthday(request.getName(), request.getBirthday());
         return new MemberResponse(findMember);
+    }
+
+    /**
+     * @param id 프로필 사진 조회할 회원 PK
+     * @return 프로필 사진과 경로를 담은 Map
+     * @메소드 프로필 사진과 경로를 얻기 위한 서비스
+     */
+    public Map<String, Object> getImage(Long id) {
+        ProfilePicture profilePicture = profilePictureRepository.findProfilePictureById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("image", profilePicture);
+        map.put("path", fileDir);
+
+        return map;
     }
 
     /**
