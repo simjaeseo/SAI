@@ -71,8 +71,14 @@ export default {
           name: searchName.value,
         },
       })
-        .then((res) => finded.push(res.data.data))
-        .then(console.log(finded))
+        .then((res) => {
+          // const result = JSON.stringify(res.data);
+          // for (let i = 0; i < res.data.data.length; i += 1) {
+          //   finded.push(JSON.parse(res.data.data[i]));
+          // }
+          console.log(res.data.data[0]);
+          console.log(finded[0]);
+        })
         .catch((err) => console.log(err.config.data));
       // for (let i = 0; i < finded.length;)
     };
