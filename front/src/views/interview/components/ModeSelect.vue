@@ -15,7 +15,7 @@
               <router-link to='#' id='routerlink'>
                 <button class="start-btn">1:1 면접 신청</button>
               </router-link>
-              <router-link to='/interview/question' id='routerlink'>
+              <router-link to='/interview/ct' id='routerlink'>
                <button class="start-btn">--월 --일 --시 --분<br>1:1 면접 시작하기</button>
               </router-link>
             </div>
