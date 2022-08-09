@@ -115,8 +115,10 @@ export default {
       });
     };
     const deleteplus = function (event) {
+      console.log(event);
+      console.log(plusJob);
       for (let i = 0; i < plusJob.length; i += 1) {
-        if (plusJob[i].name === event) {
+        if (plusJob[i].name === event.name) {
           plusJob.splice(i, 1);
           i -= 1;
         }
@@ -150,9 +152,12 @@ export default {
       }
     },
     selectedDeleteItem2(event) {
-      const data = event.jobName;
+      console.log(event.name);
+      const data = event.name;
+      console.log(data);
       for (let i = 0; i < this.Jobs.length; i += 1) {
-        if (this.Jobs[i].jobName === data) {
+        console.log(this.Jobs[i].name);
+        if (this.Jobs[i].name === data) {
           this.Jobs.splice(i, 1);
           i -= 1;
         } this.$forceUpdate();
