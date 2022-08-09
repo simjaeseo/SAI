@@ -183,7 +183,7 @@ public class MemberService {
     }
 
     public List<MemberDto> searchMember(SearchMemberRequest request) throws MemberException {
-        List<Member> findMembers = memberRepository.findByNameContaining(request.getName());
+        List<Member> findMembers = memberRepository.findMembersByName(request.getName());
         List<MemberDto> result = findMembers.stream()
                 .map(m -> new MemberDto(m))
                 .collect(Collectors.toList());
