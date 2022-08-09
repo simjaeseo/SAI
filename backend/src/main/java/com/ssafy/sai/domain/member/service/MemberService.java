@@ -17,6 +17,7 @@ import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.request.SearchMemberRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.dto.response.MemberUpdateResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
@@ -37,10 +38,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -181,6 +180,15 @@ public class MemberService {
         }
 
         return new ConsultantDto(findMember);
+    }
+
+    public List<MemberDto> searchMember(SearchMemberRequest request) throws MemberException {
+        List<Member> findMembers = memberRepository.findByNameContaining(request.getName());
+        List<MemberDto> result = findMembers.stream()
+                .map(m -> new MemberDto(m))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
     /**
