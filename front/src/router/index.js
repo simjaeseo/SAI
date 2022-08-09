@@ -71,7 +71,7 @@ const routes = [
     component: HelpIdView,
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'Profile',
     component: ProfileView,
   },
@@ -166,8 +166,8 @@ const routes = [
     component: ChatView,
   },
   {
-    path: '/profile/update/ct',
-    name: 'ProfileUpdateCTView ',
+    path: '/profile/update/ct/:id',
+    name: 'ProfileUpdateCTView',
     component: ProfileUpdateCTView,
   },
   {

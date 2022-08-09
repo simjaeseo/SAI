@@ -1,5 +1,6 @@
 <template>
   <div class='container' id='searched-bar-box1'>
+    <!-- 검색된애 -->
   </div>
 </template>
 

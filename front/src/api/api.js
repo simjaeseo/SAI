@@ -14,8 +14,11 @@ export default {
     profile: (id) => HOST + MEMBER + id,
     updatePassword: () => `${HOST + MEMBER}password`,
     updateProfile: (id) => `${HOST + MEMBER}member/${id}`,
+    updateProfileCT: (id) => `${HOST + MEMBER}consultant/${id}`,
     findId: () => `${HOST + MEMBER}`,
     findPassword: () => `${HOST + MEMBER}find/password`,
+    getUserImg: (id) => `${HOST + MEMBER + id}/profile`,
+    getAllUser: () => `${HOST + MEMBER}search`,
   },
   schedule: {
     schedule: (id) => HOST + SCHEDULE + id,
@@ -25,6 +28,6 @@ export default {
     daySchedule: (id, date) => `${HOST + SCHEDULE + id}/${date}`,
   },
   interview: {
-    questions: () => `${HOST + INTERVIEW}question/personality`,
+    questionList: (type, detail) => `${HOST + INTERVIEW}question/list?questionType=${type}&questionDetailType=${detail}`,
   },
 };
