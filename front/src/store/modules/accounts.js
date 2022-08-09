@@ -194,8 +194,22 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: 'Profile' });
+          router.push({ name: 'Profile', params: { id: userId } });
         });
+    },
+    userUpdateCT({ dispatch, getters }, credentials) {
+      const userId = getters.currentUser.id;
+      axios({
+        url: drf.member.updateProfileCT(userId),
+        method: 'put',
+        data: credentials,
+      })
+        .then(() => {
+          alert('수정되었습니다.');
+          dispatch('fetchCurrentUser', userId);
+          router.push({ name: '/profile/update/ct', params: { id: userId } });
+        })
+        .catch((err) => console.log(err));
     },
   },
   modules: {},

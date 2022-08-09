@@ -5,8 +5,13 @@
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img :src="state.imgUrl" alt="preview" id='user_profile_img'>
-              <img src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
+              <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
+              id='user_profile_img'>
+              <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+              alt="preview"
+              id='user_profile_img'>
+              <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
                     ref='image' class='upload-box' @change="onInputImage">파일선택</label>
@@ -19,7 +24,8 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name"></label>
+                    class='form-control' v-model="currentUser.name"
+                    readonly @click="noChange"></label>
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
@@ -33,7 +39,9 @@
                     </select>
                     <select class='form-select' id='form-select-class'
                     aria-label='Default select example'
-                    @click="selectedUserClass">
+                    @click="selectedUserClass"
+                    v-model="state.userClass"
+                    required>
                       <option selected>{{ currentUser.campus.classNumber}}</option>
                       <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
@@ -231,7 +239,11 @@ export default {
         interestedEnterprises:
           _uniq(Enters.value),
       };
-      console.log(data.id);
+      console.log(data.campus.city);
+      console.log(data.campus.classNumber);
+      console.log(data.phone);
+      console.log(data.interestedJobs);
+      console.log(data.interestedEnterprises);
       const formData = new FormData();
       formData.append('file', img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
@@ -245,11 +257,7 @@ export default {
       [img] = e.target.files;
     };
 
-    const check = () => {
-      store.dispatch('check');
-    };
     return {
-      check,
       isLoggedIn,
       currentUser,
       state,

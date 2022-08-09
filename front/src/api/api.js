@@ -14,6 +14,7 @@ export default {
     profile: (id) => HOST + MEMBER + id,
     updatePassword: () => `${HOST + MEMBER}password`,
     updateProfile: (id) => `${HOST + MEMBER}member/${id}`,
+    updateProfileCT: (id) => `${HOST + MEMBER}consultant/${id}`,
     findId: () => `${HOST + MEMBER}`,
     findPassword: () => `${HOST + MEMBER}find/password`,
     getUserImg: (id) => `${HOST + MEMBER + id}/profile`,
