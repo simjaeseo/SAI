@@ -1,14 +1,20 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="userUpdate" enctyle="multipart/form-data" id="form">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+              <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
+              id='user_profile_img'>
+              <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+              alt="preview"
+              id='user_profile_img'>
+              <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                    ref='image' class='upload-box'>파일선택</label>
+                    ref='image' class='upload-box' @change="onInputImage">파일선택</label>
                 </div>
             </div>
             <!-- 프로필인적사항 -->
@@ -18,36 +24,26 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name"></label>
+                    class='form-control' v-model="currentUser.name"
+                    readonly @click="noChange"></label>
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected disabled>기수</option>
-                        <option value='1' disabled>1기</option>
-                        <option value='2' disabled>2기</option>
-                        <option value='3' disabled>3기</option>
-                        <option value='4' disabled>4기</option>
-                        <option value='5' disabled>5기</option>
-                        <option value='6' disabled>6기</option>
-                        <option value='7' disabled>7기</option>
+                        <option selected disabled>
+                        {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
-                        <option selected disabled>지역</option>
-                        <option value='1' disabled>서울</option>
-                        <option value='2' disabled>대전</option>
-                        <option value='3' disabled>광주</option>
-                        <option value='4' disabled>구미</option>
-                        <option value='5' disabled>부울경</option>
+                    aria-label='Default select example'
+                    >
+                        <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
-                    aria-label='Default select example'>
-                        <option selected disabled>반</option>
-                        <option value='1'>1반</option>
-                        <option value='2'>2반</option>
-                        <option value='3'>3반</option>
-                        <option value='4'>4반</option>
-                        <option value='5'>5반</option>
+                    aria-label='Default select example'
+                    @click="selectedUserClass"
+                    v-model="state.userClass"
+                    required>
+                      <option selected>{{ currentUser.campus.classNumber}}</option>
+                      <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
                     <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
@@ -61,21 +57,25 @@
                     </select>
                     <label for="user_signup_number1">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileSecond">
+                        v-model="state.mobileSecond"
+                         maxlength="4">
                     </label>
                     <label for="user_signup_number2">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileLast">
+                        v-model="state.mobileLast"
+                         maxlength="4">
                     </label>
                 </div>
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday" readonly></label>
+                    class='form-control' v-model="currentUser.birthday" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email" readonly></label>
+                    class='form-control' v-model="currentUser.email" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -86,6 +86,8 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
+              <img src="
+              a481f6bc-e7e9-4c01-b5d8-6c100cf96c90_profile.jpg" alt="profile"/>
               <p id='for-inline'>관심기업</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -105,12 +107,14 @@
                       aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <search-bar></search-bar>
+                      <search-bar-update></search-bar-update>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
-                      <button type="button" class="btn" id='update-btn2'>확인</button>
+                      <button type="button" class="btn" id='update-btn2'
+                      aria-label="Close" data-bs-dismiss="modal"
+                      >확인</button>
                     </div>
                   </div>
                 </div>
@@ -134,49 +138,148 @@
         <!-- 버튼 -->
         <div id='btn-box'>
             <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <router-link to="profile"><button class='btn'
-            type='submit'
-            id='update-btn'>완료</button></router-link>
+            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
+    <button @click="check"></button>
+    <div>
+      {{ Jobs }} <br>
+      {{ Enters }}
+    </div>
   </div>
 </template>
 
 <script>
-import { computed, reactive, onBeforeMount } from 'vue';
+import {
+  computed,
+  reactive,
+  onBeforeMount,
+} from 'vue';
 import { useStore } from 'vuex';
-import SearchBar from './SearchBar.vue';
+import _uniq from 'lodash/uniq';
 import SearchBarDuty from './SearchBarDuty.vue';
+import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
-  components: { SearchBar, SearchBarDuty },
+  components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
     const state = reactive({
+      mobileFirst: '',
       mobileSecond: '',
       mobileLast: '',
+      options: [],
+      userClass: '',
+      file: '',
+      url: '',
+      imgUrl: '',
     });
+
+    // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
+    const Jobs = computed(() => store.getters.userJob);
+    const Enters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+
     onBeforeMount(() => {
-      console.log(currentUser.value.phone);
       const userPhone = currentUser.value.phone;
+      state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
-      console.log(state.mobileSecond);
       state.mobileLast = userPhone.substr(7);
-      console.log(state.mobileLast);
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
     });
+
+    const selectedUserClass = function (event) {
+      state.userClass = event.target.value;
+    };
+
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    const setOptions = function () {
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
+    };
+    let img = null;
+    const userUpdate = () => {
+      const data = {
+        id: currentUser.value.id,
+        campus: {
+          city: currentUser.value.campus.city,
+          classNumber: state.userClass,
+        },
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        interestedJobs:
+          _uniq(Jobs.value),
+        interestedEnterprises:
+          _uniq(Enters.value),
+      };
+      console.log(data.campus.city);
+      console.log(data.campus.classNumber);
+      console.log(data.phone);
+      console.log(data.interestedJobs);
+      console.log(data.interestedEnterprises);
+      const formData = new FormData();
+      formData.append('file', img);
+      formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      store.dispatch('userUpdate', formData);
+    };
+    const onInputImage = (e) => {
+      state.file = e.target.files;
+      state.url = URL.createObjectURL(state.file[0]);
+      state.imgUrl = state.url;
+      console.log(state.imgUrl);
+      [img] = e.target.files;
+    };
+
     return {
       isLoggedIn,
       currentUser,
       state,
+      noChange,
+      setOptions,
+      userUpdate,
+      onInputImage,
+      Enters,
+      Jobs,
+      selectedUserClass,
     };
   },
 };
 </script>
 
 <style scoped>
+#nocheck {
+  color: gray;
+}
 .modal-body {
   height: 500px;
 }

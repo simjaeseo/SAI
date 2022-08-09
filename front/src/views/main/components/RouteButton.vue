@@ -8,8 +8,12 @@
           <button id='schedule-btn1' class="btn">입장하기</button></p>
       </div>
       <div class="col-lg-5" id='right-box'>
-        <button id='schedule-btn2' class="btn">모의면접시작</button>
-        <button id='schedule-btn3' class="btn">일정관리</button>
+        <router-link to="/interview" style="text-decoration:none">
+          <button id='schedule-btn2' class="btn">모의면접시작</button>
+        </router-link>
+        <router-link to="/schedule" style="text-decoration:none">
+          <button id='schedule-btn3' class="btn">일정관리</button>
+        </router-link>
       </div>
     </div>
   </div>

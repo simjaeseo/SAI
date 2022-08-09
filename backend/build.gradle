@@ -37,6 +37,8 @@ dependencies {
 	// google cloud storage
 	implementation 'com.google.cloud:google-cloud-storage'
 
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'mysql:mysql-connector-java'

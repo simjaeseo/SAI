@@ -1,14 +1,15 @@
 package com.ssafy.sai.domain.interview.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.member.domain.Member;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomInterviewQuestion {
 
@@ -18,7 +19,14 @@ public class CustomInterviewQuestion {
 
     private String question;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
+
+
+    public CustomInterviewQuestion(String question, Member member) {
+        this.question = question;
+        this.member = member;
+    }
 }

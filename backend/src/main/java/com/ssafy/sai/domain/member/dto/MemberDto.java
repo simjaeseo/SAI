@@ -4,7 +4,10 @@ import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
+import com.ssafy.sai.domain.member.domain.ProfilePicture;
+import com.ssafy.sai.domain.member.dto.response.ProfileDto;
 import lombok.Getter;
+import org.springframework.context.annotation.Profile;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -24,6 +27,7 @@ public class MemberDto {
     private int year;
     private CampusDto campus;
     private String phone;
+    private ProfileDto profilePicture;
 
     private List<InterestedJobDto> interestedJobs;
     private List<InterestedEnterpriseDto> interestedEnterprises;
@@ -43,6 +47,9 @@ public class MemberDto {
         interestedEnterprises = member.getInterestedEnterprises().stream()
                 .map(interestedEnterprise -> new InterestedEnterpriseDto(interestedEnterprise))
                 .collect(Collectors.toList());
+        if (member.getProfilePicture() != null) {
+            profilePicture = new ProfileDto(member.getProfilePicture());
+        }
     }
 
     @Getter

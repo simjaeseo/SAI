@@ -10,5 +10,4 @@ import java.util.List;
 public interface InterestedEnterpriseRepository extends JpaRepository<InterestedEnterprise, Long> {
 
     void deleteByMemberId(Long memberId);
-    void deleteAllByMemberId(Long memberId);
 }

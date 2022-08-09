@@ -7,9 +7,6 @@ import lombok.Data;
 public class CampusConsultantDto {
     private String city;
 
-    public CampusConsultantDto() {
-    }
-
     public CampusConsultantDto(Campus campus) {
         this.city = campus.getCity();
     }
