@@ -6,9 +6,9 @@
         <div id='profile_image_box' class='d-none d-md-block col-md-2'>
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
-          <img v-else
+          <!-- <img v-else
           :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
-          id='user_img' alt="profile">
+          id='user_img' alt="profile"> -->
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
