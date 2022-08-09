@@ -41,12 +41,15 @@
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
                     <li v-if="currentUser.memberStatus === 'TRAINEE'">
-                    <router-link to='/profile' id='dropdown-router'
+                    <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }"
+                    id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보</p></router-link>
                     </li>
                     <li v-if="currentUser.memberStatus === 'CONSULTANT'">
-                    <router-link to='/profile/update/ct' id='dropdown-router'
+                    <router-link
+                    :to="{ name: 'ProfileUpdateCTView', params: { id: `${ currentUser.id }`} }"
+                    id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보 수정</p></router-link>
                     </li>

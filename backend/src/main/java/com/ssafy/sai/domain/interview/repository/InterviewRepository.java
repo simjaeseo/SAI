@@ -1,4 +1,5 @@
 package com.ssafy.sai.domain.interview.repository;
 
-public class InterviewRepository {
+public interface InterviewRepository {
+
 }

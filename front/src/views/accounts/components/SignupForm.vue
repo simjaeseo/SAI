@@ -238,7 +238,7 @@ export default {
         username: '',
         userCardinalNumber: '',
         userRegion: '',
-        userClass: '',
+        userClass: '1',
         memberStatus: 'TRAINEE',
       },
       selected: '',
