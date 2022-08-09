@@ -5,21 +5,20 @@ import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
+import com.ssafy.sai.domain.member.dto.request.SearchMemberRequest;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -117,6 +116,12 @@ public class MemberController {
     public ResponseEntity<? extends DataResponse> findMemberId(@Valid @RequestBody FindIdRequest request) {
         MemberResponse findMember = memberService.findMemberId(request);
         return ResponseEntity.ok().body(new DataResponse<>(findMember));
+    }
+
+    @GetMapping
+    public ResponseEntity<? extends DataResponse> findAllMembers(@Valid @RequestBody SearchMemberRequest request) {
+        List<MemberDto> list = memberService.searchMember(request);
+        return ResponseEntity.ok().body(new DataResponse<>(list));
     }
 
 }
