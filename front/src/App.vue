@@ -1,6 +1,6 @@
 <template>
   <div id='app'>
-    <div style="border-bottom: 1px solid #e9eef1;" v-if="isLoggedIn">
+    <div style="border-bottom: 1px solid #e9eef1;">
       <nav class="navbar navbar-light navbar-expand-lg sticky-top container pb-0 pt-0">
           <router-link to='/'>
             <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
@@ -88,7 +88,7 @@
           </div>
       </nav>
     </div>
-    <!-- <div>
+    <div>
       <router-link to="/">Main</router-link> |
       <router-link to="/schedule">Schedule</router-link> |
       <router-link to="/scheduleCT">ScheduleCT</router-link> |
@@ -106,7 +106,7 @@
       <router-link to="/interview/ct">InterviewCt</router-link> |
       <router-link to="/analysis/comprehensive">AnalysisComprehensive</router-link> |
       <router-link to="/analysis/detail">AnalysisDetail</router-link>
-    </div> -->
+    </div>
   <router-view/>
   </div>
 </template>

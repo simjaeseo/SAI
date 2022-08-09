@@ -7,7 +7,7 @@
       </div>
       <div class="d-flex">
         <div class="box3">
-          <button @click="selected=tenacity" class="question-select-btn"
+          <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
           data-bs-toggle="button" autocomplete="off">인성 면접 질문</button>
           <div class="dropdown">
             <button class="question-select-btn dropdown-toggle" type="button"
@@ -15,41 +15,45 @@
               직무 면접 질문
             </button>
             <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-              <li @click="selected=fequestions" @keydown.enter="selected=fequestions">
+              <li @click="fetchQuestionList(['직무', 'frontend']), selected=''"
+              @keydown.enter="s">
                 <a class="dropdown-item" href="#">Frontend</a></li>
-              <li @click="selected=bequestions" @keydown.enter="selected=bequestions">
+              <li @click="fetchQuestionList(['직무', 'backend']), selected=''"
+              @keydown.enter="s">
                 <a class="dropdown-item" href="#">Backend</a></li>
-              <li @click="selected=androidquestions" @keydown.enter="selected=androidquestions">
+              <li @click="fetchQuestionList(['직무', 'Android/iOS']), selected=''"
+              @keydown.enter="s">
                 <a class="dropdown-item" href="#">Android/iOS</a></li>
-              <li @click="selected=dataquestions" @keydown.enter="selected=dataquestions">
+              <li @click="fetchQuestionList(['직무', 'Data Scientist']), selected=''"
+              @keydown.enter="s">
                 <a class="dropdown-item" href="#">Data Scientist</a></li>
-              <li @click="selected=devopsquestions" @keydown.enter="selected=devopsquestions">
+              <li @click="fetchQuestionList(['직무', 'DevOps']), selected=''"
+              @keydown.enter="s">
                 <a class="dropdown-item" href="#">DevOps</a></li>
             </ul>
           </div>
-          <button @click="selected=myQuestion" class="question-select-btn"
+          <button @click="selected='myQuestion'" class="question-select-btn"
           data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
         </div>
-        <div class="box4">
-          <div class="question" v-show="selected!=myQuestion">
-            <div>{{ selected.length }}개의 질문</div>
+        <div class="box4" v-show="selected==''">
+          <div class="question">
+            <div>{{ questionList.length }}개의 질문</div>
             <button class="question-btn" data-bs-toggle="button" autocomplete="off"
-            v-for="(category, i) in selected" :key="i"
-            @click="selectQuestion(category)">
-              {{ category.question }}</button>
+            v-for="(data, i) in questionList" :key="i"
+            @click="selectQuestion(data)">
+              {{ data.question }}</button>
+            <p>{{ selectedQuestionList }}</p>
           </div>
-          <!-- <div v-show="selected==myQuestion">
-            <label for="myQuestion"><input type="text" class='form-control'></label>
-            <button id="double-check-btn">등록</button>
-          </div> -->
-          <div class="inputBox shadow" v-show="selected==myQuestion">
-            <label for="s">
-              <input type="text" v-model="newQuestion" @keyup.enter="addTodo"></label>
-            <span class="addContainer" @click="addTodo" @keyup.enter="addTodo">
-              <i class="far fa-plus-square addBtn"></i>
-            </span>
+        </div>
+        <div class="box4" v-show="selected=='myQuestion'">
+          <div class="d-flex">
+            <input type="text" class='form-control'
+            v-model="myQuestion"
+            @keydown.enter="addQuestion()"
+            aria-labelledby="myQuestion">
+            <button id="double-check-btn" @click="addQuestion()">등록</button>
           </div>
-          <p>{{ selectedQuestionList }}</p>
+        <p>{{ selectedQuestionList }}</p>
         </div>
       </div>
       <div class="d-flex">
@@ -73,83 +77,30 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <button class="start-btn" @click="joinSession()">시작하기</button>
+              <router-link to="room">
+                <button class="start-btn"
+                @click="selectQuestionList(selectedQuestionList)">시작하기</button>
+              </router-link>
             </div>
           </div>
         </div>
       </div>
     </div>
-  <!-- <div id="join" v-if="!session">
-    <div id="join-dialog" class="jumbotron vertical-center">
-      <h1>Join a video session</h1>
-      <div class="form-group">
-        <p>
-          <input v-model="myUserName">
-        </p>
-        <p>
-          <input v-model="mySessionId">
-        </p>
-        <p class="text-center">
-          <button class="btn btn-lg btn-success" @click="joinSession()">Join!</button>
-        </p>
-      </div>
-    </div>
-  </div> -->
-
-  </div>
-  <div class="container">
-    <div id="session" v-if="session">
-      <div id="session-header">
-        <input class="btn btn-large btn-danger" type="button"
-        id="buttonLeaveSession" @click="leaveSession" value="Leave session">
-      </div>
-      <div id="main-video" class="col-md-6">
-        <user-video :stream-manager="mainStreamManager"/>
-      </div>
-      <div id="video-container" class="col-md-6">
-        <user-video :stream-manager="publisher"
-        @click="updateMainVideoStreamManager(publisher)"/>
-        <user-video v-for="sub in subscribers"
-        :key="sub.stream.connection.connectionId"
-        :stream-manager="sub"
-        @click="updateMainVideoStreamManager(sub)"/>
-      </div>
-    </div>````````````````````````````````````````````````
   </div>
 </template>
 
 <script>
-import tenacity from '@/data/tenacity.json';
-import dataquestions from '@/data/dataquestions.json';
-import bequestions from '@/data/bequestions.json';
-import fequestions from '@/data/fequestions.json';
-import androidquestions from '@/data/androidquestions.json';
-import devopsquestions from '@/data/devopsquestions.json';
-import axios from 'axios';
-import { OpenVidu } from 'openvidu-browser';
-import UserVideo from './UserVideo.vue';
-
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-const OPENVIDU_SERVER_URL = `https://${window.location.hostname}:4443`;
-const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 export default {
   components: {
-    UserVideo,
   },
   data() {
     return {
-      selected: tenacity,
-      tenacity,
-      fequestions,
-      bequestions,
-      dataquestions,
-      androidquestions,
-      devopsquestions,
+      selected: '',
       selectedQuestionList: [],
-      myquestion: '',
-      newQuestion: '',
+      myQuestion: '',
 
       OV: undefined,
       session: undefined,
@@ -160,153 +111,37 @@ export default {
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
+  setup() {
+    const store = useStore();
+
+    const questionList = computed(() => store.getters.questionList);
+    const fetchQuestionList = (params) => {
+      store.dispatch('fetchQuestionList', params);
+    };
+    const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
+
+    return {
+      fetchQuestionList,
+      questionList,
+      selectQuestionList,
+    };
+  },
   computed() {},
   methods: {
-    selectQuestion(category) {
-      const index = this.selectedQuestionList.indexOf(this.category, 0);
+    selectQuestion(data) {
+      const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
       } else {
-        this.selectedQuestionList.push(category);
+        this.selectedQuestionList.push(data.question);
       }
     },
-    addTodo() {
-      console.log(this.newTodoItem);
-      localStorage.setItem(this.newTodoItem, this.newTodoItem);
+    addQuestion() {
+      this.selectedQuestionList.push(this.myQuestion);
       this.clearInput();
     },
     clearInput() {
-      this.newTodoItem = '';
-    },
-    joinSession() {
-      // --- Get an OpenVidu object ---
-      this.OV = new OpenVidu();
-
-      // --- Init a session ---
-      this.session = this.OV.initSession();
-
-      // --- Specify the actions when events take place in the session ---
-
-      // On every new Stream received...
-      this.session.on('streamCreated', ({ stream }) => {
-        const subscriber = this.session.subscribe(stream);
-        this.subscribers.push(subscriber);
-      });
-
-      // On every Stream destroyed...
-      this.session.on('streamDestroyed', ({ stream }) => {
-        const index = this.subscribers.indexOf(stream.streamManager, 0);
-        if (index >= 0) {
-          this.subscribers.splice(index, 1);
-        }
-      });
-
-      // On every asynchronous exception...
-      this.session.on('exception', ({ exception }) => {
-        console.warn(exception);
-      });
-
-      // --- Connect to the session with a valid user token ---
-
-      // 'getToken' method is simulating what your server-side should do.
-      // 'token' parameter should be retrieved and returned by your own backend
-      this.getToken(this.mySessionId).then((token) => {
-        this.session.connect(token, { clientData: this.myUserName })
-          .then(() => {
-            // --- Get your own camera stream with the desired properties ---
-
-            const publisher = this.OV.initPublisher(undefined, {
-              audioSource: undefined, // The source of audio. If undefined default microphone
-              videoSource: undefined, // The source of video. If undefined default webcam
-              publishAudio: true,
-              // Whether you want to start publishing with your audio unmuted or not
-              publishVideo: true,
-              // Whether you want to start publishing with your video enabled or not
-              resolution: '640x480', // The resolution of your video
-              frameRate: 30, // The frame rate of your video
-              insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-              mirror: false, // Whether to mirror your local video or not
-            });
-
-            this.mainStreamManager = publisher;
-            this.publisher = publisher;
-
-            // --- Publish your stream ---
-
-            this.session.publish(this.publisher);
-          })
-          .catch((error) => {
-            console.log('There was an error connecting to the session:', error.code, error.message);
-          });
-      });
-
-      window.addEventListener('beforeunload', this.leaveSession);
-    },
-
-    leaveSession() {
-      // --- Leave the session by calling 'disconnect' method over the Session object ---
-      if (this.session) this.session.disconnect();
-
-      this.session = undefined;
-      this.mainStreamManager = undefined;
-      this.publisher = undefined;
-      this.subscribers = [];
-      this.OV = undefined;
-
-      window.removeEventListener('beforeunload', this.leaveSession);
-    },
-
-    updateMainVideoStreamManager(stream) {
-      if (this.mainStreamManager === stream) return;
-      this.mainStreamManager = stream;
-    },
-
-    getToken(mySessionId) {
-      return this.createSession(mySessionId).then((sessionId) => this.createToken(sessionId));
-    },
-
-    // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
-    createSession(sessionId) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
-            customSessionId: sessionId,
-          }), {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
-            },
-          })
-          .then((response) => response.data)
-          .then((data) => resolve(data.id))
-          .catch((error) => {
-            if (error.response.status === 409) {
-              resolve(sessionId);
-            } else {
-              console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
-              if (window.confirm(`No connection to OpenVidu Server.This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-                window.location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
-              }
-              reject(error.response);
-            }
-          });
-      });
-    },
-
-    // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
-    createToken(sessionId) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
-            },
-          })
-          .then((response) => response.data)
-          .then((data) => resolve(data.token))
-          .catch((error) => reject(error.response));
-      });
+      this.myQuestion = '';
     },
   },
 };
@@ -336,14 +171,14 @@ export default {
   align-items: center;
   justify-content: center;
   width: 366px;
-  height: 150px;
+  height: 100px;
   font-size: 36px;
 }
 .box2 {
   display: flex;
   align-items: center;
   width: 1000px;
-  height: 150px;
+  height: 100px;
   font-size: 48px;
 }
 .box3 {
@@ -382,7 +217,6 @@ export default {
 .question {
   display: flex;
   flex-direction: column;
-  height: 650px;
 }
 .question-select-btn{
   margin: 3px;
@@ -428,7 +262,7 @@ export default {
   border-radius: 0.25rem;
   padding: 0.5rem;
   height: 48px;
-  width: 960px;
+  width: 920px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
