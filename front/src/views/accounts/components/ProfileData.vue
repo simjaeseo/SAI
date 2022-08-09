@@ -4,7 +4,11 @@
       <div class='row'>
         <!-- 프로필이미지 -->
         <div id='profile_image_box' class='d-none d-md-block col-md-2'>
-          <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+          <img v-if="!currentUser.profilePicture"
+          src="@/assets/profile5.png" alt="profile" id='user_img'>
+          <!-- <img v-else
+          :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+          id='user_img' alt="profile"> -->
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
@@ -77,9 +81,11 @@ export default {
 
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const profileImg = computed(() => store.getters.profileImg);
     return {
       isLoggedIn,
       currentUser,
+      profileImg,
     };
   },
 };
@@ -277,7 +283,7 @@ p {
   text-align: center;
   display: inline-block;
 }
-#user_profile_img {
+#user_img {
   width: 100%;
   height: 100%;
   border: 1px solid #d0d0d0;

@@ -46,4 +46,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     void updatePassword(@Param("newPasswordCheck") String newPasswordCheck, @Param("email") String email);
 
     Member findMemberByNameAndBirthday(String name, LocalDate birthday);
+
+    @Query("select m from Member m" +
+            " join fetch m.campus" +
+            " where m.name = :name")
+    List<Member> findMembersByName(@Param("name") String name);
 }
