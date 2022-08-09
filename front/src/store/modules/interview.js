@@ -5,19 +5,19 @@ import axios from 'axios';
 export default {
   state: {
     questionList: {},
-    // selectedQuestionList: [],
+    selectedQuestionList: [],
   },
   getters: {
     questionList: (state) => state.questionList,
-    // selectedQuestionList: (state) => state.selectedQuestionList,
+    selectedQuestionList: (state) => state.selectedQuestionList,
   },
   mutations: {
     SET_QUESTION_LIST(state, questionList) {
       state.questionList = questionList;
     },
-    // SET_SELECTED_QUESTION_LIST(state, questionList) {
-    //   state.selectedQuestionList = questionList;
-    // },
+    SET_SELECTED_QUESTION_LIST(state, questionList) {
+      state.selectedQuestionList = questionList;
+    },
   },
   actions: {
     fetchQuestionList({ getters, commit }, params) {

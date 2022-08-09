@@ -76,8 +76,9 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <router-link to="room" :questionList="questionList">
-                <button class="start-btn">시작하기</button>
+              <router-link to="room">
+                <button class="start-btn"
+                @click="selectQuestionList(selectedQuestionList)">시작하기</button>
               </router-link>
             </div>
           </div>
@@ -116,25 +117,18 @@ export default {
     const fetchQuestionList = (params) => {
       store.dispatch('fetchQuestionList', params);
     };
-    // const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
+    const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
 
-    // onUnmounted(() => {
-    //   this.selectQuestionList(this.selectedQuestionList);
-    // });
     return {
       fetchQuestionList,
       questionList,
-      // selectQuestionList,
+      selectQuestionList,
     };
   },
   computed() {},
   methods: {
     selectQuestion(data) {
-      const index = this.selectedQuestionList.indexOf(this.data, 0);
-      console.log(index);
-      console.log(this.selectedQuestionList[0] === this.data);
-      console.log(this.selectedQuestionList[0]);
-      console.log(this.data);
+      const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
       } else {

@@ -10,7 +10,7 @@
             id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
           </div>
         </div>
-        <div>{{ questionList }}</div>
+        <div>{{ selectedQuestionList }}</div>
         <!-- <div id="video-container" class="col-md-6">
           <user-video :stream-manager="publisher"
           @click="updateMainVideoStreamManager(publisher)"/>
