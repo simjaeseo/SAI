@@ -84,14 +84,12 @@ public class SignService {
                 .phone(request.getPhone())
                 .build();
 
-        // 데이터 저장
         Member findMember = memberRepository.save(memberDto);
 
         // 관심기업 저장
         for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
             Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
-
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, memberDto);
             InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
             interestedEnterpriseRepository.save(interestedEnterprise);
         }
@@ -105,8 +103,9 @@ public class SignService {
         }
 
         // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
-        findMember.updateCampus(campus.get());
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
 
         return new MemberResponse(findMember);
     }
@@ -145,8 +144,9 @@ public class SignService {
         Member findMember = memberRepository.save(memberDto);
 
         // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
-        findMember.updateCampus(campus.get());
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
 
         return new ConsultantDto(findMember);
     }

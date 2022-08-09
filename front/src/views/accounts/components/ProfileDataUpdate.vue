@@ -5,7 +5,8 @@
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+              <img :src="state.imgUrl" alt="preview" id='user_profile_img'>
+              <img src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
                     ref='image' class='upload-box' @change="onInputImage">파일선택</label>
@@ -26,12 +27,13 @@
                         {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
+                    aria-label='Default select example'
+                    >
                         <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
                     aria-label='Default select example'
-                    @click="setOptions">
+                    @click="selectedUserClass">
                       <option selected>{{ currentUser.campus.classNumber}}</option>
                       <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
@@ -47,11 +49,13 @@
                     </select>
                     <label for="user_signup_number1">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileSecond">
+                        v-model="state.mobileSecond"
+                         maxlength="4">
                     </label>
                     <label for="user_signup_number2">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileLast">
+                        v-model="state.mobileLast"
+                         maxlength="4">
                     </label>
                 </div>
               <!-- 오른쪽 -->
@@ -149,11 +153,6 @@ import SearchBarUpdate from './SearchBarUpdate.vue';
 export default {
   components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
-  // data() {
-  //   return {
-  //     image: '',
-  //   };
-  // },
   setup() {
     const store = useStore();
     const state = reactive({
@@ -161,6 +160,10 @@ export default {
       mobileSecond: '',
       mobileLast: '',
       options: [],
+      userClass: '',
+      file: '',
+      url: '',
+      imgUrl: '',
     });
 
     // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
@@ -174,7 +177,26 @@ export default {
       state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
       state.mobileLast = userPhone.substr(7);
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
     });
+
+    const selectedUserClass = function (event) {
+      state.userClass = event.target.value;
+    };
 
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
@@ -201,7 +223,7 @@ export default {
       const data = {
         campus: {
           city: currentUser.value.campus.city,
-          classNumber: currentUser.value.campus.classNumber,
+          classNumber: state.userClass,
         },
         phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
         interestedJobs:
@@ -209,20 +231,25 @@ export default {
         interestedEnterprises:
           _uniq(Enters.value),
       };
-      console.log(data.campus);
-      console.log(data.phone);
-      console.log(data.interestedJobs);
-      console.log(data.interestedEnterprises);
+      console.log(data.id);
       const formData = new FormData();
       formData.append('file', img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       store.dispatch('userUpdate', formData);
     };
-
     const onInputImage = (e) => {
+      state.file = e.target.files;
+      state.url = URL.createObjectURL(state.file[0]);
+      state.imgUrl = state.url;
+      console.log(state.imgUrl);
       [img] = e.target.files;
     };
+
+    const check = () => {
+      store.dispatch('check');
+    };
     return {
+      check,
       isLoggedIn,
       currentUser,
       state,
@@ -232,9 +259,8 @@ export default {
       onInputImage,
       Enters,
       Jobs,
+      selectedUserClass,
     };
-  },
-  updated() {
   },
 };
 </script>

@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -19,12 +20,12 @@ public class InterestedEnterprise {
     @Column(name = "interested_enterprise_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = PERSIST)
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
 
     @JsonBackReference
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = PERSIST)
     @JoinColumn(name = "member_id")
     private Member member;
 }

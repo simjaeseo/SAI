@@ -24,6 +24,8 @@ public class MemberUpdateResponse {
         this.birthday = member.getBirthday();
         this.campus = new CampusDto(member.getCampus().getCity(), member.getCampus().getClassNumber());
         this.phone = member.getPhone();
-        this.profilePicture = new ProfileDto(member.getProfilePicture());
+        if (member.getProfilePicture() != null) {
+            this.profilePicture = new ProfileDto(member.getProfilePicture());
+        }
     }
 }

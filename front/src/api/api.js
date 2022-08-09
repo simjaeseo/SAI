@@ -2,6 +2,7 @@ const HOST = 'http://localhost:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
+const INTERVIEW = 'interview/';
 
 export default {
   member: {
@@ -15,6 +16,7 @@ export default {
     updateProfile: (id) => `${HOST + MEMBER}member/${id}`,
     findId: () => `${HOST + MEMBER}`,
     findPassword: () => `${HOST + MEMBER}find/password`,
+    getUserImg: (id) => `${HOST + MEMBER + id}/profile`,
   },
   schedule: {
     schedule: (id) => HOST + SCHEDULE + id,
@@ -22,5 +24,8 @@ export default {
     myConsultant: (id) => `${HOST + SCHEDULE + id}/consultant`,
     upcomingSchedule: (id) => `${HOST + SCHEDULE + id}/recent`,
     daySchedule: (id, date) => `${HOST + SCHEDULE + id}/${date}`,
+  },
+  interview: {
+    questions: () => `${HOST + INTERVIEW}question/personality`,
   },
 };

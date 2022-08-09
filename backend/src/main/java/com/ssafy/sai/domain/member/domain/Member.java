@@ -61,11 +61,11 @@ public class Member extends BaseEntity {
     private List<String> roles = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = ALL)
     private List<InterestedJob> interestedJobs = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = ALL)
     private List<InterestedEnterprise> interestedEnterprises = new ArrayList<>();
 
     public void updateCampus(Campus campus) {
@@ -86,9 +86,5 @@ public class Member extends BaseEntity {
 
     public void updateProfilePicture(ProfilePicture profilePicture) {
         this.profilePicture = profilePicture;
-
-        if (profilePicture != null) {
-            profilePicture.updateMember(this);
-        }
     }
 }

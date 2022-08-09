@@ -15,6 +15,7 @@ export default {
     setNewEnter: {},
     // 새로추가한직무
     setNewJob: {},
+    profileImg: '',
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
@@ -28,6 +29,7 @@ export default {
     setNewEnter: (state) => state.setNewEnter,
     // 새로운직무
     setNewJob: (state) => state.setNewJob,
+    profileImg: (state) => state.profileImg,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -56,6 +58,13 @@ export default {
     },
     CHANGE_USER_ENTER(state, update) {
       state.userEnter = update;
+    },
+    // COMBINE_USER_JOB(state) {
+    //   state.userJob = state.user
+    // },
+    SET_USER_PROFILE_IMG(state, img) {
+      state.profileImg = img;
+      console.log(state.profileImg);
     },
   },
   actions: {
@@ -109,9 +118,7 @@ export default {
         })
           .then((res) => commit('SET_CURRENT_USER', res.data.data))
           .catch((err) => {
-            console.log('에러베러');
             console.log(err);
-            console.log('에러베러');
           });
       }
     },
@@ -168,6 +175,7 @@ export default {
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
+      console.log(enter);
       commit('SET_NEW_JOB', enter);
     },
     updateJob({ commit }, data) {
@@ -177,8 +185,6 @@ export default {
       commit('CHANGE_USER_ENTER', data);
     },
     userUpdate({ dispatch, getters }, credentials) {
-      console.log(credentials);
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       const userId = getters.currentUser.id;
       axios({
         url: drf.member.updateProfile(userId),
@@ -189,8 +195,7 @@ export default {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
           router.push({ name: 'Profile' });
-        })
-        .catch((err) => console.log(err));
+        });
     },
   },
   modules: {},
