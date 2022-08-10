@@ -43,26 +43,25 @@
       <div v-if="studentData.studentName">
         <img v-if="studentData.img"
         :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
-        <h6>이름</h6>
+        <h6 class="pt-2">이름</h6>
         <p>{{ studentData.studentName }}</p>
-        <h6>생년월일</h6>
+        <h6 class="mt-4">생년월일</h6>
         <p>{{ studentData.birthday }}</p>
-        <h6>지역/반</h6>
+        <h6 class="mt-4">지역/반</h6>
         <p>{{ studentData.year}}기 {{ studentData.city }} {{ studentData.classNumber }}반</p>
-        <h6>이메일</h6>
+        <h6 class="mt-4">이메일</h6>
         <p>{{ studentData.email }}</p>
-        <h6>연락처</h6>
+        <h6 class="mt-4">연락처</h6>
         <p>{{ studentData.phone }}</p>
-        <h6>관심기업</h6>
+        <h6 v-if="studentData.enters.length" class="mt-4">관심기업</h6>
         <li v-for="(enter, index) in studentData.enters" :key="index" id="for-li"
         class="mb-4">
           #{{ enter.enterpriseName }}
         </li>
-        <h6>관심직무</h6>
+        <h6 v-if="studentData.jobs.length" class="mt-4">관심직무</h6>
         <li v-for="(job, index) in studentData.jobs" :key="index" id="for-li">
           #{{ job.jobName }}
         </li>
-        {{ studentData }}
       </div>
     </div>
         <div id='home-btn-box'>
@@ -118,7 +117,7 @@ export default {
     let img = '';
 
     const closeUl = function () {
-      searchName = ref('');
+      searchName.value = ref('');
       finded = [];
     };
     const selectedStudent = function (student) {
@@ -164,15 +163,33 @@ export default {
 </script>
 
 <style scoped>
+h6 {
+  color: gray;
+}
+p {
+  display: inline;
+}
+p:hover {
+  display: inline;
+  cursor: pointer;
+  background-color: #626db325;
+  border-radius: 5px;
+}
 #for-li {
   background-color: none;
+  list-style: none;
+  display: inline;
+}
+#for-li:hover {
+  border-radius: 5px;
+  background-color: #626db325;
   list-style: none;
   display: inline;
 }
 #searched-bar-box1 {
   background-color: #5c6ac40c;
   width: 100%;
-  height: 500px;
+  height: 520px;
   margin-bottom: 40px;
   border-radius: 10px;
 }
