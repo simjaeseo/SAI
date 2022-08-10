@@ -18,8 +18,17 @@
             :stream-manager="sub"
             @click="updateMainVideoStreamManager(sub)"/>
           </div>
+          <div>this session id : {{ this.mySessionId }}</div>
           <div>{{ currentUser.id }}</div>
-          <div>{{ upcomingSchedules }}</div>
+          <div>{{ upcomingSchedules[0].id }}</div>
+          <div>
+            <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="녹화!">
+          </div>
+          <div>
+            <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지">
+          </div>
       </div>
     </div>
   </div>
@@ -49,8 +58,9 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 1,
+      mySessionId: `${this.upcomingSchedules[0].id}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      myRecodingId: undefined,
     };
   },
   setup() {
@@ -66,10 +76,11 @@ export default {
       fetchUpcomingSchedules,
     };
   },
-  created() {}, // 해당 vue 파일이 실행 되는 순간
+  created() {
+    this.fetchUpcomingSchedules();
+  }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
-    this.fetchUpcomingSchedules();
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
@@ -203,6 +214,33 @@ export default {
           .then((data) => resolve(data.token))
           .catch((error) => reject(error.response));
       });
+    },
+    startRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
+          session: this.mySessionId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => {
+          this.myRecodingId = res.data.id;
+          console.log(res);
+        });
+    },
+    stopRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
+          recoding: this.myRecodingId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => console.log(res));
     },
   },
 }; // 함수 정의해서 컴포넌트 내에서 사용 가능하게 함

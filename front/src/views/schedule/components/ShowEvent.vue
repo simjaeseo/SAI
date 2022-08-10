@@ -4,17 +4,26 @@
       <div id="today-schedule">
           <div>
             <!-- <h3>{{ upcomingSchedules[0].category }}</h3> -->
-            <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
+            <h4>
+              {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
+              {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
+              {{ upcomingSchedules[0].startTime }}
+            </h4>
             <br><br>
             <p v-if="upcomingSchedules[0].consultantName">
               담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
             </p>
+            <p v-if="upcomingSchedules[0].studentName">
+              교육생 : {{ upcomingSchedules[0].studentName}}
+            </p>
             <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
-            <button
-            v-if="upcomingSchedules[0].category === 'practice'"
-            class="btn">
-              면접 바로가기
-            </button>
+            <router-link to='/interview/ct' id='routerlink'>
+              <button
+                v-if="upcomingSchedules[0].category === 'practice'"
+                class="btn">
+                  면접 바로가기
+              </button>
+            </router-link>
           </div>
       </div>
       <div id='layer'>
