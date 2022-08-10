@@ -2,9 +2,6 @@
   <div class='container' id='my_page1'>
     <div class='d-flex justify-content-between'>
       <p id='profile_text1'>컨설턴트 개인정보 수정</p>
-      <router-link to="/password/update" id='pw-router'>
-        <button class="btn btn-primary" id='pw-router-btn'>비밀번호 변경</button>
-      </router-link>
     </div>
     <hr>
     <div class='container'>

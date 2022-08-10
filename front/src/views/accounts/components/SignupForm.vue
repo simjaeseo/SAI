@@ -181,6 +181,7 @@
               <select class='form-select' id='form-select3' aria-label='Default select example'
               @change="UserMobileFirst"
               required>
+                <option selected disabled>선택</option>
                 <option value='010'>010</option>
                 <option value='011'>011</option>
                 <option value='016'>016</option>
@@ -237,7 +238,7 @@ export default {
         username: '',
         userCardinalNumber: '',
         userRegion: '',
-        userClass: '',
+        userClass: '1',
         memberStatus: 'TRAINEE',
       },
       selected: '',
@@ -349,11 +350,9 @@ export default {
         console.log('유효합니다');
         if (state.mobileSecond.length === 0) {
           state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
         } else {
           state.mobileSecond = '';
           state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
         }
       } else {
         state.mobileSecond = '';
@@ -366,11 +365,9 @@ export default {
         console.log('유효합니다');
         if (state.mobileLast.length === 0) {
           state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
         } else {
           state.mobileLast = '';
           state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
         }
       } else {
         state.mobileLast = '';
@@ -387,7 +384,7 @@ export default {
       state.credentials.userClass = event.target.value;
     };
     const signupform = function () {
-      console.log(state.credentials.userEmail);
+      console.log(state.mobileFirst + state.mobileSecond + state.mobileLast);
       store.dispatch('signup', {
         email: state.credentials.userEmail,
         password: state.credentials.userPassword1,

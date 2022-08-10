@@ -1,22 +1,100 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="findId">
       <div>
         <label for='find_user_input_name'>
           <p id='find_user_input_text'>이름</p>
-          <input type='text' id='find_user_input_name' class='form-control'>
+          <input type='text' id='find_user_input_name'
+          class='form-control'
+          v-model="state.credentials.username"
+          required>
         </label>
       </div>
-      <div>
+      <div id='select-box-div' class="mt-3">
         <label for='find_user_input_email'>
           <p id='find_user_input_text'>생년월일</p>
-          <input type='text' id='find_user_input_email'
-          placeholder='email@google.com'
-          class='form-control'>
+          <select name="find_user_input_emil" id="select-year"
+          class="form-select"
+          @change="selectedUserYear"
+          required>
+            <option selected disabled>연도</option>
+            <option value='1990'>1990</option>
+            <option value='1991'>1991</option>
+            <option value='1992'>1992</option>
+            <option value='1992'>1993</option>
+            <option value='1994'>1994</option>
+            <option value='1995'>1995</option>
+            <option value='1996'>1996</option>
+            <option value='1997'>1997</option>
+            <option value='1998'>1998</option>
+            <option value='1999'>1999</option>
+            <option value='2000'>2000</option>
+            <option value='2001'>2001</option>
+            <option value='2002'>2002</option>
+            <option value='2003'>2003</option>
+          </select>
+          <select name="find_user_input_emil" id="select-month"
+          class="form-select"
+          @change="selectedUserMonth"
+          required>
+            <option selected disabled>월</option>
+            <option value='01'>01</option>
+            <option value='02'>02</option>
+            <option value='03'>03</option>
+            <option value='04'>04</option>
+            <option value='05'>05</option>
+            <option value='06'>06</option>
+            <option value='07'>07</option>
+            <option value='08'>08</option>
+            <option value='09'>09</option>
+            <option value='10'>10</option>
+            <option value='11'>11</option>
+            <option value='12'>12</option>
+          </select>
+          <select name="find_user_input_emil" id="select-day"
+          class="form-select"
+          @change="selectedUserDay"
+          required>
+              <option selected disabled>일</option>
+              <option value='01'>01</option>
+              <option value='02'>02</option>
+              <option value='03'>03</option>
+              <option value='04'>04</option>
+              <option value='05'>05</option>
+              <option value='06'>06</option>
+              <option value='07'>07</option>
+              <option value='08'>08</option>
+              <option value='09'>09</option>
+              <option value='10'>10</option>
+              <option value='11'>11</option>
+              <option value='12'>12</option>
+              <option value='13'>13</option>
+              <option value='14'>14</option>
+              <option value='15'>15</option>
+              <option value='16'>16</option>
+              <option value='17'>17</option>
+              <option value='18'>18</option>
+              <option value='19'>19</option>
+              <option value='20'>20</option>
+              <option value='21'>21</option>
+              <option value='22'>22</option>
+              <option value='23'>23</option>
+              <option value='24'>24</option>
+              <option value='25'>25</option>
+              <option value='26'>26</option>
+              <option value='27'>27</option>
+              <option value='28'>28</option>
+              <option value='29'>29</option>
+              <option value='30'>30</option>
+              <option value='31'>31</option>
+          </select>
         </label>
       </div>
+      <div v-if="state.result" class="mt-3 mb-3">
+        회원님의 아이디는 {{ state.result }} 입니다.
+      </div>
       <div>
-        <button id='find-pw-btn' type='submit'>비밀번호 찾기</button>
+        <button id='find-pw-btn' type='submit'>아이디 찾기</button>
       </div>
     </form>
       <div>
@@ -28,12 +106,91 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
+import axios from 'axios';
+import drf from '@/api/api';
+
 export default {
   name: 'FindID',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      credentials: {
+        userBirth: '',
+        username: '',
+      },
+      result: '',
+    });
+    const selectedUserYear = function (event) {
+      const dash = '-';
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        state.credentials.userBirth = '';
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserMonth = function (event) {
+      const dash = '-';
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value.concat(dash);
+      } else {
+        const updateMonth = state.credentials.userBirth.substr(0, 5);
+        state.credentials.userBirth = updateMonth;
+        state.credentials.userBirth += event.target.value.concat(dash);
+      }
+    };
+    const selectedUserDay = function (event) {
+      state.credentials.userBirth += event.target.value;
+      if (state.credentials.userBirth.length === 0) {
+        state.credentials.userBirth += event.target.value;
+      } else {
+        const updateDay = state.credentials.userBirth.substr(0, 8);
+        state.credentials.userBirth = updateDay;
+        state.credentials.userBirth += event.target.value;
+      }
+    };
+    const findId = function () {
+      console.log(state.credentials.username);
+      console.log(state.credentials.userBirth);
+      axios({
+        url: drf.member.findId(),
+        method: 'post',
+        data: {
+          name: state.credentials.username,
+          birthday: state.credentials.userBirth,
+        },
+      })
+        .then((res) => { state.result = res.data.data.email; })
+        .catch(() => alert('존재하지 않는 회원 정보입니다.'));
+    };
+    return {
+      state,
+      store,
+      selectedUserYear,
+      selectedUserMonth,
+      selectedUserDay,
+      findId,
+    };
+  },
 };
 </script>
 
 <style scoped>
+.form-select {
+  display: inline;
+  width: 93px;
+  margin: 5px;
+  height: 45px;
+}
+.form-select:focus {
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem #5c6ac496;
+}
 #find_user_input_text {
   font-size: 13px;
   font-weight: 900;

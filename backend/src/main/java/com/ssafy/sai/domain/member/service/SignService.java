@@ -15,6 +15,7 @@ import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.dto.AuthenticationMember;
+import com.ssafy.sai.domain.member.dto.ConsultantDto;
 import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
@@ -56,7 +57,7 @@ public class SignService {
      * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
      */
     @Transactional
-    public MemberResponse signUpMember(MemberSignUpRequest request) {
+    public MemberResponse signUpMember(MemberSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -83,14 +84,12 @@ public class SignService {
                 .phone(request.getPhone())
                 .build();
 
-        // 데이터 저장
         Member findMember = memberRepository.save(memberDto);
 
         // 관심기업 저장
         for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
             Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
-
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, memberDto);
             InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
             interestedEnterpriseRepository.save(interestedEnterprise);
         }
@@ -104,8 +103,9 @@ public class SignService {
         }
 
         // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
-        findMember.updateCampus(campus.get());
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
 
         return new MemberResponse(findMember);
     }
@@ -117,7 +117,7 @@ public class SignService {
      * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
      */
     @Transactional
-    public MemberResponse signUpConsultant(ConsultantSignUpRequest request) {
+    public ConsultantDto signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -144,10 +144,11 @@ public class SignService {
         Member findMember = memberRepository.save(memberDto);
 
         // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
-        findMember.updateCampus(campus.get());
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
 
-        return new MemberResponse(findMember);
+        return new ConsultantDto(findMember);
     }
 
     /**
@@ -157,7 +158,7 @@ public class SignService {
      * @throws Exception 이메일이 일치하지 않는 경우, 비밀번호가 일치하지 않는 경우 예외 발생
      */
     @Transactional
-    public AuthenticationMember loginMember(MemberLoginRequest request) {
+    public AuthenticationMember loginMember(MemberLoginRequest request) throws MemberException {
 
         // Member -> DTO
         Member memberDto = Member.builder()
