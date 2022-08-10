@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import sample from '@/assets/sample.mp3';
+// import sample from '@/assets/sample.mp3';
 
 export default {
   mounted() {
@@ -49,7 +49,7 @@ export default {
 
     const filterData = (audioBuffer) => {
       const rawData = audioBuffer.getChannelData(0);
-      const samples = 700;
+      const samples = 50000;
       const blockSize = Math.floor(rawData.length / samples);
       const filteredData = [];
       for (let i = 0; i < samples; i += 1) {
@@ -75,7 +75,8 @@ export default {
         .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
     };
 
-    drawAudio(sample);
+    // drawAudio(sample);
+    drawAudio('https://storage.googleapis.com/sai-ssafy/asdf%20(online-audio-converter.com).flac');
   },
 };
 </script>

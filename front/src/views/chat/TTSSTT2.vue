@@ -16,14 +16,6 @@
 export default {
   mounted() {
     function speak(text, optProp) {
-      if (
-        typeof SpeechSynthesisUtterance === 'undefined'
-        || typeof window.speechSynthesis === 'undefined'
-      ) {
-        alert('이 브라우저는 음성 합성을 지원하지 않습니다.');
-        return;
-      }
-
       window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
       const prop = optProp || {};
@@ -46,8 +38,8 @@ export default {
     btnRead.addEventListener('click', (e) => {
       console.log(e);
       speak(text.value, {
-        rate: 1,
-        pitch: 1.2,
+        rate: 0.9,
+        pitch: 0.5,
         lang: selectLang.options[selectLang.selectedIndex].value,
       });
     });
