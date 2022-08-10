@@ -13,6 +13,12 @@
             :value="[isStart === true ?  '녹화중입니다'  :  '면접시작' ]"
             :style="[isStart === true ?
             {background: '#e02e4c', color: '#ffffff'} : {background:'#5c6ac4' , color: '#ffffff'}]">
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="녹화!"> </div>
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지"> </div>
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="leaveSession" value="나가기"> </div>
           </div>
         </div>
         <!-- <div id="video-container" class="col-md-6">
@@ -46,12 +52,13 @@ export default {
   },
   data() {
     return {
+      myRecodingId: undefined,
       OV: undefined,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: '',
+      mySessionId: 'Sessionabcd',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
     };
@@ -67,38 +74,42 @@ export default {
       currentUser,
     };
   },
-  created() {}, // 해당 vue 파일이 실행 되는 순간
+  created() { }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
-    this.mySessionId = this.currentUser.id;
+    // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
-  unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
+  unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
     answerCompleted() {
       // 답변완료 버튼을 누르면 타임라인이 생성되고 다음질문이 3초뒤에 TTS.
     },
-    startRecording() {
-      this.isStart = true;
-      return new Promise((resolve, reject) => {
-        axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, {
-            auth: {
-              session: this.mySessionId,
-              name: this.currentUser.name,
-              hasAudio: true,
-              hasVideo: true,
-              outputMode: 'COMPOSED',
-              recordingLayout: 'CUSTOM',
-              resolution: '1280x720',
-              frameRate: 25,
-              shmSize: 536870912,
-              ignoreFailedStreams: false,
-            },
-          })
-          .then((res) => console.log(res))
-          .then((data) => resolve(data))
-          .catch((err) => reject(err));
-      });
+    startRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
+          session: this.mySessionId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => {
+          this.myRecodingId = res.data.id;
+          console.log(res);
+        });
+    },
+    stopRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
+          recoding: this.myRecodingId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => console.log(res));
     },
     joinSession() {
       // --- Get an OpenVidu object ---
@@ -191,17 +202,19 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession(sessionId) {
       return new Promise((resolve, reject) => {
+        const data = JSON.stringify({ customSessionId: sessionId });
         axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
-            customSessionId: sessionId,
-          }), {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, data, {
+            headers: {
+              Authorization: `Basic ${btoa(
+                `OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`,
+              )}`,
+              'Content-type': 'application/json',
             },
           })
-          .then((response) => response.data)
-          .then((data) => resolve(data.id))
+          .then((response) => {
+            resolve(response.data.id);
+          })
           .catch((error) => {
             if (error.response.status === 409) {
               resolve(sessionId);
@@ -219,15 +232,19 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
     createToken(sessionId) {
       return new Promise((resolve, reject) => {
+        const data = {};
         axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, data, {
+            headers: {
+              Authorization: `Basic ${btoa(
+                `OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`,
+              )}`,
+              'Content-type': 'application/json',
             },
           })
-          .then((response) => response.data)
-          .then((data) => resolve(data.token))
+          .then((response) => {
+            resolve(response.data.token);
+          })
           .catch((error) => reject(error.response));
       });
     },
