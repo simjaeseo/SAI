@@ -19,6 +19,7 @@
             @click="updateMainVideoStreamManager(sub)"/>
           </div>
           <div>{{ currentUser.id }}</div>
+          <div>{{ upcomingSchedules }}</div>
       </div>
     </div>
   </div>
@@ -48,21 +49,27 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'Sessionaaa',
+      mySessionId: 1,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
   setup() {
     const store = useStore();
     const currentUser = computed(() => store.getters.currentUser);
-
+    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
+    const fetchUpcomingSchedules = () => {
+      store.dispatch('fetchUpcomingSchedules');
+    };
     return {
       currentUser,
+      upcomingSchedules,
+      fetchUpcomingSchedules,
     };
   },
   created() {}, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    this.fetchUpcomingSchedules();
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {

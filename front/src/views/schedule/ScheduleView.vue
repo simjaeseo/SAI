@@ -3,6 +3,7 @@
     <div class="row">
       <div id="calendar" class="col-lg-7">
         <my-calendar></my-calendar>
+        <div> {{ UpcomingSchedules }}</div>
       </div>
       <div class="col-lg-1">
       </div>
@@ -33,6 +34,7 @@ export default {
     const store = useStore();
 
     const isUpcomingSchedules = computed(() => store.getters.isUpcomingSchedules);
+    const UpcomingSchedules = computed(() => store.getters.UpcomingSchedules);
     const selectedDate = computed(() => store.getters.selectedDate);
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
@@ -40,6 +42,7 @@ export default {
     return {
       isUpcomingSchedules,
       selectedDate,
+      UpcomingSchedules,
       fetchUpcomingSchedules,
     };
   },

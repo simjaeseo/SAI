@@ -2,8 +2,8 @@
   <div>
     <div v-if="upcomingSchedules">
       <div id="today-schedule">
-          <div v-if="upcomingSchedules[0].scheduleDate == myToday">
-            <h3>{{ upcomingSchedules[0].category }}</h3>
+          <div>
+            <!-- <h3>{{ upcomingSchedules[0].category }}</h3> -->
             <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
             <br><br>
             <p v-if="upcomingSchedules[0].consultantName">
@@ -11,7 +11,7 @@
             </p>
             <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
             <button
-            v-if="upcomingSchedules[0].category === '1:1 모의 면접'"
+            v-if="upcomingSchedules[0].category === 'practice'"
             class="btn">
               면접 바로가기
             </button>
@@ -25,6 +25,7 @@
           {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
           {{ upcomingSchedule.scheduleDate.slice(-2) }}일
           {{ upcomingSchedule.detail }}
+          {{ upcomingSchedule }}
         </p>
       </div>
     </div>
