@@ -16,6 +16,8 @@ export default {
     // 새로추가한직무
     setNewJob: {},
     profileImg: '',
+    students: [],
+    selectedStudent: [],
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
@@ -30,6 +32,8 @@ export default {
     // 새로운직무
     setNewJob: (state) => state.setNewJob,
     profileImg: (state) => state.profileImg,
+    students: (state) => state.students,
+    selectedStudent: (state) => state.selectedStudent,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -65,6 +69,14 @@ export default {
     SET_USER_PROFILE_IMG(state, img) {
       state.profileImg = img;
       console.log(state.profileImg);
+    },
+    SET_STUDENTS(state, student) {
+      state.students = student;
+      console.log(state.students);
+    },
+    SELECTED_STUDENTS(state, data) {
+      state.selectedStudent = data;
+      console.log(state.selectedStudent);
     },
   },
   actions: {
@@ -210,6 +222,12 @@ export default {
           router.push({ name: '/profile/update/ct', params: { id: userId } });
         })
         .catch((err) => console.log(err));
+    },
+    findedStudents({ commit }, student) {
+      commit('SET_STUDENTS', student);
+    },
+    selectedStudentData({ commit }, studentData) {
+      commit('SELECTED_STUDENTS', studentData);
     },
   },
   modules: {},

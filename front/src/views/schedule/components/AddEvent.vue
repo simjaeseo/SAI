@@ -90,7 +90,7 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click="createSchedule(Credential)">등록</button>
+      <button class="btn" @click.prevent="createSchedule(Credential)">등록</button>
     </div>
     </div>
   </form>
@@ -102,6 +102,7 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'AddEvent',
+  props: ['updateKey'],
   data() {
     return {
       times: [],
@@ -125,6 +126,9 @@ export default {
 
     // time picker
     const CTDaySchedules = computed(() => store.getters.CTDaySchedules);
+    const fetchCTDaySchedules = (data) => {
+      store.dispatch('fetchCTDaySchedules', data);
+    };
     const daySchedules = computed(() => store.getters.daySchedules);
     const pickTime = (time) => {
       store.dispatch('pickTime', time);
@@ -137,6 +141,7 @@ export default {
     return {
       myConsultants,
       fetchMyConsultants,
+      fetchCTDaySchedules,
 
       pickTime,
       CTDaySchedules,
@@ -184,6 +189,7 @@ export default {
     },
     pickMyConsultant(e) {
       this.Credential.selectedConsultant = e.target.value;
+      this.fetchCTDaySchedules(this.Credential.selectedConsultant);
     },
     selectCategory(e) {
       this.Credential.selectedCategory = e.target.value;
