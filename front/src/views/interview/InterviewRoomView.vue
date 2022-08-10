@@ -1,16 +1,20 @@
 <template>
-    <div class="container">
+    <div class="container mt-5">
       <div id="session" v-if="session">
         <div id="session-header">
         </div>
         <div id="main-video">
           <user-video :stream-manager="mainStreamManager"/>
-          <div class="d-flex flex-row-reverse">
+          <div class="d-flex justify-content-end">
             <input class="btn btn-light me-2" type="button"
-            id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
+            id="buttonLeaveSession" @click="answerCompleted" value="답변 완료">
+            <input class="btn btn-light me-2" type="button"
+            id="forceRecordingId" @click="startRecording"
+            :value="[isStart === true ?  '녹화중입니다'  :  '면접시작' ]"
+            :style="[isStart === true ?
+            {background: '#e02e4c', color: '#ffffff'} : {background:'#5c6ac4' , color: '#ffffff'}]">
           </div>
         </div>
-        <div>{{ selectedQuestionList }}</div>
         <!-- <div id="video-container" class="col-md-6">
           <user-video :stream-manager="publisher"
           @click="updateMainVideoStreamManager(publisher)"/>
@@ -47,25 +51,55 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'SessionA',
+      mySessionId: '',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      isStart: false,
     };
   },
   setup() {
     const store = useStore();
 
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
+    const currentUser = computed(() => store.getters.currentUser);
 
     return {
       selectedQuestionList,
+      currentUser,
     };
   },
   created() {}, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    answerCompleted() {
+      // 답변완료 버튼을 누르면 타임라인이 생성되고 다음질문이 3초뒤에 TTS.
+    },
+    startRecording() {
+      this.isStart = true;
+      return new Promise((resolve, reject) => {
+        axios
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, {
+            auth: {
+              session: this.mySessionId,
+              name: this.currentUser.name,
+              hasAudio: true,
+              hasVideo: true,
+              outputMode: 'COMPOSED',
+              recordingLayout: 'CUSTOM',
+              resolution: '1280x720',
+              frameRate: 25,
+              shmSize: 536870912,
+              ignoreFailedStreams: false,
+            },
+          })
+          .then((res) => console.log(res))
+          .then((data) => resolve(data))
+          .catch((err) => reject(err));
+      });
+    },
     joinSession() {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
