@@ -1,7 +1,7 @@
-import drf from '@/api/api';
 import axios from 'axios';
-import router from '@/router/index';
 import { uniq } from 'lodash';
+import drf from '@/api/api';
+import router from '@/router/index';
 
 export default {
   state: {

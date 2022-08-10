@@ -1,6 +1,6 @@
+import axios from 'axios';
 import drf from '@/api/api';
 import router from '@/router';
-import axios from 'axios';
 
 export default {
   namespace: true,
