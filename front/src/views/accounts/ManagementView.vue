@@ -39,10 +39,12 @@
       </div>
     </div>
     <hr>
-    <div class="container" id='searched-bar-box1'>
+
+    <!-- <div class="container" id='searched-bar-box1'>
       <div v-if="studentData.studentName">
-        <img v-if="studentData.img"
+        <img v-if="studentData.img" id='user_profile_img'
         :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
+        <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
         <h6>이름</h6>
         <p>{{ studentData.studentName }}</p>
         <h6>생년월일</h6>
@@ -62,9 +64,8 @@
         <li v-for="(job, index) in studentData.jobs" :key="index" id="for-li">
           #{{ job.jobName }}
         </li>
-        {{ studentData }}
       </div>
-    </div>
+    </div> -->
         <div id='home-btn-box'>
       <router-link to='/'>
         <button class='btn' id='home-btn'>홈으로</button>
@@ -164,6 +165,18 @@ export default {
 </script>
 
 <style scoped>
+h6 {
+  display: inline;
+}
+p {
+  display: inline;
+}
+#user_profile_img {
+  margin-top: 10px;
+  width: 132px;
+  height: 170px;
+  display: inline;
+}
 #for-li {
   background-color: none;
   list-style: none;
