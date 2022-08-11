@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SavedInterviewInfo {
+public class InterviewInfo {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "saved_interview_info_id")

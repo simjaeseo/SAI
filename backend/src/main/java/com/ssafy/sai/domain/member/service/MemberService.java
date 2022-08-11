@@ -56,7 +56,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image";
+    private String dir = "/Users/inho/Desktop/World/S07P12C206/image";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 
@@ -183,7 +183,7 @@ public class MemberService {
     }
 
     public List<MemberDto> searchMember(SearchMemberRequest request) throws MemberException {
-        List<Member> findMembers = memberRepository.findByNameContaining(request.getName());
+        List<Member> findMembers = memberRepository.findMembersByName(request.getName());
         List<MemberDto> result = findMembers.stream()
                 .map(m -> new MemberDto(m))
                 .collect(Collectors.toList());

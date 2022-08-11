@@ -49,12 +49,12 @@
 </template>
 
 <script>
-import countries from '@/data/countries.json';
 import {
   ref,
   computed,
 } from 'vue';
 import { useStore } from 'vuex';
+import countries from '@/data/countries.json';
 
 export default {
   name: 'SearchBar',
