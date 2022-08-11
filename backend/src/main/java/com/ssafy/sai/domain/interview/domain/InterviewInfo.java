@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,9 +40,10 @@ public class InterviewInfo {
     @Column(name="interview_date")
     private LocalDate interviewDate;
 
+    @OneToMany(mappedBy = "interviewInfo")
+    private List<InterviewVideo> interviewVideoList;
+
     private String category;
     private String detail;
-
-
 
 }
