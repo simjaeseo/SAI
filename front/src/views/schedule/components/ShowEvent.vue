@@ -2,19 +2,28 @@
   <div>
     <div v-if="upcomingSchedules">
       <div id="today-schedule">
-          <div v-if="upcomingSchedules[0].scheduleDate == myToday">
-            <h3>{{ upcomingSchedules[0].category }}</h3>
-            <h4>{{ myToday }} {{ upcomingSchedules[0].startTime }}</h4>
+          <div>
+            <!-- <h3>{{ upcomingSchedules[0].category }}</h3> -->
+            <h4>
+              {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
+              {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
+              {{ upcomingSchedules[0].startTime }}
+            </h4>
             <br><br>
             <p v-if="upcomingSchedules[0].consultantName">
               담당 컨설턴트 : {{ upcomingSchedules[0].consultantName }}
             </p>
+            <p v-if="upcomingSchedules[0].studentName">
+              교육생 : {{ upcomingSchedules[0].studentName}}
+            </p>
             <p>상세 정보 : {{ upcomingSchedules[0].detail }}</p>
-            <button
-            v-if="upcomingSchedules[0].category === '1:1 모의 면접'"
-            class="btn">
-              면접 바로가기
-            </button>
+            <router-link to='/interview/ct' id='routerlink'>
+              <button
+                v-if="upcomingSchedules[0].category === 'practice'"
+                class="btn">
+                  면접 바로가기
+              </button>
+            </router-link>
           </div>
       </div>
       <div id='layer'>
@@ -25,6 +34,7 @@
           {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
           {{ upcomingSchedule.scheduleDate.slice(-2) }}일
           {{ upcomingSchedule.detail }}
+          {{ upcomingSchedule }}
         </p>
       </div>
     </div>
@@ -39,7 +49,7 @@ export default {
   name: 'ShowEvent',
   data() {
     return {
-      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
+      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDate()}`.slice(-2)}`,
     };
   },
   setup() {
@@ -49,6 +59,10 @@ export default {
     return {
       upcomingSchedules,
     };
+  },
+  mounted() {
+    console.log(this.myToday);
+    console.log(this.upcomingSchedules);
   },
 };
 </script>

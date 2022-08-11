@@ -1,7 +1,7 @@
-import drf from '@/api/api';
 import axios from 'axios';
+import { uniq } from 'lodash';
+import drf from '@/api/api';
 import router from '@/router/index';
-import _uniqBy from 'lodash/uniqBy';
 
 export default {
   state: {
@@ -15,19 +15,25 @@ export default {
     setNewEnter: {},
     // 새로추가한직무
     setNewJob: {},
+    profileImg: '',
+    students: [],
+    selectedStudent: [],
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
     isLoggedIn: (state) => !!state.token,
     currentUser: (state) => state.currentUser,
     // 원래회사
-    userEnter: (state) => state.userEnter,
+    userEnter: (state) => uniq(state.userEnter),
     // 원래직무
-    userJob: (state) => state.userJob,
+    userJob: (state) => uniq(state.userJob),
     // 새로운회사
     setNewEnter: (state) => state.setNewEnter,
     // 새로운직무
     setNewJob: (state) => state.setNewJob,
+    profileImg: (state) => state.profileImg,
+    students: (state) => state.students,
+    selectedStudent: (state) => state.selectedStudent,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -35,27 +41,42 @@ export default {
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
-      const arr = user.interestedEnterprises;
-      const array1 = _uniqBy(arr, 'name');
-      state.userEnter = array1;
-      const arr2 = user.interestedJob;
-      const array2 = _uniqBy(arr2, 'name');
-      state.userJob = array2;
+      state.userJob = user.interestedJobs.map((item) => ({ name: item.jobName }));
+      state.userEnter = user.interestedEnterprises.map((item) => ({ name: item.enterpriseName }));
     },
     REMOVE_CURRENT_USER(state) {
       state.currentUser = {};
     },
     SET_NEW_ENTER(state, enter) {
-      state.setNewEnter = enter;
+      for (let i = 0; i < enter.plusEnter.length; i += 1) {
+        state.userEnter.push(...enter.plusEnter);
+      }
     },
     SET_NEW_JOB(state, job) {
-      state.setNewJob = job;
+      for (let i = 0; i < job.plusJob.length; i += 1) {
+        state.userJob.push(...job.plusJob);
+      }
     },
     CHANGE_USER_JOB(state, update) {
       state.userJob = update;
     },
     CHANGE_USER_ENTER(state, update) {
       state.userEnter = update;
+    },
+    // COMBINE_USER_JOB(state) {
+    //   state.userJob = state.user
+    // },
+    SET_USER_PROFILE_IMG(state, img) {
+      state.profileImg = img;
+      console.log(state.profileImg);
+    },
+    SET_STUDENTS(state, student) {
+      state.students = student;
+      console.log(state.students);
+    },
+    SELECTED_STUDENTS(state, data) {
+      state.selectedStudent = data;
+      console.log(state.selectedStudent);
     },
   },
   actions: {
@@ -109,9 +130,7 @@ export default {
         })
           .then((res) => commit('SET_CURRENT_USER', res.data.data))
           .catch((err) => {
-            console.log('에러베러');
             console.log(err);
-            console.log('에러베러');
           });
       }
     },
@@ -168,6 +187,7 @@ export default {
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
+      console.log(enter);
       commit('SET_NEW_JOB', enter);
     },
     updateJob({ commit }, data) {
@@ -177,8 +197,6 @@ export default {
       commit('CHANGE_USER_ENTER', data);
     },
     userUpdate({ dispatch, getters }, credentials) {
-      console.log(credentials);
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       const userId = getters.currentUser.id;
       axios({
         url: drf.member.updateProfile(userId),
@@ -188,9 +206,28 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: 'Profile' });
+          router.push({ name: 'Profile', params: { id: userId } });
+        });
+    },
+    userUpdateCT({ dispatch, getters }, credentials) {
+      const userId = getters.currentUser.id;
+      axios({
+        url: drf.member.updateProfileCT(userId),
+        method: 'put',
+        data: credentials,
+      })
+        .then(() => {
+          alert('수정되었습니다.');
+          dispatch('fetchCurrentUser', userId);
+          router.push({ name: '/profile/update/ct', params: { id: userId } });
         })
         .catch((err) => console.log(err));
+    },
+    findedStudents({ commit }, student) {
+      commit('SET_STUDENTS', student);
+    },
+    selectedStudentData({ commit }, studentData) {
+      commit('SELECTED_STUDENTS', studentData);
     },
   },
   modules: {},

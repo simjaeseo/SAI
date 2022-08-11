@@ -5,7 +5,13 @@
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+              <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
+              id='user_profile_img'>
+              <!-- <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+              alt="preview"
+              id='user_profile_img'> -->
+              <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
                     ref='image' class='upload-box' @change="onInputImage">파일선택</label>
@@ -18,7 +24,8 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name"></label>
+                    class='form-control' v-model="currentUser.name"
+                    readonly @click="noChange"></label>
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
@@ -26,12 +33,15 @@
                         {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
+                    aria-label='Default select example'
+                    >
                         <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
                     aria-label='Default select example'
-                    @click="setOptions">
+                    @click="selectedUserClass"
+                    v-model="state.userClass"
+                    required>
                       <option selected>{{ currentUser.campus.classNumber}}</option>
                       <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
@@ -47,11 +57,13 @@
                     </select>
                     <label for="user_signup_number1">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileSecond">
+                        v-model="state.mobileSecond"
+                         maxlength="4">
                     </label>
                     <label for="user_signup_number2">
                         <input type="text" class="form-control" id='form-select-second'
-                        v-model="state.mobileLast">
+                        v-model="state.mobileLast"
+                         maxlength="4">
                     </label>
                 </div>
               <!-- 오른쪽 -->
@@ -129,12 +141,9 @@
     </form>
     <button @click="check"></button>
     <div>
-      {{ newJobs.plusJob }}
-      {{ oldJobs }}
-      {{ newEnters.plusEnter }}
-      {{ oldEnters }}
+      {{ Jobs }} <br>
+      {{ Enters }}
     </div>
-
   </div>
 </template>
 
@@ -143,20 +152,15 @@ import {
   computed,
   reactive,
   onBeforeMount,
-  onUpdated,
 } from 'vue';
 import { useStore } from 'vuex';
+import _uniq from 'lodash/uniq';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
   components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
-  // data() {
-  //   return {
-  //     image: '',
-  //   };
-  // },
   setup() {
     const store = useStore();
     const state = reactive({
@@ -164,53 +168,44 @@ export default {
       mobileSecond: '',
       mobileLast: '',
       options: [],
+      userClass: '',
+      file: '',
+      url: '',
+      imgUrl: '',
     });
 
-    // store에서 넘어온 새로 추가 된 직무
-    const newJobs = computed(() => store.getters.setNewJob);
-    const newEnters = computed(() => store.getters.setNewEnter);
     // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
-    const oldJobs = computed(() => store.getters.userJob);
-    const oldEnters = computed(() => store.getters.userEnter);
+    const Jobs = computed(() => store.getters.userJob);
+    const Enters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
-    const allJobs = [];
-    const allEnters = [];
 
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
       state.mobileSecond = userPhone.substr(3, 4);
       state.mobileLast = userPhone.substr(7);
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
     });
 
-    let newUpdateJob = [];
-    let newUpdateEnter = [];
-    onUpdated(() => {
-      for (let i = 0; i < newJobs.value.length; i += 1) {
-        allJobs.push(newJobs.value.plusJob[i].name);
-        console.log('실행됨??');
-      }
-      // 유저가 원래 가지고있던 직무 길이 (수정 됐을수도 안됐을수도)
-      for (let i = 0; i < oldJobs.value.length; i += 1) {
-        allJobs.push(oldJobs.value[i].jobName);
-        console.log('실행됨??');
-      }
-      for (let i = 0; i < newEnters.value.length; i += 1) {
-        allEnters.push(newEnters.value.plusEnter[i].name);
-        console.log('실행됨??');
-      }
-      // 유저가 원래 가지고있던 회사 길이 (수정 됐을수도 안됐을수도)
-      for (let i = 0; i < oldEnters.value.length; i += 1) {
-        allEnters.push(oldEnters.value[i].enterpriseName);
-        console.log('실행됨??');
-      }
-      const newUpdateJobs = allJobs.map((item) => ({ name: item }));
-      newUpdateJob = newUpdateJobs;
-      console.log(newUpdateJob);
-      const newUpdateEnters = allEnters.map((item) => ({ name: item }));
-      newUpdateEnter = newUpdateEnters;
-    });
+    const selectedUserClass = function (event) {
+      state.userClass = event.target.value;
+    };
+
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
     };
@@ -231,60 +226,50 @@ export default {
         state.options.push('1', '2', '3', '4', '5', '6');
       }
     };
-
     let img = null;
     const userUpdate = () => {
       const data = {
         id: currentUser.value.id,
         campus: {
           city: currentUser.value.campus.city,
-          classNumber: currentUser.value.campus.classNumber,
+          classNumber: state.userClass,
         },
         phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
         interestedJobs:
-          newUpdateJob,
+          _uniq(Jobs.value),
         interestedEnterprises:
-          newUpdateEnter,
+          _uniq(Enters.value),
       };
-      console.log(img);
+      console.log(data.campus.city);
+      console.log(data.campus.classNumber);
+      console.log(data.phone);
+      console.log(data.interestedJobs);
+      console.log(data.interestedEnterprises);
       const formData = new FormData();
       formData.append('file', img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       store.dispatch('userUpdate', formData);
     };
-
     const onInputImage = (e) => {
+      state.file = e.target.files;
+      state.url = URL.createObjectURL(state.file[0]);
+      state.imgUrl = state.url;
+      console.log(state.imgUrl);
       [img] = e.target.files;
     };
+
     return {
       isLoggedIn,
       currentUser,
       state,
       noChange,
       setOptions,
-      newJobs,
-      oldJobs,
       userUpdate,
-      newEnters,
-      oldEnters,
-      newUpdateJob,
-      newUpdateEnter,
       onInputImage,
+      Enters,
+      Jobs,
+      selectedUserClass,
     };
-  },
-  methods: {
-    // onInputImage(e) {
-    //   console.log(e.target.files[0]);
-    //   const img = e.target.files[0];
-    //   return {
-    //     img,
-    //   };
-    // },
-    // check() {
-    //   console.log(this.img);
-    // },
-  },
-  updated() {
   },
 };
 </script>

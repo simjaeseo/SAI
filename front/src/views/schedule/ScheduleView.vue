@@ -3,11 +3,15 @@
     <div class="row">
       <div id="calendar" class="col-lg-7">
         <my-calendar></my-calendar>
+        <div> {{ UpcomingSchedules }}</div>
       </div>
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event>
+        <show-event
+        v-if="isUpcomingSchedules"
+        v-show="!selectedDate">
+        </show-event>
         <add-event v-show="selectedDate || !isUpcomingSchedules"></add-event>
       </div>
     </div>
@@ -33,13 +37,16 @@ export default {
     const store = useStore();
 
     const isUpcomingSchedules = computed(() => store.getters.isUpcomingSchedules);
+    const UpcomingSchedules = computed(() => store.getters.UpcomingSchedules);
     const selectedDate = computed(() => store.getters.selectedDate);
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
     };
+
     return {
       isUpcomingSchedules,
       selectedDate,
+      UpcomingSchedules,
       fetchUpcomingSchedules,
     };
   },

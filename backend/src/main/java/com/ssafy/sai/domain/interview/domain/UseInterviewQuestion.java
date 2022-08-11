@@ -1,6 +1,5 @@
 package com.ssafy.sai.domain.interview.domain;
 
-import com.ssafy.sai.domain.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ public class UseInterviewQuestion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="saved_interview_info_id")
-    private SavedInterviewInfo savedInterviewInfo;
+    private InterviewInfo savedInterviewInfo;
 
     private String question;
 

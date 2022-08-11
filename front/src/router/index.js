@@ -13,6 +13,7 @@ import AnalysisDetailSttView from '@/views/interview/AnalysisDetailSttView.vue';
 import InterviewView from '@/views/interview/InterviewView.vue';
 import InterviewSettingView from '@/views/interview/InterviewSettingView.vue';
 import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
+import InterviewRoomView from '@/views/interview/InterviewRoomView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
 
@@ -34,6 +35,9 @@ import ChatView from '@/views/chat/ChatView.vue';
 // 스케줄 라우터
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
+
+// test
+import TTSSTT from '@/views/chat/TTSSTT2.vue';
 
 const routes = [
   {
@@ -67,7 +71,7 @@ const routes = [
     component: HelpIdView,
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     name: 'Profile',
     component: ProfileView,
   },
@@ -105,6 +109,11 @@ const routes = [
     path: '/interview/question',
     name: 'InterviewQuestion',
     component: InterviewQuestionView,
+  },
+  {
+    path: '/interview/room',
+    name: 'InterviewRoom',
+    component: InterviewRoomView,
   },
   {
     path: '/interview/solo',
@@ -157,9 +166,14 @@ const routes = [
     component: ChatView,
   },
   {
-    path: '/profile/update/ct',
-    name: 'ProfileUpdateCTView ',
+    path: '/profile/update/ct/:id',
+    name: 'ProfileUpdateCTView',
     component: ProfileUpdateCTView,
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TTSSTT,
   },
 ];
 

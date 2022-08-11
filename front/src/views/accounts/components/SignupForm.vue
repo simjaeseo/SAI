@@ -14,7 +14,6 @@
             @change="checkEmail"
             required />
           </label>
-          <button class="btn mx-2" id="double-check-btn">중복확인</button>
         </div>
         <div class='mt-5 mb-5' id='pw-input-wrap'>
           <label for='user_signup_pw1'><p id="login-text2">비밀번호</p>
@@ -238,7 +237,7 @@ export default {
         username: '',
         userCardinalNumber: '',
         userRegion: '',
-        userClass: '',
+        userClass: '1',
         memberStatus: 'TRAINEE',
       },
       selected: '',

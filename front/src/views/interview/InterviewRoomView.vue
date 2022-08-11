@@ -1,35 +1,34 @@
 <template>
-    <div>
-      <div class="container">
-        <div id="session" v-if="session">
-          <div id="session-header">
-          </div>
-          <div id="main-video">
-            <user-video :stream-manager="mainStreamManager"/>
-            <div> {{ this.myUserName }}</div>
-            <div class="d-flex flex-row-reverse">
-              <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
-            </div>
-          </div>
-          <div id="video-container" class="col-lg-3">
-            <user-video v-for="sub in subscribers"
-            :key="sub.stream.connection.connectionId"
-            :stream-manager="sub"
-            @click="updateMainVideoStreamManager(sub)"/>
-          </div>
-          <div>this session id : {{ this.mySessionId }}</div>
-          <div>{{ currentUser.id }}</div>
-          <div>{{ upcomingSchedules[0].id }}</div>
-          <div>
+    <div class="container mt-5">
+      <div id="session" v-if="session">
+        <div id="session-header">
+        </div>
+        <div id="main-video">
+          <user-video :stream-manager="mainStreamManager"/>
+          <div class="d-flex justify-content-end">
             <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="startRecoding" value="녹화!">
-          </div>
-          <div>
+            id="buttonLeaveSession" @click="answerCompleted" value="답변 완료">
             <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지">
+            id="forceRecordingId" @click="startRecording"
+            :value="[isStart === true ?  '녹화중입니다'  :  '면접시작' ]"
+            :style="[isStart === true ?
+            {background: '#e02e4c', color: '#ffffff'} : {background:'#5c6ac4' , color: '#ffffff'}]">
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="녹화!"> </div>
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지"> </div>
+            <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="leaveSession" value="나가기"> </div>
           </div>
-      </div>
+        </div>
+        <!-- <div id="video-container" class="col-md-6">
+          <user-video :stream-manager="publisher"
+          @click="updateMainVideoStreamManager(publisher)"/>
+          <user-video v-for="sub in subscribers"
+          :key="sub.stream.connection.connectionId"
+          :stream-manager="sub"
+          @click="updateMainVideoStreamManager(sub)"/>
+        </div> -->
     </div>
   </div>
 </template>
@@ -53,37 +52,65 @@ export default {
   },
   data() {
     return {
+      myRecodingId: undefined,
       OV: undefined,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: `${this.upcomingSchedules[0].id}`,
+      mySessionId: 'Sessionabcd',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
-      myRecodingId: undefined,
+      isStart: false,
     };
   },
   setup() {
     const store = useStore();
+
+    const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
-    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-    const fetchUpcomingSchedules = () => {
-      store.dispatch('fetchUpcomingSchedules');
-    };
+
     return {
+      selectedQuestionList,
       currentUser,
-      upcomingSchedules,
-      fetchUpcomingSchedules,
     };
   },
-  created() {
-    this.fetchUpcomingSchedules();
-  }, // 해당 vue 파일이 실행 되는 순간
+  created() { }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
-  unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
+  unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    answerCompleted() {
+      // 답변완료 버튼을 누르면 타임라인이 생성되고 다음질문이 3초뒤에 TTS.
+    },
+    startRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
+          session: this.mySessionId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => {
+          this.myRecodingId = res.data.id;
+          console.log(res);
+        });
+    },
+    stopRecoding() {
+      axios
+        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
+          recoding: this.myRecodingId,
+        }), {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => console.log(res));
+    },
     joinSession() {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
@@ -175,17 +202,19 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession(sessionId) {
       return new Promise((resolve, reject) => {
+        const data = JSON.stringify({ customSessionId: sessionId });
         axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
-            customSessionId: sessionId,
-          }), {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, data, {
+            headers: {
+              Authorization: `Basic ${btoa(
+                `OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`,
+              )}`,
+              'Content-type': 'application/json',
             },
           })
-          .then((response) => response.data)
-          .then((data) => resolve(data.id))
+          .then((response) => {
+            resolve(response.data.id);
+          })
           .catch((error) => {
             if (error.response.status === 409) {
               resolve(sessionId);
@@ -203,44 +232,21 @@ export default {
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
     createToken(sessionId) {
       return new Promise((resolve, reject) => {
+        const data = {};
         axios
-          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
-            auth: {
-              username: 'OPENVIDUAPP',
-              password: OPENVIDU_SERVER_SECRET,
+          .post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, data, {
+            headers: {
+              Authorization: `Basic ${btoa(
+                `OPENVIDUAPP:${OPENVIDU_SERVER_SECRET}`,
+              )}`,
+              'Content-type': 'application/json',
             },
           })
-          .then((response) => response.data)
-          .then((data) => resolve(data.token))
+          .then((response) => {
+            resolve(response.data.token);
+          })
           .catch((error) => reject(error.response));
       });
-    },
-    startRecoding() {
-      axios
-        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
-          session: this.mySessionId,
-        }), {
-          auth: {
-            username: 'OPENVIDUAPP',
-            password: OPENVIDU_SERVER_SECRET,
-          },
-        })
-        .then((res) => {
-          this.myRecodingId = res.data.id;
-          console.log(res);
-        });
-    },
-    stopRecoding() {
-      axios
-        .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
-          recoding: this.myRecodingId,
-        }), {
-          auth: {
-            username: 'OPENVIDUAPP',
-            password: OPENVIDU_SERVER_SECRET,
-          },
-        })
-        .then((res) => console.log(res));
     },
   },
 }; // 함수 정의해서 컴포넌트 내에서 사용 가능하게 함
@@ -248,66 +254,4 @@ export default {
 
 <style scoped>
 
-/* #video-container {
-  width: 300px;
-  height: 400px;
-  border: 1px solid black;
-} */
-#video-container video {
-  position: relative;
-  float: left;
-  width: 50%;
-  cursor: pointer;
-}
-
-#video-container video + div {
-  float: left;
-  width: 50%;
-  position: relative;
-  margin-left: -50%;
-}
-
-#video-container p {
-  display: inline-block;
-  background: #f8f8f8;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #777777;
-  font-weight: bold;
-  border-bottom-right-radius: 4px;
-}
-
-video {
-  width: 100%;
-  height: auto;
-}
-
-#main-video p {
-  position: absolute;
-  display: inline-block;
-  background: #f8f8f8;
-  padding-left: 5px;
-  padding-right: 5px;
-  font-size: 22px;
-  color: #777777;
-  font-weight: bold;
-  border-bottom-right-radius: 4px;
-}
-
-#session img {
-  width: 100%;
-  height: auto;
-  display: inline-block;
-  object-fit: contain;
-  vertical-align: baseline;
-}
-
-#session #video-container img {
-  position: relative;
-  float: left;
-  width: 30%;
-  cursor: pointer;
-  object-fit: cover;
-  height: 180px;
-}
 </style>
