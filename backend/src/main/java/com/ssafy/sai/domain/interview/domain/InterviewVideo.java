@@ -17,11 +17,19 @@ public class InterviewVideo {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "interview_info_id")
+    private InterviewInfo interviewInfo;
 
+    @Column(name="video_url")
     private String videoUrl;
 
+    @Column(name="video_name")
     private String videoName;
 
+    @Column(name="consultant_feedback")
+    private String consultantFeedback;
+
+    private String stt;
+
+    // 음성데이터?
 }

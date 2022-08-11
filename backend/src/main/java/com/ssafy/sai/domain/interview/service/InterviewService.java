@@ -9,6 +9,10 @@ import com.ssafy.sai.domain.interview.repository.QuestionRepository;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
+import com.ssafy.sai.domain.schedule.domain.Schedule;
+import com.ssafy.sai.domain.schedule.exception.ScheduleException;
+import com.ssafy.sai.domain.schedule.exception.ScheduleExceptionType;
+import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +30,7 @@ public class InterviewService {
     private final CustomQuestionRepository customQuestionRepository;
 
     private final MemberRepository memberRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id){
@@ -71,6 +76,15 @@ public class InterviewService {
     public void deleteCustomInterviewQuestion(Long id){
             CustomInterviewQuestion customQuestion = customQuestionRepository.findById(id).get();
             customQuestionRepository.delete(customQuestion);
+    }
+
+    @Transactional
+    public void createInterviewInfo(Long id, Long scheduleId){
+        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
+
+
+
+
     }
 
 

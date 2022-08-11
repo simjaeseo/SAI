@@ -7,7 +7,7 @@ import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.service.GcsService;
 import com.ssafy.sai.domain.interview.service.InterviewService;
 import com.ssafy.sai.domain.interview.service.S3UploaderService;
-import com.ssafy.sai.domain.interview.service.STTSample;
+import com.ssafy.sai.domain.interview.service.AsyncSTT;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +27,29 @@ public class InterviewController {
 
     private final InterviewService interviewService;
     private final S3UploaderService s3UploaderService;
-    private final STTSample sttSample;
+    private final AsyncSTT sttSample;
     private final GcsService gcsService;
 
+
+    @PostMapping("/{member_id}")
+    public ResponseEntity<? extends MessageResponse> saveInterview(@PathVariable("member_id") Long id,  @RequestPart("video") List<MultipartFile> multipartFiles){
+//        scheduleId: 1,
+//        questions: ["자기소개","지원동기"]
+//        form-data : .mp4
+        s3UploaderService.uploadFileS3(id, multipartFiles);
+
+        return ResponseEntity.ok().body(new DataResponse<>("이게 비동기 처리인가요..?"));
+    }
+
+
     @PostMapping("/{member_id}/video")
-    public ResponseEntity<? extends MessageResponse> createInterviewVideo(@PathVariable("member_id") Long id,  @RequestParam("video") MultipartFile multipartFile) {
+    public ResponseEntity<? extends MessageResponse> createInterviewVideo(@PathVariable("member_id") Long id,  @RequestPart("video") List<MultipartFile> multipartFiles) {
         // 쿼리 말고 body로 보내라고 하자!!!!!
         // 요청올때 면접 영상 뿐만 아니라 면접 정보도 같이 오겠지?? 그럼 body로 받아야함!
 
         // 서비스에서 면접정보 먼저 저장하고 -> 면접 영상 저장하는 방식으로 해야될거같다
 
-        return ResponseEntity.ok().body(new DataResponse<>(s3UploaderService.uploadFileS3(id, multipartFile)));
+        return ResponseEntity.ok().body(new DataResponse<>(s3UploaderService.uploadFileS3(id, multipartFiles)));
 
     }
 
@@ -60,11 +72,11 @@ public class InterviewController {
         // 요청올때 면접 영상 뿐만 아니라 면접 정보도 같이 오겠지?? 그럼 body로 받아야함!
 
         // 서비스에서 면접정보 먼저 저장하고 -> 면접 영상 저장하는 방식으로 해야될거같다
-        try {
-            gcsService.uploadFileGcs(id, multipartFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            gcsService.uploadFileGcs(id, multipartFile);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         return ResponseEntity.ok().body(new MessageResponse<>());
 
     }

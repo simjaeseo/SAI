@@ -18,6 +18,10 @@
             :stream-manager="sub"
             @click="updateMainVideoStreamManager(sub)"/>
           </div>
+          <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="녹화!"> </div>
+          <div> <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지"> </div>
           <div>{{ currentUser.id }}</div>
           <div>{{ upcomingSchedules }}</div>
       </div>
@@ -49,7 +53,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 1,
+      mySessionId: 'SessionD',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
     };
   },
@@ -134,7 +138,6 @@ export default {
             console.log('There was an error connecting to the session:', error.code, error.message);
           });
       });
-
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -216,7 +219,7 @@ export default {
   border: 1px solid black;
 } */
 #video-container video {
-  position: relative;
+  position:  relative;
   float: left;
   width: 50%;
   cursor: pointer;

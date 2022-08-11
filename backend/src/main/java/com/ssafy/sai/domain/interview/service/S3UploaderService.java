@@ -17,21 +17,28 @@ import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,34 +52,196 @@ public class S3UploaderService {
     private final AmazonS3 amazonS3;
     private final MemberRepository memberRepository;
     private final InterviewVideoRepository savedInterviewVideoRepository;
+    private final GcsService gcsService;
 
 
-    public CreateInterviewVideoResponse uploadFileS3(Long id, MultipartFile multipartFile) {
+    public CreateInterviewVideoResponse uploadFileS3(Long id, List<MultipartFile> multipartFiles) {
 
-        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+//        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+
+        //파일 이름 저장하는 List
+        List<String> videoNameList = new ArrayList<>();
+        List<String> videoUrlList = new ArrayList<>();
+        List<MultipartFile> audioMultipartFiles = new ArrayList<>();
+
+        multipartFiles.forEach(multipartFile -> {
+            String videoName = createFileName(multipartFile.getOriginalFilename());
+            String videoUrl;
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(multipartFile.getSize());
+            objectMetadata.setContentType(multipartFile.getContentType());
+
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                amazonS3.putObject(new PutObjectRequest(bucket, videoName, inputStream, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                videoUrl = amazonS3.getUrl(bucket, videoName).toString();
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+            }
+            videoNameList.add(videoName);
+            videoUrlList.add(videoUrl);
+
+//        서비스에서 면접정보 먼저 저장하고 -> 면접 영상 저장하는 방식으로 해야될거같다
+
+//        db에 저장하기
+//            InterviewVideo interviewVideo = InterviewVideo.builder().member(findMember).videoUrl(videoUrl).videoName(videoName).build();
+//            savedInterviewVideoRepository.save(interviewVideo);
 
 
-        String videoName = createFileName(multipartFile.getOriginalFilename());
-        String videoUrl;
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+            String result = "";
+            int pointIndex = videoName.indexOf(".");
+            String audioName = videoName.substring(0, pointIndex);
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3.putObject(new PutObjectRequest(bucket, videoName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-            videoUrl = amazonS3.getUrl(bucket, videoName).toString();
+            Encoder encoder = new Encoder();
+
+            File source = new File(multipartFile.getOriginalFilename());
+
+            try {
+                source.createNewFile();
+                FileOutputStream fos = new FileOutputStream(source);
+                fos.write(multipartFile.getBytes());
+                fos.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            File target = new File(audioName + ".flac");
+            File target2 = new File(audioName + ".flac");
+
+            // 오디오 포맷 속성 정의. Google speech to text api 동작 조건
+            AudioAttributes audio = new AudioAttributes();
+            audio.setSamplingRate(16000); // 샘플 레이트
+            audio.setChannels(1); // Mono 채널로 설정해야 speech to text api 사용 가능
+            audio.setCodec("flac");  // 코덱 조건
+
+            EncodingAttributes attrs = new EncodingAttributes();
+            attrs.setFormat("flac"); // 포맷 설정
+            attrs.setAudioAttributes(audio);
+            try {
+                encoder.encode(source, target, attrs);
+            } catch (EncoderException e) {
+                System.out.println(2);
+                System.out.println("e : " + e.getMessage());
+                System.out.println("e : " + e.toString());
+            }
+
+            result = target.getPath();
+
+            ////////////////////////////
+            // file -> MultipartFile 변환
+            DiskFileItem fileItem = null;
+            try {
+                fileItem = new DiskFileItem("file", Files.probeContentType(target.toPath()), false, target.getName(), (int) target.length(), target.getParentFile());
+
+                InputStream input = new FileInputStream(target);
+                OutputStream os = fileItem.getOutputStream();
+                IOUtils.copy(input, os);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            MultipartFile audioMultipartFile = new CommonsMultipartFile(fileItem);
+            audioMultipartFiles.add(audioMultipartFile);
+            ///////////////////////////////
+            System.out.println(source.getPath());
+            System.out.println(target.getPath());
+            System.out.println(target.getName());
+            if (source.exists()) { //파일존재여부확인
+                source.delete();
+            }
+            if (target.exists()) { //파일존재여부확인
+                if(target.delete()){
+                    System.out.println(1);
+                }else{
+                    System.out.println(2);
+                }
+            }
+
+
+        });
+        try {
+            gcsService.uploadFileGcs(1l, audioMultipartFiles);
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+            throw new RuntimeException(e);
         }
+        return new CreateInterviewVideoResponse(id, videoNameList, videoUrlList);
 
-        // 서비스에서 면접정보 먼저 저장하고 -> 면접 영상 저장하는 방식으로 해야될거같다
+        //////////////////////////////////////////////////////////////////////////
 
-        // db에 저장하기
-        InterviewVideo interviewVideo = InterviewVideo.builder().member(findMember).videoUrl(videoUrl).videoName(videoName).build();
-        savedInterviewVideoRepository.save(interviewVideo);
 
-        return new CreateInterviewVideoResponse(id, videoName, videoUrl);
+//        ///////////////////////////////////////////////////
+//
+//
+//        String result = "";
+//
+//        String uuid = UUID.randomUUID().toString().replace("-", "");
+//
+//        String filePath = File.separator + "var" + File.separator + "stt" + File.separator;
+//
+//        Encoder encoder = new Encoder();
+//
+//        File source = new File(multipartFile.getOriginalFilename());
+//        System.out.println(multipartFile.getOriginalFilename());
+//        try {
+//            source.createNewFile();
+//            FileOutputStream fos = new FileOutputStream(source);
+//            fos.write(multipartFile.getBytes());
+//            fos.close();
+//        } catch (IOException e) {
+//            System.out.println(1);
+//            System.out.println(e.getMessage());
+//            System.out.println("e : " + e.toString());
+//
+//
+//        }
+//
+//        File target = new File(uuid + ".flac");
+//
+//        // 오디오 포맷 속성 정의. Google speech to text api 동작 조건
+//        AudioAttributes audio = new AudioAttributes();
+//        audio.setSamplingRate(48000); // 샘플 레이트
+//        audio.setChannels(2); // Mono 채널로 설정해야 speech to text api 사용 가능
+//        audio.setCodec("flac");  // 코덱 조건
+//
+//        EncodingAttributes attrs = new EncodingAttributes();
+//        attrs.setFormat("flac"); // 포맷 설정
+//        attrs.setAudioAttributes(audio);
+//        try {
+//            encoder.encode(source, target, attrs);
+//        } catch (EncoderException e) {
+//            System.out.println(2);
+//            System.out.println("e : " + e.getMessage());
+//            System.out.println("e : " + e.toString());
+//        }
+//
+//        result = target.getPath();
+//
+//        ////////////////////////////
+//        DiskFileItem fileItem = null;
+//        try {
+//            fileItem = new DiskFileItem("file", Files.probeContentType(target.toPath()), false, target.getName(), (int) target.length(), target.getParentFile());
+//
+//        InputStream input = new FileInputStream(target);
+//        OutputStream os = fileItem.getOutputStream();
+//        IOUtils.copy(input, os);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        MultipartFile multipartFile2 = new CommonsMultipartFile(fileItem);
+//
+//        ///////////////////////////////
+//
+//        System.out.println("result : " + result);
+//        System.out.println("uuid : " + uuid);
+////        return new CreateInterviewVideoResponse(id, videoName, videoUrl);
+//        String videoName = "123";
+//        String videoUrl = "123";
+//
+//        try {
+//            gcsService.uploadFileGcs(1l, multipartFile2);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
     }
 
     public void deleteFileS3(Long memberId, DeleteInterviewVideoRequest request) throws MemberException {
@@ -113,7 +282,6 @@ public class S3UploaderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
     }
-
 
 
 }
