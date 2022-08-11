@@ -37,7 +37,7 @@ import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
 // test
-import TTSSTT from '@/views/chat/TTSSTT.vue';
+import TTSSTT from '@/views/chat/TTSSTT2.vue';
 
 const routes = [
   {
