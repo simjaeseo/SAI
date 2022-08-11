@@ -1,5 +1,5 @@
 <template>
-  <main class="page-content">
+  <main v-if="upcomingSchedules" class="page-content">
     <div class="card">
         <div class="content">
             <h2 class="title">나 혼자 연습</h2>
@@ -11,21 +11,76 @@
     <div class="card">
         <div class="content">
             <h2 class="title">컨설턴트님과 1:1 면접</h2>
+            <!-- <div style="color: black;"> {{ upcomingSchedules[0].scheduleDate.slice(-2) }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0].startTime }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0] }}</div> -->
             <div class="d-flex flex-column align-items-center">
-              <router-link to='#' id='routerlink'>
+              <router-link to='/schedule' id='routerlink'>
                 <button class="start-btn">1:1 면접 신청</button>
               </router-link>
-              <router-link to='/interview/question' id='routerlink'>
-               <button class="start-btn">--월 --일 --시 --분<br>1:1 면접 시작하기</button>
+              <router-link to='/interview/ct' id='routerlink'>
+                <button class="start-btn">
+                  {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
+                  {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
+                  {{ upcomingSchedules[0].startTime }}<br>
+                  1:1 면접 시작하기</button>
               </router-link>
             </div>
         </div>
     </div>
-
+  </main>
+  <main v-if="!upcomingSchedules" class="page-content">
+    <div class="card">
+        <div class="content">
+            <h2 class="title">나 혼자 연습</h2>
+            <router-link to='/interview/question' id='routerlink'>
+              <button class="start-btn">시작하기</button>
+            </router-link>
+        </div>
+    </div>
+    <div class="card">
+        <div class="content">
+            <h2 class="title">컨설턴트님과 1:1 면접</h2>
+            <div style="color: black;"> {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0].scheduleDate.slice(-2) }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0].startTime }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0] }}</div>
+            <div class="d-flex flex-column align-items-center">
+              <router-link to='/schedule' id='routerlink'>
+                <button class="start-btn">1:1 면접 신청</button>
+              </router-link>
+            </div>
+        </div>
+    </div>
   </main>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
+export default {
+  data() {
+    return {
+      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
+    };
+  },
+  setup() {
+    const store = useStore();
+
+    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
+    const fetchUpcomingSchedules = () => {
+      store.dispatch('fetchUpcomingSchedules');
+    };
+    return {
+      upcomingSchedules,
+      fetchUpcomingSchedules,
+    };
+  },
+  created() {
+    this.fetchUpcomingSchedules();
+  },
+};
 </script>
 
 <style scoped>
