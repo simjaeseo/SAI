@@ -29,6 +29,7 @@
 
 <script>
 // import $ from 'jquery';
+// eslint-disable-next-line
 import * as tmPose from '@teachablemachine/pose';
 // eslint-disable-next-line
 import * as tf from '@tensorflow/tfjs';
