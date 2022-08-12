@@ -1,5 +1,3 @@
-scheduleView
-
 <template>
   <div class="container">
     <div class="row">
@@ -70,4 +68,3 @@ export default {
   border: 1px solid rgb(192, 192, 192);
 }
 </style>
-

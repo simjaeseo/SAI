@@ -1,5 +1,3 @@
-Modeselect
-
 <template>
   <main v-if="upcomingSchedules" class="page-content">
     <div class="card">
@@ -147,4 +145,3 @@ export default {
   text-decoration: none;
 }
 </style>
-

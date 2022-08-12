@@ -1,5 +1,3 @@
-Showevent
-
 <template>
   <div>
     <div v-if="upcomingSchedules">
@@ -97,4 +95,3 @@ p {
   text-align: center
 };
 </style>
-
