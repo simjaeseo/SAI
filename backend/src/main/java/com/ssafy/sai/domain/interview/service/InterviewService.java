@@ -72,7 +72,6 @@ public class InterviewService {
         return findQuestionList.get((int) Math.random() * (findQuestionList.size()));
     }
 
-
     @Transactional
     public List<CustomInterviewQuestion> getCustomInterviewQuestionList(CustomQuestionRequest request) throws MemberException {
         Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
@@ -95,7 +94,6 @@ public class InterviewService {
 
     @Transactional
     public InterviewInfo createInterviewInfo(Long id, CreateInterviewInfoRequest request) throws ScheduleException {
-
         InterviewInfo interviewInfo;
 
         //나혼자 연습일때

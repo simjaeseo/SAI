@@ -39,32 +39,33 @@
       </div>
     </div>
     <hr>
-    <div class="container" id='searched-bar-box1'>
+
+    <!-- <div class="container" id='searched-bar-box1'>
       <div v-if="studentData.studentName">
-        <img v-if="studentData.img"
+        <img v-if="studentData.img" id='user_profile_img'
         :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
+        <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
         <h6>이름</h6>
         <p>{{ studentData.studentName }}</p>
-        <h6>생년월일</h6>
+        <h6 class="mt-4">생년월일</h6>
         <p>{{ studentData.birthday }}</p>
-        <h6>지역/반</h6>
+        <h6 class="mt-4">지역/반</h6>
         <p>{{ studentData.year}}기 {{ studentData.city }} {{ studentData.classNumber }}반</p>
-        <h6>이메일</h6>
+        <h6 class="mt-4">이메일</h6>
         <p>{{ studentData.email }}</p>
-        <h6>연락처</h6>
+        <h6 class="mt-4">연락처</h6>
         <p>{{ studentData.phone }}</p>
-        <h6>관심기업</h6>
+        <h6 v-if="studentData.enters.length" class="mt-4">관심기업</h6>
         <li v-for="(enter, index) in studentData.enters" :key="index" id="for-li"
         class="mb-4">
           #{{ enter.enterpriseName }}
         </li>
-        <h6>관심직무</h6>
+        <h6 v-if="studentData.jobs.length" class="mt-4">관심직무</h6>
         <li v-for="(job, index) in studentData.jobs" :key="index" id="for-li">
           #{{ job.jobName }}
         </li>
-        {{ studentData }}
       </div>
-    </div>
+    </div> -->
         <div id='home-btn-box'>
       <router-link to='/'>
         <button class='btn' id='home-btn'>홈으로</button>
@@ -118,7 +119,7 @@ export default {
     let img = '';
 
     const closeUl = function () {
-      searchName = ref('');
+      searchName.value = ref('');
       finded = [];
     };
     const selectedStudent = function (student) {
@@ -164,15 +165,33 @@ export default {
 </script>
 
 <style scoped>
+h6 {
+  display: inline;
+}
+p {
+  display: inline;
+}
+#user_profile_img {
+  margin-top: 10px;
+  width: 132px;
+  height: 170px;
+  display: inline;
+}
 #for-li {
   background-color: none;
+  list-style: none;
+  display: inline;
+}
+#for-li:hover {
+  border-radius: 5px;
+  background-color: #626db325;
   list-style: none;
   display: inline;
 }
 #searched-bar-box1 {
   background-color: #5c6ac40c;
   width: 100%;
-  height: 500px;
+  height: 520px;
   margin-bottom: 40px;
   border-radius: 10px;
 }

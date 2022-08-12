@@ -19,6 +19,7 @@
       <ul
         v-if="searchCountries.length"
         class="border border-gray-300"
+        style="width:460px;"
       >
         <li>
           <p id='result-count'>
@@ -49,12 +50,12 @@
 </template>
 
 <script>
-import countries from '@/data/countries.json';
 import {
   ref,
   computed,
 } from 'vue';
 import { useStore } from 'vuex';
+import countries from '@/data/countries.json';
 
 export default {
   name: 'SearchBar',

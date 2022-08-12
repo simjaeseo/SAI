@@ -180,8 +180,7 @@
               <select class='form-select' id='form-select3' aria-label='Default select example'
               @change="UserMobileFirst"
               required>
-                <option selected disabled>선택</option>
-                <option value='010'>010</option>
+                <option value='010' selected >010</option>
                 <option value='011'>011</option>
                 <option value='016'>016</option>
                 <option value='017'>017</option>
@@ -242,7 +241,7 @@ export default {
       },
       selected: '',
       options: [],
-      mobileFirst: '',
+      mobileFirst: '010',
       mobileSecond: '',
       mobileLast: '',
       isCorrect: false,

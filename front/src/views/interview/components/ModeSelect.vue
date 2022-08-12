@@ -1,3 +1,5 @@
+Modeselect
+
 <template>
   <main v-if="upcomingSchedules" class="page-content">
     <div class="card">
@@ -19,11 +21,12 @@
                 <button class="start-btn">1:1 면접 신청</button>
               </router-link>
               <router-link to='/interview/ct' id='routerlink'>
-              <button class="start-btn">
-                {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
-                {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
-                {{ upcomingSchedules[0].startTime }}<br>
-                1:1 면접 시작하기</button>
+                <button class="start-btn">
+                  <!-- {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
+                  {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
+                  {{ upcomingSchedules[0].startTime }}<br>
+                  {{ upcomingSchedules[0].startTime }} -->
+                  1:1 면접 시작하기</button>
               </router-link>
             </div>
         </div>
@@ -41,10 +44,10 @@
     <div class="card">
         <div class="content">
             <h2 class="title">컨설턴트님과 1:1 면접</h2>
-            <div style="color: black;"> {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}</div>
+            <!-- <div></div>{{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}</div>
             <div style="color: black;"> {{ upcomingSchedules[0].scheduleDate.slice(-2) }}</div>
             <div style="color: black;"> {{ upcomingSchedules[0].startTime }}</div>
-            <div style="color: black;"> {{ upcomingSchedules[0] }}</div>
+            <div style="color: black;"> {{ upcomingSchedules[0] }}</div> -->
             <div class="d-flex flex-column align-items-center">
               <router-link to='/schedule' id='routerlink'>
                 <button class="start-btn">1:1 면접 신청</button>
@@ -56,7 +59,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -72,13 +75,13 @@ export default {
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
     };
+    onBeforeMount(() => {
+      fetchUpcomingSchedules();
+    });
     return {
       upcomingSchedules,
       fetchUpcomingSchedules,
     };
-  },
-  mounted() {
-    this.fetchUpcomingSchedules();
   },
 };
 </script>
