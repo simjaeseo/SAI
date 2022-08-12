@@ -1,5 +1,7 @@
 <template>
     <div class="container mt-5">
+      <div><canvas id="canvas" v-show="false"></canvas></div>
+      <div id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -116,6 +118,10 @@
 </template>
 
 <script>
+// import $ from 'jquery';
+import * as tmPose from '@teachablemachine/pose';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { computed } from 'vue';
@@ -157,9 +163,103 @@ export default {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
+
+    const URL = 'https://teachablemachine.withgoogle.com/models/MmjUp1c8n/';
+    let model; let webcam; let ctx; let labelContainer; let
+      maxPredictions;
+
+    function drawPose(pose) {
+      if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        // draw the keypoints and skeleton
+        if (pose) {
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
+      }
+    }
+
+    let progress = 327;
+    let status = 'proper posture';
+    let count = 0;
+    async function predict() {
+      // Prediction #1: run input through posenet
+      // estimatePose can take in an image, video or canvas html element
+      const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+      // Prediction 2: run input through teachable machine classification model
+      const prediction = await model.predict(posenetOutput);
+
+      if (prediction[0].probability.toFixed(2) >= 0.70) {
+        if (status !== 'proper posture') {
+          count += 1;
+          progress -= 32.7;
+          if (progress <= 0) {
+            progress = 327 - 32.7;
+          }
+          console.log(count);
+          // $('.progress').style('stroke-dashoffset', progress);
+          // $('#counter').template(count);
+        }
+        status = 'proper posture';
+      } else if (prediction[1].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - left';
+      } else if (prediction[2].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - right';
+      // } else if (prediction[3].probability.toFixed(2) >= 0.70) {
+      //   status = 'wrong posture - bent';
+      }
+
+      for (let i = 0; i < maxPredictions; i += 1) {
+        const classPrediction = `${prediction[i].className}: ${prediction[i].probability.toFixed(2)}`;
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+      }
+
+      // finally draw the poses
+      drawPose(pose);
+    }
+
+    // eslint-disable-next-line
+    async function loop(timestamp) {
+      // console.log(timestamp);
+      webcam.update(); // update the webcam frame
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function init() {
+      const modelURL = `${URL}model.json`;
+      const metadataURL = `${URL}metadata.json`;
+
+      // load the model and metadata 모델/메타데이터 로드
+      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+      // Note: the pose library adds a tmPose object to your window (window.tmPose)
+      model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      maxPredictions = model.getTotalClasses();
+
+      // Convenience function to setup a webcam
+      // 카메라 설정
+      const size = 500;
+      const flip = true; // whether to flip the webcam
+      webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
+      await webcam.setup(); // request access to the webcam
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      // append/get elements to the DOM
+      const canvas = document.getElementById('canvas');
+      canvas.width = size; canvas.height = size;
+      ctx = canvas.getContext('2d');
+      labelContainer = document.getElementById('label-container');
+      for (let i = 0; i < maxPredictions; i += 1) { // and class labels
+        labelContainer.appendChild(document.createElement('div'));
+      }
+    }
+
     return {
       selectedQuestionList,
       currentUser,
+      init,
     };
   },
   created() {
@@ -168,6 +268,7 @@ export default {
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행

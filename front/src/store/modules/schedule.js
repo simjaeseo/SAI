@@ -1,6 +1,3 @@
-
-스케줄 js
-
 import drf from '@/api/api';
 import router from '@/router';
 import axios from 'axios';

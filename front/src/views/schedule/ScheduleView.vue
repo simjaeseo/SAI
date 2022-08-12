@@ -70,4 +70,3 @@ export default {
   border: 1px solid rgb(192, 192, 192);
 }
 </style>
-
