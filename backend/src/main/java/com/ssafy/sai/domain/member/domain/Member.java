@@ -44,7 +44,6 @@ public class Member extends BaseEntity {
     private LocalDate birthday;
     private String phone;
 
-    @Column(name = "member_is_consultant")
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 

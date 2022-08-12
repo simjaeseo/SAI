@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.schedule.dto;
+package com.ssafy.sai.domain.schedule.dto.request;
 
 import com.ssafy.sai.domain.schedule.domain.Schedule;
 import lombok.Data;
