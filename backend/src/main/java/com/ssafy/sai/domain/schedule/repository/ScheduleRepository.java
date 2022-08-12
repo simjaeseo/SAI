@@ -1,7 +1,7 @@
 package com.ssafy.sai.domain.schedule.repository;
 
 import com.ssafy.sai.domain.schedule.domain.Schedule;
-import com.ssafy.sai.domain.schedule.dto.*;
+import com.ssafy.sai.domain.schedule.dto.response.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
