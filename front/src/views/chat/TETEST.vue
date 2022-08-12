@@ -6,10 +6,10 @@
 
 <script>
 // // eslint-disable-next-line
-import faceExpression from '@/assets/models/face_expression_model-weights_manifest.json';
-import faceLandmark from '@/assets/models/face_landmark_68_model-weights_manifest.json';
-import faceRecognition from '@/assets/models/face_recognition_model-weights_manifest.json';
-import faceDetector from '@/assets/models/tiny_face_detector_model-weights_manifest.json';
+// import faceExpression from '@/assets/models/face_expression_model-weights_manifest.json';
+// import faceLandmark from '@/assets/models/face_landmark_68_model-weights_manifest.json';
+// import faceRecognition from '@/assets/models/face_recognition_model-weights_manifest.json';
+// import faceDetector from '@/assets/models/tiny_face_detector_model-weights_manifest.json';
 import * as faceapi from '../../assets/face-api.min';
 
 export default {
@@ -25,10 +25,14 @@ export default {
     }
 
     Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(faceDetector),
-      faceapi.nets.faceLandmark68Net.loadFromUri(faceLandmark),
-      faceapi.nets.faceRecognitionNet.loadFromUri(faceRecognition),
-      faceapi.nets.faceExpressionNet.loadFromUri(faceExpression),
+      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+      faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+      // faceapi.nets.tinyFaceDetector.loadFromUri(faceDetector),
+      // faceapi.nets.faceLandmark68Net.loadFromUri(faceLandmark),
+      // faceapi.nets.faceRecognitionNet.loadFromUri(faceRecognition),
+      // faceapi.nets.faceExpressionNet.loadFromUri(faceExpression),
     ]).then(startVideo);
 
     video.addEventListener('play', () => {
