@@ -20,16 +20,24 @@ public class InterviewVideo {
     @JoinColumn(name = "interview_info_id")
     private InterviewInfo interviewInfo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "use_interview_question_id")
+    private UseInterviewQuestion useInterviewQuestion;
+
     @Column(name="video_url")
     private String videoUrl;
 
-    @Column(name="video_name")
-    private String videoName;
+    @Column(name="audio_url")
+    private String audioUrl;
+
 
     @Column(name="consultant_feedback")
     private String consultantFeedback;
 
     private String stt;
+
+    @Column(name="wrong_posture_count")
+    private String wrongPostureCount;
 
     // 음성데이터?
 }

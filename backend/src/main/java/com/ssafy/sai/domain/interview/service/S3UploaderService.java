@@ -7,7 +7,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
+import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewVideo;
+import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.CreateInterviewVideoResponse;
 import com.ssafy.sai.domain.interview.dto.DeleteInterviewVideoRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
@@ -24,9 +26,21 @@ import it.sauronsoftware.jave.EncodingAttributes;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
@@ -35,6 +49,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,59 +70,129 @@ public class S3UploaderService {
     private final InterviewVideoRepository savedInterviewVideoRepository;
     private final GcsService gcsService;
 
+    @Async
+    public CreateInterviewVideoResponse uploadFileS3(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo) {
+        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-    public CreateInterviewVideoResponse uploadFileS3(Long id, List<MultipartFile> multipartFiles) {
+        // openvidu server url에서 뽑아온 .mp4파일을 multipartFile로 변환한 것들 저장하는 List
+        List<MultipartFile> openviduVideoMultipartFileList = new ArrayList<>();
+        // openvidu server 안에 저장되어있는 영상 url
+        URL url;
 
-//        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        //s3에 저장된 파일 이름 저장하는 List
+        List<String> S3videoNameList = new ArrayList<>();
+        //s3에 저장된 파일 url 저장하는 List
+        List<String> S3videoUrlList = new ArrayList<>();
 
-        //파일 이름 저장하는 List
-        List<String> videoNameList = new ArrayList<>();
-        List<String> videoUrlList = new ArrayList<>();
+        // .flac 파일을 multipartfile 형태로 저장하는 List
         List<MultipartFile> audioMultipartFiles = new ArrayList<>();
 
-        multipartFiles.forEach(multipartFile -> {
-            String videoName = createFileName(multipartFile.getOriginalFilename());
+        List<String> openviduVideoNames = new ArrayList<>();
+        List<String> flacAudioNames = new ArrayList<>();
+
+        // interviewVideoUrl에 접근해서 file 타입으로 mp4 만들기
+        for (String openviduVideoUrl : request.getInterviewVideoUrl()) {
+
+            String[] openviduVideoNameSplit = openviduVideoUrl.split("/");
+            String openviduVideoName = openviduVideoNameSplit[6];
+            openviduVideoNames.add(openviduVideoName);
+
+            // 파일 선언
+            File openviduVideoFile = new File(openviduVideoName);
+
+            try {
+                url = new URL(openviduVideoUrl);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            // url에 접근하기 위해 request 만들기
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+
+            HttpGet httpGet = new HttpGet(url.toString());
+            httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.11 Safari/537.36");
+            httpGet.addHeader("Referer", "https://www.google.com");
+
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("OPENVIDUAPP", "MY_SECRET");
+            credsProvider.setCredentials(AuthScope.ANY, credentials);
+
+            HttpClientContext context = HttpClientContext.create();
+            context.setCredentialsProvider(credsProvider);
+
+            try {
+                CloseableHttpResponse httpResponse = httpClient.execute(httpGet, context);
+                HttpEntity imageEntity = httpResponse.getEntity();
+
+                if (imageEntity != null) {
+                    FileUtils.copyInputStreamToFile(imageEntity.getContent(), openviduVideoFile);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            httpGet.releaseConnection();
+
+            // file -> MultipartFile 변환
+            DiskFileItem fileItem = null;
+            try {
+                fileItem = new DiskFileItem("file", Files.probeContentType(openviduVideoFile.toPath()), false, openviduVideoFile.getName(), (int) openviduVideoFile.length(), openviduVideoFile.getParentFile());
+
+                InputStream input = new FileInputStream(openviduVideoFile);
+                OutputStream os = fileItem.getOutputStream();
+                IOUtils.copy(input, os);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            MultipartFile openviduVideoMultipartFile = new CommonsMultipartFile(fileItem);
+
+
+            openviduVideoMultipartFileList.add(openviduVideoMultipartFile);
+            // 반복문 끝
+        }
+
+        // 면접 영상 MultipartFileList를 하나씩 빼서 s3에 업로드 후 flac 파일 변환함
+        openviduVideoMultipartFileList.forEach(openviduVideoFile -> {
+
+            // s3에 업로드
+            // 실제 s3에 저장되는 영상 이름
+            String videoName = createFileName(openviduVideoFile.getOriginalFilename());
             String videoUrl;
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(multipartFile.getSize());
-            objectMetadata.setContentType(multipartFile.getContentType());
+            objectMetadata.setContentLength(openviduVideoFile.getSize());
+            objectMetadata.setContentType(openviduVideoFile.getContentType());
 
-            try (InputStream inputStream = multipartFile.getInputStream()) {
+            try (InputStream inputStream = openviduVideoFile.getInputStream()) {
                 amazonS3.putObject(new PutObjectRequest(bucket, videoName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
                 videoUrl = amazonS3.getUrl(bucket, videoName).toString();
             } catch (IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
-            videoNameList.add(videoName);
-            videoUrlList.add(videoUrl);
-
-//        서비스에서 면접정보 먼저 저장하고 -> 면접 영상 저장하는 방식으로 해야될거같다
-
-//        db에 저장하기
-//            InterviewVideo interviewVideo = InterviewVideo.builder().member(findMember).videoUrl(videoUrl).videoName(videoName).build();
-//            savedInterviewVideoRepository.save(interviewVideo);
+            S3videoNameList.add(videoName);
+            S3videoUrlList.add(videoUrl);
 
 
-            String result = "";
+
+
             int pointIndex = videoName.indexOf(".");
             String audioName = videoName.substring(0, pointIndex);
 
             Encoder encoder = new Encoder();
 
-            File source = new File(multipartFile.getOriginalFilename());
+            File source = new File(openviduVideoFile.getOriginalFilename());
 
             try {
                 source.createNewFile();
                 FileOutputStream fos = new FileOutputStream(source);
-                fos.write(multipartFile.getBytes());
+                fos.write(openviduVideoFile.getBytes());
                 fos.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             File target = new File(audioName + ".flac");
-            File target2 = new File(audioName + ".flac");
+            flacAudioNames.add(audioName + ".flac");
 
             // 오디오 포맷 속성 정의. Google speech to text api 동작 조건
             AudioAttributes audio = new AudioAttributes();
@@ -125,7 +211,6 @@ public class S3UploaderService {
                 System.out.println("e : " + e.toString());
             }
 
-            result = target.getPath();
 
             ////////////////////////////
             // file -> MultipartFile 변환
@@ -142,28 +227,31 @@ public class S3UploaderService {
             MultipartFile audioMultipartFile = new CommonsMultipartFile(fileItem);
             audioMultipartFiles.add(audioMultipartFile);
             ///////////////////////////////
-            System.out.println(source.getPath());
-            System.out.println(target.getPath());
-            System.out.println(target.getName());
             if (source.exists()) { //파일존재여부확인
                 source.delete();
             }
             if (target.exists()) { //파일존재여부확인
-                if(target.delete()){
-                    System.out.println(1);
-                }else{
-                    System.out.println(2);
-                }
+                System.out.println("target.exists() " + target.exists());
+                System.out.println("target.delete() " + target.delete());
+                System.out.println("target.exists() " + target.exists());
+
             }
 
 
+//            File inteviewMp4File = new File(openviduVideoFile.getOriginalFilename());
+//            System.out.println("openviduVideoFile.getName() " + openviduVideoFile.getOriginalFilename());
+//            if (inteviewMp4File.exists()) { //파일존재여부확인
+//                System.out.println("inteviewMp4File.delete() " + inteviewMp4File.delete());
+//            }
+//            System.out.println();
+
         });
         try {
-            gcsService.uploadFileGcs(1l, audioMultipartFiles);
+            gcsService.uploadFileGcs(id, request, saveInterviewInfo, audioMultipartFiles, openviduVideoNames, flacAudioNames, S3videoUrlList);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new CreateInterviewVideoResponse(id, videoNameList, videoUrlList);
+        return new CreateInterviewVideoResponse(id, S3videoNameList, S3videoUrlList);
 
         //////////////////////////////////////////////////////////////////////////
 

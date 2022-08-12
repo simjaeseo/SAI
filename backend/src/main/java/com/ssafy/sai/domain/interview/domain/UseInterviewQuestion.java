@@ -16,10 +16,6 @@ public class UseInterviewQuestion {
     @Column(name= "use_interview_question_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="interview_info_id")
-    private InterviewInfo savedInterviewInfo;
-
     private String question;
 
 }
