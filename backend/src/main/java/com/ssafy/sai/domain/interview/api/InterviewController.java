@@ -3,12 +3,12 @@ package com.ssafy.sai.domain.interview.api;
 import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
-import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.dto.DeleteInterviewVideoRequest;
+import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
+import com.ssafy.sai.domain.interview.dto.request.DeleteInterviewVideoRequest;
 import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
-import com.ssafy.sai.domain.interview.dto.SaveFeedbackResponse;
+import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.service.InterviewService;
 import com.ssafy.sai.domain.interview.service.S3UploaderService;
@@ -73,7 +73,6 @@ public class InterviewController {
 
     /**
      * Amazon S3에 업로드 된 파일을 삭제
-     *
      * @return 성공 시 200 Success
      */
     @DeleteMapping("/{member_id}/video")

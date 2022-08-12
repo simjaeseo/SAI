@@ -2,12 +2,13 @@ package com.ssafy.sai.domain.schedule.service;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
-import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
+import com.ssafy.sai.domain.member.dto.response.ConsultantAllByCampusResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
-import com.ssafy.sai.domain.schedule.dto.*;
+import com.ssafy.sai.domain.schedule.dto.request.ScheduleCreateRequest;
+import com.ssafy.sai.domain.schedule.dto.response.*;
 import com.ssafy.sai.domain.schedule.exception.ScheduleException;
 import com.ssafy.sai.domain.schedule.exception.ScheduleExceptionType;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;

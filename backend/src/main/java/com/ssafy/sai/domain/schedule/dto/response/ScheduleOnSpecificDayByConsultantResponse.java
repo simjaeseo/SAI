@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.schedule.dto;
+package com.ssafy.sai.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

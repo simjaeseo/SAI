@@ -2,11 +2,11 @@ package com.ssafy.sai.domain.interview.service;
 
 import com.ssafy.sai.domain.interview.domain.*;
 
-import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
+import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
-import com.ssafy.sai.domain.interview.dto.SaveFeedbackResponse;
+import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
 import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;

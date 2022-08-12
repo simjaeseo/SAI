@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.interview.dto;
+package com.ssafy.sai.domain.interview.dto.response;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
