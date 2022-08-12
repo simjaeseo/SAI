@@ -67,7 +67,7 @@
             </div>
             <div class="modal-footer">
               <router-link to="/">
-                <button class="btn btn-primary" data-bs-dismiss="modal"
+                <button class="btn" data-bs-dismiss="modal"
                 >창 닫기</button>
               </router-link>
             </div>
@@ -75,11 +75,9 @@
         </div>
       </div>
       <div id="session" v-if="session">
-        <div id="session-header">
-        </div>
         <div id="main-video">
           <div id="video-box">
-            <div v-if="question.length">
+            <div v-if="question.length" style="display:inline;">
               <span v-if="!isFinished"> 질문 : </span>
               <span>{{question}}</span>
             </div>
@@ -97,22 +95,22 @@
             </div>
           </div>
           <div class="d-flex justify-content-end">
-            <input class="btn btn-light me-2" type="button"
+            <div v-if="!isFinished">
+            <input class="btn btn-light mx-3 my-3" type="button"
             id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
-            <div> <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="startRecoding" value="녹화!"> </div>
-            <div><button class="btn btn-primary" data-bs-toggle="modal" @keydown="leaveSession"
-            data-bs-target="#exampleModalToggle" @click="leaveSession">면접 종료</button></div>
+            <input class="btn btn-light me-2" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="녹화"
+              :style="[isRecording == true ?
+              {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
+            </div>
+            <div v-if="isFinished" class="d-flex justify-content-end">
+              <button class="btn mx-3 my-3" data-bs-toggle="modal" @keydown="leaveSession"
+              data-bs-target="#exampleModalToggle"
+              @click="leaveSession" id="modal-btn">면접 종료
+              </button>
+            </div>
           </div>
         </div>
-        <!-- <div id="video-container" class="col-md-6">
-          <user-video :stream-manager="publisher"
-          @click="updateMainVideoStreamManager(publisher)"/>
-          <user-video v-for="sub in subscribers"
-          :key="sub.stream.connection.connectionId"
-          :stream-manager="sub"
-          @click="updateMainVideoStreamManager(sub)"/>
-        </div> -->
     </div>
   </div>
 </template>
@@ -152,6 +150,7 @@ export default {
       myConfirms: true,
       ctConfirms: true,
       savedUrls: [],
+      isRecording: false,
     };
   },
   setup() {
@@ -192,16 +191,15 @@ export default {
     answerCompleted() {
       this.question = '';
       if (!this.questions.length) {
-        this.question = '면접이 종료되었습니다.';
+        this.question = '모의면접이 완료되었습니다. 면접종료버튼을 눌러 모의면접을 종료하세요.';
         this.isFinished = true;
       }
       // 답변완료 버튼을 누르면 타임라인이 생성되고 다음질문이 3초뒤에 TTS.
     },
     startRecoding() {
+      this.isRecording = true;
       this.isAnimationStart = true;
       this.question = this.questions.shift();
-      console.log(this.question);
-      console.log(this.questions);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
           session: this.mySessionId,
@@ -217,6 +215,7 @@ export default {
         });
     },
     stopRecoding() {
+      this.isRecording = false;
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,
@@ -372,6 +371,10 @@ export default {
 </script>
 
 <style scoped>
+#modal-btn {
+  background-color: #5c6ac4;
+  color: white;
+}
 #hi{
   position: absolute; top: 30%; width: 50%;
   color: white;

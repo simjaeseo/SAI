@@ -173,6 +173,8 @@ export default {
   width: 366px;
   height: 100px;
   font-size: 36px;
+  font-weight: 500;
+  color: #4d4d4d;
 }
 .box2 {
   display: flex;
@@ -180,6 +182,8 @@ export default {
   width: 1000px;
   height: 100px;
   font-size: 48px;
+  font-weight: 900;
+  color: #4d4d4d;
 }
 .box3 {
   width: 366px;
