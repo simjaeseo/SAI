@@ -40,7 +40,7 @@ export default {
   name: 'ShowEvent',
   data() {
     return {
-      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDay()}`.slice(-2)}`,
+      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDate()}`.slice(-2)}`,
     };
   },
   setup() {
@@ -50,6 +50,10 @@ export default {
     return {
       upcomingSchedules,
     };
+  },
+  mounted() {
+    console.log(this.myToday);
+    console.log(this.upcomingSchedules);
   },
 };
 </script>
