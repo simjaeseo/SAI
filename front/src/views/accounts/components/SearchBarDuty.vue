@@ -55,13 +55,13 @@
 </template>
 
 <script>
-import countries from '@/data/duty.json';
 import {
   ref,
   computed,
   // onBeforeMount,
 } from 'vue';
 import { useStore } from 'vuex';
+import countries from '@/data/duty.json';
 
 export default {
   name: 'SearchBar',

@@ -49,8 +49,8 @@
 </template>
 
 <script>
-import countries from '@/data/duty.json';
 import { ref, computed } from 'vue';
+import countries from '@/data/duty.json';
 
 export default {
   name: 'SearchBar',
