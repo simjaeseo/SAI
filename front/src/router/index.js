@@ -16,8 +16,10 @@ import InterviewQuestionView from '@/views/interview/InterviewQuestionView.vue';
 import InterviewRoomView from '@/views/interview/InterviewRoomView.vue';
 import InterviewSoloView from '@/views/interview/InterviewSoloView.vue';
 import InterviewCtView from '@/views/interview/InterviewCtView.vue';
+import ManualView from '@/views/interview/ManualView.vue';
 
 // 유저 라우터
+import ThanksToView from '@/views/accounts/ThanksToView.vue';
 import LoginView from '@/views/accounts/LoginView.vue';
 import SignupView from '@/views/accounts/SignupView.vue';
 import SignupCTView from '@/views/accounts/SignupCTView.vue';
@@ -40,6 +42,16 @@ import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 import TTSSTT from '@/views/chat/TTSSTT2.vue';
 
 const routes = [
+  {
+    path: '/manual',
+    name: 'Manual',
+    component: ManualView,
+  },
+  {
+    path: '/thanks',
+    name: 'C206',
+    component: ThanksToView,
+  },
   {
     path: '/',
     name: 'Main',
