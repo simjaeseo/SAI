@@ -98,7 +98,8 @@
       <router-link to="/helpPassword">helpPassword</router-link> |
       <router-link to="/password/update">PasswordUpdate</router-link> |
       <router-link to="/helpid">helpid</router-link> |
-      <router-link to="/profile">profile</router-link> |
+      <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }">
+        profile</router-link> |
       <router-link to="/update">updateUser</router-link> |
       <router-link to="/management">management</router-link> |
       <router-link to="/interview">interview</router-link> |
