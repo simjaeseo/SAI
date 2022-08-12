@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container mt-5" id="body">
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -96,13 +96,13 @@
           </div>
           <div class="d-flex justify-content-end">
             <div v-if="!isFinished">
-            <input class="btn btn-light mx-3 my-3" type="button"
-            id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="startRecoding" value="녹화"
+              id="buttonLeaveSession" @click="startRecoding" value="시작"
               :style="[isRecording == true ?
               {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
             </div>
+            <input class="btn btn-light mx-3" type="button"
+            id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             <div v-if="isFinished" class="d-flex justify-content-end">
               <button class="btn mx-3 my-3" data-bs-toggle="modal" @keydown="leaveSession"
               data-bs-target="#exampleModalToggle"
@@ -371,6 +371,9 @@ export default {
 </script>
 
 <style scoped>
+#body {
+  height: 120vh;
+}
 #modal-btn {
   background-color: #5c6ac4;
   color: white;
