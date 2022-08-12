@@ -6,9 +6,9 @@
         <div id='profile_image_box' class='d-none d-md-block col-md-2'>
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
-          <!-- <img v-else
+          <img v-else
           :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
-          id='user_img' alt="profile"> -->
+          id='user_img' alt="profile">
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
@@ -29,29 +29,51 @@
                 <p id="user-data">{{ currentUser.birthday }}</p>
                 <p id='data-name'>이메일</p>
                 <p id="user-data">{{ currentUser.email }}</p>
-                <div><p id='data-name2'>관심직무</p></div>
-                <p id="user-job" v-for="(job, index) in currentUser.interestedJobs" :key="index">
-                    #{{ job.jobName }}
-                </p>
+                <div v-if="currentUser.interestedJobs.length">
+                  <p id='data-name2'>관심직무</p><br>
+                    <p id="user-job" v-for="(job, index) in currentUser.interestedJobs"
+                    :key="index">
+                        #{{ job.jobName }}
+                    </p>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <!-- 관심기업/직무 -->
-    <div>
-      <div id='personal-video-box1' class='container'>
-        <p>관심기업</p>
-          <div id='personal-video-box2'>
-            <div v-if="currentUser.interestedEnterprises">
-              <p v-for="(enterprise, index) in currentUser.interestedEnterprises"
-              :key="index"
-              id="user-enterprise">
-                {{ enterprise.enterpriseName }}</p>
+    <div class="mt-5">
+        <p>{{ currentUser.name }}님의
+          {{ currentUser.interestedEnterprises.length }}개의 관심기업 &#128064;</p>
+          <div v-if="currentUser.interestedEnterprises.length">
+            <div id="personal-caro-box" class="mt-5">
+              <div id='personal-video-box'>
+                <div id="carouselExampleControlsNoTouching" class="carousel slide"
+                  data-bs-touch="false" data-bs-interval="false">
+                  <div class="carousel-inner">
+                    <div class="carousel-item active" id="caro"
+                    v-for="(enter, index) in currentUser.interestedEnterprises" :key="index">
+                      <img :src="require(`@/assets/enter/${enter.enterpriseName}.jpg`)"
+                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                      <h5>{{ enter.enterpriseName }}</h5>
+                    </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button"
+                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                    <span id="next">&#60;</span>
+                  </button>
+                  <button class="carousel-control-next" type="button"
+                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+                    <span id="next">&#62;</span>
+                  </button>
+                </div>
+              </div>
             </div>
-            <p v-else id='none-data-text1'>관심기업/직무를 등록하세요!</p>
           </div>
-      </div>
+          <div v-else id='personal-video-box2'>
+            <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
+            <!-- 동영상 구현 필요 -->
+          </div>
     </div>
     <!-- 동영상 -->
     <div>
@@ -92,6 +114,15 @@ export default {
 </script>
 
 <style scoped>
+#next {
+  color: black;
+}
+#caro {
+  text-align: center;
+}
+#personal-caro-box{
+  height: 162px;
+}
 #user-job {
   margin-right: 10px;
   font-size: 15px;
