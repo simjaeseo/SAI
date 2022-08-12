@@ -1,3 +1,5 @@
+interviewctView
+
 <template>
     <div>
       <div class="container">
@@ -6,10 +8,17 @@
           </div>
           <div id="main-video">
             <user-video :stream-manager="mainStreamManager"/>
-            <div> {{ this.myUserName }}</div>
             <div class="d-flex flex-row-reverse">
               <input class="btn btn-light me-2" type="button"
               id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
+              <div v-show="isRecording==0">
+                <input class="btn btn-light me-2" type="button"
+                  id="buttonLeaveSession" @click="startRecoding(), isRecording = 1" value="질문 시작">
+              </div>
+              <div v-show="isRecording==1">
+                <input class="btn btn-light me-2" type="button"
+                  id="buttonLeaveSession" @click="stopRecoding(), isRecording = 0" value="답변 완료">
+              </div>
             </div>
           </div>
           <div id="video-container" class="col-lg-3">
@@ -18,17 +27,9 @@
             :stream-manager="sub"
             @click="updateMainVideoStreamManager(sub)"/>
           </div>
-          <div>this session id : {{ this.mySessionId }}</div>
+          <!-- <div>this session id : {{ this.mySessionId }}</div>
           <div>{{ currentUser.id }}</div>
-          <div>{{ upcomingSchedules[0].id }}</div>
-          <div>
-            <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="startRecoding" value="녹화!">
-          </div>
-          <div>
-            <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="stopRecoding" value="녹화중지">
-          </div>
+          <div>{{ upcomingSchedules[0].id }}</div> -->
       </div>
     </div>
   </div>
@@ -61,6 +62,7 @@ export default {
       mySessionId: `${this.upcomingSchedules[0].id}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       myRecodingId: undefined,
+      isRecording: 0,
     };
   },
   setup() {

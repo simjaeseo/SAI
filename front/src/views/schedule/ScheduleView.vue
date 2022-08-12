@@ -1,3 +1,5 @@
+scheduleView
+
 <template>
   <div class="container">
     <div class="row">
@@ -8,10 +10,7 @@
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event
-        v-if="isUpcomingSchedules"
-        v-show="!selectedDate">
-        </show-event>
+        <show-event v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event>
         <add-event v-show="selectedDate || !isUpcomingSchedules"></add-event>
       </div>
     </div>
@@ -42,7 +41,6 @@ export default {
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
     };
-
     return {
       isUpcomingSchedules,
       selectedDate,
@@ -72,3 +70,4 @@ export default {
   border: 1px solid rgb(192, 192, 192);
 }
 </style>
+
