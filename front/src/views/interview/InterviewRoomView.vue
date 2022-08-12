@@ -96,15 +96,15 @@
           </div>
           <div class="d-flex justify-content-end">
             <div v-if="!isFinished">
-            <input class="btn btn-light me-2" type="button"
+            <input class="btn btn-light" type="button"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
               :style="[isRecording == true ?
               {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
+              <input class="btn btn-light" type="button"
+              id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             </div>
-            <input class="btn btn-light mx-3" type="button"
-            id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             <div v-if="isFinished" class="d-flex justify-content-end">
-              <button class="btn mx-3 my-3" data-bs-toggle="modal" @keydown="leaveSession"
+              <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
               data-bs-target="#exampleModalToggle"
               @click="leaveSession" id="modal-btn">면접 종료
               </button>
@@ -198,6 +198,7 @@ export default {
     },
     startRecoding() {
       this.isRecording = true;
+      console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
       axios
