@@ -59,7 +59,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: `${this.upcomingSchedules[0].id}`,
+      mySessionId: 'SessionD',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       myRecodingId: undefined,
       isRecording: 0,
@@ -147,7 +147,6 @@ export default {
             console.log('There was an error connecting to the session:', error.code, error.message);
           });
       });
-
       window.addEventListener('beforeunload', this.leaveSession);
     },
 
@@ -200,6 +199,16 @@ export default {
             }
           });
       });
+    },
+    stopRecoding() {
+      axios
+        .get(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/SessionD~6/SessionD~6.mp4`, {
+          auth: {
+            username: 'OPENVIDUAPP',
+            password: OPENVIDU_SERVER_SECRET,
+          },
+        })
+        .then((res) => console.log(res));
     },
 
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-connection
@@ -256,7 +265,7 @@ export default {
   border: 1px solid black;
 } */
 #video-container video {
-  position: relative;
+  position:  relative;
   float: left;
   width: 50%;
   cursor: pointer;

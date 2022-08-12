@@ -37,6 +37,9 @@ dependencies {
 	// google cloud storage
 	implementation 'com.google.cloud:google-cloud-storage'
 
+	// mp4 -> flac 변환 외부 라이브러리
+	implementation files('libs/jave-1.0.2.jar')
+
 	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 
 	compileOnly 'org.projectlombok:lombok'
