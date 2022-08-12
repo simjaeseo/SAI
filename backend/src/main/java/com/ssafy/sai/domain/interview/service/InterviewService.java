@@ -1,10 +1,17 @@
 package com.ssafy.sai.domain.interview.service;
 
 import com.ssafy.sai.domain.interview.domain.*;
+
 import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
+import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
+import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
+import com.ssafy.sai.domain.interview.dto.SaveFeedbackResponse;
+import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
+import com.ssafy.sai.domain.interview.exception.InterviewException;
+import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;
 import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
-import com.ssafy.sai.domain.interview.repository.UseInterviewQuestionRepository;
+import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
 import com.ssafy.sai.domain.interview.repository.QuestionRepository;
@@ -20,8 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,11 +40,12 @@ public class InterviewService {
 
     private final QuestionRepository questionRepository;
     private final CustomQuestionRepository customQuestionRepository;
-
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
     private final InterviewInfoRepository interviewInfoRepository;
-    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
+    private final InterviewVideoRepository interviewVideoRepository;
+
+//    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -75,7 +85,6 @@ public class InterviewService {
         Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         CustomInterviewQuestion question = new CustomInterviewQuestion(request.getQuestion(), findMember);
         customQuestionRepository.save(question);
-
     }
 
     @Transactional
@@ -125,8 +134,57 @@ public class InterviewService {
 //
 //            useInterviewQuestionRepository.save(useInterviewQuestion);
 //        }
-
     }
 
+    public List<InterviewInfoDto> findFeedbackRequest(Long id) {
+        Member findMember = memberRepository.findMemberById(id);
+        List<InterviewInfo> feedbackRequestList = interviewInfoRepository.findInterviewInfoByFeedbackRequest(findMember.getId());
+        List<InterviewInfoDto> result = feedbackRequestList.stream()
+                .map(interviewInfo -> new InterviewInfoDto(interviewInfo))
+                .collect(Collectors.toList());
 
+        return result;
+    }
+
+    /**
+     * @param consultantId 컨설턴트 PK
+     * @param infoId       면접 정보 PK
+     * @return 면접 질문별 영상
+     * @메소드 면접 영상 가져오는 서비스
+     */
+    public List<InterviewVideoDto> findInterviewVideo(Long consultantId, Long infoId) {
+        Member findMember = memberRepository.findById(consultantId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+        List<InterviewVideo> interviewVideoList = interviewInfo.getInterviewVideoList();
+        List<InterviewVideoDto> result = interviewVideoList.stream()
+                .map(interviewVideo -> new InterviewVideoDto(interviewVideo))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Transactional
+    public SaveFeedbackResponse saveFeedback(Long consultantId, Long videoId, FeedbackRequest request) {
+        memberRepository.findById(consultantId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        InterviewVideo interviewVideo = interviewVideoRepository.findById(videoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        interviewVideo.createFeedback(request.getFeedback());
+
+        return new SaveFeedbackResponse(LocalDateTime.now(), request.getFeedback());
+    }
+
+    @Transactional
+    public void finishFeedback(Long consultantId, Long infoId) {
+        Member findMember = memberRepository.findById(consultantId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        interviewInfo.changeFeedbackStatus(FeedbackCompleteStatus.TRUE);
+    }
 }
