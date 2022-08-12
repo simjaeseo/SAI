@@ -7,10 +7,10 @@
             <div id='profile_image_box' class='col-sm-2'>
               <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
               id='user_profile_img'>
-              <!-- <img v-else-if="currentUser.profilePicture"
+              <img v-else-if="currentUser.profilePicture"
               :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
               alt="preview"
-              id='user_profile_img'> -->
+              id='user_profile_img'>
               <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
@@ -86,11 +86,11 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
-              <p id='for-inline'>관심기업</p>
+              <p id='for-inline'>{{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
               data-bs-target="#staticBackdrop" id='add-btn'>
-                추가하기
+                수정하기
               </button>
 
               <!-- Modal -->
@@ -118,32 +118,56 @@
                 </div>
               </div>
             </div>
-            <div id='personal-video-box2'>
+            <div v-if="Enters.length" id='personal-video-box'>
+              <div id="carouselExampleControlsNoTouching" class="carousel slide"
+              data-bs-touch="false" data-bs-interval="false">
+                <div class="carousel-inner">
+                  <div class="carousel-item active" id="caro"
+                  v-for="(enter, index) in Enters" :key="index">
+                    <div class="d-block"></div>
+                    <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
+                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                    <h5>{{ enter.name }}</h5>
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button"
+                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                  <span id="next">&#60;</span>
+                </button>
+                <button class="carousel-control-next" type="button"
+                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+                  <span id="next">&#62;</span>
+                </button>
+              </div>
+            </div>
+            <div v-else>
+              <div id='personal-video-box2'>
+                <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
+              <!-- 동영상 구현 필요 -->
+              </div>
             </div>
           </div>
         </div>
         <!-- 동영상 -->
         <div>
           <div id='personal-video-box1' class="container">
-            <p>내 동영상</p>
+            <p>내 동영상 &#127916;</p>
               <div id='personal-video-box2'>
               </div>
-            <p>컨설팅 영상</p>
+            <p>컨설팅 영상 &#127916;</p>
               <div id='personal-video-box3'>
               </div>
           </div>
         </div>
         <!-- 버튼 -->
         <div id='btn-box'>
-            <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
+            <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }">
+              <button class='btn' id='cancel-btn'>취소</button>
+            </router-link>
             <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
-    <button @click="check"></button>
-    <div>
-      {{ Jobs }} <br>
-      {{ Enters }}
-    </div>
+
   </div>
 </template>
 
@@ -179,6 +203,7 @@ export default {
     const Enters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    let img = null;
 
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
@@ -199,6 +224,14 @@ export default {
       } else if (currentUser.value.campus.city === '부울경') {
         state.options = [];
         state.options.push('1', '2', '3', '4', '5', '6');
+      }
+      state.userClass = currentUser.value.campus.classNumber;
+      if (currentUser.value.profilePicture != null) {
+        img = currentUser.value.profilePicture.fileName;
+        console.log('이미지있다!');
+        console.log(img);
+      } else {
+        img = null;
       }
     });
 
@@ -226,7 +259,6 @@ export default {
         state.options.push('1', '2', '3', '4', '5', '6');
       }
     };
-    let img = null;
     const userUpdate = () => {
       const data = {
         id: currentUser.value.id,
@@ -240,13 +272,9 @@ export default {
         interestedEnterprises:
           _uniq(Enters.value),
       };
-      console.log(data.campus.city);
-      console.log(data.campus.classNumber);
-      console.log(data.phone);
-      console.log(data.interestedJobs);
-      console.log(data.interestedEnterprises);
       const formData = new FormData();
       formData.append('file', img);
+      console.log(img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       store.dispatch('userUpdate', formData);
     };
@@ -275,6 +303,17 @@ export default {
 </script>
 
 <style scoped>
+#none-data-text1 {
+  color: rgb(167, 167, 167);
+  line-height: 250px;
+  text-align: center;
+}
+#caro {
+  text-align: center;
+}
+#next {
+  color: black;
+}
 #nocheck {
   color: gray;
 }
@@ -553,6 +592,7 @@ p {
     height: 250px;
     margin-bottom: 40px;
     border-radius: 10px;
+    text-align: center;
 }
 #personal-video-box3 {
     background-color: #5c6ac40c;
