@@ -1,8 +1,15 @@
 package com.ssafy.sai.domain.interview.service;
 
-import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
-import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
+import com.ssafy.sai.domain.interview.domain.*;
+import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
+import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
+import com.ssafy.sai.domain.interview.dto.SaveFeedbackResponse;
+import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
+import com.ssafy.sai.domain.interview.exception.InterviewException;
+import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;
+import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
+import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
 import com.ssafy.sai.domain.interview.repository.QuestionRepository;
@@ -17,8 +24,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,29 +40,32 @@ public class InterviewService {
 
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
+    private final InterviewInfoRepository interviewInfoRepository;
+    private final InterviewVideoRepository interviewVideoRepository;
 
     @Transactional
-    public Optional<InterviewQuestion> getQuestion(Long id){
+    public Optional<InterviewQuestion> getQuestion(Long id) {
         Optional<InterviewQuestion> question = questionRepository.findById(id);
         return question;
     }
+
     @Transactional
-    public Optional<CustomInterviewQuestion> getCustomQuestion(Long id){
+    public Optional<CustomInterviewQuestion> getCustomQuestion(Long id) {
         Optional<CustomInterviewQuestion> question = customQuestionRepository.findById(id);
         return question;
     }
 
     @Transactional
-    public List<InterviewQuestion> getQuestionList(String questionType,String questionDetailType){
-        List<InterviewQuestion> questionList = questionRepository.findAllByQuestionTypeAndQuestionDetailType(questionType,questionDetailType);
+    public List<InterviewQuestion> getQuestionList(String questionType, String questionDetailType) {
+        List<InterviewQuestion> questionList = questionRepository.findAllByQuestionTypeAndQuestionDetailType(questionType, questionDetailType);
         return questionList;
     }
 
     @Transactional
-    public InterviewQuestion getRandomQuestion(String questionType, String questionDetailType){
-        List<InterviewQuestion> findQuestionList = questionRepository.findAllByQuestionTypeAndQuestionDetailType(questionType,questionDetailType);
+    public InterviewQuestion getRandomQuestion(String questionType, String questionDetailType) {
+        List<InterviewQuestion> findQuestionList = questionRepository.findAllByQuestionTypeAndQuestionDetailType(questionType, questionDetailType);
 //        List<InterviewQuestion> questions = questionRepository.findAllByQuestionTypeAndQuestionDetailType(request);
-        return findQuestionList.get((int)Math.random()*(findQuestionList.size()));
+        return findQuestionList.get((int) Math.random() * (findQuestionList.size()));
     }
 
 
@@ -73,19 +85,65 @@ public class InterviewService {
     }
 
     @Transactional
-    public void deleteCustomInterviewQuestion(Long id){
-            CustomInterviewQuestion customQuestion = customQuestionRepository.findById(id).get();
-            customQuestionRepository.delete(customQuestion);
+    public void deleteCustomInterviewQuestion(Long id) {
+        CustomInterviewQuestion customQuestion = customQuestionRepository.findById(id).get();
+        customQuestionRepository.delete(customQuestion);
     }
 
     @Transactional
-    public void createInterviewInfo(Long id, Long scheduleId){
+    public void createInterviewInfo(Long id, Long scheduleId) {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
-
-
-
-
     }
 
+    public List<InterviewInfoDto> findFeedbackRequest(Long id) {
+        Member findMember = memberRepository.findMemberById(id);
+        List<InterviewInfo> feedbackRequestList = interviewInfoRepository.findInterviewInfoByFeedbackRequest(findMember.getId());
+        List<InterviewInfoDto> result = feedbackRequestList.stream()
+                .map(interviewInfo -> new InterviewInfoDto(interviewInfo))
+                .collect(Collectors.toList());
 
+        return result;
+    }
+
+    /**
+     * @param consultantId 컨설턴트 PK
+     * @param infoId 면접 정보 PK
+     * @return 면접 질문별 영상
+     * @메소드 면접 영상 가져오는 서비스
+     */
+    public List<InterviewVideoDto> findInterviewVideo(Long consultantId, Long infoId) {
+        Member findMember = memberRepository.findById(consultantId)
+                .orElseThrow(()-> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+        List<InterviewVideo> interviewVideoList = interviewInfo.getInterviewVideoList();
+        List<InterviewVideoDto> result = interviewVideoList.stream()
+                .map(interviewVideo -> new InterviewVideoDto(interviewVideo))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Transactional
+    public SaveFeedbackResponse saveFeedback(Long consultantId, Long videoId, FeedbackRequest request) {
+        memberRepository.findById(consultantId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        InterviewVideo interviewVideo = interviewVideoRepository.findById(videoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        interviewVideo.createFeedback(request.getFeedback());
+
+        return new SaveFeedbackResponse(LocalDateTime.now(), request.getFeedback());
+    }
+
+    @Transactional
+    public void finishFeedback(Long consultantId, Long infoId) {
+        Member findMember = memberRepository.findById(consultantId)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        interviewInfo.changeFeedbackStatus(FeedbackCompleteStatus.TRUE);
+    }
 }

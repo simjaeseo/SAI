@@ -2,11 +2,13 @@ package com.ssafy.sai.domain.interview.domain;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
+import com.ssafy.sai.global.common.BaseEntity;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class InterviewInfo {
+public class InterviewInfo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "saved_interview_info_id")
@@ -41,9 +43,12 @@ public class InterviewInfo {
     private LocalDate interviewDate;
 
     @OneToMany(mappedBy = "interviewInfo")
-    private List<InterviewVideo> interviewVideoList;
+    private List<InterviewVideo> interviewVideoList = new ArrayList<>();
 
     private String category;
     private String detail;
 
+    public void changeFeedbackStatus(FeedbackCompleteStatus feedbackCompleteStatus) {
+        this.feedbackCompleteStatus = feedbackCompleteStatus;
+    }
 }
