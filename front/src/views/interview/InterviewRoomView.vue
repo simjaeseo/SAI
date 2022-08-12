@@ -22,7 +22,8 @@
                 <div class="form-check">
                   <label class="form-check-label" for="gridRadios2">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="myConfirm($event)">
+                  id="gridRadios2" value="false" @change="myConfirm($event)"
+                  data-bs-dismiss="modal">
                     아니오
                   </label>
                 </div>
@@ -147,8 +148,8 @@ export default {
       question: '',
       questions: [],
       isFinished: false,
-      myConfirms: true,
-      ctConfirms: true,
+      myConfirms: false,
+      ctConfirms: false,
       savedUrls: [],
       isRecording: false,
     };
@@ -177,6 +178,7 @@ export default {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
+        this.$router.push('/');
       }
       console.log(this.myConfirms);
     },
