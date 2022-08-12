@@ -39,7 +39,7 @@ import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
 // test
-import TTSSTT from '@/views/chat/TTSSTT2.vue';
+import Test from '@/views/chat/TETEST.vue';
 
 const routes = [
   {
@@ -185,7 +185,7 @@ const routes = [
   {
     path: '/test',
     name: 'Test',
-    component: TTSSTT,
+    component: Test,
   },
 ];
 
