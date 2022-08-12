@@ -39,11 +39,13 @@
       </div>
     </div>
     <hr>
-    <div class="container" id='searched-bar-box1'>
+
+    <!-- <div class="container" id='searched-bar-box1'>
       <div v-if="studentData.studentName">
-        <img v-if="studentData.img"
+        <img v-if="studentData.img" id='user_profile_img'
         :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
-        <h6 class="pt-2">이름</h6>
+        <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
+        <h6>이름</h6>
         <p>{{ studentData.studentName }}</p>
         <h6 class="mt-4">생년월일</h6>
         <p>{{ studentData.birthday }}</p>
@@ -63,7 +65,7 @@
           #{{ job.jobName }}
         </li>
       </div>
-    </div>
+    </div> -->
         <div id='home-btn-box'>
       <router-link to='/'>
         <button class='btn' id='home-btn'>홈으로</button>
@@ -164,16 +166,16 @@ export default {
 
 <style scoped>
 h6 {
-  color: gray;
+  display: inline;
 }
 p {
   display: inline;
 }
-p:hover {
+#user_profile_img {
+  margin-top: 10px;
+  width: 132px;
+  height: 170px;
   display: inline;
-  cursor: pointer;
-  background-color: #626db325;
-  border-radius: 5px;
 }
 #for-li {
   background-color: none;
