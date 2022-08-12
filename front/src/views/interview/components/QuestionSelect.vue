@@ -42,7 +42,10 @@
             v-for="(data, i) in questionList" :key="i"
             @click="selectQuestion(data)">
               {{ data.question }}</button>
-            <p>{{ selectedQuestionList }}</p>
+            <div v-if="selectedQuestionList">
+              <p v-for="(pick, index) in selectedQuestionList" :key="index">
+                {{ pick }}</p>
+            </div>
           </div>
         </div>
         <div class="box4" v-show="selected=='myQuestion'">
@@ -53,7 +56,6 @@
             aria-labelledby="myQuestion">
             <button id="double-check-btn" @click="addQuestion()">등록</button>
           </div>
-        <p>{{ selectedQuestionList }}</p>
         </div>
       </div>
       <div class="d-flex">
@@ -173,6 +175,8 @@ export default {
   width: 366px;
   height: 100px;
   font-size: 36px;
+  font-weight: 500;
+  color: #4d4d4d;
 }
 .box2 {
   display: flex;
@@ -180,6 +184,8 @@ export default {
   width: 1000px;
   height: 100px;
   font-size: 48px;
+  font-weight: 900;
+  color: #4d4d4d;
 }
 .box3 {
   width: 366px;
