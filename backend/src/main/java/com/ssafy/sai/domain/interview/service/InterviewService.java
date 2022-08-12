@@ -1,6 +1,8 @@
 package com.ssafy.sai.domain.interview.service;
 
 import com.ssafy.sai.domain.interview.domain.*;
+
+import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,11 +40,12 @@ public class InterviewService {
 
     private final QuestionRepository questionRepository;
     private final CustomQuestionRepository customQuestionRepository;
-
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
     private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
+
+//    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -81,7 +85,6 @@ public class InterviewService {
         Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         CustomInterviewQuestion question = new CustomInterviewQuestion(request.getQuestion(), findMember);
         customQuestionRepository.save(question);
-
     }
 
     @Transactional
@@ -91,8 +94,46 @@ public class InterviewService {
     }
 
     @Transactional
-    public void createInterviewInfo(Long id, Long scheduleId) {
-        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
+    public InterviewInfo createInterviewInfo(Long id, CreateInterviewInfoRequest request) throws ScheduleException {
+
+        InterviewInfo interviewInfo;
+
+        //나혼자 연습일때
+        if (request.getScheduleId() == null) {
+            Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+
+            interviewInfo = InterviewInfo.builder().memberStudent(findMember)
+                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
+                    .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
+                    .interviewDate(LocalDate.now())
+                    .build();
+
+        } else {
+            // 컨설턴트와 면접일때
+            Schedule findSchedule = scheduleRepository.findById(request.getScheduleId()).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
+
+            interviewInfo = InterviewInfo.builder().memberStudent(findSchedule.getMemberStudent())
+                    .memberConsultant(findSchedule.getMemberConsultant())
+                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
+                    .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
+                    .interviewDate(LocalDate.now())
+                    .category(findSchedule.getCategory())
+                    .detail(findSchedule.getDetail())
+                    .build();
+        }
+
+        InterviewInfo saveInterviewInfo = interviewInfoRepository.save(interviewInfo);
+
+        return saveInterviewInfo;
+
+//        // 사용한 면접 질문 넣기
+//        for (String question : request.getQuestions()) {
+//            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
+//                    .savedInterviewInfo(saveInterviewInfo)
+//                    .question(question).build();
+//
+//            useInterviewQuestionRepository.save(useInterviewQuestion);
+//        }
     }
 
     public List<InterviewInfoDto> findFeedbackRequest(Long id) {
@@ -107,13 +148,13 @@ public class InterviewService {
 
     /**
      * @param consultantId 컨설턴트 PK
-     * @param infoId 면접 정보 PK
+     * @param infoId       면접 정보 PK
      * @return 면접 질문별 영상
      * @메소드 면접 영상 가져오는 서비스
      */
     public List<InterviewVideoDto> findInterviewVideo(Long consultantId, Long infoId) {
         Member findMember = memberRepository.findById(consultantId)
-                .orElseThrow(()-> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
         InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
         List<InterviewVideo> interviewVideoList = interviewInfo.getInterviewVideoList();
         List<InterviewVideoDto> result = interviewVideoList.stream()

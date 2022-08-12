@@ -1,24 +1,23 @@
 package com.ssafy.sai.domain.interview.api;
 
 import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
+import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
+import com.ssafy.sai.domain.interview.dto.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.DeleteInterviewVideoRequest;
 import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.dto.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
-import com.ssafy.sai.domain.interview.service.GcsService;
 import com.ssafy.sai.domain.interview.service.InterviewService;
 import com.ssafy.sai.domain.interview.service.S3UploaderService;
-import com.ssafy.sai.domain.interview.service.AsyncSTT;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +29,6 @@ public class InterviewController {
 
     private final InterviewService interviewService;
     private final S3UploaderService s3UploaderService;
-    private final AsyncSTT sttSample;
-    private final GcsService gcsService;
 
     @PostMapping("/{consultant-id}/feedback/{video-id}")
     public ResponseEntity<? extends MessageResponse> saveFeedback(
@@ -59,11 +56,17 @@ public class InterviewController {
     }
 
     @PostMapping("/{member_id}")
-    public ResponseEntity<? extends MessageResponse> saveInterview(@PathVariable("member_id") Long id, @RequestPart("video") List<MultipartFile> multipartFiles) {
+    public ResponseEntity<? extends MessageResponse> saveInterview(@PathVariable("member_id") Long id, @RequestBody CreateInterviewInfoRequest request) {
 //        scheduleId: 1,
+//        isPractice: true,
+//        feedbackRequest: true,
 //        questions: ["자기소개","지원동기"]
 //        form-data : .mp4
-        s3UploaderService.uploadFileS3(id, multipartFiles);
+
+        // DTO 만들어야함
+
+        InterviewInfo saveInterviewInfo = interviewService.createInterviewInfo(id, request);
+        s3UploaderService.uploadFileS3(id, request, saveInterviewInfo);
 
         return ResponseEntity.ok().body(new DataResponse<>("이게 비동기 처리인가요..?"));
     }

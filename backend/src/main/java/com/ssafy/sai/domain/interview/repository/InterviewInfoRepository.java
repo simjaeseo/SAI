@@ -2,6 +2,7 @@ package com.ssafy.sai.domain.interview.repository;
 
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
