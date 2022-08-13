@@ -161,6 +161,8 @@ export default {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
+    const consultants = computed(() => store.getters.myConsultants);
+    // 동영상저장 axios
 
     const URL = 'https://teachablemachine.withgoogle.com/models/MmjUp1c8n/';
     let model; let webcam; let ctx; let labelContainer; let
@@ -241,6 +243,7 @@ export default {
     return {
       selectedQuestionList,
       currentUser,
+      consultants,
       init,
     };
   },
