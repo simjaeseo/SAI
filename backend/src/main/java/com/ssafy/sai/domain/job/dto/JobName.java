@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class JobName {
+
     private String name;
 }

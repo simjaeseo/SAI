@@ -14,12 +14,12 @@ import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.dto.AuthenticationMember;
-import com.ssafy.sai.domain.member.dto.ConsultantDto;
+import com.ssafy.sai.domain.member.dto.response.MemberLoginResponse;
+import com.ssafy.sai.domain.member.dto.response.ConsultantResponse;
 import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
-import com.ssafy.sai.domain.member.dto.response.MemberResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberSimpleResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
@@ -31,8 +31,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +55,7 @@ public class SignService {
      * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
      */
     @Transactional
-    public MemberResponse signUpMember(MemberSignUpRequest request) throws MemberException {
+    public MemberSimpleResponse signUpMember(MemberSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -107,7 +105,7 @@ public class SignService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
         findMember.updateCampus(campus);
 
-        return new MemberResponse(findMember);
+        return new MemberSimpleResponse(findMember);
     }
 
     /**
@@ -117,7 +115,7 @@ public class SignService {
      * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
      */
     @Transactional
-    public ConsultantDto signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
+    public ConsultantResponse signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -148,7 +146,7 @@ public class SignService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
         findMember.updateCampus(campus);
 
-        return new ConsultantDto(findMember);
+        return new ConsultantResponse(findMember);
     }
 
     /**
@@ -158,7 +156,7 @@ public class SignService {
      * @throws Exception 이메일이 일치하지 않는 경우, 비밀번호가 일치하지 않는 경우 예외 발생
      */
     @Transactional
-    public AuthenticationMember loginMember(MemberLoginRequest request) throws MemberException {
+    public MemberLoginResponse loginMember(MemberLoginRequest request) throws MemberException {
 
         // Member -> DTO
         Member memberDto = Member.builder()
@@ -175,7 +173,7 @@ public class SignService {
             throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
         }
 
-        return modelMapper.map(findMember, AuthenticationMember.class);
+        return modelMapper.map(findMember, MemberLoginResponse.class);
     }
 
 }
