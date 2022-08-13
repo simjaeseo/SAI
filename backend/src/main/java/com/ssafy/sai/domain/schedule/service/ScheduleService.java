@@ -115,10 +115,14 @@ public class ScheduleService {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        List<ConsultantAllByCampusResponse> findConsultant
+        List<Member> findConsultant
                 = memberRepository.findConsultantByCampus(findMember.getCampus().getCity(), MemberStatus.CONSULTANT);
 
-        return findConsultant;
+        List<ConsultantAllByCampusResponse> result = findConsultant.stream()
+                .map(consultant -> new ConsultantAllByCampusResponse(consultant))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
 

@@ -25,8 +25,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.id = :id")
     Member findMemberEntityGraph(@Param("id") Long id);
 
-    @Query("select new com.ssafy.sai.domain.member.dto.response.ConsultantAllByCampusResponse(m.id, m.name) from Member as m where m.campus.city = :city and m.memberStatus = :memberStatus")
-    List<ConsultantAllByCampusResponse> findConsultantByCampus(@Param("city") String city, @Param("memberStatus") MemberStatus memberStatus);
+    @Query("select m from Member m" +
+            " where m.campus.city = :city and m.memberStatus = :memberStatus")
+    List<Member> findConsultantByCampus(@Param("city") String city, @Param("memberStatus") MemberStatus memberStatus);
 
     @Query(value =
             "select count(*) " +
