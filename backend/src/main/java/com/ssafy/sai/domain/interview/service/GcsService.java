@@ -10,6 +10,13 @@ import com.google.cloud.speech.v1.*;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import com.ssafy.sai.domain.interview.domain.*;
+import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
+import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
+import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
+import com.ssafy.sai.domain.interview.repository.UseInterviewQuestionRepository;
+import com.ssafy.sai.domain.member.repository.MemberRepository;
+import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,9 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.threeten.bp.Duration;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,14 +37,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class GcsService {
-
+    private final MemberRepository memberRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final InterviewInfoRepository interviewInfoRepository;
+    private final InterviewVideoRepository interviewVideoRepository;
+    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     // gcs 업로드
-    public void uploadFileGcs(Long id, MultipartFile multipartFile) throws IOException {
+    public void uploadFileGcs(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, List<MultipartFile> audioMultipartFiles, List<String> openviduVideoNames, List<String> flacAudioNames, List<String> S3videoUrlList) throws IOException {
         String keyFileName = "psychic-habitat-358714-81bd61376e0d.json";
         InputStream keyFile = ResourceUtils.getURL("classpath:" + keyFileName).openStream();
-
-        String audioName = createFileName(multipartFile.getOriginalFilename());
 
 
         Storage storage = StorageOptions.newBuilder().setProjectId("psychic-habitat-358714")
@@ -44,19 +54,29 @@ public class GcsService {
                 .setCredentials(GoogleCredentials.fromStream(keyFile))
                 .build().getService();
 
+        List<String> gcsUrls = new ArrayList<>();
+        int index = 0;
+        for (MultipartFile audioMultipartFile : audioMultipartFiles) {
+            String audioName = createFileName(audioMultipartFile.getOriginalFilename());
+            try {
+                BlobInfo blobInfo = storage.create(
+                        BlobInfo.newBuilder("sai-ssafy", audioName).setContentType("audio/flac").build(), //get original file name
+                        audioMultipartFile.getBytes()
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            String gsutillUrl = "gs://sai-ssafy/" + audioName; // google speech API 를 사용하기위한 gsutill URL
 
-        BlobInfo blobInfo = storage.create(
-                BlobInfo.newBuilder("sai-ssafy", audioName).setContentType("audio/flac").build(), //get original file name
-                multipartFile.getBytes()
-        );
-        String gsutillUrl = "gs://sai-ssafy/" + audioName; // google speech API 를 사용하기위한 gsutill URL
-
-
-        // 내 생각에 이걸 저장할때 해도 될지 걱정... 마이페이지에서 동영상 클릭했을때 혹은 리턴하고 나서 하는게 맞을거같은데..
-        try {
-            STT(gsutillUrl);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            String gcsUrl = "https://storage.googleapis.com/sai-ssafy/" + audioName;
+            gcsUrls.add(gcsUrl);
+            // 내 생각에 이걸 저장할때 해도 될지 걱정... 마이페이지에서 동영상 클릭했을때 혹은 리턴하고 나서 하는게 맞을거같은데..
+            try {
+                STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index),  index);
+                index++;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -74,8 +94,12 @@ public class GcsService {
     }
 
 
-    /** Demonstrates using the Speech API to transcribe an audio file. */
-    public void STT(String gsutillUrl) throws Exception {
+    /**
+     * Demonstrates using the Speech API to transcribe an audio file.
+     */
+    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl,  int index) throws Exception {
+
+
         // Configure polling algorithm
         SpeechSettings.Builder speechSettings = SpeechSettings.newBuilder();
         TimedRetryAlgorithm timedRetryAlgorithm =
@@ -97,9 +121,9 @@ public class GcsService {
             // Configure remote file request for FLAC
             RecognitionConfig config =
                     RecognitionConfig.newBuilder()
-                            .setEncoding(RecognitionConfig.AudioEncoding.FLAC).setAudioChannelCount(2)
+                            .setEncoding(RecognitionConfig.AudioEncoding.FLAC).setAudioChannelCount(1)
                             .setLanguageCode("ko-KR")
-                            .setSampleRateHertz(48000)
+                            .setSampleRateHertz(16000)
                             .build();
             RecognitionAudio audio = RecognitionAudio.newBuilder().setUri(gsutillUrl).build();
 
@@ -113,14 +137,51 @@ public class GcsService {
 
             List<SpeechRecognitionResult> results = response.get().getResultsList();
 
+            String stt = "";
             for (SpeechRecognitionResult result : results) {
                 // There can be several alternative transcripts for a given chunk of speech. Just use the
                 // first (most likely) one here.
                 SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                stt += alternative.getTranscript();
                 System.out.printf("Transcription: %s\n", alternative.getTranscript());
             }
-        }
 
+            //사용한 면접 질문 넣기
+            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
+                    .question(request.getQuestions().get(index)).build();
+
+            useInterviewQuestionRepository.save(useInterviewQuestion);
+
+
+            // db에 저장하기
+            InterviewVideo interviewVideo = InterviewVideo.builder()
+                    .interviewInfo(saveInterviewInfo)
+                    .useInterviewQuestion(useInterviewQuestion)
+                    .videoUrl(S3videoUrl)
+                    .audioUrl(gcsUrl)
+                    .stt(stt)
+                    .wrongPostureCount(request.getWrongPostureCount()).build();
+
+            interviewVideoRepository.save(interviewVideo);
+
+
+            for (String openviduVideoName : openviduVideoNames) {
+                File inteviewMp4File = new File(openviduVideoName);
+                if (inteviewMp4File.exists()) { //파일존재여부확인
+                    inteviewMp4File.delete();
+                }
+            }
+
+            for (String flacAudioName : flacAudioNames) {
+                File inteviewFlacFile = new File(flacAudioName);
+                if (inteviewFlacFile.exists()) { //파일존재여부확인
+                    inteviewFlacFile.delete();
+                }
+            }
+
+
+        }
     }
 
 }
+
