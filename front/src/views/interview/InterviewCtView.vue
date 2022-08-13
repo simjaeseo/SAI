@@ -1,23 +1,54 @@
-interviewctView
-
 <template>
     <div>
       <div class="container">
+        <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
+      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalToggleLabel">모의 면접을 끝내시겠습니까?</h5>
+              <button type="button" class="btn-close"
+              data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="col-12">
+                <div class="form-check d-flex" style="padding-left: 0">
+                  <!-- <label class="form-check-label" for="gridRadios1">
+                  <input class="form-check-input" type="radio" name="gridRadios"
+                  id="gridRadios1" value="true" checked @change="leaveConfirm($event)">
+                    예
+                  </label> -->
+                  <button type="button" @click="leaveSession()" id="modal-btn"
+                  data-bs-dismiss="modal" aria-label="Close">예</button>
+                  <!-- <label class="form-check-label" for="gridRadios2">
+                  <input class="form-check-input" type="radio" name="gridRadios"
+                  id="gridRadios2" value="false" @change="leaveConfirm($event)">
+                    아니오
+                  </label> -->
+                  <button type="button" id="modal-btn"
+                   data-bs-dismiss="modal" aria-label="Close">아니오</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
         <div id="session" v-if="session">
           <div id="session-header">
           </div>
           <div id="main-video">
             <user-video :stream-manager="mainStreamManager"/>
             <div class="d-flex flex-row-reverse">
-              <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="leaveSession" value="면접 종료하기">
-              <div v-show="isRecording==0">
-                <input class="btn btn-light me-2" type="button"
-                  id="buttonLeaveSession" @click="startRecoding(), isRecording = 1" value="질문 시작">
+              <input class="btn-box me-2" type="button"
+              data-bs-toggle="modal" data-bs-target="#exampleModalToggle"
+              id="buttonLeaveSession" value="면접 종료하기">
+              <div v-show="currentUser.memberStatus == 'CONSULTANT' && isRecording==0">
+                <input class="btn-box btn-light me-2" type="button"
+                  id="buttonLeaveSession" @click="[startRecoding(), isRecording = 1]" value="질문 시작">
               </div>
-              <div v-show="isRecording==1">
-                <input class="btn btn-light me-2" type="button"
-                  id="buttonLeaveSession" @click="stopRecoding(), isRecording = 0" value="답변 완료">
+              <div v-show="currentUser.memberStatus == 'CONSULTANT' && isRecording==1">
+                <input class="btn-box me-2" type="button"
+                  id="buttonLeaveSession" @click="[stopRecoding(), isRecording = 0]" value="답변 완료">
               </div>
             </div>
           </div>
@@ -63,6 +94,7 @@ export default {
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       myRecodingId: undefined,
       isRecording: 0,
+      leaveConfirm: true,
     };
   },
   setup() {
@@ -86,6 +118,14 @@ export default {
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() {}, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    myConfirm(event) {
+      if (event.target.value === 'true') {
+        this.myConfirms = true;
+      } else {
+        this.myConfirms = false;
+      }
+      console.log(this.myConfirms);
+    },
     joinSession() {
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
@@ -230,6 +270,7 @@ export default {
         .then((res) => {
           this.myRecodingId = res.data.id;
           console.log(res);
+          console.log(this.myRecodingId);
         });
     },
     stopRecoding() {
@@ -311,5 +352,54 @@ video {
   cursor: pointer;
   object-fit: cover;
   height: 180px;
+}
+#modal-btn{
+  margin: 20px;
+  margin-right: 12px;
+  z-index: 1000;
+  background-color: #5c6ac4;
+  color: white;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  font-size: 20px;
+  border-radius: 0.25rem;
+  padding: 0;
+  width: 200px;
+  height: 60px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-box{
+  z-index: 1000;
+  color: #5c6ac4;
+  background-color: white;
+  border: 1px solid #5c6ac4;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 20px;
+  border-radius: 0.25rem;
+  padding: 0rem;
+  height: 50px;
+  width: 180px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 </style>
