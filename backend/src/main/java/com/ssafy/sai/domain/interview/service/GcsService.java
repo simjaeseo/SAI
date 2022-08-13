@@ -12,11 +12,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.ssafy.sai.domain.interview.domain.*;
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
+
 import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
 import com.ssafy.sai.domain.interview.repository.UsedInterviewQuestionRepository;
-import com.ssafy.sai.domain.member.repository.MemberRepository;
-import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,60 +31,77 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class GcsService {
-    private final MemberRepository memberRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
     private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     // gcs 업로드
-    public void uploadFileGcs(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, List<MultipartFile> audioMultipartFiles, List<String> openviduVideoNames, List<String> flacAudioNames, List<String> S3videoUrlList) throws IOException {
+
+    /**
+     * @메소드 gcs 업로드 메소드
+     * @param id 사용자pk
+     * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
+     * @param saveInterviewInfo 면접 정보 엔티티
+     * @param audioMultipartFiles .flac 멀티파트파일
+     * @param openviduVideoNames openvidu server에 저장되어있는 mp4 파일 이름 리스트
+     * @param flacAudioNames .flac 오디오 파일 이름 리스트
+     * @param S3videoUrlList S3에 저장된 면접영상에 접근할수있는 url 리스트
+     * @throws IOException
+     * @throws RuntimeException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public void uploadFileGcs(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, List<MultipartFile> audioMultipartFiles, List<String> openviduVideoNames, List<String> flacAudioNames, List<String> S3videoUrlList) throws IOException, RuntimeException, ExecutionException, InterruptedException {
+
+        List<String> gcsUrls = new ArrayList<>();
+
         String keyFileName = "psychic-habitat-358714-81bd61376e0d.json";
         InputStream keyFile = ResourceUtils.getURL("classpath:" + keyFileName).openStream();
-
 
         Storage storage = StorageOptions.newBuilder().setProjectId("psychic-habitat-358714")
                 // Key 파일 수동 등록
                 .setCredentials(GoogleCredentials.fromStream(keyFile))
                 .build().getService();
 
-        List<String> gcsUrls = new ArrayList<>();
         int index = 0;
+
         for (MultipartFile audioMultipartFile : audioMultipartFiles) {
             String audioName = createFileName(audioMultipartFile.getOriginalFilename());
-            try {
-                BlobInfo blobInfo = storage.create(
-                        BlobInfo.newBuilder("sai-ssafy", audioName).setContentType("audio/flac").build(), //get original file name
-                        audioMultipartFile.getBytes()
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            BlobInfo blobInfo = storage.create(
+                    BlobInfo.newBuilder("sai-ssafy", audioName).setContentType("audio/flac").build(), //get original file name
+                    audioMultipartFile.getBytes()
+            );
             String gsutillUrl = "gs://sai-ssafy/" + audioName; // google speech API 를 사용하기위한 gsutill URL
 
             String gcsUrl = "https://storage.googleapis.com/sai-ssafy/" + audioName;
             gcsUrls.add(gcsUrl);
-            // 내 생각에 이걸 저장할때 해도 될지 걱정... 마이페이지에서 동영상 클릭했을때 혹은 리턴하고 나서 하는게 맞을거같은데..
-            try {
-                STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index), index);
-                index++;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+
+            STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index),  index);
+            index++;
         }
     }
 
 
+    /**
+     * @메소드 파일 이름 랜덤하게 지어주는 함수
+     * @param fileName 파일 이름
+     * @return
+     */
     private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
 
-    private String getFileExtension(String fileName) { // file 형식이 잘못된 경우를 확인하기 위해 만들어진 로직이며, 파일 타입과 상관없이 업로드할 수 있게 하기 위해 .의 존재 유무만 판단하였습니다.
+    /**
+     * @메소드 file 형식이 잘못된 경우를 확인하기 위한 함수 (파일 타입과 상관없이 업로드할 수 있게 하기 위해 .의 존재 유무만 판단)
+     * @param fileName 파일 이름
+     * @return
+     */
+    private String getFileExtension(String fileName) {
         try {
             return fileName.substring(fileName.lastIndexOf("."));
         } catch (StringIndexOutOfBoundsException e) {
@@ -93,13 +109,23 @@ public class GcsService {
         }
     }
 
-
     /**
-     * Demonstrates using the Speech API to transcribe an audio file.
+     * @메소드 stt 함수
+     * @param id 사용자pk
+     * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
+     * @param saveInterviewInfo 면접 정보 엔티티
+     * @param gsutillUrl gcs에 저장된 flac에 접근할 수 있는 gsutill url
+     * @param gcsUrl gcs에 저장된 flac에 접근할 수 있는 url
+     * @param openviduVideoNames openvidu server에 저장되어있는 mp4 파일 이름 리스트
+     * @param flacAudioNames .flac 오디오 파일 이름 리스트
+     * @param S3videoUrl S3에 저장된 면접영상에 접근할수있는 url
+     * @param index 인덱스
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
      */
-    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, int index) throws Exception {
 
-
+    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, int index) throws IOException, InterruptedException, ExecutionException {
         // Configure polling algorithm
         SpeechSettings.Builder speechSettings = SpeechSettings.newBuilder();
         TimedRetryAlgorithm timedRetryAlgorithm =

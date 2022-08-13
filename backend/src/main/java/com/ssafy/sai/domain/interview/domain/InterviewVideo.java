@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.interview.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.sai.global.common.BaseEntity;
 import lombok.*;
 

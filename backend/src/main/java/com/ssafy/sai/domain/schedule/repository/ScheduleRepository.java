@@ -55,6 +55,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             " where s.memberConsultant.id = :memberId and s.scheduleDate = :date" +
             " order by s.scheduleDate asc, s.startTime asc")
     List<Schedule> selectScheduleOnSpecificDayByConsultant(@Param("memberId") Long id, @Param("date") LocalDate date);
-
-
 }

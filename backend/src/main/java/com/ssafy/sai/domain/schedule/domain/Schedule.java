@@ -39,12 +39,10 @@ public class Schedule {
 
     private String detail;
 
-    @JsonBackReference
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "student_id")
     private Member memberStudent;
 
-    @JsonBackReference
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "consultant_id")
     private Member memberConsultant;

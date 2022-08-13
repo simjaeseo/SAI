@@ -20,4 +20,10 @@ public interface InterviewInfoRepository extends JpaRepository<InterviewInfo, Lo
             " join fetch iv.usedInterviewQuestion ui" +
             " where i.memberConsultant.id = :consultantId and i.id = :infoId")
     Optional<InterviewInfo> findInfoById(@Param("consultantId") Long consultantId, @Param("infoId") Long infoId);
+
+    @Query("select i from InterviewInfo i" +
+            " join fetch i.memberStudent im" +
+            " where im.id = :id")
+    List<InterviewInfo> selectAllByMember(@Param("id") Long id);
+
 }
