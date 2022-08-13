@@ -13,7 +13,9 @@ import com.ssafy.sai.domain.schedule.exception.ScheduleException;
 import com.ssafy.sai.domain.schedule.exception.ScheduleExceptionType;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -45,19 +47,19 @@ public class ScheduleService {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "scheduleDate", "startTime"));
+
         if (findMember.getMemberStatus().equals(TRAINEE)) {
-            List<Schedule> schedules = scheduleRepository.selectAllByStudentOrderByScheduleDateAscStartTimeAsc(id);
-            List<ScheduleAllByStudentResponse> result = schedules.stream()
-                    .map(schedule -> new ScheduleAllByStudentResponse(schedule))
-                    .collect(Collectors.toList());
+            Page<Schedule> schedules = scheduleRepository.selectAllByStudent(id, pageRequest);
+            Page<ScheduleAllByStudentResponse> page = schedules.map(schedule -> new ScheduleAllByStudentResponse(schedule));
+            List<ScheduleAllByStudentResponse> result = page.getContent();
 
             return result;
         }
 
-        List<Schedule> schedules = scheduleRepository.selectAllByConsultantOrderByScheduleDateAscStartTimeAsc(id);
-        List<ScheduleAllByConsultantResponse> result = schedules.stream()
-                .map(schedule -> new ScheduleAllByConsultantResponse(schedule))
-                .collect(Collectors.toList());
+        Page<Schedule> schedules = scheduleRepository.selectAllByConsultant(id, pageRequest);
+        Page<ScheduleAllByConsultantResponse> page = schedules.map(schedule -> new ScheduleAllByConsultantResponse(schedule));
+        List<ScheduleAllByConsultantResponse> result = page.getContent();
 
         return result;
     }
@@ -137,19 +139,19 @@ public class ScheduleService {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "scheduleDate", "startTime"));
+
         if (findMember.getMemberStatus().equals(TRAINEE)) {
-            List<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
-            List<ScheduleSinceTodayByStudentResponse> result = schedules.stream()
-                    .map(schedule -> new ScheduleSinceTodayByStudentResponse(schedule))
-                    .collect(Collectors.toList());
+            Page<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), LocalTime.now(), pageRequest);
+            Page<ScheduleSinceTodayByStudentResponse> page = schedules.map(schedule -> new ScheduleSinceTodayByStudentResponse(schedule));
+            List<ScheduleSinceTodayByStudentResponse> result = page.getContent();
 
             return result;
         }
 
-        List<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
-        List<ScheduleSinceTodayByConsultantResponse> result = schedules.stream()
-                .map(schedule -> new ScheduleSinceTodayByConsultantResponse(schedule))
-                .collect(Collectors.toList());
+        Page<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), LocalTime.now(), pageRequest);
+        Page<ScheduleSinceTodayByConsultantResponse> page = schedules.map(schedule -> new ScheduleSinceTodayByConsultantResponse(schedule));
+        List<ScheduleSinceTodayByConsultantResponse> result = page.getContent();
 
         return result;
     }

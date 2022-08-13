@@ -1,12 +1,9 @@
 package com.ssafy.sai.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.schedule.domain.Schedule;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
