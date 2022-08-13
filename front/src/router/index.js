@@ -39,7 +39,7 @@ import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
 // test
-import Test from '@/views/chat/TETEST.vue';
+// import Test from '@/views/chat/TETEST.vue';
 
 const routes = [
   {
@@ -182,11 +182,11 @@ const routes = [
     name: 'ProfileUpdateCTView',
     component: ProfileUpdateCTView,
   },
-  {
-    path: '/test',
-    name: 'Test',
-    component: Test,
-  },
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   component: Test,
+  // },
 ];
 
 const router = createRouter({
