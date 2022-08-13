@@ -127,8 +127,6 @@ public class GcsService {
      */
     public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, String S3videoName, int index) throws IOException, InterruptedException, ExecutionException {
 
-
-    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, int index) throws IOException, InterruptedException, ExecutionException {
         // Configure polling algorithm
         SpeechSettings.Builder speechSettings = SpeechSettings.newBuilder();
         TimedRetryAlgorithm timedRetryAlgorithm =
@@ -179,8 +177,6 @@ public class GcsService {
             UsedInterviewQuestion usedInterviewQuestion = UsedInterviewQuestion.builder()
                     .question(request.getQuestions().get(index)).build();
 
-            usedInterviewQuestionRepository.save(usedInterviewQuestion);
-
             // 면접 영상 db에 저장하기
             InterviewVideo interviewVideo = InterviewVideo.builder()
                     .interviewInfo(saveInterviewInfo)
@@ -193,13 +189,13 @@ public class GcsService {
 
 
             //사용한 면접 질문 db에 저장하기
-            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
+            UsedInterviewQuestion useInterviewQuestion = UsedInterviewQuestion.builder()
                     .question(request.getQuestions().get(index)).build();
 
             useInterviewQuestion.addInterviewVideo(interviewVideo);
 
             //cascade를 통해 interviewVideo도 자동 저장
-            useInterviewQuestionRepository.save(useInterviewQuestion);
+            usedInterviewQuestionRepository.save(useInterviewQuestion);
 
 
             for (String openviduVideoName : openviduVideoNames) {
