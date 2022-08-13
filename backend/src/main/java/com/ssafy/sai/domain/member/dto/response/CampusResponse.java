@@ -8,6 +8,8 @@ public class CampusResponse {
     private String city;
     private Integer classNumber;
 
+    public CampusResponse() {}
+
     public CampusResponse(String city, Integer classNumber) {
         this.city = city;
         this.classNumber = classNumber;

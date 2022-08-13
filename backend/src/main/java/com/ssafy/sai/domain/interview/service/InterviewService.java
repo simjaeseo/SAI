@@ -71,14 +71,16 @@ public class InterviewService {
 
     @Transactional
     public List<CustomInterviewQuestion> getCustomInterviewQuestionList(CustomQuestionRequest request) throws MemberException {
-        Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         List<CustomInterviewQuestion> customInterviewQuestionList = customQuestionRepository.findQuestionsByMemberId(findMember.getId());
         return customInterviewQuestionList;
     }
 
     @Transactional
     public void createCustomInterviewQuestion(CustomQuestionRequest request) throws MemberException {
-        Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         CustomInterviewQuestion question = new CustomInterviewQuestion(request.getQuestion(), findMember);
         customQuestionRepository.save(question);
     }
@@ -99,7 +101,8 @@ public class InterviewService {
                     .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
             interviewInfo = InterviewInfo.builder().memberStudent(findMember)
-                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
+                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true")
+                            ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
                     .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
                     .interviewDate(LocalDate.now())
                     .build();

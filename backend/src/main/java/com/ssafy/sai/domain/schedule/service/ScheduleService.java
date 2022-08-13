@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ssafy.sai.domain.member.domain.MemberStatus.TRAINEE;
 
@@ -45,12 +46,20 @@ public class ScheduleService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
         if (findMember.getMemberStatus().equals(TRAINEE)) {
-            List<ScheduleAllByStudentResponse> data = scheduleRepository.selectAllByStudent(id);
-            return data;
-        } else {
-            List<ScheduleAllByConsultantResponse> data = scheduleRepository.selectAllByConsultant(id);
-            return data;
+            List<Schedule> schedules = scheduleRepository.selectAllByStudentOrderByScheduleDateAscStartTimeAsc(id);
+            List<ScheduleAllByStudentResponse> result = schedules.stream()
+                    .map(schedule -> new ScheduleAllByStudentResponse(schedule))
+                    .collect(Collectors.toList());
+
+            return result;
         }
+
+        List<Schedule> schedules = scheduleRepository.selectAllByConsultantOrderByScheduleDateAscStartTimeAsc(id);
+        List<ScheduleAllByConsultantResponse> result = schedules.stream()
+                .map(schedule -> new ScheduleAllByConsultantResponse(schedule))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
 
@@ -125,15 +134,22 @@ public class ScheduleService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
         if (findMember.getMemberStatus().equals(TRAINEE)) {
-            List<ScheduleSinceTodayByStudentResponse> data
-                    = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
-            return data;
-        } else {
-            List<ScheduleSinceTodayByConsultantResponse> data
-                    = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
-            return data;
+            List<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByStudent(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
+            List<ScheduleSinceTodayByStudentResponse> result = schedules.stream()
+                    .map(schedule -> new ScheduleSinceTodayByStudentResponse(schedule))
+                    .collect(Collectors.toList());
+
+            return result;
         }
+
+        List<Schedule> schedules = scheduleRepository.selectScheduleSinceTodayByConsultant(id, LocalDate.now(), LocalTime.now(), PageRequest.of(0, 5));
+        List<ScheduleSinceTodayByConsultantResponse> result = schedules.stream()
+                .map(schedule -> new ScheduleSinceTodayByConsultantResponse(schedule))
+                .collect(Collectors.toList());
+
+        return result;
     }
+
 
     /**
      * @param id   멤버의 PK
@@ -148,12 +164,19 @@ public class ScheduleService {
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
         if (findMember.getMemberStatus().equals(TRAINEE)) {
-            List<ScheduleOnSpecificDayByStudentResponse> data = scheduleRepository.selectScheduleOnSpecificDayByStudent(id, date);
-            return data;
-        } else {
-            List<ScheduleOnSpecificDayByConsultantResponse> data = scheduleRepository.selectScheduleOnSpecificDayByConsultant(id, date);
+            List<Schedule> schedules = scheduleRepository.selectScheduleOnSpecificDayByStudent(id, date);
+            List<ScheduleOnSpecificDayByStudentResponse> data = schedules.stream()
+                    .map(schedule -> new ScheduleOnSpecificDayByStudentResponse(schedule))
+                    .collect(Collectors.toList());
+
             return data;
         }
+
+        List<Schedule> schedules = scheduleRepository.selectScheduleOnSpecificDayByConsultant(id, date);
+        List<ScheduleOnSpecificDayByConsultantResponse> data = schedules.stream()
+                .map(schedule -> new ScheduleOnSpecificDayByConsultantResponse(schedule))
+                .collect(Collectors.toList());
+        return data;
     }
 
 }
