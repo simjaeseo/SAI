@@ -22,7 +22,8 @@ public class InterviewInfoResponse {
 
     public InterviewInfoResponse(InterviewInfo interviewInfo){
         id = interviewInfo.getId();
-        consultantId =  interviewInfo.getMemberConsultant().getId();
+        consultantId = interviewInfo.getMemberConsultant()
+                == null ? null : interviewInfo.getMemberConsultant().getId();
         category = interviewInfo.getCategory();
         detail = interviewInfo.getDetail();
         interviewDate = interviewInfo.getInterviewDate();

@@ -48,6 +48,7 @@ public class InterviewService {
     private final InterviewVideoRepository interviewVideoRepository;
 //    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
+    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -98,11 +99,11 @@ public class InterviewService {
 
 
     /**
-     * @메소드 면접 저장 서비스 (면접 정보 테이블에 저장)
-     * @param id 사용자 id
+     * @param id      사용자 id
      * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
      * @return InterviewInfo 엔티티
      * @throws ScheduleException
+     * @메소드 면접 저장 서비스 (면접 정보 테이블에 저장)
      */
     @Transactional
     public InterviewInfo createInterviewInfo(Long id, CreateInterviewInfoRequest request) throws ScheduleException {
@@ -115,7 +116,7 @@ public class InterviewService {
                     .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
             Member findConsultant = null;
-            if(request.getFeedbackRequest().equals("true")){
+            if (request.getFeedbackRequest().equals("true")) {
                 findConsultant = memberRepository.findById(Long.parseLong(request.getConsultantId())).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
             }
 
@@ -207,19 +208,17 @@ public class InterviewService {
     //    - 면접 세부 분석 (교육생 입장)
     //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
     @Transactional
-    public List<InterviewInfoResponse> selectInterviewInfoList(Long id) throws MemberException{
+    public List<InterviewInfoResponse> selectInterviewInfoList(Long id) throws MemberException {
 
-        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
-
-        List<InterviewInfo> findInterviewInfos = interviewInfoRepository.selectAllByMember(findMember.getId());
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        List<InterviewInfo> findInterviewInfos = interviewInfoRepository.selectAllById(findMember.getId());
 
         List<InterviewInfoResponse> result = findInterviewInfos.stream()
                 .map(m -> new InterviewInfoResponse(m))
                 .collect(Collectors.toList());
 
         return result;
-
-
     }
 
     //    - 면접 세부 분석 (교육생 입장)
@@ -230,11 +229,13 @@ public class InterviewService {
 
         Member findConsultant = memberRepository.findById(request.getConsultantId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        System.out.println("findInterviewInfo = " + findInterviewInfo);;
+        System.out.println("findInterviewInfo = " + findInterviewInfo);
+        ;
 
         findInterviewInfo.updateConsultantIdAndFeedbackRequestStatus(findConsultant, FeedbackRequestStatus.TRUE);
 
-        System.out.println("findInterviewInfo = " + findInterviewInfo);;
+        System.out.println("findInterviewInfo = " + findInterviewInfo);
+        ;
 
         interviewInfoRepository.save(findInterviewInfo);
 
@@ -244,13 +245,29 @@ public class InterviewService {
     //    - 마이페이지
     //    영상 삭제 - 재서
     @Transactional
-    public void deleteInterview(Long id, Long interviewInfoId){
+    public void deleteInterview(Long id, Long interviewInfoId) throws InterviewException{
 
         InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
 
-        InterviewVideo findInterviewVideo = interviewVideoRepository.findByInterviewInfo(findInterviewInfo).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_VIDEO));
+        List<InterviewVideo> findInterviewVideos = interviewVideoRepository.findAllByInterviewInfo(findInterviewInfo);
 
         interviewInfoRepository.delete(findInterviewInfo);
-        interviewVideoRepository.delete(findInterviewVideo);
+
+        for(InterviewVideo findInterviewVideo : findInterviewVideos){
+
+        UsedInterviewQuestion usedInterviewQuestion = findInterviewVideo.getUsedInterviewQuestion();
+         usedInterviewQuestionRepository.delete(usedInterviewQuestion);
+        }
+
     }
+
+    @Transactional
+    public List<InterviewVideo> selectS3VideoNameList( Long interviewInfoId){
+
+        InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
+
+        return findInterviewInfo.getInterviewVideoList();
+
+    }
+
 }
