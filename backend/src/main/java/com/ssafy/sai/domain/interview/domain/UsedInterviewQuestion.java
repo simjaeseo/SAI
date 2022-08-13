@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class UseInterviewQuestion {
+public class UsedInterviewQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
