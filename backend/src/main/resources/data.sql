@@ -502,4 +502,5 @@ INSERT INTO member ( created_date, updated_date, birthday, email, member_status,
 INSERT INTO schedule (category, detail, schedule_date, start_time, member_consultant_id,member_student_id) VALUES ('practice', '카카오 1차 테스트', '2022-08-28','12:30',2,1);
 
 
--- INSERT INTO member (member_id, created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (1,now(), now(), 1999-01-01, te@te.te)
+
+
