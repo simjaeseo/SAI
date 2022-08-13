@@ -1,7 +1,7 @@
 package com.ssafy.sai.domain.member.dto.request;
 
 import com.ssafy.sai.domain.member.domain.MemberStatus;
-import com.ssafy.sai.domain.member.dto.CampusDto;
+import com.ssafy.sai.domain.member.dto.response.CampusResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class ConsultantSignUpRequest {
     private MemberStatus memberStatus;
 
     @NotNull(message = "캠퍼스 정보는 필수 입력값입니다.")
-    private CampusDto campus;
+    private CampusResponse campus;
 
     @NotBlank(message = "연락처는 필수 입력값입니다.")
     private String phone;

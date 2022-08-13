@@ -6,6 +6,5 @@ import lombok.Data;
 public class DeleteInterviewVideoRequest {
 
     private Long videoId;
-
     private String videoName;
 }
