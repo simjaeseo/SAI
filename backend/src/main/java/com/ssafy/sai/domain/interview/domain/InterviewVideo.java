@@ -24,7 +24,7 @@ public class InterviewVideo extends BaseEntity {
     @JoinColumn(name = "interview_info_id")
     private InterviewInfo interviewInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "used_interview_question_id")
     private UsedInterviewQuestion usedInterviewQuestion;
 

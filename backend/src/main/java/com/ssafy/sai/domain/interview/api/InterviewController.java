@@ -113,7 +113,7 @@ public class InterviewController {
     //    - 마이페이지
     //    영상 삭제 - 재서
     @DeleteMapping("/{member-id}/{interview-info-id}")
-    public void deleteInterview(@PathVariable("member-id") Long id, @PathVariable("interview-info-id") Long interviewInfoId){
+    public ResponseEntity<? extends MessageResponse> deleteInterview(@PathVariable("member-id") Long id, @PathVariable("interview-info-id") Long interviewInfoId){
 
 
         List<InterviewVideo> findInterviewVideos = interviewService.selectS3VideoNameList(interviewInfoId);
@@ -133,6 +133,8 @@ public class InterviewController {
 
         // db에 삭제하고
         interviewService.deleteInterview(id, interviewInfoId);
+        return ResponseEntity.ok().body(new MessageResponse<>());
+
     }
 
 
