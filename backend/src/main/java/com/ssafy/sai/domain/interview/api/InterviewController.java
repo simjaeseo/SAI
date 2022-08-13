@@ -137,16 +137,6 @@ public class InterviewController {
 
 
 
-    /**
-     * Amazon S3에 업로드 된 파일을 삭제
-     * @return 성공 시 200 Success
-     */
-    @DeleteMapping("/{member_id}/video")
-    public ResponseEntity deleteInterviewVideo(@PathVariable("member_id") Long memberId, @RequestBody DeleteInterviewVideoRequest request) {
-//        s3Service.deleteFileS3(memberId, request);
-        return new ResponseEntity<>(new MessageResponse<>(), HttpStatus.OK);
-    }
-
 
     @PostMapping("/customQuestion/create")
     public ResponseEntity createCustomInterviewQuestion(@RequestBody CustomQuestionRequest request) {
