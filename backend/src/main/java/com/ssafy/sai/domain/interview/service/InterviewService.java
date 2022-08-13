@@ -48,7 +48,7 @@ public class InterviewService {
     private final InterviewVideoRepository interviewVideoRepository;
 //    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
-    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
+    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -255,8 +255,8 @@ public class InterviewService {
 
         for(InterviewVideo findInterviewVideo : findInterviewVideos){
 
-        UseInterviewQuestion useInterviewQuestion = findInterviewVideo.getUseInterviewQuestion();
-         useInterviewQuestionRepository.delete(useInterviewQuestion);
+        UsedInterviewQuestion usedInterviewQuestion = findInterviewVideo.getUsedInterviewQuestion();
+         usedInterviewQuestionRepository.delete(usedInterviewQuestion);
         }
 
     }
