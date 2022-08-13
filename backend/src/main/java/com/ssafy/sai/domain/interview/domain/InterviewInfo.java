@@ -21,18 +21,15 @@ import java.util.List;
 public class InterviewInfo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "saved_interview_info_id")
+    @Column(name = "interview_info_id")
     private Long id;
 
-
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_student_id")
+    @JoinColumn(name = "student_id")
     private Member memberStudent;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_consultant_id")
+    @JoinColumn(name = "consultant_id")
     private Member memberConsultant;
 
     @Column(name ="feedback_request")
@@ -44,10 +41,8 @@ public class InterviewInfo extends BaseEntity {
     private FeedbackCompleteStatus feedbackCompleteStatus;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name="interview_date")
     private LocalDate interviewDate;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "interviewInfo")
     private List<InterviewVideo> interviewVideoList = new ArrayList<>();
 

@@ -2,7 +2,7 @@ package com.ssafy.sai.domain.member.api;
 
 import javax.validation.Valid;
 
-import com.ssafy.sai.domain.member.dto.AuthenticationMember;
+import com.ssafy.sai.domain.member.dto.response.MemberLoginResponse;
 import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class SignController {
 
     private final SignService signService;
-
     private final AuthProvider authProvider;
 
     /**
@@ -59,7 +58,7 @@ public class SignController {
     @PostMapping(value = {"/login"})
     public ResponseEntity<? extends DataResponse> login(
             @Valid @RequestBody MemberLoginRequest request) {
-        AuthenticationMember authentication = signService.loginMember(request);
+        MemberLoginResponse authentication = signService.loginMember(request);
 
         if (authentication == null) {
             throw new MemberException(MemberExceptionType.NOT_FOUND_MEMBER);
