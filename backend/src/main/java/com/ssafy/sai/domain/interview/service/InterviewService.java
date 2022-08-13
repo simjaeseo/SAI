@@ -7,6 +7,7 @@ import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.dto.request.RequestFeedbackRequest;
+import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
@@ -16,6 +17,7 @@ import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
 import com.ssafy.sai.domain.interview.repository.QuestionRepository;
+import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
@@ -198,11 +200,18 @@ public class InterviewService {
     //    - 면접 세부 분석 (교육생 입장)
     //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
     @Transactional
-    public List<InterviewInfo> selectInterviewInfoList(Long id) throws MemberException{
+    public List<InterviewInfoResponse> selectInterviewInfoList(Long id) throws MemberException{
 
         Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        return interviewInfoRepository.selectAllByMember(findMember);
+        List<InterviewInfo> findInterviewInfos = interviewInfoRepository.selectAllByMember(findMember);
+
+        List<InterviewInfoResponse> result = findInterviewInfos.stream()
+                .map(m -> new InterviewInfoResponse(m))
+                .collect(Collectors.toList());
+
+        return result;
+
 
     }
 
@@ -214,10 +223,11 @@ public class InterviewService {
 
         Member findConsultant = memberRepository.findById(request.getConsultantId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        findInterviewInfo.builder()
-                .memberConsultant(findConsultant)
-                .feedbackRequestStatus(FeedbackRequestStatus.TRUE)
-                .build();
+        System.out.println("findInterviewInfo = " + findInterviewInfo);;
+
+        findInterviewInfo.updateConsultantIdAndFeedbackRequestStatus(findConsultant, FeedbackRequestStatus.TRUE);
+
+        System.out.println("findInterviewInfo = " + findInterviewInfo);;
 
         interviewInfoRepository.save(findInterviewInfo);
 

@@ -1,5 +1,6 @@
 package com.ssafy.sai.domain.interview.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.sai.global.common.BaseEntity;
 import lombok.*;
 
@@ -18,10 +19,12 @@ public class InterviewVideo extends BaseEntity {
     @Column(name = "interview_video_id")
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "interview_info_id")
     private InterviewInfo interviewInfo;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "use_interview_question_id")
     private UseInterviewQuestion useInterviewQuestion;

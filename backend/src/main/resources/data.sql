@@ -497,6 +497,6 @@ INSERT INTO campus(city,class) VALUES ('구미',3);
 INSERT INTO campus(city,class) VALUES ('구미',4);
 INSERT INTO campus(city,class) VALUES ('구미',5);
 INSERT INTO campus(city,class) VALUES ('구미',6);
-
-
--- INSERT INTO member (member_id, created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (1,now(), now(), 1999-01-01, te@te.te)
+INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te@te.te', 'TRAINEE', '심재서', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111111,5,13);
+INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te2@te.te', 'CONSULTANT', '지근', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111112,5,13);
+INSERT INTO schedule (category, detail, schedule_date, start_time, member_consultant_id,member_student_id) VALUES ('practice', '카카오 1차 테스트', '2022-08-28','12:30',2,1);
