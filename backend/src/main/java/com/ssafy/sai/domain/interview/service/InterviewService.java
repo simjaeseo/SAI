@@ -6,6 +6,7 @@ import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
 import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
+import com.ssafy.sai.domain.interview.dto.request.RequestFeedbackRequest;
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
@@ -92,15 +93,30 @@ public class InterviewService {
         customQuestionRepository.delete(customQuestion);
     }
 
+
+    /**
+     * @메소드 면접 저장 서비스 (면접 정보 테이블에 저장)
+     * @param id 사용자 id
+     * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
+     * @return InterviewInfo 엔티티
+     * @throws ScheduleException
+     */
     @Transactional
     public InterviewInfo createInterviewInfo(Long id, CreateInterviewInfoRequest request) throws ScheduleException {
+
         InterviewInfo interviewInfo;
 
         //나혼자 연습일때
         if (request.getScheduleId() == null) {
             Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
+            Member findConsultant = null;
+            if(request.getFeedbackRequest().equals("true")){
+                findConsultant = memberRepository.findById(Long.parseLong(request.getConsultantId())).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+            }
+
             interviewInfo = InterviewInfo.builder().memberStudent(findMember)
+                    .memberConsultant(request.getFeedbackRequest().equals("true") ? findConsultant : null)
                     .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
                     .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
                     .interviewDate(LocalDate.now())
@@ -124,15 +140,8 @@ public class InterviewService {
 
         return saveInterviewInfo;
 
-//        // 사용한 면접 질문 넣기
-//        for (String question : request.getQuestions()) {
-//            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
-//                    .savedInterviewInfo(saveInterviewInfo)
-//                    .question(question).build();
-//
-//            useInterviewQuestionRepository.save(useInterviewQuestion);
-//        }
     }
+
 
     public List<InterviewInfoDto> findFeedbackRequest(Long id) {
         Member findMember = memberRepository.findMemberById(id);
@@ -184,5 +193,47 @@ public class InterviewService {
                 .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
 
         interviewInfo.changeFeedbackStatus(FeedbackCompleteStatus.TRUE);
+    }
+
+    //    - 면접 세부 분석 (교육생 입장)
+    //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
+    @Transactional
+    public List<InterviewInfo> selectInterviewInfoList(Long id) throws MemberException{
+
+        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+
+        return interviewInfoRepository.selectAllByMember(findMember);
+
+    }
+
+    //    - 면접 세부 분석 (교육생 입장)
+    //    피드백 요청하기 - 재서
+    @Transactional
+    public void requestFeedback(Long id, RequestFeedbackRequest request) throws InterviewException, MemberException {
+        InterviewInfo findInterviewInfo = interviewInfoRepository.findById(request.getInterviewInfoId()).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
+
+        Member findConsultant = memberRepository.findById(request.getConsultantId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+
+        findInterviewInfo.builder()
+                .memberConsultant(findConsultant)
+                .feedbackRequestStatus(FeedbackRequestStatus.TRUE)
+                .build();
+
+        interviewInfoRepository.save(findInterviewInfo);
+
+
+    }
+
+    //    - 마이페이지
+    //    영상 삭제 - 재서
+    @Transactional
+    public void deleteInterview(Long id, Long interviewInfoId){
+
+        InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
+
+        InterviewVideo findInterviewVideo = interviewVideoRepository.findByInterviewInfo(findInterviewInfo).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_VIDEO));
+
+        interviewInfoRepository.delete(findInterviewInfo);
+        interviewVideoRepository.delete(findInterviewVideo);
     }
 }
