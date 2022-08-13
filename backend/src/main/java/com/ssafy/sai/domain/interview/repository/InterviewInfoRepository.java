@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.interview.repository;
 
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
+import com.ssafy.sai.domain.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,8 @@ public interface InterviewInfoRepository extends JpaRepository<InterviewInfo, Lo
             " join fetch iv.useInterviewQuestion ui" +
             " where i.memberConsultant.id = :consultantId and i.id = :infoId")
     Optional<InterviewInfo> findInfoById(@Param("consultantId") Long consultantId, @Param("infoId") Long infoId);
+
+    @Query("select i from InterviewInfo as i where i.memberStudent = :member")
+    List<InterviewInfo> selectAllByMember(@Param("member") Member member);
+
 }
