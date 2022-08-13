@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ssafy.sai.domain.schedule.domain.Schedule;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -35,9 +36,9 @@ public class ScheduleOnSpecificDayByStudentResponse {
 //    }
 
 
-    public ScheduleOnSpecificDayByStudentResponse(Long id, LocalDate scheduleDate, LocalTime startTime) {
-        this.id = id;
-        this.scheduleDate = scheduleDate;
-        this.startTime = startTime;
+    public ScheduleOnSpecificDayByStudentResponse(Schedule schedule) {
+        this.id = schedule.getId();
+        this.scheduleDate = schedule.getScheduleDate();
+        this.startTime = schedule.getStartTime();
     }
 }

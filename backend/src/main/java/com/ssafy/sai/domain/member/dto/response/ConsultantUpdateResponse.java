@@ -1,7 +1,6 @@
 package com.ssafy.sai.domain.member.dto.response;
 
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.dto.CampusDto;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,16 +13,16 @@ public class ConsultantUpdateResponse {
     private String email;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-    private CampusConsultantDto campus;
+    private CampusConsultantResponse campus;
     private String phone;
-    private ProfileDto profilePicture;
+    private ProfileResponse profilePicture;
 
     public ConsultantUpdateResponse(Member member) {
         this.id = member.getId();
         this.email = member.getEmail();
         this.birthday = member.getBirthday();
-        this.campus = new CampusConsultantDto(member.getCampus());
+        this.campus = new CampusConsultantResponse(member.getCampus());
         this.phone = member.getPhone();
-        this.profilePicture = new ProfileDto(member.getProfilePicture());
+        this.profilePicture = new ProfileResponse(member.getProfilePicture());
     }
 }

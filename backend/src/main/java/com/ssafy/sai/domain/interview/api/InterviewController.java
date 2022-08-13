@@ -3,13 +3,11 @@ package com.ssafy.sai.domain.interview.api;
 import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
-import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.dto.request.DeleteInterviewVideoRequest;
-import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
-import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
-import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
+import com.ssafy.sai.domain.interview.dto.request.*;
+import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
+import com.ssafy.sai.domain.interview.dto.response.InterviewVideoResponse;
+
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
-import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.service.InterviewService;
 import com.ssafy.sai.domain.interview.service.S3UploaderService;
 import com.ssafy.sai.global.common.DataResponse;
@@ -19,8 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,44 +32,87 @@ public class InterviewController {
 
     @PostMapping("/{consultant-id}/feedback/{video-id}")
     public ResponseEntity<? extends MessageResponse> saveFeedback(
-            @PathVariable("consultant-id") Long consultantId, @PathVariable("video-id") Long videoId, @RequestBody FeedbackRequest request) {
+            @PathVariable("consultant-id") Long consultantId, @PathVariable("video-id") Long videoId,
+            @RequestBody FeedbackRequest request) {
         SaveFeedbackResponse saveFeedbackResponse = interviewService.saveFeedback(consultantId, videoId, request);
         return ResponseEntity.ok().body(new DataResponse<>(saveFeedbackResponse));
     }
 
     @PutMapping("/{consultant-id}/request/{info-id}")
-    public ResponseEntity<? extends MessageResponse> finishFeedback(@PathVariable("consultant-id") Long consultantId, @PathVariable("info-id") Long infoId) {
+    public ResponseEntity<? extends MessageResponse> finishFeedback(@PathVariable("consultant-id") Long consultantId,
+                                                                    @PathVariable("info-id") Long infoId) {
         interviewService.finishFeedback(consultantId, infoId);
         return ResponseEntity.ok().body(new MessageResponse<>());
     }
 
     @GetMapping("/{consultant-id}/request/{info-id}")
-    public ResponseEntity<? extends MessageResponse> findVideoList(@PathVariable("consultant-id") Long consultantId, @PathVariable("info-id") Long infoId) {
-        List<InterviewVideoDto> interviewVideoList = interviewService.findInterviewVideo(consultantId, infoId);
+    public ResponseEntity<? extends MessageResponse> findVideoList(@PathVariable("consultant-id") Long consultantId,
+                                                                   @PathVariable("info-id") Long infoId) {
+        List<InterviewVideoResponse> interviewVideoList = interviewService.findInterviewVideo(consultantId, infoId);
         return ResponseEntity.ok().body(new DataResponse<>(interviewVideoList));
     }
 
     @GetMapping("/{consultant-id}/request")
     public ResponseEntity<? extends MessageResponse> findFeedbackRequest(@PathVariable("consultant-id") Long id) {
-        List<InterviewInfoDto> feedbackRequestList = interviewService.findFeedbackRequest(id);
+        List<InterviewInfoResponse> feedbackRequestList = interviewService.findFeedbackRequest(id);
         return ResponseEntity.ok().body(new DataResponse<>(feedbackRequestList));
     }
 
-    @PostMapping("/{member_id}")
-    public ResponseEntity<? extends MessageResponse> saveInterview(@PathVariable("member_id") Long id, @RequestBody CreateInterviewInfoRequest request) {
-//        scheduleId: 1,
-//        isPractice: true,
-//        feedbackRequest: true,
-//        questions: ["자기소개","지원동기"]
-//        form-data : .mp4
 
-        // DTO 만들어야함
+    /**
+     * @메소드 면접 저장 api
+     * @param id 사용자id
+     * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
+     * @return MessageResponse
+     */
+    @PostMapping("/{member-id}")
+    public ResponseEntity<? extends MessageResponse> saveInterview(@PathVariable("member-id") Long id, @RequestBody CreateInterviewInfoRequest request){
 
         InterviewInfo saveInterviewInfo = interviewService.createInterviewInfo(id, request);
-        s3UploaderService.uploadFileS3(id, request, saveInterviewInfo);
 
-        return ResponseEntity.ok().body(new DataResponse<>("이게 비동기 처리인가요..?"));
+        try {
+            s3UploaderService.uploadFileS3(id, request, saveInterviewInfo);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.ok().body(new MessageResponse<>());
     }
+
+    //    - 면접 세부 분석 (교육생 입장)
+    //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
+    @GetMapping("/{member-id}")
+    public ResponseEntity<? extends MessageResponse> selectInterviewInfoList(@PathVariable("member-id") Long id){
+        return ResponseEntity.ok().body(new DataResponse(interviewService.selectInterviewInfoList(id)));
+
+    }
+
+    //    - 면접 세부 분석 (교육생 입장)
+    //    피드백 요청하기 - 재서
+    @PostMapping("/{member-id}/feedback")
+    public ResponseEntity<? extends MessageResponse> requestFeedback(@PathVariable("member-id") Long id, @RequestBody RequestFeedbackRequest request){
+        interviewService.requestFeedback(id, request);
+
+        return ResponseEntity.ok().body(new MessageResponse<>());
+    }
+
+    //    - 마이페이지
+    //    영상 삭제 - 재서
+    @DeleteMapping("/{member-id}/{interview-info-id}")
+    public void deleteInterview(@PathVariable("member-id") Long id, @PathVariable("interview-info-id") Long interviewInfoId){
+
+        // db에 삭제하고
+        interviewService.deleteInterview(id, interviewInfoId);
+
+        //s3에 삭제하고
+        // gcs 삭제하고
+    }
+
+
 
     /**
      * Amazon S3에 업로드 된 파일을 삭제

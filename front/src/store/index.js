@@ -15,6 +15,7 @@ export default createStore({
       paths: [
         'accounts',
         'interview',
+        'schedule',
       ],
     }),
   ],

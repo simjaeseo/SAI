@@ -20,6 +20,5 @@ public class QuestionDto {
         private String question;
         private String questionType;
         private String questionDetailType;
-
     }
 }
