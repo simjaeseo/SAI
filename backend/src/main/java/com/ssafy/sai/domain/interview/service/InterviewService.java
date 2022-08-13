@@ -48,6 +48,7 @@ public class InterviewService {
     private final InterviewVideoRepository interviewVideoRepository;
 //    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
+    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -244,13 +245,29 @@ public class InterviewService {
     //    - 마이페이지
     //    영상 삭제 - 재서
     @Transactional
-    public void deleteInterview(Long id, Long interviewInfoId) {
+    public void deleteInterview(Long id, Long interviewInfoId) throws InterviewException{
 
         InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
 
-        InterviewVideo findInterviewVideo = interviewVideoRepository.findByInterviewInfo(findInterviewInfo).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_VIDEO));
+        List<InterviewVideo> findInterviewVideos = interviewVideoRepository.findAllByInterviewInfo(findInterviewInfo);
 
         interviewInfoRepository.delete(findInterviewInfo);
-        interviewVideoRepository.delete(findInterviewVideo);
+
+        for(InterviewVideo findInterviewVideo : findInterviewVideos){
+
+        UseInterviewQuestion useInterviewQuestion = findInterviewVideo.getUseInterviewQuestion();
+         useInterviewQuestionRepository.delete(useInterviewQuestion);
+        }
+
     }
+
+    @Transactional
+    public List<InterviewVideo> selectS3VideoNameList( Long interviewInfoId){
+
+        InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
+
+        return findInterviewInfo.getInterviewVideoList();
+
+    }
+
 }

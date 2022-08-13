@@ -13,6 +13,7 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
+@Setter
 public class InterviewVideo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +30,11 @@ public class InterviewVideo extends BaseEntity {
 
     private String videoUrl;
 
+    private String videoName;
+
     private String audioUrl;
 
+    private String audioName;
     private String feedback;
 
     private String stt;
