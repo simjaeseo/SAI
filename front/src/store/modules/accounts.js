@@ -18,6 +18,7 @@ export default {
     profileImg: '',
     students: [],
     selectedStudent: [],
+    feedBackList: [],
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
@@ -34,6 +35,7 @@ export default {
     profileImg: (state) => state.profileImg,
     students: (state) => state.students,
     selectedStudent: (state) => state.selectedStudent,
+    feedbackList: (state) => state.feedBackList,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -77,6 +79,10 @@ export default {
     SELECTED_STUDENTS(state, data) {
       state.selectedStudent = data;
       console.log(state.selectedStudent);
+    },
+    SET_FEEDBACK_LIST(state, list) {
+      state.feedBackList = list;
+      console.log(state.feedBackList);
     },
   },
   actions: {
@@ -136,6 +142,17 @@ export default {
             console.log(err);
           });
       }
+    },
+    getUserVideo({ commit }, userid) {
+      axios({
+        url: drf.interview.getUserVideo(userid),
+        method: 'get',
+      })
+        .then((res) => {
+          console.log('동영상가져와요');
+          console.log(res);
+          commit('SET_USER_VIDEO');
+        });
     },
     logout({ getters, dispatch, commit }) {
       const userId = getters.currentUser.id;
