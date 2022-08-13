@@ -13,6 +13,7 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
+@Setter
 public class InterviewVideo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,18 +24,26 @@ public class InterviewVideo extends BaseEntity {
     @JoinColumn(name = "interview_info_id")
     private InterviewInfo interviewInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "used_interview_question_id")
     private UsedInterviewQuestion usedInterviewQuestion;
 
+    @Column(name = "video_url")
     private String videoUrl;
 
+    @Column(name = "video_name")
+    private String videoName;
+
+    @Column(name = "audio_url")
     private String audioUrl;
 
+    @Column(name = "audio_name")
+    private String audioName;
     private String feedback;
 
     private String stt;
 
+    @Column(name = "wrong_posture_count")
     private String wrongPostureCount;
 
     public void createFeedback(String feedback) {
