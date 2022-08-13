@@ -5,12 +5,10 @@
 
       <div class="mdl-stepper-horizontal-alternative">
         <div class="mdl-stepper-step active-step step-done">
-        <router-link to='/interview' id='routerlink'>
           <div class="mdl-stepper-circle"><span>1</span></div>
           <div class="mdl-stepper-title">Mode Select</div>
           <div class="mdl-stepper-bar-left"></div>
           <div class="mdl-stepper-bar-right"></div>
-        </router-link>
         </div>
         <!-- <div class="mdl-stepper-step active-step step-done">
           <router-link to='/interview/setting' id='routerlink'>
@@ -21,12 +19,10 @@
           </router-link>
         </div> -->
         <div class="mdl-stepper-step active-step">
-          <router-link to='/interview/question' id='routerlink'>
           <div class="mdl-stepper-circle"><span>2</span></div>
           <div class="mdl-stepper-title">Question Select</div>
           <div class="mdl-stepper-bar-left"></div>
           <div class="mdl-stepper-bar-right"></div>
-          </router-link>
         </div>
       </div>
 
