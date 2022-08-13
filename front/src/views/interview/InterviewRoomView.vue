@@ -1,5 +1,7 @@
 <template>
     <div class="container mt-5" id="body">
+      <div><canvas id="canvas" v-show="false"></canvas></div>
+      <div id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -157,6 +159,9 @@ import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import * as tmPose from '@teachablemachine/pose';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
 import UserVideo from './components/UserVideo.vue';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -199,9 +204,8 @@ export default {
     const consultants = computed(() => store.getters.myConsultants);
     // 동영상저장 axios
 
-    const URL = 'https://teachablemachine.withgoogle.com/models/MmjUp1c8n/';
-    let model; let webcam; let ctx; let labelContainer; let
-      maxPredictions;
+    const TMURL = 'https://teachablemachine.withgoogle.com/models/xOFsAlFmy/';
+    let model; let webcam; let ctx; let labelContainer; let maxPredictions;
 
     function drawPose(pose) {
       if (webcam.canvas) {
@@ -235,6 +239,8 @@ export default {
         status = 'wrong posture - left';
       } else if (prediction[2].probability.toFixed(2) >= 0.70) {
         status = 'wrong posture - right';
+      } else if (prediction[3].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - bent';
       }
 
       for (let i = 0; i < maxPredictions; i += 1) {
@@ -253,8 +259,8 @@ export default {
     }
 
     async function init() {
-      const modelURL = `${URL}model.json`;
-      const metadataURL = `${URL}metadata.json`;
+      const modelURL = `${TMURL}model.json`;
+      const metadataURL = `${TMURL}metadata.json`;
 
       model = Object.freeze(await tmPose.load(modelURL, metadataURL));
       maxPredictions = model.getTotalClasses();
@@ -288,6 +294,7 @@ export default {
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행

@@ -37,7 +37,7 @@ export default {
         setInterval(async () => {
           // eslint-disable-next-line
           const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-          console.log(detections[0].expressions);
+          // console.log(detections[0].expressions);
         }, 100);
       });
     });
