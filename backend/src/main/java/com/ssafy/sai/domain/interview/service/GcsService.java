@@ -240,7 +240,6 @@ public class GcsService {
 
 
         for (InterviewVideo findInterviewVideo : findInterviewVideos) {
-        System.out.println("findInterviewVideo.getAudioName() = " + findInterviewVideo.getAudioName());
             storage.delete(BlobId.of("sai-ssafy", findInterviewVideo.getAudioName()));
 
         }

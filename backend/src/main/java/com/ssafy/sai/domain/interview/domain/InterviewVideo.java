@@ -30,17 +30,22 @@ public class InterviewVideo extends BaseEntity {
     @JoinColumn(name = "use_interview_question_id")
     private UseInterviewQuestion useInterviewQuestion;
 
+    @Column(name = "video_url")
     private String videoUrl;
 
+    @Column(name = "video_name")
     private String videoName;
 
+    @Column(name = "audio_url")
     private String audioUrl;
 
+    @Column(name = "audio_name")
     private String audioName;
     private String feedback;
 
     private String stt;
 
+    @Column(name = "wrong_posture_count")
     private String wrongPostureCount;
 
     public void createFeedback(String feedback) {
