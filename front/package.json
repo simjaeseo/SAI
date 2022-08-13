@@ -5,11 +5,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "chromium-args": "--mixed-context"
   },
   "dependencies": {
     "@teachablemachine/pose": "^0.8.6",
     "@tensorflow/tfjs": "^3.19.0",
+    "@tensorflow/tfjs-converter": "^3.19.0",
+    "@tensorflow/tfjs-core": "^3.19.0",
     "@tensorflow/tfjs-node": "^3.19.0",
     "axios": "^0.27.2",
     "canvas": "^2.9.3",
@@ -18,7 +21,6 @@
     "face-api.js": "^0.22.2",
     "google-fonts-webpack-plugin": "^0.4.4",
     "i": "^0.3.7",
-    "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "openvidu-browser": "^2.22.0",
     "sockjs-client": "^1.6.1",

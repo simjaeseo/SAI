@@ -118,7 +118,6 @@
 </template>
 
 <script>
-// import $ from 'jquery';
 import * as tmPose from '@teachablemachine/pose';
 // eslint-disable-next-line
 import * as tf from '@tensorflow/tfjs';
@@ -134,7 +133,6 @@ const OPENVIDU_SERVER_URL = 'https://i7c206.p.ssafy.io:8083';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 export default {
-  // name: '',
   components: {
     UserVideo,
   },
@@ -171,7 +169,6 @@ export default {
     function drawPose(pose) {
       if (webcam.canvas) {
         ctx.drawImage(webcam.canvas, 0, 0);
-        // draw the keypoints and skeleton
         if (pose) {
           const minPartConfidence = 0.5;
           tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
@@ -184,10 +181,7 @@ export default {
     let status = 'proper posture';
     let count = 0;
     async function predict() {
-      // Prediction #1: run input through posenet
-      // estimatePose can take in an image, video or canvas html element
       const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-      // Prediction 2: run input through teachable machine classification model
       const prediction = await model.predict(posenetOutput);
 
       if (prediction[0].probability.toFixed(2) >= 0.70) {
@@ -198,16 +192,12 @@ export default {
             progress = 327 - 32.7;
           }
           console.log(count);
-          // $('.progress').style('stroke-dashoffset', progress);
-          // $('#counter').template(count);
         }
         status = 'proper posture';
       } else if (prediction[1].probability.toFixed(2) >= 0.70) {
         status = 'wrong posture - left';
       } else if (prediction[2].probability.toFixed(2) >= 0.70) {
         status = 'wrong posture - right';
-      // } else if (prediction[3].probability.toFixed(2) >= 0.70) {
-      //   status = 'wrong posture - bent';
       }
 
       for (let i = 0; i < maxPredictions; i += 1) {
@@ -215,14 +205,12 @@ export default {
         labelContainer.childNodes[i].innerHTML = classPrediction;
       }
 
-      // finally draw the poses
       drawPose(pose);
     }
 
     // eslint-disable-next-line
     async function loop(timestamp) {
-      // console.log(timestamp);
-      webcam.update(); // update the webcam frame
+      webcam.update();
       await predict();
       window.requestAnimationFrame(loop);
     }
@@ -231,27 +219,21 @@ export default {
       const modelURL = `${URL}model.json`;
       const metadataURL = `${URL}metadata.json`;
 
-      // load the model and metadata 모델/메타데이터 로드
-      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-      // Note: the pose library adds a tmPose object to your window (window.tmPose)
       model = Object.freeze(await tmPose.load(modelURL, metadataURL));
       maxPredictions = model.getTotalClasses();
 
-      // Convenience function to setup a webcam
-      // 카메라 설정
       const size = 500;
-      const flip = true; // whether to flip the webcam
-      webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-      await webcam.setup(); // request access to the webcam
+      const flip = true;
+      webcam = new tmPose.Webcam(size, size, flip);
+      await webcam.setup();
       await webcam.play();
       window.requestAnimationFrame(loop);
 
-      // append/get elements to the DOM
       const canvas = document.getElementById('canvas');
       canvas.width = size; canvas.height = size;
       ctx = canvas.getContext('2d');
       labelContainer = document.getElementById('label-container');
-      for (let i = 0; i < maxPredictions; i += 1) { // and class labels
+      for (let i = 0; i < maxPredictions; i += 1) {
         labelContainer.appendChild(document.createElement('div'));
       }
     }

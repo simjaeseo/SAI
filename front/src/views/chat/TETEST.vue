@@ -17,23 +17,32 @@ export default {
     const video = document.getElementById('video');
 
     function startVideo() {
-      navigator.getUserMedia(
-        { video: {} },
-        (stream) => { video.srcObject = stream; },
-        (err) => console.error(err),
-      );
+      console.log('1');
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          console.log('2');
+          video.srcObject = stream;
+          console.log('3');
+        })
+        .catch((err) => {
+          console.log('!!!!!!');
+          console.log(err);
+        });
     }
 
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-      faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-      faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-      faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-      // faceapi.nets.tinyFaceDetector.loadFromUri(faceDetector),
-      // faceapi.nets.faceLandmark68Net.loadFromUri(faceLandmark),
-      // faceapi.nets.faceRecognitionNet.loadFromUri(faceRecognition),
-      // faceapi.nets.faceExpressionNet.loadFromUri(faceExpression),
-    ]).then(startVideo);
+    window.onload = () => {
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('./models'),
+        // faceapi.nets.tinyFaceDetector.loadFromUri(faceDetector),
+        // faceapi.nets.faceLandmark68Net.loadFromUri(faceLandmark),
+        // faceapi.nets.faceRecognitionNet.loadFromUri(faceRecognition),
+        // faceapi.nets.faceExpressionNet.loadFromUri(faceExpression),
+      ]).then(startVideo());
+    };
 
     video.addEventListener('play', () => {
       const canvas = faceapi.createCanvasFromMedia(video);
