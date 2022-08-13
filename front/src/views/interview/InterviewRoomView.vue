@@ -199,10 +199,87 @@ export default {
     const consultants = computed(() => store.getters.myConsultants);
     // 동영상저장 axios
 
+    const URL = 'https://teachablemachine.withgoogle.com/models/MmjUp1c8n/';
+    let model; let webcam; let ctx; let labelContainer; let
+      maxPredictions;
+
+    function drawPose(pose) {
+      if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        if (pose) {
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
+      }
+    }
+
+    let progress = 327;
+    let status = 'proper posture';
+    let count = 0;
+    async function predict() {
+      const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+      const prediction = await model.predict(posenetOutput);
+
+      if (prediction[0].probability.toFixed(2) >= 0.70) {
+        if (status !== 'proper posture') {
+          count += 1;
+          progress -= 32.7;
+          if (progress <= 0) {
+            progress = 327 - 32.7;
+          }
+          console.log(count);
+        }
+        status = 'proper posture';
+      } else if (prediction[1].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - left';
+      } else if (prediction[2].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - right';
+      }
+
+      for (let i = 0; i < maxPredictions; i += 1) {
+        const classPrediction = `${prediction[i].className}: ${prediction[i].probability.toFixed(2)}`;
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+      }
+
+      drawPose(pose);
+    }
+
+    // eslint-disable-next-line
+    async function loop(timestamp) {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function init() {
+      const modelURL = `${URL}model.json`;
+      const metadataURL = `${URL}metadata.json`;
+
+      model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      maxPredictions = model.getTotalClasses();
+
+      const size = 500;
+      const flip = true;
+      webcam = new tmPose.Webcam(size, size, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      const canvas = document.getElementById('canvas');
+      canvas.width = size; canvas.height = size;
+      ctx = canvas.getContext('2d');
+      labelContainer = document.getElementById('label-container');
+      for (let i = 0; i < maxPredictions; i += 1) {
+        labelContainer.appendChild(document.createElement('div'));
+      }
+    }
+
     return {
       selectedQuestionList,
       currentUser,
       consultants,
+      init,
     };
   },
   created() {
