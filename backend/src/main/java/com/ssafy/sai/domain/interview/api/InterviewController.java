@@ -3,13 +3,15 @@ package com.ssafy.sai.domain.interview.api;
 import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
+import com.ssafy.sai.domain.interview.domain.InterviewVideo;
 import com.ssafy.sai.domain.interview.dto.request.*;
 import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
 import com.ssafy.sai.domain.interview.dto.response.InterviewVideoResponse;
 
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
+import com.ssafy.sai.domain.interview.service.GcsService;
 import com.ssafy.sai.domain.interview.service.InterviewService;
-import com.ssafy.sai.domain.interview.service.S3UploaderService;
+import com.ssafy.sai.domain.interview.service.S3Service;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,8 @@ import java.util.concurrent.ExecutionException;
 public class InterviewController {
 
     private final InterviewService interviewService;
-    private final S3UploaderService s3UploaderService;
+    private final S3Service s3Service;
+    private final GcsService gcsService;
 
     @PostMapping("/{consultant-id}/feedback/{video-id}")
     public ResponseEntity<? extends MessageResponse> saveFeedback(
@@ -71,7 +74,7 @@ public class InterviewController {
         InterviewInfo saveInterviewInfo = interviewService.createInterviewInfo(id, request);
 
         try {
-            s3UploaderService.uploadFileS3(id, request, saveInterviewInfo);
+            s3Service.uploadFileS3(id, request, saveInterviewInfo);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
@@ -83,16 +86,23 @@ public class InterviewController {
         return ResponseEntity.ok().body(new MessageResponse<>());
     }
 
-    //    - 면접 세부 분석 (교육생 입장)
-    //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
+    /**
+     * @메소드 모든 면접 정보 조회 api
+     * @param id 멤버id
+     * @return List<InterviewInfoResponse>
+     */
     @GetMapping("/{member-id}")
     public ResponseEntity<? extends MessageResponse> selectInterviewInfoList(@PathVariable("member-id") Long id){
         return ResponseEntity.ok().body(new DataResponse(interviewService.selectInterviewInfoList(id)));
-
     }
 
-    //    - 면접 세부 분석 (교육생 입장)
-    //    피드백 요청하기 - 재서
+    /**
+     * @메소드 피드백 요청
+     * @param id 멤버id
+     * @param request interviewInfoId, consultnantId
+     * }
+     * @return
+     */
     @PostMapping("/{member-id}/feedback")
     public ResponseEntity<? extends MessageResponse> requestFeedback(@PathVariable("member-id") Long id, @RequestBody RequestFeedbackRequest request){
         interviewService.requestFeedback(id, request);
@@ -105,11 +115,24 @@ public class InterviewController {
     @DeleteMapping("/{member-id}/{interview-info-id}")
     public void deleteInterview(@PathVariable("member-id") Long id, @PathVariable("interview-info-id") Long interviewInfoId){
 
-        // db에 삭제하고
-        interviewService.deleteInterview(id, interviewInfoId);
+
+        List<InterviewVideo> findInterviewVideos = interviewService.selectS3VideoNameList(interviewInfoId);
+
+
 
         //s3에 삭제하고
+        s3Service.deleteFileS3(findInterviewVideos);
+
+
         // gcs 삭제하고
+        try {
+            gcsService.deleteFileGcs(findInterviewVideos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // db에 삭제하고
+        interviewService.deleteInterview(id, interviewInfoId);
     }
 
 
@@ -120,7 +143,7 @@ public class InterviewController {
      */
     @DeleteMapping("/{member_id}/video")
     public ResponseEntity deleteInterviewVideo(@PathVariable("member_id") Long memberId, @RequestBody DeleteInterviewVideoRequest request) {
-        s3UploaderService.deleteFileS3(memberId, request);
+//        s3Service.deleteFileS3(memberId, request);
         return new ResponseEntity<>(new MessageResponse<>(), HttpStatus.OK);
     }
 
