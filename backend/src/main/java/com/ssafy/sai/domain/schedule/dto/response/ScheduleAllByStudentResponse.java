@@ -1,11 +1,9 @@
 package com.ssafy.sai.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.schedule.domain.Schedule;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -28,13 +26,13 @@ public class ScheduleAllByStudentResponse {
 
     private String consultantName;
 
-    public ScheduleAllByStudentResponse(Long id, LocalDate scheduleDate, LocalTime startTime, LocalTime endTime, String category, String detail, String consultantName) {
-        this.id = id;
-        this.scheduleDate = scheduleDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.category = category;
-        this.detail = detail;
-        this.consultantName = consultantName;
+    public ScheduleAllByStudentResponse(Schedule schedule) {
+        this.id = schedule.getId();
+        this.scheduleDate = schedule.getScheduleDate();
+        this.startTime = schedule.getStartTime();
+        this.endTime = schedule.getEndTime();
+        this.category = schedule.getCategory();
+        this.detail = schedule.getDetail();
+        this.consultantName = schedule.getMemberConsultant().getName();
     }
 }

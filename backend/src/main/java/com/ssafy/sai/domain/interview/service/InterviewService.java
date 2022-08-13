@@ -3,18 +3,20 @@ package com.ssafy.sai.domain.interview.service;
 import com.ssafy.sai.domain.interview.domain.*;
 
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
-import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
+import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
+import com.ssafy.sai.domain.interview.dto.response.InterviewVideoResponse;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.dto.request.RequestFeedbackRequest;
-import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
 import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;
 import com.ssafy.sai.domain.interview.repository.*;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.dto.MemberDto;
+
+import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
+import com.ssafy.sai.domain.interview.repository.QuestionRepository;
+
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
@@ -44,6 +46,7 @@ public class InterviewService {
     private final ScheduleRepository scheduleRepository;
     private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
+//    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
@@ -74,14 +77,16 @@ public class InterviewService {
 
     @Transactional
     public List<CustomInterviewQuestion> getCustomInterviewQuestionList(CustomQuestionRequest request) throws MemberException {
-        Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         List<CustomInterviewQuestion> customInterviewQuestionList = customQuestionRepository.findQuestionsByMemberId(findMember.getId());
         return customInterviewQuestionList;
     }
 
     @Transactional
     public void createCustomInterviewQuestion(CustomQuestionRequest request) throws MemberException {
-        Member findMember = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         CustomInterviewQuestion question = new CustomInterviewQuestion(request.getQuestion(), findMember);
         customQuestionRepository.save(question);
     }
@@ -94,11 +99,11 @@ public class InterviewService {
 
 
     /**
-     * @메소드 면접 저장 서비스 (면접 정보 테이블에 저장)
-     * @param id 사용자 id
+     * @param id      사용자 id
      * @param request 일정id, 피드백요청 유무, 컨설턴트id, 면접영상url 배열(openvidu server 안), 질문배열
      * @return InterviewInfo 엔티티
      * @throws ScheduleException
+     * @메소드 면접 저장 서비스 (면접 정보 테이블에 저장)
      */
     @Transactional
     public InterviewInfo createInterviewInfo(Long id, CreateInterviewInfoRequest request) throws ScheduleException {
@@ -107,10 +112,11 @@ public class InterviewService {
 
         //나혼자 연습일때
         if (request.getScheduleId() == null) {
-            Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+            Member findMember = memberRepository.findById(id)
+                    .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
             Member findConsultant = null;
-            if(request.getFeedbackRequest().equals("true")){
+            if (request.getFeedbackRequest().equals("true")) {
                 findConsultant = memberRepository.findById(Long.parseLong(request.getConsultantId())).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
             }
 
@@ -123,11 +129,13 @@ public class InterviewService {
 
         } else {
             // 컨설턴트와 면접일때
-            Schedule findSchedule = scheduleRepository.findById(request.getScheduleId()).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
+            Schedule findSchedule = scheduleRepository.findById(request.getScheduleId())
+                    .orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
 
             interviewInfo = InterviewInfo.builder().memberStudent(findSchedule.getMemberStudent())
                     .memberConsultant(findSchedule.getMemberConsultant())
-                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
+                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true")
+                            ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
                     .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
                     .interviewDate(LocalDate.now())
                     .category(findSchedule.getCategory())
@@ -138,15 +146,14 @@ public class InterviewService {
         InterviewInfo saveInterviewInfo = interviewInfoRepository.save(interviewInfo);
 
         return saveInterviewInfo;
-
     }
 
 
-    public List<InterviewInfoDto> findFeedbackRequest(Long id) {
+    public List<InterviewInfoResponse> findFeedbackRequest(Long id) {
         Member findMember = memberRepository.findMemberById(id);
         List<InterviewInfo> feedbackRequestList = interviewInfoRepository.findInterviewInfoByFeedbackRequest(findMember.getId());
-        List<InterviewInfoDto> result = feedbackRequestList.stream()
-                .map(interviewInfo -> new InterviewInfoDto(interviewInfo))
+        List<InterviewInfoResponse> result = feedbackRequestList.stream()
+                .map(interviewInfo -> new InterviewInfoResponse(interviewInfo))
                 .collect(Collectors.toList());
 
         return result;
@@ -158,13 +165,17 @@ public class InterviewService {
      * @return 면접 질문별 영상
      * @메소드 면접 영상 가져오는 서비스
      */
-    public List<InterviewVideoDto> findInterviewVideo(Long consultantId, Long infoId) {
+    public List<InterviewVideoResponse> findInterviewVideo(Long consultantId, Long infoId) {
         Member findMember = memberRepository.findById(consultantId)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
-        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
         List<InterviewVideo> interviewVideoList = interviewInfo.getInterviewVideoList();
-        List<InterviewVideoDto> result = interviewVideoList.stream()
-                .map(interviewVideo -> new InterviewVideoDto(interviewVideo))
+
+        List<InterviewVideoResponse> result = interviewVideoList.stream()
+                .map(interviewVideo -> new InterviewVideoResponse(interviewVideo))
                 .collect(Collectors.toList());
 
         return result;
@@ -197,19 +208,17 @@ public class InterviewService {
     //    - 면접 세부 분석 (교육생 입장)
     //    혼자 연습 + 컨설팅 연습 관련 정보 불러오기 - 재서
     @Transactional
-    public List<InterviewInfoResponse> selectInterviewInfoList(Long id) throws MemberException{
+    public List<InterviewInfoResponse> selectInterviewInfoList(Long id) throws MemberException {
 
-        Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
-
-        List<InterviewInfo> findInterviewInfos = interviewInfoRepository.selectAllByMember(findMember);
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        List<InterviewInfo> findInterviewInfos = interviewInfoRepository.selectAllById(findMember.getId());
 
         List<InterviewInfoResponse> result = findInterviewInfos.stream()
                 .map(m -> new InterviewInfoResponse(m))
                 .collect(Collectors.toList());
 
         return result;
-
-
     }
 
     //    - 면접 세부 분석 (교육생 입장)
@@ -220,11 +229,13 @@ public class InterviewService {
 
         Member findConsultant = memberRepository.findById(request.getConsultantId()).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        System.out.println("findInterviewInfo = " + findInterviewInfo);;
+        System.out.println("findInterviewInfo = " + findInterviewInfo);
+        ;
 
         findInterviewInfo.updateConsultantIdAndFeedbackRequestStatus(findConsultant, FeedbackRequestStatus.TRUE);
 
-        System.out.println("findInterviewInfo = " + findInterviewInfo);;
+        System.out.println("findInterviewInfo = " + findInterviewInfo);
+        ;
 
         interviewInfoRepository.save(findInterviewInfo);
 

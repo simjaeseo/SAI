@@ -13,5 +13,4 @@ public class CreateInterviewInfoRequest {
     private String wrongPostureCount;
     private List<String> interviewVideoUrl;
     private List<String> questions;
-
 }

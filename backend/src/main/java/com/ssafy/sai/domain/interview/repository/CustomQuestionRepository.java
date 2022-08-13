@@ -11,12 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CustomQuestionRepository extends JpaRepository<CustomInterviewQuestion, Long> {
 
-    List<CustomInterviewQuestion> findByMember(Member member);
     Optional<CustomInterviewQuestion> findById(Long id);
 
     List<CustomInterviewQuestion> findQuestionsByMemberId(Long id);
-
-    List<CustomInterviewQuestion> findAllByMember(Member member);
-
 
 }

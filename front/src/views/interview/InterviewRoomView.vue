@@ -1,7 +1,7 @@
 <template>
     <div class="container mt-5" id="body">
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+      aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -38,7 +38,7 @@
         </div>
       </div>
       <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+      aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -75,7 +75,7 @@
         </div>
       </div>
       <div class="modal fade" id="exampleModalToggle3" aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+      aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -178,7 +178,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'dsdefs',
+      mySessionId: `User${Math.floor(Math.random() * 100)}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',

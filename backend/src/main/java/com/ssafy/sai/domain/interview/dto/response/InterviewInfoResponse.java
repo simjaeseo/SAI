@@ -1,7 +1,9 @@
 package com.ssafy.sai.domain.interview.dto.response;
 
+
 import com.ssafy.sai.domain.interview.domain.FeedbackCompleteStatus;
 import com.ssafy.sai.domain.interview.domain.FeedbackRequestStatus;
+
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import lombok.Data;
 
@@ -20,12 +22,12 @@ public class InterviewInfoResponse {
 
     public InterviewInfoResponse(InterviewInfo interviewInfo){
         id = interviewInfo.getId();
-        consultantId =  interviewInfo.getMemberConsultant().getId();
+        consultantId = interviewInfo.getMemberConsultant()
+                == null ? null : interviewInfo.getMemberConsultant().getId();
         category = interviewInfo.getCategory();
         detail = interviewInfo.getDetail();
         interviewDate = interviewInfo.getInterviewDate();
         feedbackRequestStatus = interviewInfo.getFeedbackRequestStatus();
         feedbackCompleteStatus = interviewInfo.getFeedbackCompleteStatus();
     }
-
 }

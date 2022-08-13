@@ -1,12 +1,9 @@
 package com.ssafy.sai.domain.member.api;
 
 import com.ssafy.sai.domain.member.domain.ProfilePicture;
-import com.ssafy.sai.domain.member.dto.*;
-import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
-import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
-import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
-import com.ssafy.sai.domain.member.dto.request.SearchMemberRequest;
+import com.ssafy.sai.domain.member.dto.request.*;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberSimpleResponse;
 import com.ssafy.sai.domain.member.service.MemberService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;
@@ -77,14 +74,14 @@ public class MemberController {
     }
 
     /**
-     * @param passwordDto 비밀번호 변경 폼 양식(old password, new password, new password check)
+     * @param passwordFindRequest 비밀번호 변경 폼 양식(old password, new password, new password check)
      * @return 변경한 회원의 이메일과 이름
      * @throws Exception 잘못된 접근일 때 예외 발생
      * @메소드 회원 비밀번호 변경 컨트롤러
      */
     @PostMapping("/password")
-    public ResponseEntity updatePassword(@Valid @RequestBody PasswordDto passwordDto) {
-        if (memberService.updatePassword(passwordDto) == null) {
+    public ResponseEntity updatePassword(@Valid @RequestBody PasswordFindRequest passwordFindRequest) {
+        if (memberService.updatePassword(passwordFindRequest) == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -114,13 +111,13 @@ public class MemberController {
      */
     @PostMapping
     public ResponseEntity<? extends DataResponse> findMemberId(@Valid @RequestBody FindIdRequest request) {
-        MemberResponse findMember = memberService.findMemberId(request);
+        MemberSimpleResponse findMember = memberService.findMemberId(request);
         return ResponseEntity.ok().body(new DataResponse<>(findMember));
     }
 
     @PostMapping("search")
     public ResponseEntity<? extends DataResponse> findAllMembers(@Valid @RequestBody SearchMemberRequest request) {
-        List<MemberDto> list = memberService.searchMember(request);
+        List<MemberResponse> list = memberService.searchMember(request);
         return ResponseEntity.ok().body(new DataResponse<>(list));
     }
 

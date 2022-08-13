@@ -1,7 +1,6 @@
 package com.ssafy.sai.domain.interview.repository;
 
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
-import com.ssafy.sai.domain.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
@@ -12,17 +11,18 @@ import java.util.Optional;
 
 public interface InterviewInfoRepository extends JpaRepository<InterviewInfo, Long> {
 
-    @Query("select i from InterviewInfo i where i.feedbackRequestStatus = 'true' and i.feedbackCompleteStatus = 'false'" +
-            " and i.memberConsultant.id = :id")
+    @Query("select i from InterviewInfo i where i.feedbackRequestStatus = 'true' " +
+            " and i.feedbackCompleteStatus = 'false' and i.memberConsultant.id = :id")
     List<InterviewInfo> findInterviewInfoByFeedbackRequest(@Param("id") Long id);
 
     @Query("select i from InterviewInfo i" +
             " join fetch i.interviewVideoList iv" +
-            " join fetch iv.useInterviewQuestion ui" +
+            " join fetch iv.usedInterviewQuestion ui" +
             " where i.memberConsultant.id = :consultantId and i.id = :infoId")
     Optional<InterviewInfo> findInfoById(@Param("consultantId") Long consultantId, @Param("infoId") Long infoId);
 
-    @Query("select i from InterviewInfo as i where i.memberStudent = :member")
-    List<InterviewInfo> selectAllByMember(@Param("member") Member member);
+    @Query("select i from InterviewInfo i" +
+            " where i.memberStudent.id = :id")
+    List<InterviewInfo> selectAllById(@Param("id") Long id);
 
 }

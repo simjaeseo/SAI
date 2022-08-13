@@ -20,9 +20,6 @@ public class InterviewQuestion{
 
     private String questionType;
 
-    @Column(name = "question_detail_type")
     private String questionDetailType;
-
-
 
 }

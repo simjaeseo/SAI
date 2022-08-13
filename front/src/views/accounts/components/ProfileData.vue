@@ -110,6 +110,9 @@ export default {
       profileImg,
     };
   },
+  created() {
+    this.$store.dispatch('getUserVideo', this.currentUser.id);
+  },
 };
 </script>
 

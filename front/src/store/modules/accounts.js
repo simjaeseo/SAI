@@ -18,6 +18,7 @@ export default {
     profileImg: '',
     students: [],
     selectedStudent: [],
+    feedBackList: [],
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
@@ -34,6 +35,7 @@ export default {
     profileImg: (state) => state.profileImg,
     students: (state) => state.students,
     selectedStudent: (state) => state.selectedStudent,
+    feedbackList: (state) => state.feedBackList,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -68,15 +70,18 @@ export default {
     // },
     SET_USER_PROFILE_IMG(state, img) {
       state.profileImg = img;
-      console.log(state.profileImg);
     },
     SET_STUDENTS(state, student) {
       state.students = student;
-      console.log(state.students);
     },
     SELECTED_STUDENTS(state, data) {
       state.selectedStudent = data;
-      console.log(state.selectedStudent);
+    },
+    SET_FEEDBACK_LIST(state, list) {
+      state.feedBackList = list;
+    },
+    SET_USER_VIDEO(state, data) {
+      state.userVideo = data;
     },
   },
   actions: {
@@ -105,7 +110,6 @@ export default {
         });
     },
     signup({ dispatch }, credentials) {
-      console.log(credentials);
       axios({
         url: drf.member.studentSignup(),
         method: 'post',
@@ -136,6 +140,17 @@ export default {
             console.log(err);
           });
       }
+    },
+    getUserVideo({ commit }, userid) {
+      axios({
+        url: drf.interview.getUserVideo(userid),
+        method: 'get',
+      })
+        .then((res) => {
+          console.log('동영상가져와요');
+          console.log(res.data.data);
+          commit('SET_USER_VIDEO', res.data.data);
+        });
     },
     logout({ getters, dispatch, commit }) {
       const userId = getters.currentUser.id;
@@ -190,7 +205,6 @@ export default {
       commit('SET_NEW_ENTER', enter);
     },
     newJob({ commit }, enter) {
-      console.log(enter);
       commit('SET_NEW_JOB', enter);
     },
     updateJob({ commit }, data) {

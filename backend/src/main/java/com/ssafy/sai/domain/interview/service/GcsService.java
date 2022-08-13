@@ -13,20 +13,12 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.ssafy.sai.domain.interview.domain.*;
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
+
 import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
-import com.ssafy.sai.domain.interview.repository.UseInterviewQuestionRepository;
-import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.exception.MemberException;
-import com.ssafy.sai.domain.member.exception.MemberExceptionType;
-import com.ssafy.sai.domain.member.repository.MemberRepository;
-import com.ssafy.sai.domain.schedule.domain.Schedule;
-import com.ssafy.sai.domain.schedule.exception.ScheduleException;
-import com.ssafy.sai.domain.schedule.exception.ScheduleExceptionType;
-import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
+import com.ssafy.sai.domain.interview.repository.UsedInterviewQuestionRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
@@ -35,10 +27,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.threeten.bp.Duration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,11 +38,8 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 @Transactional
 public class GcsService {
-    private final MemberRepository memberRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
-    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
+    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     // gcs 업로드
 
@@ -141,6 +128,7 @@ public class GcsService {
     public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, String S3videoName, int index) throws IOException, InterruptedException, ExecutionException {
 
 
+    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, int index) throws IOException, InterruptedException, ExecutionException {
         // Configure polling algorithm
         SpeechSettings.Builder speechSettings = SpeechSettings.newBuilder();
         TimedRetryAlgorithm timedRetryAlgorithm =
@@ -187,6 +175,11 @@ public class GcsService {
                 System.out.printf("Transcription: %s\n", alternative.getTranscript());
             }
 
+            //사용한 면접 질문 넣기
+            UsedInterviewQuestion usedInterviewQuestion = UsedInterviewQuestion.builder()
+                    .question(request.getQuestions().get(index)).build();
+
+            usedInterviewQuestionRepository.save(usedInterviewQuestion);
 
             // 면접 영상 db에 저장하기
             InterviewVideo interviewVideo = InterviewVideo.builder()

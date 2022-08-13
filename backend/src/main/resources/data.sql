@@ -497,6 +497,7 @@ INSERT INTO campus(city,class) VALUES ('구미',3);
 INSERT INTO campus(city,class) VALUES ('구미',4);
 INSERT INTO campus(city,class) VALUES ('구미',5);
 INSERT INTO campus(city,class) VALUES ('구미',6);
+
 INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te@te.te', 'TRAINEE', '심재서', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111111,5,13);
 INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te2@te.te', 'CONSULTANT', '지근', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111112,5,13);
 INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te3@te.te', 'CONSULTANT', '해피인호', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111113,5,13);

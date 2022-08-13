@@ -4,10 +4,11 @@ import com.ssafy.sai.domain.member.domain.Campus;
 import lombok.Data;
 
 @Data
-public class CampusConsultantDto {
+public class CampusConsultantResponse {
+
     private String city;
 
-    public CampusConsultantDto(Campus campus) {
+    public CampusConsultantResponse(Campus campus) {
         this.city = campus.getCity();
     }
 }
