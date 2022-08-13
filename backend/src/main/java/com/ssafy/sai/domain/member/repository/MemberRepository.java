@@ -2,7 +2,7 @@ package com.ssafy.sai.domain.member.repository;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
-import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
+import com.ssafy.sai.domain.member.dto.response.ConsultantAllByCampusResponse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,8 +25,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m where m.id = :id")
     Member findMemberEntityGraph(@Param("id") Long id);
 
-    @Query("select new com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse(m.id, m.name) from Member as m where m.campus.city = :city and m.memberStatus = :memberStatus")
-    List<ConsultantAllByCampusResponse> findConsultantByCampus(@Param("city") String city, @Param("memberStatus") MemberStatus memberStatus);
+    @Query("select m from Member m" +
+            " where m.campus.city = :city and m.memberStatus = :memberStatus")
+    List<Member> findConsultantByCampus(@Param("city") String city, @Param("memberStatus") MemberStatus memberStatus);
 
     @Query(value =
             "select count(*) " +

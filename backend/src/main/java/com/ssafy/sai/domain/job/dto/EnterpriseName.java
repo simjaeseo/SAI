@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class EnterpriseName {
+
     private String name;
 }

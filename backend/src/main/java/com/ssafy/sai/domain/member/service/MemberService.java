@@ -8,17 +8,15 @@ import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.ProfilePicture;
-import com.ssafy.sai.domain.member.dto.*;
 import com.ssafy.sai.domain.job.dto.EnterpriseName;
 import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
-import com.ssafy.sai.domain.member.dto.request.FindIdRequest;
-import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
-import com.ssafy.sai.domain.member.dto.request.SearchMemberRequest;
+import com.ssafy.sai.domain.member.dto.request.*;
+import com.ssafy.sai.domain.member.dto.response.ConsultantResponse;
 import com.ssafy.sai.domain.member.dto.response.MemberResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberSimpleResponse;
 import com.ssafy.sai.domain.member.dto.response.MemberUpdateResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
@@ -56,7 +54,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "/Users/inho/Desktop/World/S07P12C206/image";
+    private String dir = "C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 
@@ -67,10 +65,10 @@ public class MemberService {
      * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
      * @메소드 교육생 정보 조회 서비스
      */
-    public MemberDto findMemberOne(Long id) throws MemberException {
+    public MemberResponse findMemberOne(Long id) throws MemberException {
         memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         Member findMember = memberRepository.findMemberEntityGraph(id);
-        return new MemberDto(findMember);
+        return new MemberResponse(findMember);
     }
 
     /**
@@ -79,10 +77,10 @@ public class MemberService {
      * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
      * @메소드 컨설턴트 정보 조회 서비스
      */
-    public ConsultantDto findConsultantOne(Long id) throws MemberException {
+    public ConsultantResponse findConsultantOne(Long id) throws MemberException {
         memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         Member findMember = memberRepository.findMemberById(id);
-        return new ConsultantDto(findMember);
+        return new ConsultantResponse(findMember);
     }
 
     /**
@@ -149,7 +147,7 @@ public class MemberService {
      * @메소드 컨설턴트 정보 수정 서비스
      */
     @Transactional
-    public ConsultantDto updateConsultant(MultipartFile file, Long id, ConsultantUpdateRequest request) throws MemberException {
+    public ConsultantResponse updateConsultant(MultipartFile file, Long id, ConsultantUpdateRequest request) throws MemberException {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
 
@@ -179,36 +177,36 @@ public class MemberService {
             findMember.updateProfilePicture(null);
         }
 
-        return new ConsultantDto(findMember);
+        return new ConsultantResponse(findMember);
     }
 
-    public List<MemberDto> searchMember(SearchMemberRequest request) throws MemberException {
+    public List<MemberResponse> searchMember(SearchMemberRequest request) throws MemberException {
         List<Member> findMembers = memberRepository.findMembersByName(request.getName());
-        List<MemberDto> result = findMembers.stream()
-                .map(m -> new MemberDto(m))
+        List<MemberResponse> result = findMembers.stream()
+                .map(m -> new MemberResponse(m))
                 .collect(Collectors.toList());
 
         return result;
     }
 
     /**
-     * @param passwordDto 비밀번호 변경 폼 양식 (기존 비밀번호, 새로운 비밀번호, 비밀번호 확인)
+     * @param passwordFindRequest 비밀번호 변경 폼 양식 (기존 비밀번호, 새로운 비밀번호, 비밀번호 확인)
      * @return 비밀번호가 일치하면 비밀번호 암호화 후 회원 정보 DTO 반환
      * @return 비밀번호가 일치하지 않으면 null 반환
      * @throws Exception 접속중인 회원과 이메일이 일치하지 않으면 예외 발생
      * @메소드 회원 비밀번호 변경 서비스
      */
     @Transactional
-    public MemberResponse updatePassword(PasswordDto passwordDto) throws MemberException {
-        Member findMember = memberRepository.findById(passwordDto.getId())
+    public MemberSimpleResponse updatePassword(PasswordFindRequest passwordFindRequest) throws MemberException {
+        Member findMember = memberRepository.findById(passwordFindRequest.getId())
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
         BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
 
-        if (bCryptPasswordEncoder.matches(passwordDto.getPassword(), findMember.getPassword())) {
-            if (passwordDto.getNewPassword().equals(passwordDto.getNewPasswordCheck())) {
-                String hashPassword = bCryptPasswordEncoder.encode(passwordDto.getNewPasswordCheck());
+        if (bCryptPasswordEncoder.matches(passwordFindRequest.getPassword(), findMember.getPassword())) {
+            if (passwordFindRequest.getNewPassword().equals(passwordFindRequest.getNewPasswordCheck())) {
+                String hashPassword = bCryptPasswordEncoder.encode(passwordFindRequest.getNewPasswordCheck());
                 memberRepository.updatePassword(hashPassword, findMember.getEmail());
-                return new MemberResponse(findMember);
+                return new MemberSimpleResponse(findMember);
             }
         } else {
             throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
@@ -223,9 +221,9 @@ public class MemberService {
      * @throws MemberException 일치하는 회원을 찾을 수 없는 경우 예외 발 생
      * @메소드 회원 아이디를 찾는 서비스
      */
-    public MemberResponse findMemberId(FindIdRequest request) throws MemberException {
+    public MemberSimpleResponse findMemberId(FindIdRequest request) throws MemberException {
         Member findMember = memberRepository.findMemberByNameAndBirthday(request.getName(), request.getBirthday());
-        return new MemberResponse(findMember);
+        return new MemberSimpleResponse(findMember);
     }
 
     /**

@@ -21,7 +21,6 @@ public class CustomQuestionDto {
         private Long id;
         private String question;
         private Member member;
-
     }
 
 }

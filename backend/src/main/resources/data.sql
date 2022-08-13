@@ -115,7 +115,7 @@ INSERT INTO interview_question(question, question_type, question_detail_type) VA
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('ARC란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Copy On Write는 어떤 방식으로 동작하는지 설명해주세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Optional 이란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Http Request Code 에 대해 아는대로 설명해 보세요.(ios)', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Http Request Code 에 대해 아는대로 설명해 보세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드 스튜디오의 Thread 에 대해 설명해보세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Android Activity Life Cycle 에 대해 설명해보세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 4대 컴포넌트에 대해서 설명해보세요.', '직무', 'Android/iOS');
@@ -497,3 +497,7 @@ INSERT INTO campus(city,class) VALUES ('구미',3);
 INSERT INTO campus(city,class) VALUES ('구미',4);
 INSERT INTO campus(city,class) VALUES ('구미',5);
 INSERT INTO campus(city,class) VALUES ('구미',6);
+
+INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te@te.te', 'TRAINEE', '심재서', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111111,5,13);
+INSERT INTO member ( created_date, updated_date, birthday, email, member_status, name, password, phone, year, campus_id) VALUES (now(), now(), '1999-01-01', 'te2@te.te', 'CONSULTANT', '지근', '$2a$10$XrV7pzolexu3RZMjkHL6LObChO/wAVzQ3VxTHDIdRhgis3/haKen6', 01011111112,5,13);
+INSERT INTO schedule (category, detail, schedule_date, start_time, consultant_id, student_id) VALUES ('practice', '카카오 1차 테스트', '2022-08-28','12:30',2,1);
