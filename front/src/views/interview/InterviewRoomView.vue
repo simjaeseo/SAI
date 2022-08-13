@@ -1,7 +1,5 @@
 <template>
-    <div class="container mt-5">
-      <div><canvas id="canvas" v-show="false"></canvas></div>
-      <div id="label-container"></div>
+    <div class="container mt-5" id="body">
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -154,9 +152,6 @@
 </template>
 
 <script>
-import * as tmPose from '@teachablemachine/pose';
-// eslint-disable-next-line
-import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
@@ -170,6 +165,7 @@ const OPENVIDU_SERVER_URL = 'https://i7c206.p.ssafy.io:8083';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 export default {
+  // name: '',
   components: {
     UserVideo,
   },
@@ -200,87 +196,13 @@ export default {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
-
-    const URL = 'https://teachablemachine.withgoogle.com/models/MmjUp1c8n/';
-    let model; let webcam; let ctx; let labelContainer; let
-      maxPredictions;
-
-    function drawPose(pose) {
-      if (webcam.canvas) {
-        ctx.drawImage(webcam.canvas, 0, 0);
-        if (pose) {
-          const minPartConfidence = 0.5;
-          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-        }
-      }
-    }
-
-    let progress = 327;
-    let status = 'proper posture';
-    let count = 0;
-    async function predict() {
-      const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-      const prediction = await model.predict(posenetOutput);
-
-      if (prediction[0].probability.toFixed(2) >= 0.70) {
-        if (status !== 'proper posture') {
-          count += 1;
-          progress -= 32.7;
-          if (progress <= 0) {
-            progress = 327 - 32.7;
-          }
-          console.log(count);
-        }
-        status = 'proper posture';
-      } else if (prediction[1].probability.toFixed(2) >= 0.70) {
-        status = 'wrong posture - left';
-      } else if (prediction[2].probability.toFixed(2) >= 0.70) {
-        status = 'wrong posture - right';
-      }
-
-      for (let i = 0; i < maxPredictions; i += 1) {
-        const classPrediction = `${prediction[i].className}: ${prediction[i].probability.toFixed(2)}`;
-        labelContainer.childNodes[i].innerHTML = classPrediction;
-      }
-
-      drawPose(pose);
-    }
-
-    // eslint-disable-next-line
-    async function loop(timestamp) {
-      webcam.update();
-      await predict();
-      window.requestAnimationFrame(loop);
-    }
-
-    async function init() {
-      const modelURL = `${URL}model.json`;
-      const metadataURL = `${URL}metadata.json`;
-
-      model = Object.freeze(await tmPose.load(modelURL, metadataURL));
-      maxPredictions = model.getTotalClasses();
-
-      const size = 500;
-      const flip = true;
-      webcam = new tmPose.Webcam(size, size, flip);
-      await webcam.setup();
-      await webcam.play();
-      window.requestAnimationFrame(loop);
-
-      const canvas = document.getElementById('canvas');
-      canvas.width = size; canvas.height = size;
-      ctx = canvas.getContext('2d');
-      labelContainer = document.getElementById('label-container');
-      for (let i = 0; i < maxPredictions; i += 1) {
-        labelContainer.appendChild(document.createElement('div'));
-      }
-    }
+    const consultants = computed(() => store.getters.myConsultants);
+    // 동영상저장 axios
 
     return {
       selectedQuestionList,
       currentUser,
-      init,
+      consultants,
     };
   },
   created() {
@@ -289,12 +211,9 @@ export default {
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
-    this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
-  unmounted() {
-    // this.$router.go('schedule');
-  }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
+  unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
     videoForm() {
       axios({
