@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.sai.domain.interview.domain.CustomInterviewQuestion;
 import com.ssafy.sai.domain.member.dto.request.ConsultantUpdateRequest;
 import com.ssafy.sai.domain.member.dto.request.MemberUpdateRequest;
-import com.ssafy.sai.domain.member.dto.response.CampusConsultantDto;
 import com.ssafy.sai.global.common.BaseEntity;
 import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
 import com.ssafy.sai.domain.job.domain.InterestedJob;
@@ -42,9 +41,9 @@ public class Member extends BaseEntity {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+
     private String phone;
 
-    @Column(name = "member_is_consultant")
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 

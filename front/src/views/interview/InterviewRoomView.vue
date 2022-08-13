@@ -3,7 +3,7 @@
       <div><canvas id="canvas" v-show="false"></canvas></div>
       <div id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+      aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,8 @@
                 <div class="form-check">
                   <label class="form-check-label" for="gridRadios2">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="myConfirm($event)">
+                  id="gridRadios2" value="false" @change="myConfirm($event)"
+                  data-bs-dismiss="modal">
                     아니오
                   </label>
                 </div>
@@ -39,7 +40,7 @@
         </div>
       </div>
       <div class="modal fade" id="exampleModalToggle2" aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+      aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -51,17 +52,49 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label" for="gridRadios1">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios1" value="true" checked @change="ctConfirm($event)">
-                    예
-                  </label>
-                </div>
-                <div class="form-check">
-                  <label class="form-check-label" for="gridRadios2">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="ctConfirm($event)">
+                    <label class="form-check-label" for="gridRadios1">
+                      <input class="form-check-input" type="radio" name="gridRadios"
+                      id="gridRadios1" value="true" checked @change="ctConfirm($event)">
+                      예
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="form-check-label" for="gridRadios2">
+                    <input class="form-check-input" type="radio" name="gridRadios"
+                    id="gridRadios2" value="false" @change="ctConfirm($event)"
+                    data-bs-dismiss="modal">
                     아니오
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" data-bs-target="#exampleModalToggle3"
+              data-bs-toggle="modal">다음</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="exampleModalToggle3" aria-hidden="true"
+      aria-labelledby="exampleModalToggleLabel2" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalToggleLabel2">피드백을 요청할 컨설턴트를 선택하세요.</h5>
+              <button type="button" class="btn-close"
+              data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="col-12">
+                <div class="form-check">
+                  <div class="form-check">
+                  <label class="form-check-label mx-4" for="gridRadios1"
+                  v-for="(ct, index) in consultants"
+                  :key="index">
+                  <input class="form-check-input" type="radio" name="gridRadios"
+                  id="gridRadios1" :value="ct.id" checked @change="ctSelect($event)">
+                    {{ ct.name }}
                   </label>
                 </div>
                 </div>
@@ -69,8 +102,9 @@
             </div>
             <div class="modal-footer">
               <router-link to="/">
-                <button class="btn" data-bs-dismiss="modal"
-                >창 닫기</button>
+                <button class="btn btn-primary" data-bs-dismiss="modal"
+                @click="videoForm"
+                >제출</button>
               </router-link>
             </div>
           </div>
@@ -82,6 +116,8 @@
             <div v-if="question.length" style="display:inline;">
               <span v-if="!isFinished"> 질문 : </span>
               <span>{{question}}</span>
+            </div>
+            <div>
             </div>
             <user-video :stream-manager="mainStreamManager"/>
             <div id="video-text" v-if="isAnimationStart">
@@ -98,15 +134,15 @@
           </div>
           <div class="d-flex justify-content-end">
             <div v-if="!isFinished">
-            <input class="btn btn-light mx-3 my-3" type="button"
-            id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
-            <input class="btn btn-light me-2" type="button"
-              id="buttonLeaveSession" @click="startRecoding" value="녹화"
+            <input class="btn btn-light" type="button"
+              id="buttonLeaveSession" @click="startRecoding" value="시작"
               :style="[isRecording == true ?
               {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
+              <input class="btn btn-light" type="button"
+              id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             </div>
             <div v-if="isFinished" class="d-flex justify-content-end">
-              <button class="btn mx-3 my-3" data-bs-toggle="modal" @keydown="leaveSession"
+              <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
               data-bs-target="#exampleModalToggle"
               @click="leaveSession" id="modal-btn">면접 종료
               </button>
@@ -122,6 +158,7 @@ import * as tmPose from '@teachablemachine/pose';
 // eslint-disable-next-line
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
+import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
@@ -145,16 +182,18 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'SessionAD',
+      mySessionId: `User${Math.floor(Math.random() * 100)}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
       questions: [],
       isFinished: false,
-      myConfirms: true,
-      ctConfirms: true,
+      myConfirms: false,
+      ctConfirms: false,
       savedUrls: [],
       isRecording: false,
+      consultantsPK: null,
+      savedQ: null,
     };
   },
   setup() {
@@ -246,7 +285,7 @@ export default {
   },
   created() {
     this.questions = this.selectedQuestionList;
-    console.log(this.questions);
+    this.savedQ = Object.values(this.selectedQuestionList);
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
@@ -257,11 +296,32 @@ export default {
     // this.$router.go('schedule');
   }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    videoForm() {
+      axios({
+        url: drf.interview.saveVideo(this.currentUser.id),
+        method: 'post',
+        data: {
+          scheduleId: null,
+          feedbackRequest: this.ctConfirms,
+          consultantId: this.consultantsPK,
+          wrongPostureCount: 15,
+          interviewVideoUrl: this.savedUrls,
+          questions: this.savedQ,
+        },
+      })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    },
+    ctSelect(event) {
+      console.log(event.target.value);
+      this.consultantsPK = event.target.value;
+    },
     myConfirm(event) {
       if (event.target.value === 'true') {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
+        this.$router.push('/');
       }
       console.log(this.myConfirms);
     },
@@ -270,6 +330,7 @@ export default {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
+        this.$router.push('/');
       }
       console.log(this.ctConfirms);
     },
@@ -283,6 +344,7 @@ export default {
     },
     startRecoding() {
       this.isRecording = true;
+      console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
       axios
@@ -456,6 +518,9 @@ export default {
 </script>
 
 <style scoped>
+#body {
+  height: 120vh;
+}
 #modal-btn {
   background-color: #5c6ac4;
   color: white;

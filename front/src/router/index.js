@@ -31,9 +31,6 @@ import ProfileUpdateView from '@/views/accounts/ProfileUpdateView.vue';
 import ManagementView from '@/views/accounts/ManagementView.vue';
 import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
 
-// 채팅 라우터
-import ChatView from '@/views/chat/ChatView.vue';
-
 // 스케줄 라우터
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
@@ -171,11 +168,6 @@ const routes = [
     path: '/password/update',
     name: 'PasswordUpdate',
     component: PasswordUpdateView,
-  },
-  {
-    path: '/chat',
-    name: 'Chat',
-    component: ChatView,
   },
   {
     path: '/profile/update/ct/:id',
