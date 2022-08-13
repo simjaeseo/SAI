@@ -131,11 +131,23 @@ export default {
           .then((res) => {
             commit('SET_CURRENT_USER', res.data.data);
             dispatch('fetchMyConsultants');
+            dispatch('getUserVideo', userid);
           })
           .catch((err) => {
             console.log(err);
           });
       }
+    },
+    getUserVideo({ commit }, userid) {
+      axios({
+        url: drf.interview.getUserVideo(userid),
+        method: 'get',
+      })
+        .then((res) => {
+          console.log('동영상가져와요');
+          console.log(res);
+          commit('SET_USER_VIDEO');
+        });
     },
     logout({ getters, dispatch, commit }) {
       const userId = getters.currentUser.id;
