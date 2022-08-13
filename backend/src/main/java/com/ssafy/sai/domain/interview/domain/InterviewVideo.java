@@ -13,6 +13,7 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
+@Setter
 public class InterviewVideo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +26,17 @@ public class InterviewVideo extends BaseEntity {
     private InterviewInfo interviewInfo;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "use_interview_question_id")
     private UseInterviewQuestion useInterviewQuestion;
 
     private String videoUrl;
 
+    private String videoName;
+
     private String audioUrl;
+
+    private String audioName;
     private String feedback;
 
     private String stt;

@@ -3,6 +3,8 @@ package com.ssafy.sai.domain.interview.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,4 +19,12 @@ public class UseInterviewQuestion {
     private Long id;
 
     private String question;
+
+    @OneToOne(mappedBy = "useInterviewQuestion", cascade = CascadeType.ALL)
+    private InterviewVideo interviewVideo;
+
+    public void addInterviewVideo(InterviewVideo interviewVideo){
+        this.interviewVideo = interviewVideo;
+        interviewVideo.setUseInterviewQuestion(this);
+    }
 }

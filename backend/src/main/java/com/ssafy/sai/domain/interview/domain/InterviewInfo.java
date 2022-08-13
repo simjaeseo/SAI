@@ -48,7 +48,7 @@ public class InterviewInfo extends BaseEntity {
     private LocalDate interviewDate;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "interviewInfo")
+    @OneToMany(mappedBy = "interviewInfo", cascade = CascadeType.ALL)
     private List<InterviewVideo> interviewVideoList = new ArrayList<>();
 
     private String category;
@@ -61,5 +61,10 @@ public class InterviewInfo extends BaseEntity {
     public void updateConsultantIdAndFeedbackRequestStatus(Member memberConsultant, FeedbackRequestStatus feedbackRequestStatus){
         this.memberConsultant = memberConsultant;
         this.feedbackRequestStatus = feedbackRequestStatus;
+    }
+
+    public void addInterviewVideoList(InterviewVideo interviewVideo){
+        this.interviewVideoList.add(interviewVideo);
+        interviewVideo.setInterviewInfo(this);
     }
 }

@@ -12,11 +12,8 @@ import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
 import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;
-import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
-import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
+import com.ssafy.sai.domain.interview.repository.*;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
-import com.ssafy.sai.domain.interview.repository.QuestionRepository;
 import com.ssafy.sai.domain.member.dto.MemberDto;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
@@ -48,7 +45,7 @@ public class InterviewService {
     private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
 
-//    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
+    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -237,13 +234,29 @@ public class InterviewService {
     //    - 마이페이지
     //    영상 삭제 - 재서
     @Transactional
-    public void deleteInterview(Long id, Long interviewInfoId){
+    public void deleteInterview(Long id, Long interviewInfoId) throws InterviewException{
 
         InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
 
-        InterviewVideo findInterviewVideo = interviewVideoRepository.findByInterviewInfo(findInterviewInfo).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_VIDEO));
+        List<InterviewVideo> findInterviewVideos = interviewVideoRepository.findAllByInterviewInfo(findInterviewInfo);
 
         interviewInfoRepository.delete(findInterviewInfo);
-        interviewVideoRepository.delete(findInterviewVideo);
+
+        for(InterviewVideo findInterviewVideo : findInterviewVideos){
+
+        UseInterviewQuestion useInterviewQuestion = findInterviewVideo.getUseInterviewQuestion();
+         useInterviewQuestionRepository.delete(useInterviewQuestion);
+        }
+
     }
+
+    @Transactional
+    public List<InterviewVideo> selectS3VideoNameList( Long interviewInfoId){
+
+        InterviewInfo findInterviewInfo = interviewInfoRepository.findById(interviewInfoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.NOT_FOUND_INTERVIEW_INFO));
+
+        return findInterviewInfo.getInterviewVideoList();
+
+    }
+
 }

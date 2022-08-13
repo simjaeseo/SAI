@@ -5,8 +5,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.*;
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewVideo;
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
@@ -23,7 +21,6 @@ import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
 import it.sauronsoftware.jave.EncodingAttributes;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,17 +39,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -60,7 +54,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class S3UploaderService {
+public class S3Service {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -242,28 +236,32 @@ public class S3UploaderService {
 
 
         //gcs에 업로드
-        gcsService.uploadFileGcs(id, request, saveInterviewInfo, audioMultipartFiles, openviduVideoNames, flacAudioNames, S3videoUrlList);
+        gcsService.uploadFileGcs(id, request, saveInterviewInfo, audioMultipartFiles, openviduVideoNames, flacAudioNames, S3videoUrlList, S3videoNameList);
 
 
     }
 
-    public void deleteFileS3(Long memberId, DeleteInterviewVideoRequest request) throws MemberException {
+    public void deleteFileS3(List<InterviewVideo> findInterviewVideos) throws MemberException {
         // 멤버 있는지 확인 -> 에러처리
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+//        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        // 먼저, s3에 파일이 있는지부터 확인하기.
-        if (!amazonS3.doesObjectExist(bucket, request.getVideoName())) {
-            // 존재하지 않으니까 예외 발생시키기
-            throw new InterviewException(InterviewExceptionType.NOT_FOUND_S3_VIDEO);
-        }
+        for (InterviewVideo findInterviewVideo : findInterviewVideos) {
+            System.out.println("findInterviewVideo.getVideoName() = " + findInterviewVideo.getVideoName());
+            // 먼저, s3에 파일이 있는지부터 확인하기.
+            if (!amazonS3.doesObjectExist(bucket, findInterviewVideo.getVideoName())) {
+                // 존재하지 않으니까 예외 발생시키기
+                throw new InterviewException(InterviewExceptionType.NOT_FOUND_S3_VIDEO);
+            }
 
-        // S3안에 있는 영상 삭제
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, request.getVideoName()));
+            // S3안에 있는 영상 삭제
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, findInterviewVideo.getVideoName()));
 
-        // s3안에 파일 잘 지워졌는지 다시 한번 확인
-        if (amazonS3.doesObjectExist(bucket, request.getVideoName())) {
-            // 존재하니까 예외 발생시키기
-            throw new InterviewException(InterviewExceptionType.STILL_EXIST_S3_VIDEO);
+            // s3안에 파일 잘 지워졌는지 다시 한번 확인
+            if (amazonS3.doesObjectExist(bucket, findInterviewVideo.getVideoName())) {
+                // 존재하니까 예외 발생시키기
+                throw new InterviewException(InterviewExceptionType.STILL_EXIST_S3_VIDEO);
+            }
+
         }
 
         // 잘 지워졌으니까 다음 로직 실행
