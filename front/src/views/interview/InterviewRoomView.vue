@@ -178,7 +178,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'dsdefs',
+      mySessionId: `User${Math.floor(Math.random() * 100)}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
