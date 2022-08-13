@@ -115,7 +115,7 @@ INSERT INTO interview_question(question, question_type, question_detail_type) VA
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('ARC란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Copy On Write는 어떤 방식으로 동작하는지 설명해주세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Optional 이란 무엇인지 설명해주세요.(ios)', '직무', 'Android/iOS');
-INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Http Request Code 에 대해 아는대로 설명해 보세요.(ios)', 'Android/iOS');
+INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Http Request Code 에 대해 아는대로 설명해 보세요.(ios)', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드 스튜디오의 Thread 에 대해 설명해보세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('Android Activity Life Cycle 에 대해 설명해보세요.', '직무', 'Android/iOS');
 INSERT INTO interview_question(question, question_type, question_detail_type) VALUES ('안드로이드의 4대 컴포넌트에 대해서 설명해보세요.', '직무', 'Android/iOS');
