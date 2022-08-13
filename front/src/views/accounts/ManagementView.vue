@@ -38,6 +38,7 @@
         </ul>
       </div>
     </div>
+    {{ getList }}
     <hr>
     <div class="container mb-5">
       <h5>{{ getList.length }}개의 피드백 요청 &#128172;</h5>
@@ -146,6 +147,7 @@ export default {
       finded = [];
     };
     const selectedStudent = function (student) {
+      console.log(student.id);
       searchName = ref('');
       console.log('선택했다!');
       console.log(searchName);
@@ -163,6 +165,7 @@ export default {
       store.dispatch('selectedStudentData', {
         birthday, city, classNumber, email, enters, jobs, studentName, phone, year, img,
       });
+      store.dispatch('getUserVideo', student.id);
     };
     return {
       searchName,
