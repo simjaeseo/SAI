@@ -31,5 +31,6 @@ export default {
     questionList: (type, detail) => `${HOST + INTERVIEW}question/list?questionType=${type}&questionDetailType=${detail}`,
     saveVideo: (id) => `${HOST + INTERVIEW + id}`,
     getUserVideo: (id) => `${HOST + INTERVIEW + id}`,
+    getFeedbackRequestVideo: (id) => `${HOST + INTERVIEW + id}/request`,
   },
 };

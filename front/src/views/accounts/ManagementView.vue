@@ -1,7 +1,7 @@
 <template>
   <div class='container' id='management-page1'>
     <div class="d-flex justify-content-between">
-      <p id='management-text1'>교육생관리</p>
+      <p id='management-text1'>교육생 관리</p>
       <div class="max-w-xs relative space-y-3">
         <label
           for="search"
@@ -19,12 +19,12 @@
         </label>
 
         <ul
-          v-if="searchName.length"
+          v-if="searchName"
           class="border border-gray-300"
         >
           <li>
             <p id='result-count'>
-              {{ students.length }}개가 검색되었습니다.
+              {{ students.length }}명이 검색되었습니다.
             </p>
           </li>
           <li
@@ -39,33 +39,54 @@
       </div>
     </div>
     <hr>
-
-    <!-- <div class="container" id='searched-bar-box1'>
-      <div v-if="studentData.studentName">
-        <img v-if="studentData.img" id='user_profile_img'
-        :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
-        <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
-        <h6>이름</h6>
-        <p>{{ studentData.studentName }}</p>
-        <h6 class="mt-4">생년월일</h6>
-        <p>{{ studentData.birthday }}</p>
-        <h6 class="mt-4">지역/반</h6>
-        <p>{{ studentData.year}}기 {{ studentData.city }} {{ studentData.classNumber }}반</p>
-        <h6 class="mt-4">이메일</h6>
-        <p>{{ studentData.email }}</p>
-        <h6 class="mt-4">연락처</h6>
-        <p>{{ studentData.phone }}</p>
-        <h6 v-if="studentData.enters.length" class="mt-4">관심기업</h6>
-        <li v-for="(enter, index) in studentData.enters" :key="index" id="for-li"
-        class="mb-4">
-          #{{ enter.enterpriseName }}
-        </li>
-        <h6 v-if="studentData.jobs.length" class="mt-4">관심직무</h6>
-        <li v-for="(job, index) in studentData.jobs" :key="index" id="for-li">
-          #{{ job.jobName }}
-        </li>
+    <div class="container mb-5">
+      <h5>{{ getList.length }}개의 피드백 요청 &#128172;</h5>
+      <div>
+      <carousel :nav="false" :dots="false" class="marginTop50">
+        <div class="card mt-4" style="width: 19rem;"
+        v-for="(request, index) in getList" :key="index">
+          <div class="card-body">
+            <h5 class="card-title">{{ request.name }}교육생의 피드백 요청</h5>
+            <p class="card-text">요청일: {{ request.interviewDate }}</p>
+          </div>
+        </div>
+      </carousel>
       </div>
-    </div> -->
+    </div>
+    <div class="container">
+      <div class="row">
+        <div v-if="studentData.studentName" id="student-profile">
+          <img v-if="studentData.img" id='user_profile_img'
+          :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
+          <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
+          <div id="user-profile-inner">
+            <h6>이름</h6>
+            <p id='student-data'>{{ studentData.studentName }}</p>
+            <h6 class="mt-4">생년월일</h6>
+            <p id='student-data'>{{ studentData.birthday }}</p>
+            <h6 class="mt-4">지역/반</h6>
+            <p id='student-data'>{{ studentData.year}}기
+              {{ studentData.city }} {{ studentData.classNumber }}반</p>
+            <h6 class="mt-4">이메일</h6>
+            <p id='student-data'>{{ studentData.email }}</p>
+            <h6 class="mt-4">연락처</h6>
+            <p id='student-data'>{{ studentData.phone }}</p>
+            <h6 v-if="studentData.enters.length" class="mt-4">관심기업</h6>
+            <li v-for="(enter, index) in studentData.enters" :key="index" id="for-li"
+            class="mb-4">
+              #{{ enter.enterpriseName }}
+            </li>
+            <h6 v-if="studentData.jobs.length" class="mt-4">관심직무</h6>
+            <li v-for="(job, index) in studentData.jobs" :key="index" id="for-li">
+              #{{ job.jobName }}
+            </li>
+          </div>
+        </div>
+        <div v-if="studentData.studentName" id="student-profile2">
+
+        </div>
+      </div>
+      </div>
         <div id='home-btn-box'>
       <router-link to='/'>
         <button class='btn' id='home-btn'>홈으로</button>
@@ -86,6 +107,9 @@ export default {
     const store = useStore();
     const students = computed(() => store.getters.students);
     const studentData = computed(() => store.getters.selectedStudent);
+    const currentUser = computed(() => store.getters.currentUser);
+    const feedbackList = [];
+    const getList = computed(() => store.getters.feedbackList);
 
     let finded = [];
     let searchName = ref('');
@@ -103,7 +127,6 @@ export default {
           }
           store.dispatch('findedStudents', finded);
           finded = [];
-          console.log(finded);
         })
         .catch((err) => console.log(err.config.data));
     };
@@ -123,9 +146,9 @@ export default {
       finded = [];
     };
     const selectedStudent = function (student) {
-      console.log(searchName.value);
       searchName = ref('');
-      console.log(searchName.value);
+      console.log('선택했다!');
+      console.log(searchName);
       finded = [];
       birthday = student.birthday;
       city = student.campus.city;
@@ -159,20 +182,80 @@ export default {
       img,
       studentData,
       closeUl,
+      currentUser,
+      feedbackList,
+      getList,
     };
   },
+  mounted() {
+    axios({
+      url: drf.interview.getFeedbackRequestVideo(this.currentUser.id),
+      method: 'get',
+    })
+      .then((res) => {
+        // for (let i = 0; i < res.data.data.length; i += 1) {
+        //   // this.feedbackList.push(res.data.data[i]);
+        //   // console.log(this.feedbackList);
+        //   this.feedbackList.push(res.data.data[0]);
+        // }
+        this.$store.commit('SET_FEEDBACK_LIST', res.data.data);
+      });
+  },
+
 };
 </script>
 
 <style scoped>
+.card-body:hover {
+  cursor: pointer;
+  background-color: #5c6ac41a;
+}
+.card {
+  display: inline-block;
+  margin-right: 10px;
+  text-align: center;
+}
+h5 {
+  color: #555555;
+  padding-top: 20px;
+  padding-left: 10px;
+}
+#feedback-box {
+  height: 25%;
+  width: 100%;
+  background-color: #5c6ac40c;
+}
+#student-profile2 {
+  background-color: #5c6ac40c;
+  border-radius: 10px;
+  height: 750px;
+  width: 860px;
+  margin-left: 30px;
+}
 h6 {
+  color: #555555;
+  font-weight: 500;
+}
+#student-data:hover {
+  border-radius: 5px;
+  background-color: #626db325;
+  list-style: none;
   display: inline;
+}
+#student-profile {
+  text-align: center;
+  background-color: #5c6ac40c;
+  border-radius: 10px;
+  height: 750px;
+  width: 400px;
 }
 p {
   display: inline;
+  color: #555555;
 }
 #user_profile_img {
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   width: 132px;
   height: 170px;
   display: inline;
@@ -181,6 +264,7 @@ p {
   background-color: none;
   list-style: none;
   display: inline;
+  color: #555555;
 }
 #for-li:hover {
   border-radius: 5px;
@@ -191,7 +275,7 @@ p {
 #searched-bar-box1 {
   background-color: #5c6ac40c;
   width: 100%;
-  height: 520px;
+  height: 730px;
   margin-bottom: 40px;
   border-radius: 10px;
 }
