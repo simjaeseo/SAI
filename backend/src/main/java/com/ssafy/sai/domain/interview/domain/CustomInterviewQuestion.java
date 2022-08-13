@@ -24,7 +24,6 @@ public class CustomInterviewQuestion {
     @JoinColumn(name="member_id")
     private Member member;
 
-
     public CustomInterviewQuestion(String question, Member member) {
         this.question = question;
         this.member = member;

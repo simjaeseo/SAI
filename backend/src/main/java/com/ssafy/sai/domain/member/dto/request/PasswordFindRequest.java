@@ -1,4 +1,4 @@
-package com.ssafy.sai.domain.member.dto;
+package com.ssafy.sai.domain.member.dto.request;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class PasswordDto {
+public class PasswordFindRequest {
 
     private Long id;
 
@@ -25,7 +25,7 @@ public class PasswordDto {
             message = "비밀번호는 영문과 숫자 조합으로 8 ~ 16자리까지 가능합니다.")
     private String newPasswordCheck;
 
-    public PasswordDto(Long id, String password, String newPassword, String newPasswordCheck) {
+    public PasswordFindRequest(Long id, String password, String newPassword, String newPasswordCheck) {
         this.id = id;
         this.password = password;
         this.newPassword = newPassword;

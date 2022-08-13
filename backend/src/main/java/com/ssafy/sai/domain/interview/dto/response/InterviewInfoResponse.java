@@ -1,7 +1,9 @@
 package com.ssafy.sai.domain.interview.dto.response;
 
+
 import com.ssafy.sai.domain.interview.domain.FeedbackCompleteStatus;
 import com.ssafy.sai.domain.interview.domain.FeedbackRequestStatus;
+
 import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import lombok.Data;
 
@@ -27,5 +29,4 @@ public class InterviewInfoResponse {
         feedbackRequestStatus = interviewInfo.getFeedbackRequestStatus();
         feedbackCompleteStatus = interviewInfo.getFeedbackCompleteStatus();
     }
-
 }
