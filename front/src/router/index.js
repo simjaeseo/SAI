@@ -35,6 +35,9 @@ import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
+// test
+// import Test from '@/views/chat/TETEST.vue';
+
 const routes = [
   {
     path: '/manual',
@@ -171,6 +174,11 @@ const routes = [
     name: 'ProfileUpdateCTView',
     component: ProfileUpdateCTView,
   },
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   component: Test,
+  // },
 ];
 
 const router = createRouter({
