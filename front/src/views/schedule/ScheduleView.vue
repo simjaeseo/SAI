@@ -1,14 +1,17 @@
+scheduleView
+
 <template>
   <div class="container">
     <div class="row">
       <div id="calendar" class="col-lg-7">
         <my-calendar></my-calendar>
+        <div> {{ UpcomingSchedules }}</div>
       </div>
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event v-show="!selectDate"></show-event>
-        <add-event v-show="selectDate"></add-event>
+        <show-event v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event>
+        <add-event v-show="selectedDate || !isUpcomingSchedules"></add-event>
       </div>
     </div>
   </div>
@@ -32,8 +35,21 @@ export default {
   setup() {
     const store = useStore();
 
-    const selectDate = computed(() => store.getters.selectedDate);
-    return { selectDate };
+    const isUpcomingSchedules = computed(() => store.getters.isUpcomingSchedules);
+    const UpcomingSchedules = computed(() => store.getters.UpcomingSchedules);
+    const selectedDate = computed(() => store.getters.selectedDate);
+    const fetchUpcomingSchedules = () => {
+      store.dispatch('fetchUpcomingSchedules');
+    };
+    return {
+      isUpcomingSchedules,
+      selectedDate,
+      UpcomingSchedules,
+      fetchUpcomingSchedules,
+    };
+  },
+  created() {
+    this.fetchUpcomingSchedules();
   },
 };
 </script>

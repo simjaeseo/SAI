@@ -1,21 +1,17 @@
 package com.ssafy.sai.domain.interview.domain;
 
-import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.global.common.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class InterviewVideo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,15 +19,23 @@ public class InterviewVideo extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "interview_info_id")
+    private InterviewInfo interviewInfo;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "interview_participant_id")
-    private InterviewParticipant interviewParticipant;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "use_interview_question_id")
+    private UseInterviewQuestion useInterviewQuestion;
 
     private String videoUrl;
 
-    @OneToMany(mappedBy = "interviewVideo")
-    private List<Feedback> feedbacks = new ArrayList<>();
+    private String audioUrl;
+    private String feedback;
+
+    private String stt;
+
+    private String wrongPostureCount;
+
+    public void createFeedback(String feedback) {
+        this.feedback = feedback;
+    }
 }

@@ -14,7 +14,12 @@ import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.member.dto.AuthenticationMember;
+import com.ssafy.sai.domain.member.dto.ConsultantDto;
+import com.ssafy.sai.domain.member.dto.request.ConsultantSignUpRequest;
+import com.ssafy.sai.domain.member.dto.request.MemberLoginRequest;
+import com.ssafy.sai.domain.member.dto.request.MemberSignUpRequest;
+import com.ssafy.sai.domain.member.dto.response.MemberResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.CampusRepository;
@@ -45,8 +50,14 @@ public class SignService {
     private final InterestedJobRepository interestedJobRepository;
     private final CampusRepository campusRepository;
 
+    /**
+     * @메소드 교육생 회원가입 서비스
+     * @param request 교육생 회원가입 폼 양식
+     * @return 교육생 정보 DTO
+     * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
+     */
     @Transactional
-    public AuthenticationDto signUpMember(MemberSignUpRequest request) {
+    public MemberResponse signUpMember(MemberSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
@@ -73,14 +84,12 @@ public class SignService {
                 .phone(request.getPhone())
                 .build();
 
-        // 데이터 저장
         Member findMember = memberRepository.save(memberDto);
 
         // 관심기업 저장
         for (EnterpriseName enterpriseName : request.getInterestedEnterprises()) {
             Enterprise enterprise = enterpriseRepository.findEnterpriseByName(enterpriseName.getName());
-
-            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
+            InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, memberDto);
             InterestedEnterprise interestedEnterprise = interestedEnterpriseCreateRequest.toEntity();
             interestedEnterpriseRepository.save(interestedEnterprise);
         }
@@ -94,25 +103,30 @@ public class SignService {
         }
 
         // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
-        findMember.updateCampus(campus.get());
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
 
-        return modelMapper.map(findMember, AuthenticationDto.class);
+        return new MemberResponse(findMember);
     }
 
+    /**
+     * @메소드 컨설턴트 회원가입 서비스
+     * @param request 컨설턴트 회원가입 폼 양식
+     * @return 컨설턴트 정보 DTO
+     * @throws Exception 이미 존재하는 아이디인 경우, 연락처가 중복인 경우 예외 발생
+     */
     @Transactional
-    public AuthenticationConDto signUpConsultant(ConsultantSignUpRequest request) {
+    public ConsultantDto signUpConsultant(ConsultantSignUpRequest request) throws MemberException {
 
         // 아이디 중복체크
         if (!Empty.validation(memberRepository.countByEmail(request.getEmail()))) {
             throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
         }
-
         // 연락처 중복체크
         if (!Empty.validation(memberRepository.countByPhone(request.getPhone()))) {
             throw new MemberException(MemberExceptionType.ALREADY_EXIST_PHONE);
         }
-
         // 비밀번호 암호화
         request.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -128,15 +142,23 @@ public class SignService {
 
         // 데이터 저장
         Member findMember = memberRepository.save(memberDto);
-        // 캠퍼스 정보 저장
-        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), 0);
-        findMember.updateCampus(campus.get());
 
-        return modelMapper.map(findMember, AuthenticationConDto.class);
+        // 캠퍼스 정보 저장
+        Campus campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        findMember.updateCampus(campus);
+
+        return new ConsultantDto(findMember);
     }
 
+    /**
+     * @메소드 회원 로그인 서비스
+     * @param request 로그인 폼 양식(이메일, 비밀번호)
+     * @return 로그인 회원 DTO
+     * @throws Exception 이메일이 일치하지 않는 경우, 비밀번호가 일치하지 않는 경우 예외 발생
+     */
     @Transactional
-    public AuthenticationDto loginMember(MemberLoginRequest request) {
+    public AuthenticationMember loginMember(MemberLoginRequest request) throws MemberException {
 
         // Member -> DTO
         Member memberDto = Member.builder()
@@ -145,15 +167,15 @@ public class SignService {
                 .build();
 
         // Email 유효한지 체크
-        Member member = memberRepository.findByEmail(memberDto.getEmail())
+        Member findMember = memberRepository.findByEmail(memberDto.getEmail())
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
         // 비밀번호 일치 체크
-        if (!passwordEncoder.matches(memberDto.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(memberDto.getPassword(), findMember.getPassword())) {
             throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
         }
 
-        return modelMapper.map(member, AuthenticationDto.class);
+        return modelMapper.map(findMember, AuthenticationMember.class);
     }
 
 }

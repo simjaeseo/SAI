@@ -1,14 +1,20 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="userUpdate" enctyle="multipart/form-data" id="form">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+              <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
+              id='user_profile_img'>
+              <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+              alt="preview"
+              id='user_profile_img'>
+              <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                    ref='image' class='upload-box'>파일선택</label>
+                    ref='image' class='upload-box' @change="onInputImage">파일선택</label>
                 </div>
             </div>
             <!-- 프로필인적사항 -->
@@ -18,36 +24,26 @@
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.name"
+                    readonly @click="noChange"></label>
                     <p id='data-name'>소속</p>
                     <select class='form-select' id='form-select-cardinal-number'
                     aria-label='Default select example'>
-                        <option selected>기수</option>
-                        <option value='1'>1기</option>
-                        <option value='2'>2기</option>
-                        <option value='3'>3기</option>
-                        <option value='4'>4기</option>
-                        <option value='5'>5기</option>
-                        <option value='6'>6기</option>
-                        <option value='7'>7기</option>
+                        <option selected disabled>
+                        {{ currentUser.year}}기</option>
                     </select>
                     <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
-                        <option selected>지역</option>
-                        <option value='1'>서울</option>
-                        <option value='2'>대전</option>
-                        <option value='3'>광주</option>
-                        <option value='4'>구미</option>
-                        <option value='5'>부울경</option>
+                    aria-label='Default select example'
+                    >
+                        <option selected disabled>{{ currentUser.campus.city }}</option>
                     </select>
                     <select class='form-select' id='form-select-class'
-                    aria-label='Default select example'>
-                        <option selected>반</option>
-                        <option value='1'>1반</option>
-                        <option value='2'>2반</option>
-                        <option value='3'>3반</option>
-                        <option value='4'>4반</option>
-                        <option value='5'>5반</option>
+                    aria-label='Default select example'
+                    @click="selectedUserClass"
+                    v-model="state.userClass"
+                    required>
+                      <option selected>{{ currentUser.campus.classNumber}}</option>
+                      <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select>
                     <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
@@ -60,20 +56,26 @@
                         <option value='5'>019</option>
                     </select>
                     <label for="user_signup_number1">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileSecond"
+                         maxlength="4">
                     </label>
                     <label for="user_signup_number2">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileLast"
+                         maxlength="4">
                     </label>
                 </div>
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.birthday" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>이메일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
+                    class='form-control' v-model="currentUser.email" readonly
+                    @click="noChange"></label>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -84,11 +86,11 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
-              <p id='for-inline'>관심기업</p>
+              <p id='for-inline'>{{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
               data-bs-target="#staticBackdrop" id='add-btn'>
-                추가하기
+                수정하기
               </button>
 
               <!-- Modal -->
@@ -103,54 +105,218 @@
                       aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <search-bar></search-bar>
+                      <search-bar-update></search-bar-update>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
-                      <button type="button" class="btn" id='update-btn2'>확인</button>
+                      <button type="button" class="btn" id='update-btn2'
+                      aria-label="Close" data-bs-dismiss="modal"
+                      >확인</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div id='personal-video-box2'>
+            <div v-if="Enters.length" id='personal-video-box'>
+              <div id="carouselExampleControlsNoTouching" class="carousel slide"
+              data-bs-touch="false" data-bs-interval="false">
+                <div class="carousel-inner">
+                  <div class="carousel-item active" id="caro"
+                  v-for="(enter, index) in Enters" :key="index">
+                    <div class="d-block"></div>
+                    <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
+                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                    <h5>{{ enter.name }}</h5>
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button"
+                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                  <span id="next">&#60;</span>
+                </button>
+                <button class="carousel-control-next" type="button"
+                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+                  <span id="next">&#62;</span>
+                </button>
+              </div>
+            </div>
+            <div v-else>
+              <div id='personal-video-box2'>
+                <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
+              <!-- 동영상 구현 필요 -->
+              </div>
             </div>
           </div>
         </div>
         <!-- 동영상 -->
         <div>
           <div id='personal-video-box1' class="container">
-            <p>내 동영상</p>
+            <p>내 동영상 &#127916;</p>
               <div id='personal-video-box2'>
               </div>
-            <p>컨설팅 영상</p>
+            <p>컨설팅 영상 &#127916;</p>
               <div id='personal-video-box3'>
               </div>
           </div>
         </div>
         <!-- 버튼 -->
         <div id='btn-box'>
-            <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <router-link to="profile"><button class='btn'
-            type='submit'
-            id='update-btn'>완료</button></router-link>
+            <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }">
+              <button class='btn' id='cancel-btn'>취소</button>
+            </router-link>
+            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
         </div>
     </form>
+
   </div>
 </template>
 
 <script>
-import SearchBar from './SearchBar.vue';
+import {
+  computed,
+  reactive,
+  onBeforeMount,
+} from 'vue';
+import { useStore } from 'vuex';
+import _uniq from 'lodash/uniq';
 import SearchBarDuty from './SearchBarDuty.vue';
+import SearchBarUpdate from './SearchBarUpdate.vue';
 
 export default {
-  components: { SearchBar, SearchBarDuty },
+  components: { SearchBarDuty, SearchBarUpdate },
   name: 'ProfileDataUpdate',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      mobileFirst: '',
+      mobileSecond: '',
+      mobileLast: '',
+      options: [],
+      userClass: '',
+      file: '',
+      url: '',
+      imgUrl: '',
+    });
+
+    // store에서 넘어온 원래 직무 (변경사항 있을수도, 없을수도)
+    const Jobs = computed(() => store.getters.userJob);
+    const Enters = computed(() => store.getters.userEnter);
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    let img = null;
+
+    onBeforeMount(() => {
+      const userPhone = currentUser.value.phone;
+      state.mobileFirst = userPhone.substr(0, 3);
+      state.mobileSecond = userPhone.substr(3, 4);
+      state.mobileLast = userPhone.substr(7);
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
+      state.userClass = currentUser.value.campus.classNumber;
+      if (currentUser.value.profilePicture != null) {
+        img = currentUser.value.profilePicture.fileName;
+        console.log('이미지있다!');
+        console.log(img);
+      } else {
+        img = null;
+      }
+    });
+
+    const selectedUserClass = function (event) {
+      state.userClass = event.target.value;
+    };
+
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    const setOptions = function () {
+      if (currentUser.value.campus.city === '서울') {
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16');
+      } else if (currentUser.value.campus.city === '대전') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6', '7', '8', '9');
+      } else if (currentUser.value.campus.city === '광주') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '구미') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      } else if (currentUser.value.campus.city === '부울경') {
+        state.options = [];
+        state.options.push('1', '2', '3', '4', '5', '6');
+      }
+    };
+    const userUpdate = () => {
+      const data = {
+        id: currentUser.value.id,
+        campus: {
+          city: currentUser.value.campus.city,
+          classNumber: state.userClass,
+        },
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        interestedJobs:
+          _uniq(Jobs.value),
+        interestedEnterprises:
+          _uniq(Enters.value),
+      };
+      const formData = new FormData();
+      formData.append('file', img);
+      console.log(img);
+      formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      store.dispatch('userUpdate', formData);
+    };
+    const onInputImage = (e) => {
+      state.file = e.target.files;
+      state.url = URL.createObjectURL(state.file[0]);
+      state.imgUrl = state.url;
+      console.log(state.imgUrl);
+      [img] = e.target.files;
+    };
+
+    return {
+      isLoggedIn,
+      currentUser,
+      state,
+      noChange,
+      setOptions,
+      userUpdate,
+      onInputImage,
+      Enters,
+      Jobs,
+      selectedUserClass,
+    };
+  },
 };
 </script>
 
 <style scoped>
+#none-data-text1 {
+  color: rgb(167, 167, 167);
+  line-height: 250px;
+  text-align: center;
+}
+#caro {
+  text-align: center;
+}
+#next {
+  color: black;
+}
+#nocheck {
+  color: gray;
+}
 .modal-body {
   height: 500px;
 }
@@ -426,6 +592,7 @@ p {
     height: 250px;
     margin-bottom: 40px;
     border-radius: 10px;
+    text-align: center;
 }
 #personal-video-box3 {
     background-color: #5c6ac40c;

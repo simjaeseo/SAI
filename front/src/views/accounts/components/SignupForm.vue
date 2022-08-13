@@ -14,7 +14,6 @@
             @change="checkEmail"
             required />
           </label>
-          <button class="btn mx-2" id="double-check-btn">중복확인</button>
         </div>
         <div class='mt-5 mb-5' id='pw-input-wrap'>
           <label for='user_signup_pw1'><p id="login-text2">비밀번호</p>
@@ -67,7 +66,7 @@
               <select class='form-select' id='form-select-cardinal-number'
               aria-label='Default select example'
               @change="selectedUserYear" required>
-                <option selected>연도</option>
+                <option selected disabled>연도</option>
                 <option value='1990'>1990</option>
                 <option value='1991'>1991</option>
                 <option value='1992'>1992</option>
@@ -87,7 +86,7 @@
               aria-label='Default select example'
               @change="selectedUserMonth"
               required>
-                <option selected>월</option>
+                <option selected disabled>월</option>
                 <option value='01'>01</option>
                 <option value='02'>02</option>
                 <option value='03'>03</option>
@@ -105,7 +104,7 @@
               aria-label='Default select example'
               @change="selectedUserDay"
               required>
-                <option selected>일</option>
+                <option selected disabled>일</option>
                 <option value='01'>01</option>
                 <option value='02'>02</option>
                 <option value='03'>03</option>
@@ -147,7 +146,7 @@
               aria-label='Default select example'
               @change="selectedUserCardinalNumber"
               required>
-                <option selected>기수</option>
+                <option selected disabled>기수</option>
                 <option value='1'>1기</option>
                 <option value='2'>2기</option>
                 <option value='3'>3기</option>
@@ -162,7 +161,7 @@
               @click.prevent='setOptions'
               @change="selectedUserRegion"
               required>
-                <option :value="null" >지역</option>
+                <option selected disabled>지역</option>
                 <option value='서울'>서울</option>
                 <option value='대전'>대전</option>
                 <option value='광주'>광주</option>
@@ -173,7 +172,6 @@
               aria-label='Default select example'
               @change="selectedUserClass"
               required>
-                <option :value="null" >반</option>
                 <option v-for='option in state.options' :key="option">{{option}}</option>
               </select>
             </div>
@@ -182,8 +180,7 @@
               <select class='form-select' id='form-select3' aria-label='Default select example'
               @change="UserMobileFirst"
               required>
-                <option selected>선택</option>
-                <option value='010'>010</option>
+                <option value='010' selected >010</option>
                 <option value='011'>011</option>
                 <option value='016'>016</option>
                 <option value='017'>017</option>
@@ -239,12 +236,12 @@ export default {
         username: '',
         userCardinalNumber: '',
         userRegion: '',
-        userClass: '',
+        userClass: '1',
         memberStatus: 'TRAINEE',
       },
       selected: '',
       options: [],
-      mobileFirst: '',
+      mobileFirst: '010',
       mobileSecond: '',
       mobileLast: '',
       isCorrect: false,
@@ -351,11 +348,9 @@ export default {
         console.log('유효합니다');
         if (state.mobileSecond.length === 0) {
           state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
         } else {
           state.mobileSecond = '';
           state.mobileSecond = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileSecond;
         }
       } else {
         state.mobileSecond = '';
@@ -368,11 +363,9 @@ export default {
         console.log('유효합니다');
         if (state.mobileLast.length === 0) {
           state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
         } else {
           state.mobileLast = '';
           state.mobileLast = event.target.value;
-          state.credentials.userPhoneNumber = state.mobileLast;
         }
       } else {
         state.mobileLast = '';
@@ -389,7 +382,7 @@ export default {
       state.credentials.userClass = event.target.value;
     };
     const signupform = function () {
-      console.log('회원가입요청');
+      console.log(state.mobileFirst + state.mobileSecond + state.mobileLast);
       store.dispatch('signup', {
         email: state.credentials.userEmail,
         password: state.credentials.userPassword1,
