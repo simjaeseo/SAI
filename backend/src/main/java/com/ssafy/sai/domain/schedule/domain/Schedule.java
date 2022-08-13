@@ -10,6 +10,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static javax.persistence.FetchType.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,17 +25,14 @@ public class Schedule {
     private Long id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name="schedule_date")
     private LocalDate scheduleDate;
 
     @DateTimeFormat(pattern = "HH:mm")
     @JsonFormat(pattern = "HH:mm")
-    @Column(name="start_time")
     private LocalTime startTime;
 
     @DateTimeFormat(pattern = "HH:mm")
     @JsonFormat(pattern = "HH:mm")
-    @Column(name="end_time")
     private LocalTime endTime;
 
     private String category;
@@ -41,20 +40,20 @@ public class Schedule {
     private String detail;
 
     @JsonBackReference
-    @ManyToOne(fetch =   FetchType.LAZY)
-    @JoinColumn(name="member_student_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "student_id")
     private Member memberStudent;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_consultant_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "consultant_id")
     private Member memberConsultant;
 
-    public void addMemberStudent(Member member){
+    public void addMemberStudent(Member member) {
         this.memberStudent = member;
     }
 
-    public void addMemberConsultant(Member member){
+    public void addMemberConsultant(Member member) {
         this.memberConsultant = member;
     }
 

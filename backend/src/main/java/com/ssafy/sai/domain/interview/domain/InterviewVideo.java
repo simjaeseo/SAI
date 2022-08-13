@@ -23,12 +23,13 @@ public class InterviewVideo extends BaseEntity {
     private InterviewInfo interviewInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "use_interview_question_id")
-    private UseInterviewQuestion useInterviewQuestion;
+    @JoinColumn(name = "used_interview_question_id")
+    private UsedInterviewQuestion usedInterviewQuestion;
 
     private String videoUrl;
 
     private String audioUrl;
+
     private String feedback;
 
     private String stt;

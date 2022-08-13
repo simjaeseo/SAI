@@ -6,7 +6,6 @@ import lombok.Data;
 public class ConsultantAllByCampusResponse {
 
     private Long id;
-
     private String name;
 
     public ConsultantAllByCampusResponse(Long id, String name) {

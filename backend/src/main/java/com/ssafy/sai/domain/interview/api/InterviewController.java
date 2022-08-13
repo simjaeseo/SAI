@@ -5,8 +5,8 @@ import com.ssafy.sai.domain.interview.domain.InterviewInfo;
 import com.ssafy.sai.domain.interview.domain.InterviewQuestion;
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.dto.request.DeleteInterviewVideoRequest;
-import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
-import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
+import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
+import com.ssafy.sai.domain.interview.dto.response.InterviewVideoResponse;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
@@ -32,26 +32,29 @@ public class InterviewController {
 
     @PostMapping("/{consultant-id}/feedback/{video-id}")
     public ResponseEntity<? extends MessageResponse> saveFeedback(
-            @PathVariable("consultant-id") Long consultantId, @PathVariable("video-id") Long videoId, @RequestBody FeedbackRequest request) {
+            @PathVariable("consultant-id") Long consultantId, @PathVariable("video-id") Long videoId,
+            @RequestBody FeedbackRequest request) {
         SaveFeedbackResponse saveFeedbackResponse = interviewService.saveFeedback(consultantId, videoId, request);
         return ResponseEntity.ok().body(new DataResponse<>(saveFeedbackResponse));
     }
 
     @PutMapping("/{consultant-id}/request/{info-id}")
-    public ResponseEntity<? extends MessageResponse> finishFeedback(@PathVariable("consultant-id") Long consultantId, @PathVariable("info-id") Long infoId) {
+    public ResponseEntity<? extends MessageResponse> finishFeedback(@PathVariable("consultant-id") Long consultantId,
+                                                                    @PathVariable("info-id") Long infoId) {
         interviewService.finishFeedback(consultantId, infoId);
         return ResponseEntity.ok().body(new MessageResponse<>());
     }
 
     @GetMapping("/{consultant-id}/request/{info-id}")
-    public ResponseEntity<? extends MessageResponse> findVideoList(@PathVariable("consultant-id") Long consultantId, @PathVariable("info-id") Long infoId) {
-        List<InterviewVideoDto> interviewVideoList = interviewService.findInterviewVideo(consultantId, infoId);
+    public ResponseEntity<? extends MessageResponse> findVideoList(@PathVariable("consultant-id") Long consultantId,
+                                                                   @PathVariable("info-id") Long infoId) {
+        List<InterviewVideoResponse> interviewVideoList = interviewService.findInterviewVideo(consultantId, infoId);
         return ResponseEntity.ok().body(new DataResponse<>(interviewVideoList));
     }
 
     @GetMapping("/{consultant-id}/request")
     public ResponseEntity<? extends MessageResponse> findFeedbackRequest(@PathVariable("consultant-id") Long id) {
-        List<InterviewInfoDto> feedbackRequestList = interviewService.findFeedbackRequest(id);
+        List<InterviewInfoResponse> feedbackRequestList = interviewService.findFeedbackRequest(id);
         return ResponseEntity.ok().body(new DataResponse<>(feedbackRequestList));
     }
 

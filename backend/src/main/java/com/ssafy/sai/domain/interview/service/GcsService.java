@@ -14,7 +14,7 @@ import com.ssafy.sai.domain.interview.domain.*;
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
 import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
 import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
-import com.ssafy.sai.domain.interview.repository.UseInterviewQuestionRepository;
+import com.ssafy.sai.domain.interview.repository.UsedInterviewQuestionRepository;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
 import com.ssafy.sai.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class GcsService {
     private final ScheduleRepository scheduleRepository;
     private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
-    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
+    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
     // gcs 업로드
     public void uploadFileGcs(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, List<MultipartFile> audioMultipartFiles, List<String> openviduVideoNames, List<String> flacAudioNames, List<String> S3videoUrlList) throws IOException {
@@ -72,7 +72,7 @@ public class GcsService {
             gcsUrls.add(gcsUrl);
             // 내 생각에 이걸 저장할때 해도 될지 걱정... 마이페이지에서 동영상 클릭했을때 혹은 리턴하고 나서 하는게 맞을거같은데..
             try {
-                STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index),  index);
+                STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index), index);
                 index++;
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -97,7 +97,7 @@ public class GcsService {
     /**
      * Demonstrates using the Speech API to transcribe an audio file.
      */
-    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl,  int index) throws Exception {
+    public void STT(Long id, CreateInterviewInfoRequest request, InterviewInfo saveInterviewInfo, String gsutillUrl, String gcsUrl, List<String> openviduVideoNames, List<String> flacAudioNames, String S3videoUrl, int index) throws Exception {
 
 
         // Configure polling algorithm
@@ -147,16 +147,16 @@ public class GcsService {
             }
 
             //사용한 면접 질문 넣기
-            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
+            UsedInterviewQuestion usedInterviewQuestion = UsedInterviewQuestion.builder()
                     .question(request.getQuestions().get(index)).build();
 
-            useInterviewQuestionRepository.save(useInterviewQuestion);
+            usedInterviewQuestionRepository.save(usedInterviewQuestion);
 
 
             // db에 저장하기
             InterviewVideo interviewVideo = InterviewVideo.builder()
                     .interviewInfo(saveInterviewInfo)
-                    .useInterviewQuestion(useInterviewQuestion)
+                    .usedInterviewQuestion(usedInterviewQuestion)
                     .videoUrl(S3videoUrl)
                     .audioUrl(gcsUrl)
                     .stt(stt)

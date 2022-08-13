@@ -12,6 +12,4 @@ public class CreateInterviewVideoResponse {
     private Long id;
     private List<String> videoNameList;
     private List<String> videoUrlList;
-
-
 }

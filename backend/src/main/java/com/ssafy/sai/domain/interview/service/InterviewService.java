@@ -3,18 +3,15 @@ package com.ssafy.sai.domain.interview.service;
 import com.ssafy.sai.domain.interview.domain.*;
 
 import com.ssafy.sai.domain.interview.dto.request.CreateInterviewInfoRequest;
-import com.ssafy.sai.domain.interview.dto.InterviewInfoDto;
-import com.ssafy.sai.domain.interview.dto.InterviewVideoDto;
+import com.ssafy.sai.domain.interview.dto.response.InterviewInfoResponse;
+import com.ssafy.sai.domain.interview.dto.response.InterviewVideoResponse;
 import com.ssafy.sai.domain.interview.dto.request.CustomQuestionRequest;
 import com.ssafy.sai.domain.interview.dto.response.SaveFeedbackResponse;
 import com.ssafy.sai.domain.interview.dto.request.FeedbackRequest;
 import com.ssafy.sai.domain.interview.exception.InterviewException;
 import com.ssafy.sai.domain.interview.exception.InterviewExceptionType;
-import com.ssafy.sai.domain.interview.repository.InterviewInfoRepository;
-import com.ssafy.sai.domain.interview.repository.InterviewVideoRepository;
+import com.ssafy.sai.domain.interview.repository.*;
 import com.ssafy.sai.domain.member.domain.Member;
-import com.ssafy.sai.domain.interview.repository.CustomQuestionRepository;
-import com.ssafy.sai.domain.interview.repository.QuestionRepository;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.MemberRepository;
@@ -44,8 +41,8 @@ public class InterviewService {
     private final ScheduleRepository scheduleRepository;
     private final InterviewInfoRepository interviewInfoRepository;
     private final InterviewVideoRepository interviewVideoRepository;
+//    private final UsedInterviewQuestionRepository usedInterviewQuestionRepository;
 
-//    private final UseInterviewQuestionRepository useInterviewQuestionRepository;
 
     @Transactional
     public Optional<InterviewQuestion> getQuestion(Long id) {
@@ -98,7 +95,8 @@ public class InterviewService {
 
         //나혼자 연습일때
         if (request.getScheduleId() == null) {
-            Member findMember = memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+            Member findMember = memberRepository.findById(id)
+                    .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
             interviewInfo = InterviewInfo.builder().memberStudent(findMember)
                     .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
@@ -108,11 +106,13 @@ public class InterviewService {
 
         } else {
             // 컨설턴트와 면접일때
-            Schedule findSchedule = scheduleRepository.findById(request.getScheduleId()).orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
+            Schedule findSchedule = scheduleRepository.findById(request.getScheduleId())
+                    .orElseThrow(() -> new ScheduleException(ScheduleExceptionType.NOT_FOUND_SCHEDULE));
 
             interviewInfo = InterviewInfo.builder().memberStudent(findSchedule.getMemberStudent())
                     .memberConsultant(findSchedule.getMemberConsultant())
-                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true") ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
+                    .feedbackRequestStatus(request.getFeedbackRequest().equals("true")
+                            ? FeedbackRequestStatus.TRUE : FeedbackRequestStatus.FALSE)
                     .feedbackCompleteStatus(FeedbackCompleteStatus.FALSE)
                     .interviewDate(LocalDate.now())
                     .category(findSchedule.getCategory())
@@ -126,19 +126,19 @@ public class InterviewService {
 
 //        // 사용한 면접 질문 넣기
 //        for (String question : request.getQuestions()) {
-//            UseInterviewQuestion useInterviewQuestion = UseInterviewQuestion.builder()
+//            UsedInterviewQuestion usedInterviewQuestion = UsedInterviewQuestion.builder()
 //                    .savedInterviewInfo(saveInterviewInfo)
 //                    .question(question).build();
 //
-//            useInterviewQuestionRepository.save(useInterviewQuestion);
+//            usedInterviewQuestionRepository.save(usedInterviewQuestion);
 //        }
     }
 
-    public List<InterviewInfoDto> findFeedbackRequest(Long id) {
+    public List<InterviewInfoResponse> findFeedbackRequest(Long id) {
         Member findMember = memberRepository.findMemberById(id);
         List<InterviewInfo> feedbackRequestList = interviewInfoRepository.findInterviewInfoByFeedbackRequest(findMember.getId());
-        List<InterviewInfoDto> result = feedbackRequestList.stream()
-                .map(interviewInfo -> new InterviewInfoDto(interviewInfo))
+        List<InterviewInfoResponse> result = feedbackRequestList.stream()
+                .map(interviewInfo -> new InterviewInfoResponse(interviewInfo))
                 .collect(Collectors.toList());
 
         return result;
@@ -150,13 +150,17 @@ public class InterviewService {
      * @return 면접 질문별 영상
      * @메소드 면접 영상 가져오는 서비스
      */
-    public List<InterviewVideoDto> findInterviewVideo(Long consultantId, Long infoId) {
+    public List<InterviewVideoResponse> findInterviewVideo(Long consultantId, Long infoId) {
         Member findMember = memberRepository.findById(consultantId)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
-        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId).orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
+        InterviewInfo interviewInfo = interviewInfoRepository.findInfoById(findMember.getId(), infoId)
+                .orElseThrow(() -> new InterviewException(InterviewExceptionType.BAD_REQUEST));
+
         List<InterviewVideo> interviewVideoList = interviewInfo.getInterviewVideoList();
-        List<InterviewVideoDto> result = interviewVideoList.stream()
-                .map(interviewVideo -> new InterviewVideoDto(interviewVideo))
+
+        List<InterviewVideoResponse> result = interviewVideoList.stream()
+                .map(interviewVideo -> new InterviewVideoResponse(interviewVideo))
                 .collect(Collectors.toList());
 
         return result;
