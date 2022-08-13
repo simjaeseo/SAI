@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class InterviewInfoResponse {
 
     private Long id;
-    private Long consultantId;
+    private String consultantName;
     private String category;
     private String detail;
     private LocalDate interviewDate;
@@ -22,8 +22,8 @@ public class InterviewInfoResponse {
 
     public InterviewInfoResponse(InterviewInfo interviewInfo){
         id = interviewInfo.getId();
-        consultantId = interviewInfo.getMemberConsultant()
-                == null ? null : interviewInfo.getMemberConsultant().getId();
+        consultantName = interviewInfo.getMemberConsultant()
+                == null ? null : interviewInfo.getMemberConsultant().getName();
         category = interviewInfo.getCategory();
         detail = interviewInfo.getDetail();
         interviewDate = interviewInfo.getInterviewDate();
