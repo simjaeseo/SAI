@@ -1,7 +1,7 @@
 package com.ssafy.sai.domain.schedule.api;
 
 
-import com.ssafy.sai.domain.schedule.dto.ScheduleCreateRequest;
+import com.ssafy.sai.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.ssafy.sai.domain.schedule.service.ScheduleService;
 import com.ssafy.sai.global.common.DataResponse;
 import com.ssafy.sai.global.common.MessageResponse;

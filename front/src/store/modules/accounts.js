@@ -121,14 +121,17 @@ export default {
           alert('올바르지 않은 요청입니다. 회원가입을 다시 시도하세요.');
         });
     },
-    fetchCurrentUser({ getters, commit }, userid) {
+    fetchCurrentUser({ getters, commit, dispatch }, userid) {
       if (getters.isLoggedIn) {
         axios({
           url: drf.member.currentUserInfo(userid),
           method: 'get',
           header: getters.authHeader,
         })
-          .then((res) => commit('SET_CURRENT_USER', res.data.data))
+          .then((res) => {
+            commit('SET_CURRENT_USER', res.data.data);
+            dispatch('fetchMyConsultants');
+          })
           .catch((err) => {
             console.log(err);
           });

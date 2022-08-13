@@ -1,5 +1,3 @@
-Showevent
-
 <template>
   <div>
     <div v-if="upcomingSchedules">
@@ -25,7 +23,9 @@ Showevent
                   <button
                     v-if="this.myToday.slice(5, 7) === upcomingSchedule.scheduleDate.slice(5, 7)
                     && this.myToday.slice(-2) === upcomingSchedule.scheduleDate.slice(-2)&&
-                    Number(Date().slice(15, 18)) == Number(upcomingSchedule.startTime.slice(0, 2))"
+                    Number(Date().slice(15, 18)) == Number(upcomingSchedule.startTime.slice(0, 2))||
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedule.startTime.slice(0, 2) - 1)"
                     class="btn">
                       면접 바로가기
                   </button><br>
