@@ -50,17 +50,49 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label" for="gridRadios1">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios1" value="true" checked @change="ctConfirm($event)">
-                    예
-                  </label>
-                </div>
-                <div class="form-check">
-                  <label class="form-check-label" for="gridRadios2">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="ctConfirm($event)">
+                    <label class="form-check-label" for="gridRadios1">
+                      <input class="form-check-input" type="radio" name="gridRadios"
+                      id="gridRadios1" value="true" checked @change="ctConfirm($event)">
+                      예
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <label class="form-check-label" for="gridRadios2">
+                    <input class="form-check-input" type="radio" name="gridRadios"
+                    id="gridRadios2" value="false" @change="ctConfirm($event)"
+                    data-bs-dismiss="modal">
                     아니오
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" data-bs-target="#exampleModalToggle3"
+              data-bs-toggle="modal">다음</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="exampleModalToggle3" aria-hidden="true"
+      aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalToggleLabel2">피드백을 요청할 컨설턴트를 선택하세요.</h5>
+              <button type="button" class="btn-close"
+              data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="col-12">
+                <div class="form-check">
+                  <div class="form-check">
+                  <label class="form-check-label mx-4" for="gridRadios1"
+                  v-for="(ct, index) in consultants"
+                  :key="index">
+                  <input class="form-check-input" type="radio" name="gridRadios"
+                  id="gridRadios1" :value="ct.id" checked @change="ctSelect($event)">
+                    {{ ct.name }}
                   </label>
                 </div>
                 </div>
@@ -68,8 +100,9 @@
             </div>
             <div class="modal-footer">
               <router-link to="/">
-                <button class="btn" data-bs-dismiss="modal"
-                >창 닫기</button>
+                <button class="btn btn-primary" data-bs-dismiss="modal"
+                @click="videoForm"
+                >제출</button>
               </router-link>
             </div>
           </div>
@@ -81,6 +114,8 @@
             <div v-if="question.length" style="display:inline;">
               <span v-if="!isFinished"> 질문 : </span>
               <span>{{question}}</span>
+            </div>
+            <div>
             </div>
             <user-video :stream-manager="mainStreamManager"/>
             <div id="video-text" v-if="isAnimationStart">
@@ -118,6 +153,7 @@
 
 <script>
 import axios from 'axios';
+import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
@@ -142,7 +178,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: 'SessionAD',
+      mySessionId: 'dsdefs',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
@@ -152,20 +188,26 @@ export default {
       ctConfirms: false,
       savedUrls: [],
       isRecording: false,
+      consultantsPK: null,
+      savedQ: null,
     };
   },
   setup() {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
+    const consultants = computed(() => store.getters.myConsultants);
+    // 동영상저장 axios
+
     return {
       selectedQuestionList,
       currentUser,
+      consultants,
     };
   },
   created() {
     this.questions = this.selectedQuestionList;
-    console.log(this.questions);
+    this.savedQ = Object.values(this.selectedQuestionList);
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
@@ -173,6 +215,26 @@ export default {
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    videoForm() {
+      axios({
+        url: drf.interview.saveVideo(this.currentUser.id),
+        method: 'post',
+        data: {
+          scheduleId: null,
+          feedbackRequest: this.ctConfirms,
+          consultantId: this.consultantsPK,
+          wrongPostureCount: 15,
+          interviewVideoUrl: this.savedUrls,
+          questions: this.savedQ,
+        },
+      })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    },
+    ctSelect(event) {
+      console.log(event.target.value);
+      this.consultantsPK = event.target.value;
+    },
     myConfirm(event) {
       if (event.target.value === 'true') {
         this.myConfirms = true;
@@ -187,6 +249,7 @@ export default {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
+        this.$router.push('/');
       }
       console.log(this.ctConfirms);
     },

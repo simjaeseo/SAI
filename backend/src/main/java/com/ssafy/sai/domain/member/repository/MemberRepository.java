@@ -2,7 +2,7 @@ package com.ssafy.sai.domain.member.repository;
 
 import com.ssafy.sai.domain.member.domain.Member;
 import com.ssafy.sai.domain.member.domain.MemberStatus;
-import com.ssafy.sai.domain.member.dto.ConsultantAllByCampusResponse;
+import com.ssafy.sai.domain.member.dto.response.ConsultantAllByCampusResponse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
