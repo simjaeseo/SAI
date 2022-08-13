@@ -19,6 +19,7 @@
       <ul
         v-if="searchCountries.length"
         class="border border-gray-300"
+        style="width:460px;"
       >
         <li>
           <p id='result-count'>

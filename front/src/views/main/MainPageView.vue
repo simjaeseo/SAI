@@ -33,9 +33,11 @@ export default {
 
     const currentUser = computed(() => store.getters.currentUser);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const consultants = computed(() => store.getters.myConsultants);
     return {
       currentUser,
       isLoggedIn,
+      consultants,
     };
   },
 };
