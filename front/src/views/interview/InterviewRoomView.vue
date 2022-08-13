@@ -1,7 +1,5 @@
 <template>
-    <div class="container mt-5">
-      <div><canvas id="canvas" v-show="false"></canvas></div>
-      <div id="label-container"></div>
+    <div class="container mt-5" id="body">
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -154,9 +152,6 @@
 </template>
 
 <script>
-import * as tmPose from '@teachablemachine/pose';
-// eslint-disable-next-line
-import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
@@ -170,6 +165,7 @@ const OPENVIDU_SERVER_URL = 'https://i7c206.p.ssafy.io:8083';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 export default {
+  // name: '',
   components: {
     UserVideo,
   },
@@ -292,12 +288,9 @@ export default {
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
-    this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
-  unmounted() {
-    // this.$router.go('schedule');
-  }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
+  unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
     videoForm() {
       axios({
