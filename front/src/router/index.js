@@ -86,7 +86,7 @@ const routes = [
   },
   {
     path: '/update',
-    name: 'MpdateUser',
+    name: 'UpdateUser',
     component: ProfileUpdateView,
   },
   {
