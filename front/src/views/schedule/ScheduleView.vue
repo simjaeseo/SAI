@@ -5,7 +5,6 @@ scheduleView
     <div class="row">
       <div id="calendar" class="col-lg-7">
         <my-calendar></my-calendar>
-        <!-- <div> {{ UpcomingSchedules }}</div> -->
       </div>
       <div class="col-lg-1">
       </div>
@@ -17,7 +16,7 @@ scheduleView
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 
 import MyCalendar from './components/MyCalendar.vue';
@@ -37,11 +36,9 @@ export default {
       store.dispatch('fetchUpcomingSchedules');
     };
 
-    // let cKey = 0;
-    // const forceRerender = () => {
-    //   cKey += 1;
-    //   console.log(cKey);
-    // };
+    onUnmounted(() => {
+      store.commit('RESET_DATE');
+    });
 
     return {
       UpcomingSchedules,
