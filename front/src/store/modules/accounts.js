@@ -79,6 +79,9 @@ export default {
     SELECTED_STUDENTS(state, data) {
       state.selectedStudent = data;
     },
+    RESET_SELECTED_STUDENTS(state) {
+      state.selectedStudent = [];
+    },
     SET_FEEDBACK_LIST(state, list) {
       state.feedBackList = list;
     },
