@@ -10,9 +10,8 @@ scheduleView
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <side-bar :key="cKey" @forceRerender="forceRerender"></side-bar>
+        <side-bar :ckey="cKey" @forceRerender="forceRerender"></side-bar>
       </div>
-      <button @click="forceRerender"></button>
     </div>
   </div>
 </template>

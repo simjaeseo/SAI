@@ -63,6 +63,9 @@ export default {
         state.CTDaySchedules.push(CTDaySchedules[i].startTime);
       }
     },
+    RESET_CT_DAY_SCHEDULES(state) {
+      state.CTDaySchedules = [];
+    },
     SET_DAY_SCHEDULES(state, daySchedules) {
       state.daySchedules = [];
       for (let i = 0; i < daySchedules.length; i += 1) {
@@ -152,6 +155,7 @@ export default {
         })
           .then(() => {
             dispatch('fetchSchedules');
+            dispatch('fetchUpcomingSchedules');
             router.push({ name: 'ScheduleCT' });
           })
           .catch((err) => console.log(err));
@@ -167,6 +171,7 @@ export default {
       })
         .then(() => {
           dispatch('fetchSchedules');
+          dispatch('fetchUpcomingSchedules');
           router.push({ name: 'Schedule' });
         });
     },

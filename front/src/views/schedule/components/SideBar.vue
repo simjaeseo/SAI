@@ -19,7 +19,7 @@ export default {
     AddEvent,
     ShowEvent,
   },
-  porps: {
+  props: {
     cKey: Number,
   },
   setup() {

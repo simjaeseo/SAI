@@ -1,29 +1,20 @@
 <template>
   <form>
     <div id="btn-box">
-      <select
+      <select-CT
       id="select-ct"
       class="form-select"
-      aria-label="Default select example"
-      @change="pickMyConsultant"
-      :style="[Credential.selectedConsultant ?
-      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
-      required>
-        <option selected disabled>상담 예약</option>
-        <option
-        v-for="myConsultant in myConsultants"
-        :key="myConsultant"
-        :value="myConsultant.id">
-          {{ myConsultant.name }} 컨설턴트
-        </option>
-      </select>
-        <button
-        class="btn"
-        @click.prevent="pickMyConsultant"
-        :style="[Credential.selectedConsultant == '' ?
-        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
-          개인 일정
-        </button>
+      :selectedConsultant="Credential.selectedConsultant"
+      :key="CTKey"
+      @pickMyConsultant="pickMyConsultant">
+      </select-CT>
+      <button
+      class="btn"
+      @click.prevent="pickMyConsultant(null), forceRerenderSelectCT()"
+      :style="[Credential.selectedConsultant == '' ?
+      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
+        개인 일정
+      </button>
     </div>
 
     <div class="mt-4">
@@ -99,16 +90,20 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import SelectCT from './SelectCT.vue';
 
 export default {
   name: 'AddEvent',
+  components: {
+    SelectCT,
+  },
   props: ['updateKey'],
   data() {
     return {
       times: [],
       hour: 9,
       selectedTime: '',
-      cKey: 0,
+      CTKey: 0,
       Credential: {
         startTime: null,
         selectedConsultant: null,
@@ -120,6 +115,7 @@ export default {
   setup() {
     const store = useStore();
 
+    const selectedDate = computed(() => store.getters.selectedDate);
     const myConsultants = computed(() => store.getters.myConsultants);
     const fetchMyConsultants = () => {
       store.dispatch('fetchMyConsultants');
@@ -129,6 +125,9 @@ export default {
     const CTDaySchedules = computed(() => store.getters.CTDaySchedules);
     const fetchCTDaySchedules = (data) => {
       store.dispatch('fetchCTDaySchedules', data);
+    };
+    const resetCTDaySchedules = () => {
+      store.commit('RESET_CT_DAY_SCHEDULES');
     };
     const daySchedules = computed(() => store.getters.daySchedules);
     const pickTime = (time) => {
@@ -141,8 +140,10 @@ export default {
     };
     return {
       myConsultants,
+      selectedDate,
       fetchMyConsultants,
       fetchCTDaySchedules,
+      resetCTDaySchedules,
 
       pickTime,
       CTDaySchedules,
@@ -152,6 +153,9 @@ export default {
     };
   },
   methods: {
+    forceRerenderSelectCT() {
+      this.CTKey += 1;
+    },
     forceRerender() {
       this.$emit('forceRerender');
     },
@@ -191,9 +195,18 @@ export default {
 
       init();
     },
-    pickMyConsultant(e) {
-      this.Credential.selectedConsultant = e.target.value;
-      this.fetchCTDaySchedules(this.Credential.selectedConsultant);
+    pickMyConsultant(value) {
+      console.log(value);
+      this.Credential.selectedConsultant = value;
+      const data = {
+        consultant: this.Credential.selectedConsultant,
+        date: this.selectedDate,
+      };
+      if (this.Credential.selectedConsultant) {
+        this.fetchCTDaySchedules(data);
+      } else {
+        this.resetCTDaySchedules();
+      }
     },
     selectCategory(e) {
       this.Credential.selectedCategory = e.target.value;

@@ -32,7 +32,7 @@ v-if="selectedDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day
 v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
                     class="schedule-summary">
                       <div
-                      :style="[sc.category == '1:1 모의 면접' ?
+:style="[sc.category == 'practice' || 'consulting-job' || 'consulting-introduction' ?
                       {background:'#deepblue'} : {background:'#deeppink'}]">
                         {{ sc.detail }}
                       </div>
@@ -41,6 +41,9 @@ v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${
                         {{ sc.scheduleDate.slice(-2) }}일
                         {{ sc.startTime }}<br>
                         {{ sc.detail }}<br>
+                        <span v-show="sc.consultantName">
+                        {{ sc.consultantName }}
+                        </span><br>
                         <button
                         class="btn btn-danger"
                         @click="deleteSchedule(sc.id)">
