@@ -31,6 +31,9 @@ export default {
         state.selectedDate = false;
       }
     },
+    RESET_DATE(state) {
+      state.selectedDate = null;
+    },
     // SET_START_TIME(state, startTime) {
     //   if (state.startTime !== startTime) {
     //     state.startTime = startTime;
@@ -59,6 +62,9 @@ export default {
       for (let i = 0; i < CTDaySchedules.length; i += 1) {
         state.CTDaySchedules.push(CTDaySchedules[i].startTime);
       }
+    },
+    RESET_CT_DAY_SCHEDULES(state) {
+      state.CTDaySchedules = [];
     },
     SET_DAY_SCHEDULES(state, daySchedules) {
       state.daySchedules = [];
@@ -99,7 +105,7 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    createSchedule({ dispatch, getters }, Credential) {
+    createSchedule({ dispatch, getters, commit }, Credential) {
       if (getters.selectedDate
         && Credential.startTime
         && Credential.selectedConsultant !== null
@@ -120,7 +126,9 @@ export default {
           headers: getters.authHeader,
         })
           .then(() => {
+            commit('RESET_DATE');
             dispatch('fetchSchedules');
+            dispatch('fetchUpcomingSchedules');
             router.push({ name: 'Schedule' });
           })
           .catch((err) => console.log(err));
@@ -147,6 +155,7 @@ export default {
         })
           .then(() => {
             dispatch('fetchSchedules');
+            dispatch('fetchUpcomingSchedules');
             router.push({ name: 'ScheduleCT' });
           })
           .catch((err) => console.log(err));
@@ -162,6 +171,7 @@ export default {
       })
         .then(() => {
           dispatch('fetchSchedules');
+          dispatch('fetchUpcomingSchedules');
           router.push({ name: 'Schedule' });
         });
     },
