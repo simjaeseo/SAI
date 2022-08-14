@@ -119,7 +119,7 @@
             </div>
             <div>
             </div>
-            <user-video :stream-manager="mainStreamManager"/>
+            <user-video :stream-manager="mainStreamManager" @emotionRatioCount="emotionRatioCount"/>
             <div id="video-text" v-if="isAnimationStart">
               <p id="video-start"> 모의 면접을 시작합니다.</p>
               <p id="video-start"> 질문에 답변해주세요. </p>
@@ -195,6 +195,11 @@ export default {
       isRecording: false,
       consultantsPK: null,
       savedQ: null,
+      wrongPostureCount: [],
+      preWrongCount: 0,
+      emotionRatio: [],
+      happy: 0,
+      emotionCount: 0,
     };
   },
   setup() {
@@ -221,18 +226,23 @@ export default {
     let progress = 327;
     let status = 'proper posture';
     let count = 0;
+    function countOutput() {
+      return {
+        count,
+      };
+    }
     async function predict() {
       const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
       const prediction = await model.predict(posenetOutput);
-
       if (prediction[0].probability.toFixed(2) >= 0.70) {
         if (status !== 'proper posture') {
           count += 1;
+          console.log(count);
+          countOutput();
           progress -= 32.7;
           if (progress <= 0) {
             progress = 327 - 32.7;
           }
-          console.log(count);
         }
         status = 'proper posture';
       } else if (prediction[1].probability.toFixed(2) >= 0.70) {
@@ -285,6 +295,7 @@ export default {
       selectedQuestionList,
       currentUser,
       consultants,
+      countOutput,
       init,
     };
   },
@@ -299,7 +310,13 @@ export default {
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    emotionRatioCount(happyRatio) {
+      this.happy += happyRatio;
+      this.emotionCount += 1;
+    },
     videoForm() {
+      console.log(this.emotionRatio);
+      console.log(this.wrongPostureCount);
       axios({
         url: drf.interview.saveVideo(this.currentUser.id),
         method: 'post',
@@ -307,7 +324,7 @@ export default {
           scheduleId: null,
           feedbackRequest: this.ctConfirms,
           consultantId: this.consultantsPK,
-          wrongPostureCount: 15,
+          wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
         },
@@ -350,6 +367,29 @@ export default {
       console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      this.preWrongCount = this.countOutput().count;
+      this.happy = 0;
+      this.emotionCount = 0;
+      function speak(text, optProp) {
+        window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+
+        const prop = optProp || {};
+
+        const speechMsg = new SpeechSynthesisUtterance();
+        speechMsg.rate = prop.rate || 1; // 속도: 0.1 ~ 10
+        speechMsg.pitch = prop.pitch || 1; // 음높이: 0 ~ 2
+        speechMsg.lang = prop.lang || 'ko-KR';
+        speechMsg.text = text;
+
+        // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+        window.speechSynthesis.speak(speechMsg);
+      }
+
+      speak(this.question, {
+        rate: 0.9,
+        pitch: 0.5,
+        lang: 'ko-KR',
+      });
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
           session: this.mySessionId,
@@ -365,7 +405,10 @@ export default {
         });
     },
     stopRecoding() {
+      const tmp = this.countOutput().count;
       this.isRecording = false;
+      this.wrongPostureCount.push(tmp - this.preWrongCount);
+      this.emotionRatio.push(this.happy / this.emotionCount);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,
