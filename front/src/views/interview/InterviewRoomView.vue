@@ -132,7 +132,7 @@
               </div>
             </div>
           </div>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end" style="margin-right:20px;">
             <div v-if="!isFinished">
             <input class="btn btn-light" type="button"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
