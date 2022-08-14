@@ -51,6 +51,7 @@ export default {
       state.schedules = schedules;
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
+      console.log('!!!!');
       state.upcomingSchedules = upcomingSchedules;
       console.log(state.upcomingSchedules);
     },
@@ -136,7 +137,7 @@ export default {
         alert('빠짐없이 입력해주세요');
       }
     },
-    createScheduleCT({ dispatch, getters }, Credential) {
+    createScheduleCT({ dispatch, getters, commit }, Credential) {
       if (getters.selectedDate
         && Credential.startTime
         && Credential.scheduleDetail
@@ -154,6 +155,7 @@ export default {
           headers: getters.authHeader,
         })
           .then(() => {
+            commit('RESET_DATE');
             dispatch('fetchSchedules');
             dispatch('fetchUpcomingSchedules');
             router.push({ name: 'ScheduleCT' });

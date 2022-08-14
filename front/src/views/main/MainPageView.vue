@@ -8,7 +8,11 @@
       <div class="col-lg-1">
       </div>
       <div class="col-lg-4" id='user-schedule-box2'>
-        <router-link to="schedule" id="main-calendar">
+        <router-link v-if="currentUser.memberStatus === 'TRAINEE'"
+        to="/schedule" id="main-calendar">
+          <main-calendar></main-calendar>
+        </router-link>
+        <router-link v-else to="/scheduleCT" id="main-calendar">
           <main-calendar></main-calendar>
         </router-link>
       </div>

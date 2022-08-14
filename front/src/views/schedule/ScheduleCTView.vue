@@ -7,27 +7,24 @@
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event-CT v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event-CT>
-        <add-event-CT v-show="selectedDate || !isUpcomingSchedules"></add-event-CT>
+        <side-bar-CT :ckey="cKey" @forceRerender="forceRerender"></side-bar-CT>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 
 import MyCalendar from './components/MyCalendar.vue';
-import AddEventCT from './components/AddEventCT.vue';
-import ShowEventCT from './components/ShowEventCT.vue';
+import SideBarCT from './components/SideBarCT.vue';
 
 export default {
   name: 'SheduleView',
   components: {
     MyCalendar,
-    AddEventCT,
-    ShowEventCT,
+    SideBarCT,
   },
   setup() {
     const store = useStore();
@@ -37,11 +34,26 @@ export default {
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
     };
+
+    onUnmounted(() => {
+      store.commit('RESET_DATE');
+    });
+
     return {
       isUpcomingSchedules,
       selectedDate,
       fetchUpcomingSchedules,
     };
+  },
+  data() {
+    return {
+      cKey: 0,
+    };
+  },
+  methods: {
+    forceRerender() {
+      this.cKey += 1;
+    },
   },
   created() {
     this.fetchUpcomingSchedules();
