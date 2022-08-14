@@ -202,7 +202,6 @@ export default {
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
     const consultants = computed(() => store.getters.myConsultants);
-    // 동영상저장 axios
 
     const TMURL = 'https://teachablemachine.withgoogle.com/models/xOFsAlFmy/';
     let model; let webcam; let ctx; let labelContainer; let maxPredictions;
