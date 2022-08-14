@@ -76,6 +76,7 @@
           </div>
     </div>
     <!-- 동영상 -->
+    {{ userVideo }}
     <div>
       <div id='personal-video-box1' class="container">
         <p>내 동영상</p>
@@ -104,10 +105,12 @@ export default {
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
     const profileImg = computed(() => store.getters.profileImg);
+    const userVideo = computed(() => store.getters.userVideo);
     return {
       isLoggedIn,
       currentUser,
       profileImg,
+      userVideo,
     };
   },
   created() {

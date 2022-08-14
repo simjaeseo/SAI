@@ -38,7 +38,7 @@
         </ul>
       </div>
     </div>
-    {{ getList }}
+    <!-- {{ getList }} -->
     <hr>
     <div class="container mb-5">
       <h5>{{ getList.length }}개의 피드백 요청 &#128172;</h5>
@@ -84,7 +84,27 @@
           </div>
         </div>
         <div v-if="studentData.studentName" id="student-profile2">
-
+        <carousel :nav="false" :dots="false" class="marginTop50">
+          <div class="card mt-4" style="width: 16.792rem;"
+          v-for="(video, index) in userVideo" :key="index">
+            <div class="card-body">
+              <div id="badge-box">
+                <button id="card-text-badge-request" class="btn"
+                v-if="video.feedbackCompleteStatus === 'FALSE'
+                && video.feedbackRequestStatus === 'TRUE'">
+                  REQUEST</button>
+                <button id="card-text-badge-completed" class="btn"
+                v-if="video.feedbackCompleteStatus === 'TRUE'">
+                  COMPLETED</button>
+                <button id="card-text-badge-none" class="btn"
+                v-if="video.feedbackRequestStatus === 'FALSE'">
+                  TEST</button>
+              </div>
+              <h5 class="card-title">#{{ video.id }} 개인 모의 면접</h5>
+              <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+            </div>
+          </div>
+        </carousel>
         </div>
       </div>
       </div>
@@ -111,6 +131,7 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const feedbackList = [];
     const getList = computed(() => store.getters.feedbackList);
+    const userVideo = computed(() => store.getters.userVideo);
 
     let finded = [];
     let searchName = ref('');
@@ -188,6 +209,7 @@ export default {
       currentUser,
       feedbackList,
       getList,
+      userVideo,
     };
   },
   mounted() {
@@ -209,6 +231,27 @@ export default {
 </script>
 
 <style scoped>
+#card-text-badge-request {
+  display: inline;
+  background: #f0506e;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-completed {
+  display: inline;
+  background: #32d296;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-none {
+  display: inline;
+  background: #faa05a;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
 .card-body:hover {
   cursor: pointer;
   background-color: #5c6ac41a;
