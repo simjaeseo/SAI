@@ -13,7 +13,7 @@ public class InterviewVideoResponse {
     private String feedback;
     private String stt;
     private String wrongPostureCount;
-    private UsedInterviewQuestion usedInterviewQuestion;
+    private UsedInterviewQuestionResponse usedInterviewQuestion;
 
     public InterviewVideoResponse(InterviewVideo interviewVideo) {
         videoId = interviewVideo.getId();
@@ -22,6 +22,6 @@ public class InterviewVideoResponse {
         feedback = interviewVideo.getFeedback();
         stt = interviewVideo.getStt();
         wrongPostureCount = interviewVideo.getWrongPostureCount();
-        usedInterviewQuestion = interviewVideo.getUsedInterviewQuestion();
+        usedInterviewQuestion = new UsedInterviewQuestionResponse(interviewVideo);
     }
 }
