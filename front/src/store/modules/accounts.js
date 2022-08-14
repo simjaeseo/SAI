@@ -224,7 +224,6 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: 'Profile', params: { id: userId } });
         });
     },
     userUpdateCT({ dispatch, getters }, credentials) {

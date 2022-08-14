@@ -38,7 +38,6 @@
         </ul>
       </div>
     </div>
-    <!-- {{ getList }} -->
     <hr>
     <div class="container mb-5">
       <h5>{{ getList.length }}개의 피드백 요청 &#128172;</h5>
@@ -47,7 +46,7 @@
         <div class="card mt-4" style="width: 19rem;"
         v-for="(request, index) in getList" :key="index">
           <div class="card-body">
-            <h5 class="card-title">{{ request.name }}교육생의 피드백 요청</h5>
+            <h5 class="card-title">{{ request.studentName }}</h5>
             <p class="card-text">요청일: {{ request.interviewDate }}</p>
           </div>
         </div>
@@ -255,6 +254,7 @@ export default {
 .card-body:hover {
   cursor: pointer;
   background-color: #5c6ac41a;
+  text-align: center;
 }
 .card {
   display: inline-block;

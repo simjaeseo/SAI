@@ -89,12 +89,12 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label mx-4" for="gridRadios1"
+                  <label class="form-check-label" for="gridRadios1"
                   v-for="(ct, index) in consultants"
-                  :key="index">
+                  :key="index" id="ct-label">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios1" :value="ct.id" checked @change="ctSelect($event)">
-                    {{ ct.name }}
+                  id="ct-radio" :value="ct.id" checked @change="ctSelect($event)" required>
+                    <p id="ct-name">{{ ct.name }}</p>
                   </label>
                 </div>
                 </div>
@@ -324,7 +324,6 @@ export default {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
-        this.videoForm();
         this.$router.push('/');
       }
     },
@@ -521,6 +520,16 @@ export default {
 </script>
 
 <style scoped>
+#ct-label {
+  display: inline-block;
+  width: 100%;
+}
+#ct-name {
+  width: 100%;
+}
+#ct-radio {
+  display: inline-block;
+}
 #body {
   height: 120vh;
 }
