@@ -90,7 +90,7 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click.prevent="createSchedule(Credential)">등록</button>
+      <button class="btn" @click.prevent="createSchedule(Credential), forceRerender()">등록</button>
     </div>
     </div>
   </form>
@@ -108,6 +108,7 @@ export default {
       times: [],
       hour: 9,
       selectedTime: '',
+      cKey: 0,
       Credential: {
         startTime: null,
         selectedConsultant: null,
@@ -151,6 +152,9 @@ export default {
     };
   },
   methods: {
+    forceRerender() {
+      this.$emit('forceRerender');
+    },
     timeSet() {
       for (let i = 0; this.hour < 18 || i === 30; i += 30) {
         if (i === 60) {

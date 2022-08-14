@@ -31,6 +31,9 @@ export default {
         state.selectedDate = false;
       }
     },
+    RESET_DATE(state) {
+      state.selectedDate = null;
+    },
     // SET_START_TIME(state, startTime) {
     //   if (state.startTime !== startTime) {
     //     state.startTime = startTime;
@@ -99,7 +102,7 @@ export default {
         .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
       // .catch((err) => console.error(err.response));
     },
-    createSchedule({ dispatch, getters }, Credential) {
+    createSchedule({ dispatch, getters, commit }, Credential) {
       if (getters.selectedDate
         && Credential.startTime
         && Credential.selectedConsultant !== null
@@ -120,7 +123,9 @@ export default {
           headers: getters.authHeader,
         })
           .then(() => {
+            commit('RESET_DATE');
             dispatch('fetchSchedules');
+            dispatch('fetchUpcomingSchedules');
             router.push({ name: 'Schedule' });
           })
           .catch((err) => console.log(err));

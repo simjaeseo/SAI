@@ -5,14 +5,14 @@ scheduleView
     <div class="row">
       <div id="calendar" class="col-lg-7">
         <my-calendar></my-calendar>
-        <div> {{ UpcomingSchedules }}</div>
+        <!-- <div> {{ UpcomingSchedules }}</div> -->
       </div>
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event v-if="isUpcomingSchedules" v-show="!selectedDate"></show-event>
-        <add-event v-show="selectedDate || !isUpcomingSchedules"></add-event>
+        <side-bar :key="cKey" @forceRerender="forceRerender"></side-bar>
       </div>
+      <button @click="forceRerender"></button>
     </div>
   </div>
 </template>
@@ -22,31 +22,43 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import MyCalendar from './components/MyCalendar.vue';
-import AddEvent from './components/AddEvent.vue';
-import ShowEvent from './components/ShowEvent.vue';
+import SideBar from './components/SideBar.vue';
 
 export default {
   name: 'SheduleView',
   components: {
     MyCalendar,
-    AddEvent,
-    ShowEvent,
+    SideBar,
   },
   setup() {
     const store = useStore();
 
-    const isUpcomingSchedules = computed(() => store.getters.isUpcomingSchedules);
     const UpcomingSchedules = computed(() => store.getters.UpcomingSchedules);
-    const selectedDate = computed(() => store.getters.selectedDate);
     const fetchUpcomingSchedules = () => {
       store.dispatch('fetchUpcomingSchedules');
     };
+
+    // let cKey = 0;
+    // const forceRerender = () => {
+    //   cKey += 1;
+    //   console.log(cKey);
+    // };
+
     return {
-      isUpcomingSchedules,
-      selectedDate,
       UpcomingSchedules,
       fetchUpcomingSchedules,
+      // forceRerender,
     };
+  },
+  data() {
+    return {
+      cKey: 0,
+    };
+  },
+  methods: {
+    forceRerender() {
+      this.cKey += 1;
+    },
   },
   created() {
     this.fetchUpcomingSchedules();
