@@ -120,7 +120,7 @@
               </div>
             </div>
             <div v-if="Enters.length" id='personal-video-box'>
-              <div id="carouselExampleControlsNoTouching" class="carousel slide"
+              <div id="myCarousel" class="carousel slide"
               data-bs-touch="false" data-bs-interval="false">
                 <div class="carousel-inner mb-5">
                   <div class="carousel-item active" id="caro"
@@ -132,11 +132,12 @@
                   </div>
                 </div>
                 <button class="carousel-control-prev" type="button"
-                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                data-bs-target="#myCarousel" data-bs-slide="prev">
                   <span id="next">&#60;</span>
                 </button>
                 <button class="carousel-control-next" type="button"
-                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+                data-bs-target="#myCarousel" data-bs-slide="next"
+                >
                   <span id="next">&#62;</span>
                 </button>
               </div>
@@ -144,7 +145,6 @@
             <div v-else>
               <div id='personal-video-box2'>
                 <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
-              <!-- 동영상 구현 필요 -->
               </div>
             </div>
           </div>
@@ -232,6 +232,7 @@ import axios from 'axios';
 import drf from '@/api/api';
 import { useStore } from 'vuex';
 import _uniq from 'lodash/uniq';
+import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
 
@@ -288,7 +289,6 @@ export default {
         img = null;
       }
     });
-
     const selectedUserClass = function (event) {
       state.userClass = event.target.value;
     };
@@ -347,7 +347,9 @@ export default {
           url: drf.interview.deletePersonalVideo(userId, info),
           method: 'delete',
         })
-          .then((res) => console.log(res));
+          .then(() => {
+            router.go();
+          });
       }
     };
     return {
