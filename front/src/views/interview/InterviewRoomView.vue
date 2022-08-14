@@ -324,18 +324,18 @@ export default {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
+        this.videoForm();
         this.$router.push('/');
       }
-      console.log(this.myConfirms);
     },
     ctConfirm(event) {
       if (event.target.value === 'true') {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
+        this.videoForm();
         this.$router.push('/');
       }
-      console.log(this.ctConfirms);
     },
     answerCompleted() {
       this.question = '';
