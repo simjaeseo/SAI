@@ -34,7 +34,7 @@
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
               data-bs-toggle="modal" v-if="myConfirms === true">다음</button>
-              <router-link to="/">
+              <router-link to="/main">
                 <button class="btn btn-primary" aria-label="Close"
                 v-if="myConfirms === false"
                 data-bs-dismiss="modal">종료</button>
@@ -75,7 +75,7 @@
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle3"
               data-bs-toggle="modal" v-if="ctConfirms === true">다음</button>
-              <router-link to="/">
+              <router-link to="/main">
                 <button class="btn btn-primary" aria-label="Close"
                 v-if="ctConfirms === false"
                 data-bs-dismiss="modal" @click="videoForm">종료</button>
@@ -109,7 +109,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <router-link to="/">
+              <router-link to="/main">
                 <button class="btn btn-primary" data-bs-dismiss="modal"
                 @click="videoForm"
                 >제출</button>
@@ -331,7 +331,7 @@ export default {
           wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
-          emotionRation: this.emotionRatio,
+          emotionRatio: this.emotionRatio,
         },
       })
         .then((res) => console.log(res));

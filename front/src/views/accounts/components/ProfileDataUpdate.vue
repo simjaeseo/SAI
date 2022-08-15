@@ -255,9 +255,12 @@ export default {
     const userVideo = computed(() => store.getters.userVideo);
     let img = null;
     const trigger = function () {
-      if (Enters.value.length) {
-        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
+      if (currentUser.value.interestedEnterprises.length) {
+        const cnt = currentUser.value.interestedEnterprises.length;
+        console.log(cnt);
+        for (let i = 0; i < cnt; i += 1) {
           document.getElementById('next').click();
+          console.log('왜');
         }
       }
     };

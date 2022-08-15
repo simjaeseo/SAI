@@ -151,7 +151,9 @@ export default {
     const userVideo = computed(() => store.getters.userVideo);
     const trigger = function () {
       if (currentUser.value.interestedEnterprises.length) {
-        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
+        const cnt = currentUser.value.interestedEnterprises.length;
+        console.log(cnt);
+        for (let i = 0; i < cnt; i += 1) {
           document.getElementById('next').click();
         }
       }

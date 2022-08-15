@@ -201,7 +201,7 @@ export default {
       this.OV = undefined;
 
       window.removeEventListener('beforeunload', this.leaveSession);
-      this.$router.push('/');
+      this.$router.push('/main');
     },
 
     updateMainVideoStreamManager(stream) {

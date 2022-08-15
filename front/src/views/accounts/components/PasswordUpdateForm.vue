@@ -37,7 +37,7 @@
       </div>
     </form>
       <div>
-        <router-link to='/'>
+        <router-link :to="{ name: 'Main' }">
         <button class='btn' id='login-btn'>
         홈으로</button></router-link>
       </div>
