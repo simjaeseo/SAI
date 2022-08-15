@@ -4,7 +4,6 @@
     <!-- <vue-text-to-speech></vue-text-to-speech> -->
     <label for="select-lang">
       <select v-show="false" id="select-lang">
-      <option value="ko-KR" selected>한국어</option>
       </select>
       <textarea id="text" rows="5" cols="20"></textarea>
       <button id="btn-read">읽기</button>
@@ -31,16 +30,16 @@ export default {
     }
 
     // 이벤트 영역
-    const selectLang = document.getElementById('select-lang');
-    const text = document.getElementById('text');
+    // const selectLang = document.getElementById('select-lang');
+    // const text = document.getElementById('text');
     const btnRead = document.getElementById('btn-read');
 
     btnRead.addEventListener('click', (e) => {
       console.log(e);
-      speak(text.value, {
+      speak('안녕하세요', {
         rate: 0.9,
         pitch: 0.5,
-        lang: selectLang.options[selectLang.selectedIndex].value,
+        lang: 'ko-KR',
       });
     });
   },
