@@ -1,6 +1,6 @@
 <template>
   <div class='container' id='management-page1'>
-    <div class="d-flex justify-content-between">
+    <!-- <div class="d-flex justify-content-between">
       <p id='management-text1'>교육생 관리</p>
       <div class="max-w-xs relative space-y-3">
         <label
@@ -37,8 +37,8 @@
           </li>
         </ul>
       </div>
-    </div>
-    {{ getList }}
+    </div> -->
+    <find-student-input-form :cKey="cKey" @forceRerender="forceRerender"></find-student-input-form>
     <hr>
     <div class="container mb-5">
       <h5>{{ getList.length }}개의 피드백 요청 &#128172;</h5>
@@ -47,7 +47,8 @@
         <div class="card mt-4" style="width: 19rem;"
         v-for="(request, index) in getList" :key="index">
           <div class="card-body">
-            <h5 class="card-title">{{ request.name }}교육생의 피드백 요청</h5>
+            <h5 class="card-title">{{ request.campus.city }}
+              {{ request.campus.classNumber }}반 {{ request.studentName }}</h5>
             <p class="card-text">요청일: {{ request.interviewDate }}</p>
           </div>
         </div>
@@ -84,7 +85,27 @@
           </div>
         </div>
         <div v-if="studentData.studentName" id="student-profile2">
-
+        <carousel :nav="false" :dots="false" class="marginTop50">
+          <div class="card mt-4" style="width: 16.792rem;"
+          v-for="(video, index) in userVideo" :key="index">
+            <div class="card-body">
+              <div id="badge-box">
+                <button id="card-text-badge-request" class="btn"
+                v-if="video.feedbackCompleteStatus === 'FALSE'
+                && video.feedbackRequestStatus === 'TRUE'">
+                  REQUEST</button>
+                <button id="card-text-badge-completed" class="btn"
+                v-if="video.feedbackCompleteStatus === 'TRUE'">
+                  COMPLETED</button>
+                <button id="card-text-badge-none" class="btn"
+                v-if="video.feedbackRequestStatus === 'FALSE'">
+                  TEST</button>
+              </div>
+              <h5 class="card-title">#{{ video.id }} 개인 모의 면접</h5>
+              <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+            </div>
+          </div>
+        </carousel>
         </div>
       </div>
       </div>
@@ -97,13 +118,26 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import axios from 'axios';
 import drf from '@/api/api';
 import { useStore } from 'vuex';
+import FindStudentInputForm from './components/FindStudentInputForm.vue';
 
 export default {
+  components: { FindStudentInputForm },
   name: 'ManagenmentView',
+  data() {
+    return {
+      cKey: 0,
+    };
+  },
+  methods: {
+    forceRerender() {
+      this.cKey += 1;
+      console.log(this.cKey);
+    },
+  },
   setup() {
     const store = useStore();
     const students = computed(() => store.getters.students);
@@ -111,7 +145,11 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const feedbackList = [];
     const getList = computed(() => store.getters.feedbackList);
+    const userVideo = computed(() => store.getters.userVideo);
 
+    onUnmounted(() => {
+      store.commit('RESET_SELECTED_STUDENTS');
+    });
     let finded = [];
     let searchName = ref('');
     const searchStudent = function () {
@@ -188,6 +226,7 @@ export default {
       currentUser,
       feedbackList,
       getList,
+      userVideo,
     };
   },
   mounted() {
@@ -209,9 +248,31 @@ export default {
 </script>
 
 <style scoped>
+#card-text-badge-request {
+  display: inline;
+  background: #f0506e;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-completed {
+  display: inline;
+  background: #32d296;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-none {
+  display: inline;
+  background: #faa05a;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
 .card-body:hover {
   cursor: pointer;
   background-color: #5c6ac41a;
+  text-align: center;
 }
 .card {
   display: inline-block;

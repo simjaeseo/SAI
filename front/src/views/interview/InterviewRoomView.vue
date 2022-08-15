@@ -89,12 +89,12 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label mx-4" for="gridRadios1"
+                  <label class="form-check-label" for="gridRadios1"
                   v-for="(ct, index) in consultants"
-                  :key="index">
+                  :key="index" id="ct-label">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios1" :value="ct.id" checked @change="ctSelect($event)">
-                    {{ ct.name }}
+                  id="ct-radio" :value="ct.id" checked @change="ctSelect($event)" required>
+                    <p id="ct-name">{{ ct.name }}</p>
                   </label>
                 </div>
                 </div>
@@ -132,7 +132,7 @@
               </div>
             </div>
           </div>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end" style="margin-right:20px;">
             <div v-if="!isFinished">
             <input class="btn btn-light" type="button"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
@@ -207,7 +207,6 @@ export default {
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
     const consultants = computed(() => store.getters.myConsultants);
-    // 동영상저장 axios
 
     const TMURL = 'https://teachablemachine.withgoogle.com/models/xOFsAlFmy/';
     let model; let webcam; let ctx; let labelContainer; let maxPredictions;
@@ -343,16 +342,15 @@ export default {
         this.myConfirms = false;
         this.$router.push('/');
       }
-      console.log(this.myConfirms);
     },
     ctConfirm(event) {
       if (event.target.value === 'true') {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
+        this.videoForm();
         this.$router.push('/');
       }
-      console.log(this.ctConfirms);
     },
     answerCompleted() {
       this.question = '';
@@ -564,6 +562,16 @@ export default {
 </script>
 
 <style scoped>
+#ct-label {
+  display: inline-block;
+  width: 100%;
+}
+#ct-name {
+  width: 100%;
+}
+#ct-radio {
+  display: inline-block;
+}
 #body {
   height: 120vh;
 }

@@ -19,6 +19,7 @@ export default {
     students: [],
     selectedStudent: [],
     feedBackList: [],
+    userVideo: [],
   },
   getters: {
     authHeader: (state) => ({ Authorization: `Token ${state.token}` }),
@@ -36,6 +37,7 @@ export default {
     students: (state) => state.students,
     selectedStudent: (state) => state.selectedStudent,
     feedbackList: (state) => state.feedBackList,
+    userVideo: (state) => state.userVideo,
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -76,6 +78,9 @@ export default {
     },
     SELECTED_STUDENTS(state, data) {
       state.selectedStudent = data;
+    },
+    RESET_SELECTED_STUDENTS(state) {
+      state.selectedStudent = [];
     },
     SET_FEEDBACK_LIST(state, list) {
       state.feedBackList = list;
@@ -148,7 +153,6 @@ export default {
       })
         .then((res) => {
           console.log('동영상가져와요');
-          console.log(res.data.data);
           commit('SET_USER_VIDEO', res.data.data);
         });
     },
@@ -223,7 +227,6 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: 'Profile', params: { id: userId } });
         });
     },
     userUpdateCT({ dispatch, getters }, credentials) {
