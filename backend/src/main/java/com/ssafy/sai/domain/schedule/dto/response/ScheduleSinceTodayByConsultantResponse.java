@@ -35,7 +35,9 @@ public class ScheduleSinceTodayByConsultantResponse {
         this.endTime = schedule.getEndTime();
         this.category = schedule.getCategory();
         this.detail = schedule.getDetail();
-        this.studentId = schedule.getMemberStudent().getId();
-        this.studentName = schedule.getMemberStudent().getName();
+        if (schedule.getMemberStudent() != null) {
+            this.studentId = schedule.getMemberStudent().getId();
+            this.studentName = schedule.getMemberStudent().getName();
+        }
     }
 }
