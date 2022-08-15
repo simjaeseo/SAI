@@ -1,3 +1,5 @@
+scheduleView
+
 <template>
   <div class="container">
     <div class="row">
@@ -7,33 +9,55 @@
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <show-event v-show="!selectDate"></show-event>
-        <add-event v-show="selectDate"></add-event>
+        <side-bar :ckey="cKey" @forceRerender="forceRerender"></side-bar>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 
 import MyCalendar from './components/MyCalendar.vue';
-import AddEvent from './components/AddEvent.vue';
-import ShowEvent from './components/ShowEvent.vue';
+import SideBar from './components/SideBar.vue';
 
 export default {
   name: 'SheduleView',
   components: {
     MyCalendar,
-    AddEvent,
-    ShowEvent,
+    SideBar,
   },
   setup() {
     const store = useStore();
 
-    const selectDate = computed(() => store.getters.selectedDate);
-    return { selectDate };
+    const UpcomingSchedules = computed(() => store.getters.UpcomingSchedules);
+    const fetchUpcomingSchedules = () => {
+      store.dispatch('fetchUpcomingSchedules');
+    };
+
+    onUnmounted(() => {
+      store.commit('RESET_DATE');
+    });
+
+    return {
+      UpcomingSchedules,
+      fetchUpcomingSchedules,
+      // forceRerender,
+    };
+  },
+  data() {
+    return {
+      cKey: 0,
+    };
+  },
+  methods: {
+    forceRerender() {
+      this.cKey += 1;
+    },
+  },
+  created() {
+    this.fetchUpcomingSchedules();
   },
 };
 </script>

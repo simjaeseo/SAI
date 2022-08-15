@@ -1,6 +1,7 @@
 package com.ssafy.sai.domain.schedule.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.sai.domain.member.domain.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
@@ -21,37 +24,34 @@ public class Schedule {
     @Column(name = "schedule_id")
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    @Column(name="schedule_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduleDate;
 
-    @DateTimeFormat(pattern = "hh:mm")
-    @Column(name="start_time")
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
-    @DateTimeFormat(pattern = "hh:mm")
-    @Column(name="end_time")
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     private String category;
 
     private String detail;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_student_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "student_id")
     private Member memberStudent;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="member_consultant_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "consultant_id")
     private Member memberConsultant;
 
-    public void addMemberStudent(Member member){
+    public void addMemberStudent(Member member) {
         this.memberStudent = member;
     }
 
-    public void addMemberConsultant(Member member){
+    public void addMemberConsultant(Member member) {
         this.memberConsultant = member;
     }
 

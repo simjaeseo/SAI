@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,7 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Configuration
+@EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthProvider authProvider;
@@ -65,6 +66,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/static/img/**",
                 "/static/**"
         );
+
     }
 
     @Override
@@ -82,6 +84,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/login/**").permitAll()   // 로그인
                 .antMatchers("/exception/**").permitAll()   // 예외처리 포인트
                 .anyRequest().hasRole("USER")   // 이외 나머지는 USER 권한 필요함
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true).deleteCookies("token")
                 .and()
                 .cors()
                 .and()

@@ -7,24 +7,37 @@ import com.ssafy.sai.domain.job.repository.InterestedEnterpriseRepository;
 import com.ssafy.sai.domain.job.repository.InterestedJobRepository;
 import com.ssafy.sai.domain.job.repository.JobRepository;
 import com.ssafy.sai.domain.member.domain.Campus;
-import com.ssafy.sai.domain.member.dto.*;
+import com.ssafy.sai.domain.member.domain.ProfilePicture;
 import com.ssafy.sai.domain.job.dto.EnterpriseName;
 import com.ssafy.sai.domain.job.dto.JobName;
 import com.ssafy.sai.domain.job.domain.Enterprise;
-import com.ssafy.sai.domain.job.domain.InterestedEnterprise;
-import com.ssafy.sai.domain.job.domain.InterestedJob;
 import com.ssafy.sai.domain.job.domain.Job;
 import com.ssafy.sai.domain.member.domain.Member;
+import com.ssafy.sai.domain.member.dto.request.*;
+import com.ssafy.sai.domain.member.dto.response.ConsultantResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberSimpleResponse;
+import com.ssafy.sai.domain.member.dto.response.MemberUpdateResponse;
 import com.ssafy.sai.domain.member.exception.MemberException;
 import com.ssafy.sai.domain.member.exception.MemberExceptionType;
 import com.ssafy.sai.domain.member.repository.*;
+import com.ssafy.sai.global.config.SpringSecurityConfig;
+import com.ssafy.sai.global.util.validation.Empty;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,16 +51,53 @@ public class MemberService {
     private final JobRepository jobRepository;
     private final InterestedJobRepository interestedJobRepository;
     private final CampusRepository campusRepository;
+    private final ProfilePictureRepository profilePictureRepository;
+    private final SpringSecurityConfig security;
 
-    public MemberDto findMemberOne(Long memberId) {
-        Member findMember = memberRepository.findMemberEntityGraph(memberId);
-        return new MemberDto(findMember);
+    private String dir = "C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image";
+    private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
+    private final String IMAGE = "image";
+
+
+    /**
+     * @param id 회원 PK
+     * @return 조회한 교육생의 정보 DTO
+     * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
+     * @메소드 교육생 정보 조회 서비스
+     */
+    public MemberResponse findMemberOne(Long id) throws MemberException {
+        memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findMemberEntityGraph(id);
+        return new MemberResponse(findMember);
     }
 
+    /**
+     * @param id 회원 PK
+     * @return 조회한 컨설턴트 정보 DTO
+     * @throws Exception PK 값이 일치하지 않는 경우 예외 발생
+     * @메소드 컨설턴트 정보 조회 서비스
+     */
+    public ConsultantResponse findConsultantOne(Long id) throws MemberException {
+        memberRepository.findById(id).orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+        Member findMember = memberRepository.findMemberById(id);
+        return new ConsultantResponse(findMember);
+    }
+
+    /**
+     * @param id      회원 PK
+     * @param request 변경할 교육 정보 폼 DTO
+     * @return 수정된 교육생의 정보 DTO
+     * @throws Exception 회원 PK를 찾을 수 없는 경우, 이미 존재하는 휴대전화 번호로 변경하는 경우 예외 발생
+     * @메소드 교육생 정보 수정 서비스
+     */
     @Transactional
-    public void updateMember(Long id, MemberUpdateRequest request) throws Exception {
+    public MemberUpdateResponse updateMember(MultipartFile file, Long id, MemberUpdateRequest request) throws MemberException {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        if (!Empty.validation(memberRepository.countByPhone(request.getPhone())) && !request.getPhone().equals(findMember.getPhone())) {
+            throw new MemberException(MemberExceptionType.ALREADY_EXIST_PHONE);
+        }
 
         findMember.updateMember(request);
         Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), request.getCampus().getClassNumber());
@@ -66,5 +116,162 @@ public class MemberService {
             InterestedEnterpriseCreateRequest interestedEnterpriseCreateRequest = new InterestedEnterpriseCreateRequest(enterprise, findMember);
             interestedEnterpriseRepository.save(interestedEnterpriseCreateRequest.toEntity());
         }
+
+        if (file != null) {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+                profilePictureRepository.deleteById(findMember.getProfilePicture().getId());
+            }
+
+            ProfilePicture profilePicture = uploadImage(file);
+            findMember.updateProfilePicture(profilePicture);
+        } else {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+            }
+
+            findMember.updateProfilePicture(null);
+        }
+
+        return new MemberUpdateResponse(findMember);
+    }
+
+    /**
+     * @param file    컨설턴트 프로필 이미지 파일
+     * @param id      수정할 컨설턴트의 PK
+     * @param request 컨설턴트 정보 수정 폼 양식
+     * @return 수정된 컨설턴트의 이름과 이메일
+     * @throws MemberException 회원 PK를 찾을 수 없는 경우, 이미 존재하는 휴대전화 번호로 변경하는 경우 예외 발생
+     * @메소드 컨설턴트 정보 수정 서비스
+     */
+    @Transactional
+    public ConsultantResponse updateConsultant(MultipartFile file, Long id, ConsultantUpdateRequest request) throws MemberException {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+
+        if (!Empty.validation(memberRepository.countByPhone(request.getPhone())) && !request.getPhone().equals(findMember.getPhone())) {
+            throw new MemberException(MemberExceptionType.ALREADY_EXIST_PHONE);
+        }
+
+        findMember.updateMember(request);
+        Optional<Campus> campus = campusRepository.findByCityAndClassNumber(request.getCampus().getCity(), null);
+        findMember.updateCampus(campus.get());
+
+        if (file != null) {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+                profilePictureRepository.deleteById(findMember.getProfilePicture().getId());
+            }
+
+            ProfilePicture profilePicture = uploadImage(file);
+            findMember.updateProfilePicture(profilePicture);
+        } else {
+            if (findMember.getProfilePicture() != null) {
+                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
+                path.delete();
+            }
+
+            findMember.updateProfilePicture(null);
+        }
+
+        return new ConsultantResponse(findMember);
+    }
+
+    public List<MemberResponse> searchMember(SearchMemberRequest request) throws MemberException {
+        List<Member> findMembers = memberRepository.findMembersByName(request.getName());
+        List<MemberResponse> result = findMembers.stream()
+                .map(m -> new MemberResponse(m))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    /**
+     * @param passwordFindRequest 비밀번호 변경 폼 양식 (기존 비밀번호, 새로운 비밀번호, 비밀번호 확인)
+     * @return 비밀번호가 일치하면 비밀번호 암호화 후 회원 정보 DTO 반환
+     * @return 비밀번호가 일치하지 않으면 null 반환
+     * @throws Exception 접속중인 회원과 이메일이 일치하지 않으면 예외 발생
+     * @메소드 회원 비밀번호 변경 서비스
+     */
+    @Transactional
+    public MemberSimpleResponse updatePassword(PasswordFindRequest passwordFindRequest) throws MemberException {
+        Member findMember = memberRepository.findById(passwordFindRequest.getId())
+                .orElseThrow(() -> new MemberException(MemberExceptionType.WRONG_MEMBER_INFORMATION));
+        BCryptPasswordEncoder bCryptPasswordEncoder = security.bCryptPasswordEncoder();
+
+        if (bCryptPasswordEncoder.matches(passwordFindRequest.getPassword(), findMember.getPassword())) {
+            if (passwordFindRequest.getNewPassword().equals(passwordFindRequest.getNewPasswordCheck())) {
+                String hashPassword = bCryptPasswordEncoder.encode(passwordFindRequest.getNewPasswordCheck());
+                memberRepository.updatePassword(hashPassword, findMember.getEmail());
+                return new MemberSimpleResponse(findMember);
+            }
+        } else {
+            throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param request 아이디 찾기 양식 폼
+     * @return 찾은 회원의 이름과 아이디
+     * @throws MemberException 일치하는 회원을 찾을 수 없는 경우 예외 발 생
+     * @메소드 회원 아이디를 찾는 서비스
+     */
+    public MemberSimpleResponse findMemberId(FindIdRequest request) throws MemberException {
+        Member findMember = memberRepository.findMemberByNameAndBirthday(request.getName(), request.getBirthday());
+        return new MemberSimpleResponse(findMember);
+    }
+
+    /**
+     * @param id 프로필 사진 조회할 회원 PK
+     * @return 프로필 사진과 경로를 담은 Map
+     * @메소드 프로필 사진과 경로를 얻기 위한 서비스
+     */
+    public Map<String, Object> getImage(Long id) {
+        ProfilePicture profilePicture = profilePictureRepository.findProfilePictureById(id);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("image", profilePicture);
+        map.put("path", fileDir);
+
+        return map;
+    }
+
+    /**
+     * @param file 프로필 사진
+     * @return ProfilePicture
+     * @메소드 프로필 사진 업로드
+     */
+    public ProfilePicture uploadImage(MultipartFile file) {
+        try {
+            Files.createDirectories(fileDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String uploadImageName = StringUtils.cleanPath(file.getOriginalFilename());
+        long size = file.getSize();
+        String realName = UUID.randomUUID().toString() + "_" + uploadImageName;
+        Path targetLocation = fileDir.resolve(realName);
+
+        try {
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ProfilePicture img = ProfilePicture.builder()
+                .contentType(file.getContentType())
+                .fileName(realName)
+                .size(size)
+                .originalName(uploadImageName)
+                .build();
+
+        profilePictureRepository.save(img);
+        return img;
     }
 }

@@ -1,14 +1,20 @@
 <template>
   <div>
-    <form action="">
+    <form @submit.prevent="userUpdate">
         <div class='container'>
           <div class='row'>
             <!-- 프로필이미지 -->
             <div id='profile_image_box' class='col-sm-2'>
-              <img src='@/assets/profile4.png' alt='basic-img' id='user_profile_img'> <br>
+              <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
+              id='user_profile_img'>
+              <!-- <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+              alt="preview"
+              id='user_profile_img'> -->
+              <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
-                    ref='image' class='upload-box'>파일선택</label>
+                    ref='image' class='upload-box' @change="onInputImage">파일선택</label>
                 </div>
             </div>
             <!-- 프로필인적사항 -->
@@ -16,10 +22,22 @@
               <!-- 왼쪽 -->
               <div class='row' id='personal-data-box2'>
                 <div class='col-lg-6'>
-                    <p id='data-name1'>이름</p>
+                    <p id='data-name'>이름</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
-                    <p id='data-name1'>연락처</p>
+                    class='form-control' v-model="currentUser.name" readonly @click="noChange"
+                    ></label>
+                    <p id='data-name'>소속</p>
+                    <select class='form-select' id='form-select-region'
+                    aria-label='Default select example'
+                    @change="changeCity">
+                        <option selected disabled>{{ currentUser.campus.city }}</option>
+                        <option value='서울'>서울</option>
+                        <option value='대전'>대전</option>
+                        <option value='광주'>광주</option>
+                        <option value='구미'>구미</option>
+                        <option value='부울경'>부울경</option>
+                    </select>
+                    <p id='data-name'>연락처</p>
                     <select class='form-select' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
@@ -30,45 +48,110 @@
                         <option value='5'>019</option>
                     </select>
                     <label for="user_signup_number1">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileSecond" maxlength="4">
                     </label>
                     <label for="user_signup_number2">
-                        <input type="text" class="form-control" id='form-select-second'>
+                        <input type="text" class="form-control" id='form-select-second'
+                        v-model="state.mobileLast" maxlength="4">
                     </label>
                 </div>
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
-                    <p id='data-name1'>이메일</p>
+                    <p id='data-name'>생년월일</p>
                     <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control'></label>
-                    <p id='data-name1'>소속</p>
-                    <select class='form-select' id='form-select-region'
-                    aria-label='Default select example'>
-                        <option selected>지역</option>
-                        <option value='1'>서울</option>
-                        <option value='2'>대전</option>
-                        <option value='3'>광주</option>
-                        <option value='4'>구미</option>
-                        <option value='5'>부울경</option>
-                    </select>
+                    class='form-control' v-model="currentUser.birthday"
+                    readonly @click="noChange"></label>
+                    <p id='data-name'>이메일</p>
+                    <label for='user-update-name'><input type='text' id='user-update-name'
+                    class='form-control' v-model="currentUser.email"
+                    readonly @click="noChange"></label>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- 버튼 -->
         <div id='btn-box'>
-            <router-link to="profile"><button class='btn' id='cancel-btn'>취소</button></router-link>
-            <router-link to="profile"><button class='btn'
+            <button class='btn' id='cancel-btn'>취소</button>
+            <button class='btn'
             type='submit'
-            id='update-btn'>완료</button></router-link>
+            id='update-btn'>완료</button>
         </div>
     </form>
   </div>
 </template>
 
 <script>
+import { computed, reactive, onBeforeMount } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
-  name: 'ProfileDataUpdateCT',
+  name: 'ProfileDataUpdate',
+  setup() {
+    const store = useStore();
+    const state = reactive({
+      mobileFirst: '',
+      mobileSecond: '',
+      mobileLast: '',
+      file: '',
+      url: '',
+      imgUrl: '',
+      userCity: '',
+    });
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const currentUser = computed(() => store.getters.currentUser);
+    let img = null;
+    onBeforeMount(() => {
+      const userPhone = currentUser.value.phone;
+      state.mobileFirst = userPhone.substr(0, 3);
+      state.mobileSecond = userPhone.substr(3, 4);
+      state.mobileLast = userPhone.substr(7);
+      state.userCity = currentUser.value.campus.city;
+      if (currentUser.value.profilePictrue != null) {
+        img = currentUser.value.profilePictrue.fileName;
+      }
+    });
+    const noChange = function () {
+      alert('변경할 수 없는 값입니다.');
+    };
+    const userUpdate = () => {
+      const data = {
+        phone: state.mobileFirst + state.mobileSecond + state.mobileLast,
+        campus: {
+          city: state.userCity,
+        },
+      };
+      console.log(data.phone);
+      console.log(data.campus.city);
+      console.log(img);
+      const formData = new FormData();
+      formData.append('file', img);
+      formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      store.dispatch('userUpdateCT', formData);
+    };
+    const onInputImage = (e) => {
+      state.file = e.target.files;
+      state.url = URL.createObjectURL(state.file[0]);
+      state.imgUrl = state.url;
+      console.log(state.imgUrl);
+      [img] = e.target.files;
+    };
+    const changeCity = function (event) {
+      console.log(event.target.value);
+      state.userCity = event.target.value;
+    };
+    return {
+      isLoggedIn,
+      currentUser,
+      state,
+      noChange,
+      onInputImage,
+      userUpdate,
+      changeCity,
+    };
+  },
 };
 </script>
 
@@ -263,11 +346,11 @@ export default {
     margin-top: 40px;
 }
 #form-select-region {
-    width: 95px;
+    width: 300px;
     display: inline;
 }
 #form-select-region:hover {
-    width: 95px;
+    width: 300px;
     display: inline;
     box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
@@ -325,9 +408,8 @@ export default {
     outline: 0;
     box-shadow: 0 0 0 0.1rem #5c6ac496;
 }
-#data-name1 {
+#data-name {
   font-size: 12px;
-  margin-top: 30px;
 }
 #user-data {
   font-size: 20px;
