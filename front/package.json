@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@teachablemachine/pose": "^0.8.6",
-    "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-converter": "^3.19.0",
     "@tensorflow/tfjs-core": "^3.19.0",
     "@tensorflow/tfjs-node": "^3.19.0",

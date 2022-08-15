@@ -1,5 +1,3 @@
-scheduleView
-
 <template>
   <div class="container">
     <div class="row">
@@ -9,7 +7,7 @@ scheduleView
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <side-bar :ckey="cKey" @forceRerender="forceRerender"></side-bar>
+        <side-bar :key="cKey" @forceRerender="forceRerender"></side-bar>
       </div>
     </div>
   </div>

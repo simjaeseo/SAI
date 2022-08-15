@@ -7,7 +7,7 @@
       <div class="col-lg-1">
       </div>
       <div id="sidebar" class="col-lg-4">
-        <side-bar-CT :ckey="cKey" @forceRerender="forceRerender"></side-bar-CT>
+        <side-bar-CT :key="cKey" @forceRerender="forceRerender"></side-bar-CT>
       </div>
     </div>
   </div>
