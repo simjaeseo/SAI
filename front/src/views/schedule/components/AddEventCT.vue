@@ -5,7 +5,8 @@
         <button
         class="btn"
         :style="[Credential.selectedConsultant == '' ?
-        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
+        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
+        disabled>
           개인일정추가
         </button>
     </div>
@@ -48,10 +49,8 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click="createScheduleCT(Credential)">등록</button>
+      <button class="btn" @click.prevent="createScheduleCT(Credential), forceRerender()">등록</button>
     </div>
-
-    <button @click="check(Credential)"></button>
     </div>
   </form>
 </template>
@@ -92,6 +91,12 @@ export default {
     };
   },
   methods: {
+    forceRerenderSelectCT() {
+      this.CTKey += 1;
+    },
+    forceRerender() {
+      this.$emit('forceRerender');
+    },
     timeSet() {
       for (let i = 0; this.hour < 18 || i === 30; i += 30) {
         if (i === 60) {

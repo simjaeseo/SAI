@@ -250,7 +250,6 @@ export default {
     const checkEmail = function () {
       if (/^[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/.test(state.credentials.userEmail)) {
         state.isEmailCorrect = true;
-        console.log('정규식 통과');
       } else {
         state.isEmailCorrect = false;
         alert('이메일 형식에 맞게 입력하세요. 예)example@google.com');
@@ -259,7 +258,6 @@ export default {
     const checkStrNumPasswd1 = function () {
       if (!(/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword1))) {
         state.isCorrect = false;
-        console.log('비번1정규식통과ㄴㄴ');
         alert('8자리 이상 16자리 이하 영문+숫자.');
         state.credentials.userPassword1 = '';
         document.getElementById('user_signup_pw1').focus();
@@ -269,21 +267,16 @@ export default {
       if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.userPassword2)) {
         if (state.credentials.userPassword1 === state.credentials.userPassword2) {
           state.isCorrect = true;
-          console.log('비번2정규식통과&같음');
         } else {
           state.isCorrect = false;
-          console.log('비번2정규식통과ㄴㄴ');
-          alert('비밀번호가 올바르지 않습니다.');
         }
       } else {
         state.isCorrect = false;
-        console.log('비번2정규식통과ㄴㄴ');
         alert('비밀번호가 올바르지 않습니다.');
       }
     };
     const companies = function (data) {
       state.credentials.userSelectedCompanies = data;
-      console.log(state.credentials.userSelectedCompanies);
     };
     const duties = function (data) {
       state.credentials.userSelectedDuties = data;
@@ -343,9 +336,7 @@ export default {
       }
     };
     const UserMobileSecond = function (event) {
-      console.log(event.target.value);
       if (/^([0-9]{3,4})$/.test(event.target.value) === true) {
-        console.log('유효합니다');
         if (state.mobileSecond.length === 0) {
           state.mobileSecond = event.target.value;
         } else {
@@ -358,9 +349,7 @@ export default {
       }
     };
     const UserMobileLast = function (event) {
-      console.log(event.target.value);
       if (/^([0-9]{4})$/.test(event.target.value) === true) {
-        console.log('유효합니다');
         if (state.mobileLast.length === 0) {
           state.mobileLast = event.target.value;
         } else {
@@ -382,7 +371,6 @@ export default {
       state.credentials.userClass = event.target.value;
     };
     const signupform = function () {
-      console.log(state.mobileFirst + state.mobileSecond + state.mobileLast);
       store.dispatch('signup', {
         email: state.credentials.userEmail,
         password: state.credentials.userPassword1,

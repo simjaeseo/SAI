@@ -43,10 +43,10 @@
     </div>
     <!-- 관심기업/직무 -->
     <div class="mt-5">
-        <p>{{ currentUser.name }}님의
+        <p class="pb-5">{{ currentUser.name }}님의
           {{ currentUser.interestedEnterprises.length }}개의 관심기업 &#128064;</p>
           <div v-if="currentUser.interestedEnterprises.length">
-            <div id="personal-caro-box" class="mt-5">
+            <div id="personal-caro-box" class="mt-5 mb-5">
               <div id='personal-video-box'>
                 <div id="carouselExampleControlsNoTouching" class="carousel slide"
                   data-bs-touch="false" data-bs-interval="false">
@@ -72,21 +72,64 @@
           </div>
           <div v-else id='personal-video-box2'>
             <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
-            <!-- 동영상 구현 필요 -->
           </div>
     </div>
-    <!-- 동영상 -->
-    <div>
-      <div id='personal-video-box1' class="container">
-        <p>내 동영상</p>
-          <div id='personal-video-box2'>
-            <p id='none-data-text1'>아직 저장된 영상이 없어요 :(</p>
-            <!-- 동영상 구현 필요 -->
-          </div>
-        <p>컨설팅 영상</p>
-          <div id='personal-video-box3'>
-            <p id='none-data-text1'>아직 저장된 영상이 없어요 :(</p>
-          </div>
+    <!-- 개인 동영상 -->
+    <div class="mt-5 pt-5">
+      <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
+      <div class="box">
+        <div id="tab">
+          <ul :nav="false" :dots="false" class="marginTop50">
+            <li class="card" style="width: 16.792rem; margin-top:70px;"
+            v-for="(video, index) in userVideo" :key="index">
+              <div class="card-body">
+                <div id="badge-box">
+                  <button id="card-text-badge-request" class="btn"
+                  v-if="video.feedbackCompleteStatus === 'FALSE'
+                  && video.feedbackRequestStatus === 'TRUE'">
+                    REQUEST</button>
+                  <button id="card-text-badge-completed" class="btn"
+                  v-if="video.feedbackCompleteStatus === 'TRUE'">
+                    COMPLETED</button>
+                  <button id="card-text-badge-none" class="btn"
+                  v-if="video.feedbackRequestStatus === 'FALSE'">
+                    TEST</button>
+                </div>
+                <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
+                <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- 컨설팅영상 추가하심됩니다-->
+    <div class="mt-5 pt-5">
+      <p class="mt-5">{{ currentUser.name }}님의 컨설팅 영상 &#127916;</p>
+      <div class="box">
+        <div id="tab">
+          <ul :nav="false" :dots="false" class="marginTop50">
+            <li class="card" style="width: 16.792rem; margin-top:70px;"
+            v-for="(video, index) in userVideo" :key="index">
+              <div class="card-body">
+                <div id="badge-box">
+                  <button id="card-text-badge-request" class="btn"
+                  v-if="video.feedbackCompleteStatus === 'FALSE'
+                  && video.feedbackRequestStatus === 'TRUE'">
+                    REQUEST</button>
+                  <button id="card-text-badge-completed" class="btn"
+                  v-if="video.feedbackCompleteStatus === 'TRUE'">
+                    COMPLETED</button>
+                  <button id="card-text-badge-none" class="btn"
+                  v-if="video.feedbackRequestStatus === 'FALSE'">
+                    TEST</button>
+                </div>
+                <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
+                <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -104,10 +147,12 @@ export default {
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
     const profileImg = computed(() => store.getters.profileImg);
+    const userVideo = computed(() => store.getters.userVideo);
     return {
       isLoggedIn,
       currentUser,
       profileImg,
+      userVideo,
     };
   },
   created() {
@@ -117,6 +162,62 @@ export default {
 </script>
 
 <style scoped>
+ul{
+  list-style:none;
+}
+a{
+  text-decoration:none;
+  color:inherit;
+}
+.box{
+  width:100%;
+  height:300px;
+  margin:0 auto;
+  background-color: #5c6ac40c;
+  border-radius: 10px;
+}
+#tab ul{
+  white-space:nowrap;
+  overflow-x: auto;
+  text-align:center;
+  height: 300px;
+}
+
+#tab ul li{
+  display:inline-block;
+  margin-right:10px;
+}
+.card-body:hover {
+  cursor: pointer;
+  background-color: #5c6ac41a;
+  text-align: center;
+}
+.card {
+  display: inline-block;
+  margin-right: 10px;
+  text-align: center;
+}
+#card-text-badge-request {
+  display: inline;
+  background: #f0506e;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-completed {
+  display: inline;
+  background: #32d296;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-none {
+  display: inline;
+  background: #faa05a;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
 #next {
   color: black;
 }

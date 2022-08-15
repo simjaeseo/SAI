@@ -35,6 +35,9 @@ import PasswordUpdateView from '@/views/accounts/PasswordUpdateView.vue';
 import ScheduleView from '@/views/schedule/ScheduleView.vue';
 import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 
+// test
+// import Test from '@/views/chat/TTSSTT2.vue';
+
 const routes = [
   {
     path: '/manual',
@@ -83,7 +86,7 @@ const routes = [
   },
   {
     path: '/update',
-    name: 'MpdateUser',
+    name: 'UpdateUser',
     component: ProfileUpdateView,
   },
   {
@@ -171,6 +174,11 @@ const routes = [
     name: 'ProfileUpdateCTView',
     component: ProfileUpdateCTView,
   },
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   component: Test,
+  // },
 ];
 
 const router = createRouter({

@@ -17,6 +17,13 @@
                 <p v-if="isToday(currentYear, currentMonth, day)" class="rounded">
                   {{day}}
                 </p>
+                <p v-else-if="
+                scheduleDate.includes(
+                  `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`
+                )"
+                class="rounded2">
+                  {{day}}
+                </p>
                 <p v-else id="calendar-date">
                   {{day}}
                 </p>
@@ -28,8 +35,34 @@
 </template>
 
 <script>
+import { computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
   name: 'MainCalendar',
+  setup() {
+    const store = useStore();
+
+    const schedules = computed(() => store.getters.schedules);
+    const scheduleDate = [];
+
+    for (let i = 0; i < schedules.value.length; i += 1) {
+      if (schedules.value[i].category !== 'block') {
+        scheduleDate.push(schedules.value[i].scheduleDate);
+      }
+    }
+
+    const fetchSchedules = () => {
+      store.dispatch('fetchSchedules');
+    };
+
+    onMounted(() => {
+      fetchSchedules();
+    });
+    return {
+      scheduleDate,
+    };
+  },
   data() {
     return {
       weekNames: ['월', '화', '수', '목', '금', '토', '일'],
@@ -167,6 +200,14 @@ thead {
   border-radius: 80%;
   border:solid 1px #ffffff;
   background-color:#5c6ac475;
+  /* padding:10px; */
+  color:#ffffff;
+}
+
+.rounded2 {
+  border-radius: 80%;
+  border:solid 1px #ffffff;
+  background-color:#aaf595;
   /* padding:10px; */
   color:#ffffff;
 }

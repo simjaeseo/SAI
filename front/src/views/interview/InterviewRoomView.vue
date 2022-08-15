@@ -1,5 +1,7 @@
 <template>
     <div class="container mt-5" id="body">
+      <div><canvas id="canvas" v-show="false"></canvas></div>
+      <div id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -87,12 +89,12 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label mx-4" for="gridRadios1"
+                  <label class="form-check-label" for="gridRadios1"
                   v-for="(ct, index) in consultants"
-                  :key="index">
+                  :key="index" id="ct-label">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios1" :value="ct.id" checked @change="ctSelect($event)">
-                    {{ ct.name }}
+                  id="ct-radio" :value="ct.id" checked @change="ctSelect($event)" required>
+                    <p id="ct-name">{{ ct.name }}</p>
                   </label>
                 </div>
                 </div>
@@ -117,7 +119,7 @@
             </div>
             <div>
             </div>
-            <user-video :stream-manager="mainStreamManager"/>
+            <user-video :stream-manager="mainStreamManager" @emotionRatioCount="emotionRatioCount"/>
             <div id="video-text" v-if="isAnimationStart">
               <p id="video-start"> 모의 면접을 시작합니다.</p>
               <p id="video-start"> 질문에 답변해주세요. </p>
@@ -130,7 +132,7 @@
               </div>
             </div>
           </div>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end" style="margin-right:20px;">
             <div v-if="!isFinished">
             <input class="btn btn-light" type="button"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
@@ -157,6 +159,9 @@ import drf from '@/api/api';
 import { OpenVidu } from 'openvidu-browser';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import * as tmPose from '@teachablemachine/pose';
+// eslint-disable-next-line
+import * as tf from '@tensorflow/tfjs';
 import UserVideo from './components/UserVideo.vue';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -190,6 +195,11 @@ export default {
       isRecording: false,
       consultantsPK: null,
       savedQ: null,
+      wrongPostureCount: [],
+      preWrongCount: 0,
+      emotionRatio: [],
+      happy: 0,
+      emotionCount: 0,
     };
   },
   setup() {
@@ -197,12 +207,95 @@ export default {
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
     const consultants = computed(() => store.getters.myConsultants);
-    // 동영상저장 axios
+
+    const TMURL = 'https://teachablemachine.withgoogle.com/models/xOFsAlFmy/';
+    let model; let webcam; let ctx; let labelContainer; let maxPredictions;
+
+    function drawPose(pose) {
+      if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        if (pose) {
+          const minPartConfidence = 0.5;
+          tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+          tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+        }
+      }
+    }
+
+    let progress = 327;
+    let status = 'proper posture';
+    let count = 0;
+    function countOutput() {
+      return {
+        count,
+      };
+    }
+    async function predict() {
+      const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+      const prediction = await model.predict(posenetOutput);
+      if (prediction[0].probability.toFixed(2) >= 0.70) {
+        if (status !== 'proper posture') {
+          count += 1;
+          console.log(count);
+          countOutput();
+          progress -= 32.7;
+          if (progress <= 0) {
+            progress = 327 - 32.7;
+          }
+        }
+        status = 'proper posture';
+      } else if (prediction[1].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - left';
+      } else if (prediction[2].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - right';
+      } else if (prediction[3].probability.toFixed(2) >= 0.70) {
+        status = 'wrong posture - bent';
+      }
+
+      for (let i = 0; i < maxPredictions; i += 1) {
+        const classPrediction = `${prediction[i].className}: ${prediction[i].probability.toFixed(2)}`;
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+      }
+
+      drawPose(pose);
+    }
+
+    // eslint-disable-next-line
+    async function loop(timestamp) {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function init() {
+      const modelURL = `${TMURL}model.json`;
+      const metadataURL = `${TMURL}metadata.json`;
+
+      model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+      maxPredictions = model.getTotalClasses();
+
+      const size = 500;
+      const flip = true;
+      webcam = new tmPose.Webcam(size, size, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      const canvas = document.getElementById('canvas');
+      canvas.width = size; canvas.height = size;
+      ctx = canvas.getContext('2d');
+      labelContainer = document.getElementById('label-container');
+      for (let i = 0; i < maxPredictions; i += 1) {
+        labelContainer.appendChild(document.createElement('div'));
+      }
+    }
 
     return {
       selectedQuestionList,
       currentUser,
       consultants,
+      countOutput,
+      init,
     };
   },
   created() {
@@ -211,11 +304,18 @@ export default {
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
+    this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
   unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
+    emotionRatioCount(happyRatio) {
+      this.happy += happyRatio;
+      this.emotionCount += 1;
+    },
     videoForm() {
+      console.log(this.emotionRatio);
+      console.log(this.wrongPostureCount);
       axios({
         url: drf.interview.saveVideo(this.currentUser.id),
         method: 'post',
@@ -223,7 +323,7 @@ export default {
           scheduleId: null,
           feedbackRequest: this.ctConfirms,
           consultantId: this.consultantsPK,
-          wrongPostureCount: 15,
+          wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
         },
@@ -242,16 +342,15 @@ export default {
         this.myConfirms = false;
         this.$router.push('/');
       }
-      console.log(this.myConfirms);
     },
     ctConfirm(event) {
       if (event.target.value === 'true') {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
+        this.videoForm();
         this.$router.push('/');
       }
-      console.log(this.ctConfirms);
     },
     answerCompleted() {
       this.question = '';
@@ -266,6 +365,29 @@ export default {
       console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      this.preWrongCount = this.countOutput().count;
+      this.happy = 0;
+      this.emotionCount = 0;
+      function speak(text, optProp) {
+        window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+
+        const prop = optProp || {};
+
+        const speechMsg = new SpeechSynthesisUtterance();
+        speechMsg.rate = prop.rate || 1; // 속도: 0.1 ~ 10
+        speechMsg.pitch = prop.pitch || 1; // 음높이: 0 ~ 2
+        speechMsg.lang = prop.lang || 'ko-KR';
+        speechMsg.text = text;
+
+        // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+        window.speechSynthesis.speak(speechMsg);
+      }
+
+      speak(this.question, {
+        rate: 0.9,
+        pitch: 0.5,
+        lang: 'ko-KR',
+      });
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`, JSON.stringify({
           session: this.mySessionId,
@@ -281,7 +403,10 @@ export default {
         });
     },
     stopRecoding() {
+      const tmp = this.countOutput().count;
       this.isRecording = false;
+      this.wrongPostureCount.push(tmp - this.preWrongCount);
+      this.emotionRatio.push(this.happy / this.emotionCount);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,
@@ -437,6 +562,16 @@ export default {
 </script>
 
 <style scoped>
+#ct-label {
+  display: inline-block;
+  width: 100%;
+}
+#ct-name {
+  width: 100%;
+}
+#ct-radio {
+  display: inline-block;
+}
 #body {
   height: 120vh;
 }
