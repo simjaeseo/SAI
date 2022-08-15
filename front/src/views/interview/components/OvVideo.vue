@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
+// import { onMounted } from 'vue';
 import * as faceapi from '../../../assets/face-api.min';
 
 export default {
@@ -16,6 +16,12 @@ export default {
 
   props: {
     streamManager: Object,
+  },
+
+  methods: {
+    emotionRatioCount(happyRatio) {
+      this.$emit('emotionRatioCount', happyRatio);
+    },
   },
 
   setup() {
@@ -27,24 +33,39 @@ export default {
       faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
     ]);
 
-    onMounted(() => {
-      const video = document.getElementById('video');
-      video.addEventListener('play', () => {
-        const canvas = faceapi.createCanvasFromMedia(video);
-        document.body.append(canvas);
-        const displaySize = { width: video.width, height: video.height };
-        faceapi.matchDimensions(canvas, displaySize);
-        setInterval(async () => {
-          // eslint-disable-next-line
-          const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-          // console.log(detections[0].expressions);
-        }, 100);
-      });
-    });
+    // onMounted(() => {
+    //   const video = document.getElementById('video');
+    //   video.addEventListener('play', () => {
+    //     const canvas = faceapi.createCanvasFromMedia(video);
+    //     document.body.append(canvas);
+    //     const displaySize = { width: video.width, height: video.height };
+    //     faceapi.matchDimensions(canvas, displaySize);
+    //     setInterval(async () => {
+    // eslint-disable-next-line
+    //       const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+    //       console.log(detections[0].expressions);
+    //       this.emotionRatioCount(detections[0].expressions.happy);
+    //     }, 100);
+    //   });
+    // });
   },
 
   mounted() {
     this.streamManager.addVideoElement(this.$el);
+
+    const video = document.getElementById('video');
+    video.addEventListener('play', () => {
+      const canvas = faceapi.createCanvasFromMedia(video);
+      document.body.append(canvas);
+      const displaySize = { width: video.width, height: video.height };
+      faceapi.matchDimensions(canvas, displaySize);
+      setInterval(async () => {
+        // eslint-disable-next-line
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
+        // console.log(detections[0].expressions);
+        this.emotionRatioCount(detections[0].expressions.happy);
+      }, 100);
+    });
   },
 };
 </script>
