@@ -79,6 +79,9 @@ export default {
     SELECTED_STUDENTS(state, data) {
       state.selectedStudent = data;
     },
+    RESET_SELECTED_STUDENTS(state) {
+      state.selectedStudent = [];
+    },
     SET_FEEDBACK_LIST(state, list) {
       state.feedBackList = list;
     },
@@ -224,7 +227,6 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: 'Profile', params: { id: userId } });
         });
     },
     userUpdateCT({ dispatch, getters }, credentials) {

@@ -1,6 +1,6 @@
 <template>
   <div v-if="streamManager">
-    <ov-video :stream-manager="streamManager"/>
+    <ov-video :stream-manager="streamManager" @emotionRatioCount="emotionRatioCount"/>
   </div>
 </template>
 
@@ -16,6 +16,8 @@ export default {
 
   props: {
     streamManager: Object,
+    emotionCount: Number,
+    happy: Number,
   },
 
   computed: {
@@ -29,6 +31,10 @@ export default {
     getConnectionData() {
       const { connection } = this.streamManager.stream;
       return JSON.parse(connection.data);
+    },
+
+    emotionRatioCount(happyRatio) {
+      this.$emit('emotionRatioCount', happyRatio);
     },
   },
 };

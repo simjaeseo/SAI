@@ -86,7 +86,8 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
-              <p id='for-inline'>{{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
+              <p id='for-inline' class="pb-5">
+                {{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
               data-bs-target="#staticBackdrop" id='add-btn'>
@@ -119,9 +120,9 @@
               </div>
             </div>
             <div v-if="Enters.length" id='personal-video-box'>
-              <div id="carouselExampleControlsNoTouching" class="carousel slide"
+              <div id="myCarousel" class="carousel slide"
               data-bs-touch="false" data-bs-interval="false">
-                <div class="carousel-inner">
+                <div class="carousel-inner mb-5">
                   <div class="carousel-item active" id="caro"
                   v-for="(enter, index) in Enters" :key="index">
                     <div class="d-block"></div>
@@ -131,11 +132,12 @@
                   </div>
                 </div>
                 <button class="carousel-control-prev" type="button"
-                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                data-bs-target="#myCarousel" data-bs-slide="prev">
                   <span id="next">&#60;</span>
                 </button>
                 <button class="carousel-control-next" type="button"
-                data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+                data-bs-target="#myCarousel" data-bs-slide="next"
+                >
                   <span id="next">&#62;</span>
                 </button>
               </div>
@@ -143,31 +145,80 @@
             <div v-else>
               <div id='personal-video-box2'>
                 <p id='none-data-text1'>아직 추가한 기업이 없어요 :(</p>
-              <!-- 동영상 구현 필요 -->
               </div>
             </div>
           </div>
         </div>
-        <!-- 동영상 -->
-        <div>
-          <div id='personal-video-box1' class="container">
-            <p>내 동영상 &#127916;</p>
-              <div id='personal-video-box2'>
-              </div>
-            <p>컨설팅 영상 &#127916;</p>
-              <div id='personal-video-box3'>
-              </div>
+    <!-- 개인 동영상 -->
+        <div class="mt-5 pt-5">
+          <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
+          <div class="box">
+            <div id="tab">
+              <ul :nav="false" :dots="false" class="marginTop50">
+                <li class="card" style="width: 16.792rem; margin-top:70px;"
+                v-for="(video, index) in userVideo" :key="index">
+                  <div class="card-body">
+                    <div id="delete-personal-btn-box">
+                      <button class="btn"
+                      id="delete-personal-btn" @click="deletePersonalVideo(video.id)">x</button>
+                    </div>
+                    <div id="badge-box">
+                      <button id="card-text-badge-request" class="btn"
+                      v-if="video.feedbackCompleteStatus === 'FALSE'
+                      && video.feedbackRequestStatus === 'TRUE'">
+                        REQUEST</button>
+                      <button id="card-text-badge-completed" class="btn"
+                      v-if="video.feedbackCompleteStatus === 'TRUE'">
+                        COMPLETED</button>
+                      <button id="card-text-badge-none" class="btn"
+                      v-if="video.feedbackRequestStatus === 'FALSE'">
+                        TEST</button>
+                    </div>
+                    <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
+                    <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- 컨설팅영상 추가하심됩니다-->
+        <div class="mt-5 pt-5">
+          <p class="mt-5">{{ currentUser.name }}님의 컨설팅 영상 &#127916;</p>
+          <div class="box">
+            <div id="tab">
+              <ul :nav="false" :dots="false" class="marginTop50">
+                <li class="card" style="width: 16.792rem; margin-top:70px;"
+                v-for="(video, index) in userVideo" :key="index">
+                  <div class="card-body">
+                    <div id="badge-box">
+                      <button id="card-text-badge-request" class="btn"
+                      v-if="video.feedbackCompleteStatus === 'FALSE'
+                      && video.feedbackRequestStatus === 'TRUE'">
+                        REQUEST</button>
+                      <button id="card-text-badge-completed" class="btn"
+                      v-if="video.feedbackCompleteStatus === 'TRUE'">
+                        COMPLETED</button>
+                      <button id="card-text-badge-none" class="btn"
+                      v-if="video.feedbackRequestStatus === 'FALSE'">
+                        TEST</button>
+                    </div>
+                    <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
+                    <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <!-- 버튼 -->
         <div id='btn-box'>
             <router-link :to="{ name: 'Profile', params: { id: `${ currentUser.id }`} }">
-              <button class='btn' id='cancel-btn'>취소</button>
+              <button class='btn' id='cancel-btn'>돌아가기</button>
             </router-link>
-            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">완료</button>
+            <button class='btn' type='submit' id='update-btn' @click="updateAllEnter">수정완료</button>
         </div>
     </form>
-
   </div>
 </template>
 
@@ -177,8 +228,11 @@ import {
   reactive,
   onBeforeMount,
 } from 'vue';
+import axios from 'axios';
+import drf from '@/api/api';
 import { useStore } from 'vuex';
 import _uniq from 'lodash/uniq';
+import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
 
@@ -203,6 +257,7 @@ export default {
     const Enters = computed(() => store.getters.userEnter);
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
+    const userVideo = computed(() => store.getters.userVideo);
     let img = null;
 
     onBeforeMount(() => {
@@ -234,7 +289,6 @@ export default {
         img = null;
       }
     });
-
     const selectedUserClass = function (event) {
       state.userClass = event.target.value;
     };
@@ -285,7 +339,19 @@ export default {
       console.log(state.imgUrl);
       [img] = e.target.files;
     };
-
+    const deletePersonalVideo = function (info) {
+      if (window.confirm('정말 삭제하시겠습니까? 삭제된 영상은 복구할 수 없습니다.')) {
+        const userId = currentUser.value.id;
+        console.log(userId);
+        axios({
+          url: drf.interview.deletePersonalVideo(userId, info),
+          method: 'delete',
+        })
+          .then(() => {
+            router.go();
+          });
+      }
+    };
     return {
       isLoggedIn,
       currentUser,
@@ -297,12 +363,88 @@ export default {
       Enters,
       Jobs,
       selectedUserClass,
+      userVideo,
+      deletePersonalVideo,
     };
+  },
+  created() {
+    this.$store.dispatch('getUserVideo', this.currentUser.id);
   },
 };
 </script>
 
 <style scoped>
+#delete-personal-btn-box {
+  text-align: end;
+}
+#delete-personal-btn {
+  padding-left: 10px;
+  padding-right: 10px;
+  color: gray;
+  border: none;
+}
+#delete-personal-btn:hover {
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #f0506e;
+  border: none;
+}
+ul{
+  list-style:none;
+}
+a{
+  text-decoration:none;
+  color:inherit;
+}
+.box{
+  width:100%;
+  height:300px;
+  margin:0 auto;
+  background-color: #5c6ac40c;
+  border-radius: 10px;
+}
+#tab ul{
+  white-space:nowrap;
+  overflow-x: auto;
+  text-align:center;
+  height: 300px;
+}
+
+#tab ul li{
+  display:inline-block;
+  margin-right:10px;
+}
+.card-body:hover {
+  cursor: pointer;
+  background-color: #5c6ac41a;
+  text-align: center;
+}
+.card {
+  display: inline-block;
+  margin-right: 10px;
+  text-align: center;
+}
+#card-text-badge-request {
+  display: inline;
+  background: #f0506e;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-completed {
+  display: inline;
+  background: #32d296;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
+#card-text-badge-none {
+  display: inline;
+  background: #faa05a;
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 3px 2px 3px;
+}
 #none-data-text1 {
   color: rgb(167, 167, 167);
   line-height: 250px;

@@ -36,7 +36,11 @@
         <router-link to="/interview" style="text-decoration:none">
           <button id='schedule-btn2' class="btn">모의면접시작</button>
         </router-link>
-        <router-link to="/schedule" style="text-decoration:none">
+        <router-link v-if="currentUser.memberStatus === 'TRAINEE'"
+        to="/schedule" style="text-decoration:none">
+          <button id='schedule-btn3' class="btn">일정관리</button>
+        </router-link>
+        <router-link v-else to="/scheduleCT" style="text-decoration:none">
           <button id='schedule-btn3' class="btn">일정관리</button>
         </router-link>
       </div>

@@ -32,5 +32,6 @@ export default {
     saveVideo: (id) => `${HOST + INTERVIEW + id}`,
     getUserVideo: (id) => `${HOST + INTERVIEW + id}`,
     getFeedbackRequestVideo: (id) => `${HOST + INTERVIEW + id}/request`,
+    deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
   },
 };
