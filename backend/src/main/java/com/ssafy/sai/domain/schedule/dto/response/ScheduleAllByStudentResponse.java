@@ -33,6 +33,8 @@ public class ScheduleAllByStudentResponse {
         this.endTime = schedule.getEndTime();
         this.category = schedule.getCategory();
         this.detail = schedule.getDetail();
-        this.consultantName = schedule.getMemberConsultant().getName();
+        if (schedule.getMemberConsultant() != null) {
+            this.consultantName = schedule.getMemberConsultant().getName();
+        }
     }
 }
