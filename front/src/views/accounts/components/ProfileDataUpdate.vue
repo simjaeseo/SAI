@@ -23,11 +23,9 @@
               <div class='row' id='personal-data-box2'>
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name"
-                    readonly @click="noChange"></label>
-                    <p id='data-name'>소속</p>
-                    <select class='form-select' id='form-select-cardinal-number'
+                    <p id="user-data">{{ currentUser.name }}</p>
+                    <p id='data-name'>소속</p><br>
+                    <select class='form-select mb-2' id='form-select-cardinal-number'
                     aria-label='Default select example'>
                         <option selected disabled>
                         {{ currentUser.year}}기</option>
@@ -44,8 +42,8 @@
                     required>
                       <option selected>{{ currentUser.campus.classNumber}}</option>
                       <option v-for='option in state.options' :key="option">{{option}}</option>
-                    </select>
-                    <p id='data-name'>연락처</p>
+                    </select><br>
+                    <p id='data-name'>연락처</p><br>
                     <select class='form-select' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
@@ -69,13 +67,9 @@
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday" readonly
-                    @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.birthday }}</p>
                     <p id='data-name'>이메일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email" readonly
-                    @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.email }}</p>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -86,7 +80,7 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
-              <p id='for-inline' class="pb-5">
+              <p id='for-inline'>
                 {{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -112,14 +106,14 @@
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
                       <button type="button" class="btn" id='update-btn2'
-                      aria-label="Close" data-bs-dismiss="modal"
+                      aria-label="Close" data-bs-dismiss="modal" @click="trigger"
                       >확인</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="Enters.length" id='personal-video-box'>
+            <div v-if="Enters.length" id='personal-video-box' class="mt-5">
               <div id="myCarousel" class="carousel slide"
               data-bs-touch="false" data-bs-interval="false">
                 <div class="carousel-inner mb-5">
@@ -137,6 +131,7 @@
                 </button>
                 <button class="carousel-control-next" type="button"
                 data-bs-target="#myCarousel" data-bs-slide="next"
+                id="next-btn" @click="trigger"
                 >
                   <span id="next">&#62;</span>
                 </button>
@@ -259,7 +254,13 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const userVideo = computed(() => store.getters.userVideo);
     let img = null;
-
+    const trigger = function () {
+      if (Enters.value.length) {
+        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
+          document.getElementById('next').click();
+        }
+      }
+    };
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
@@ -292,7 +293,6 @@ export default {
     const selectedUserClass = function (event) {
       state.userClass = event.target.value;
     };
-
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
     };
@@ -365,15 +365,33 @@ export default {
       selectedUserClass,
       userVideo,
       deletePersonalVideo,
+      trigger,
     };
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
   },
+  mounted() {
+    this.trigger();
+  },
 };
 </script>
 
 <style scoped>
+#data-name {
+  font-size: 12px;
+  color: #707070;
+  display: inline;
+  padding: 3px;
+  border-radius: 15px;
+  background-color: #626db325;
+}
+#user-data {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #707070;
+  font-size: 15px;
+}
 #delete-personal-btn-box {
   text-align: end;
 }

@@ -43,12 +43,12 @@
     </div>
     <!-- 관심기업/직무 -->
     <div class="mt-5">
-        <p class="pb-5">{{ currentUser.name }}님의
+        <p>{{ currentUser.name }}님의
           {{ currentUser.interestedEnterprises.length }}개의 관심기업 &#128064;</p>
           <div v-if="currentUser.interestedEnterprises.length">
             <div id="personal-caro-box" class="mt-5 mb-5">
               <div id='personal-video-box'>
-                <div id="carouselExampleControlsNoTouching" class="carousel slide"
+                <div id="carouselExampleControlsNoTouching" class="carousel slide mt-5"
                   data-bs-touch="false" data-bs-interval="false">
                   <div class="carousel-inner">
                     <div class="carousel-item active" id="caro"
@@ -59,7 +59,8 @@
                     </div>
                   </div>
                   <button class="carousel-control-prev" type="button"
-                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev"
+                  id="next-btn" @click="trigger">
                     <span id="next">&#60;</span>
                   </button>
                   <button class="carousel-control-next" type="button"
@@ -148,15 +149,26 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const profileImg = computed(() => store.getters.profileImg);
     const userVideo = computed(() => store.getters.userVideo);
+    const trigger = function () {
+      if (currentUser.value.interestedEnterprises.length) {
+        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
+          document.getElementById('next').click();
+        }
+      }
+    };
     return {
       isLoggedIn,
       currentUser,
       profileImg,
       userVideo,
+      trigger,
     };
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
+  },
+  mounted() {
+    this.trigger();
   },
 };
 </script>
