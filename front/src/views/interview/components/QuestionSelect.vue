@@ -1,78 +1,89 @@
 <template>
-  <div class="container">
-    <div class="d-flex">
-      <div class="box1">면접 유형 선택</div>
-      <div class="box2">연습할 질문 선택</div>
-    </div>
-    <div class="d-flex">
-      <div class="box3">
-        <button @click="selected=tenacity" class="question-select-btn"
-        data-bs-toggle="button" autocomplete="off">인성 면접 질문</button>
-        <div class="dropdown">
-          <button class="question-select-btn dropdown-toggle" type="button"
-          id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            직무 면접 질문
-          </button>
-          <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-            <li @click="selected=fequestions" @keydown.enter="selected=fequestions">
-              <a class="dropdown-item" href="#">Frontend</a></li>
-            <li @click="selected=bequestions" @keydown.enter="selected=bequestions">
-              <a class="dropdown-item" href="#">Backend</a></li>
-            <li @click="selected=androidquestions" @keydown.enter="selected=androidquestions">
-              <a class="dropdown-item" href="#">Android/iOS</a></li>
-            <li @click="selected=dataquestions" @keydown.enter="selected=dataquestions">
-              <a class="dropdown-item" href="#">Data Scientist</a></li>
-            <li @click="selected=devopsquestions" @keydown.enter="selected=devopsquestions">
-              <a class="dropdown-item" href="#">DevOps</a></li>
-          </ul>
-        </div>
-        <button @click="selected=myQuestion" class="question-select-btn"
-        data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
+  <div class="container" v-if="!session">
+    <div>
+      <div class="d-flex">
+        <div class="box1">면접 유형 선택</div>
+        <div class="box2">연습할 질문 선택</div>
       </div>
-      <div class="box4">
-        <div class="question" v-show="selected!=myQuestion">
-          <div>{{ selected.length }}개의 질문</div>
-          <button class="question-btn" data-bs-toggle="button" autocomplete="off"
-          v-for="(category, i) in selected" :key="i"
-          @click="selectQuestion(category)">
-            {{ category.question }}</button>
+      <div class="d-flex">
+        <div class="box3">
+          <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
+          data-bs-toggle="button" autocomplete="off">인성 면접 질문</button>
+          <div class="dropdown">
+            <button class="question-select-btn dropdown-toggle" type="button"
+            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              직무 면접 질문
+            </button>
+            <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
+              <li @click="fetchQuestionList(['직무', 'frontend']), selected=''"
+              @keydown.enter="s">
+                <a class="dropdown-item" href="#">Frontend</a></li>
+              <li @click="fetchQuestionList(['직무', 'backend']), selected=''"
+              @keydown.enter="s">
+                <a class="dropdown-item" href="#">Backend</a></li>
+              <li @click="fetchQuestionList(['직무', 'Android/iOS']), selected=''"
+              @keydown.enter="s">
+                <a class="dropdown-item" href="#">Android/iOS</a></li>
+              <li @click="fetchQuestionList(['직무', 'Data Scientist']), selected=''"
+              @keydown.enter="s">
+                <a class="dropdown-item" href="#">Data Scientist</a></li>
+              <li @click="fetchQuestionList(['직무', 'DevOps']), selected=''"
+              @keydown.enter="s">
+                <a class="dropdown-item" href="#">DevOps</a></li>
+            </ul>
+          </div>
+          <button @click="selected='myQuestion'" class="question-select-btn"
+          data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
         </div>
-        <!-- <div v-show="selected==myQuestion">
-          <label for="myQuestion"><input type="text" class='form-control'></label>
-          <button id="double-check-btn">등록</button>
-        </div> -->
-        <div class="inputBox shadow" v-show="selected==myQuestion">
-          <label for="s">
-            <input type="text" v-model="newQuestion" @keyup.enter="addTodo"></label>
-          <span class="addContainer" @click="addTodo" @keyup.enter="addTodo">
-            <i class="far fa-plus-square addBtn"></i>
-          </span>
-        </div>
-        <p>{{ selectedQuestionList }}</p>
-      </div>
-    </div>
-    <div class="d-flex">
-      <div class="box5">
-      </div>
-      <div class="box6">
-        <div class="d-flex justify-content-between">
-          <div class="d-flex align-items-center">
-            <div class="form-check check">
-              <label class="form-check-label" for="randomChecked">
-                <input class="form-check-input" type="checkbox" value=""
-              id="randomChecked" checked>
-                질문 랜덤 기능
-              </label>
-              <label class="form-check-label" for="shuffleChecked">
-                <input class="form-check-input" type="checkbox" value=""
-              id="shuffleChecked" checked>
-                질문 셔플 기능
-              </label>
+        <div class="box4" v-show="selected==''">
+          <div class="question">
+            <div>{{ questionList.length }}개의 질문</div>
+            <button class="question-btn" data-bs-toggle="button" autocomplete="off"
+            v-for="(data, i) in questionList" :key="i"
+            @click="selectQuestion(data)">
+              {{ data.question }}</button>
+            <div v-if="selectedQuestionList">
+              <p v-for="(pick, index) in selectedQuestionList" :key="index">
+                {{ pick }}</p>
             </div>
           </div>
-          <div class="d-flex align-items-center">
-            <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-            <button class="start-btn">시작하기</button>
+        </div>
+        <div class="box4" v-show="selected=='myQuestion'">
+          <div class="d-flex">
+            <input type="text" class='form-control'
+            v-model="myQuestion"
+            @keydown.enter="addQuestion()"
+            aria-labelledby="myQuestion">
+            <button id="double-check-btn" @click="addQuestion()">등록</button>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex">
+        <div class="box5">
+        </div>
+        <div class="box6">
+          <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+              <div class="form-check check">
+                <label class="form-check-label" for="randomChecked">
+                  <input class="form-check-input" type="checkbox" value=""
+                id="randomChecked" checked>
+                  질문 랜덤 기능
+                </label>
+                <label class="form-check-label" for="shuffleChecked">
+                  <input class="form-check-input" type="checkbox" value=""
+                id="shuffleChecked" checked>
+                  질문 셔플 기능
+                </label>
+              </div>
+            </div>
+            <div class="d-flex align-items-center">
+              <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
+              <router-link to="room">
+                <button class="start-btn"
+                @click="selectQuestionList(selectedQuestionList)">시작하기</button>
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -81,74 +92,100 @@
 </template>
 
 <script>
-import tenacity from '@/data/tenacity.json';
-import dataquestions from '@/data/dataquestions.json';
-import bequestions from '@/data/bequestions.json';
-import fequestions from '@/data/fequestions.json';
-import androidquestions from '@/data/androidquestions.json';
-import devopsquestions from '@/data/devopsquestions.json';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 export default {
+  components: {
+  },
   data() {
     return {
-      selected: tenacity,
-      tenacity,
-      fequestions,
-      bequestions,
-      dataquestions,
-      androidquestions,
-      devopsquestions,
+      selected: '',
       selectedQuestionList: [],
-      myquestion: '',
-      newQuestion: '',
+      myQuestion: '',
+
+      OV: undefined,
+      session: undefined,
+      mainStreamManager: undefined,
+      publisher: undefined,
+      subscribers: [],
+      mySessionId: 'SessionA',
+      myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+    };
+  },
+  setup() {
+    const store = useStore();
+
+    const questionList = computed(() => store.getters.questionList);
+    const fetchQuestionList = (params) => {
+      store.dispatch('fetchQuestionList', params);
+    };
+    const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
+
+    return {
+      fetchQuestionList,
+      questionList,
+      selectQuestionList,
     };
   },
   computed() {},
   methods: {
-    selectQuestion(category) {
-      if (this.category in this.selectedQuestionList) {
-        this.selectedQuestionList.pop(category);
-        console.log(category);
+    selectQuestion(data) {
+      const index = this.selectedQuestionList.indexOf(data.question, 0);
+      if (index >= 0) {
+        this.selectedQuestionList.splice(index, 1);
       } else {
-        this.selectedQuestionList.push(category);
+        this.selectedQuestionList.push(data.question);
       }
     },
-    addTodo() {
-      console.log(this.newTodoItem);
-      localStorage.setItem(this.newTodoItem, this.newTodoItem);
+    addQuestion() {
+      this.selectedQuestionList.push(this.myQuestion);
       this.clearInput();
     },
     clearInput() {
-      this.newTodoItem = '';
+      this.myQuestion = '';
     },
   },
 };
+
 </script>
 
 <style scoped>
-.container {
+/* .container {
   max-width: 1600px;
   padding: 0;
   width: 1366px;
   height: 768px;
   border: 1px solid black;
   border-radius: 20px;
-}
+} */
 
+.container2 {
+  max-width: 2000px;
+  padding: 0;
+  width: 1366px;
+  height: 768px;
+  border: 1px solid black;
+  border-radius: 20px;
+}
 .box1 {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 366px;
-  height: 150px;
+  height: 100px;
   font-size: 36px;
+  font-weight: 500;
+  color: #4d4d4d;
 }
 .box2 {
   display: flex;
   align-items: center;
   width: 1000px;
-  height: 150px;
+  height: 100px;
   font-size: 48px;
+  font-weight: 900;
+  color: #4d4d4d;
 }
 .box3 {
   width: 366px;
@@ -186,7 +223,6 @@ export default {
 .question {
   display: flex;
   flex-direction: column;
-  height: 650px;
 }
 .question-select-btn{
   margin: 3px;
@@ -232,7 +268,7 @@ export default {
   border-radius: 0.25rem;
   padding: 0.5rem;
   height: 48px;
-  width: 960px;
+  width: 920px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -356,4 +392,5 @@ input:focus {
 .btn-outline-dark {
   width: 900px;
 }
+
 </style>

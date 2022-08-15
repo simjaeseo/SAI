@@ -1,14 +1,18 @@
 <template>
   <div id="main-page-view" class="container">
     <div id="route-button" class="row">
-      <p id='main-text1'>안녕하세요 user님!</p>
+      <p id='main-text1'>{{ currentUser.name }}님 안녕하세요!</p>
       <div class="col-lg-7" id='user-schedule-box1'>
         <route-button></route-button>
       </div>
       <div class="col-lg-1">
       </div>
       <div class="col-lg-4" id='user-schedule-box2'>
-        <router-link to="schedule" id="main-calendar">
+        <router-link v-if="currentUser.memberStatus === 'TRAINEE'"
+        to="/schedule" id="main-calendar">
+          <main-calendar></main-calendar>
+        </router-link>
+        <router-link v-else to="/scheduleCT" id="main-calendar">
           <main-calendar></main-calendar>
         </router-link>
       </div>
@@ -17,6 +21,8 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 import RouteButton from './components/RouteButton.vue';
 import MainCalendar from './components/MainCalendar.vue';
 
@@ -25,6 +31,18 @@ export default {
   components: {
     RouteButton,
     MainCalendar,
+  },
+  setup() {
+    const store = useStore();
+
+    const currentUser = computed(() => store.getters.currentUser);
+    const isLoggedIn = computed(() => store.getters.isLoggedIn);
+    const consultants = computed(() => store.getters.myConsultants);
+    return {
+      currentUser,
+      isLoggedIn,
+      consultants,
+    };
   },
 };
 </script>
