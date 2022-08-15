@@ -54,7 +54,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "home/ubuntu/vue/image";
+    private String dir = "vue/dist/img";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 

@@ -13,7 +13,7 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private String connectPath = "/members/**";
-    private String resourcePath = "file:home/ubuntu/vue/";
+    private String resourcePath = "file:vue/dist/img";
 
     /**
      * ResourceHandlerRegistry : 리소스 등록 및 핸들러 관리
