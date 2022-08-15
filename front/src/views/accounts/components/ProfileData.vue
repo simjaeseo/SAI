@@ -6,9 +6,9 @@
         <div id='profile_image_box' class='d-none d-md-block col-md-2'>
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
-          <img v-else
+          <!-- <img v-else
           :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
-          id='user_img' alt="profile">
+          id='user_img' alt="profile"> -->
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
@@ -48,26 +48,22 @@
           <div v-if="currentUser.interestedEnterprises.length">
             <div id="personal-caro-box" class="mt-5 mb-5">
               <div id='personal-video-box'>
-                <div id="carouselExampleControlsNoTouching" class="carousel slide mt-5"
-                  data-bs-touch="false" data-bs-interval="false">
-                  <div class="carousel-inner">
-                    <div class="carousel-item active" id="caro"
-                    v-for="(enter, index) in currentUser.interestedEnterprises" :key="index">
-                      <img :src="require(`@/assets/enter/${enter.enterpriseName}.jpg`)"
-                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
-                      <h5>{{ enter.enterpriseName }}</h5>
+                <Carousel :autoplay="2000">
+                  <Slide v-for="enter in currentUser.interestedEnterprises" :key="enter">
+                    <div class="carousel__item">
+                    <img :src="require(`@/assets/enter/${enter.enterpriseName}.jpg`)"
+                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                      {{ slide }}
+                      <div>
+                        {{ enter.enterpriseName }}
+                      </div>
                     </div>
-                  </div>
-                  <button class="carousel-control-prev" type="button"
-                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev"
-                  id="next-btn" @click="trigger">
-                    <span id="next">&#60;</span>
-                  </button>
-                  <button class="carousel-control-next" type="button"
-                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-                    <span id="next">&#62;</span>
-                  </button>
-                </div>
+                  </Slide>
+                  <template #addons>
+                    <Navigation />
+                    <Pagination />
+                  </template>
+                </Carousel>
               </div>
             </div>
           </div>
@@ -139,9 +135,19 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import {
+  Carousel, Slide, Pagination, Navigation,
+} from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
   name: 'ProfileView',
+  components: {
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   setup() {
     const store = useStore();
 
@@ -149,28 +155,15 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const profileImg = computed(() => store.getters.profileImg);
     const userVideo = computed(() => store.getters.userVideo);
-    const trigger = function () {
-      if (currentUser.value.interestedEnterprises.length) {
-        const cnt = currentUser.value.interestedEnterprises.length;
-        console.log(cnt);
-        for (let i = 0; i < cnt; i += 1) {
-          document.getElementById('next').click();
-        }
-      }
-    };
     return {
       isLoggedIn,
       currentUser,
       profileImg,
       userVideo,
-      trigger,
     };
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
-  },
-  mounted() {
-    this.trigger();
   },
 };
 </script>
@@ -487,6 +480,26 @@ body {margin: 10px}
   overflow: hidden;
   clip:rect(0,0,0,0);
   border: 0;
+}
+
+/* 캐러셀 */
+.carousel__item {
+  min-height: 200px;
+  width: 100%;
+  background-color: none;
+  color:  none;
+  font-size: 20px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+
+}
+.carousel__slide {
+  padding: 10px;
+}
+.carousel__pagination {
+  text-align: center;
+  padding: 0;
 }
 
 </style>

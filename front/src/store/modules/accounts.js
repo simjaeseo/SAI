@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { uniq } from 'lodash';
 import drf from '@/api/api';
+// eslint-disable-next-line
 import router from '@/router/index';
 
 export default {
