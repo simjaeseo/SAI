@@ -331,7 +331,7 @@ export default {
           wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
-          emotionRation: this.emotionRatio,
+          emotionRatio: this.emotionRatio,
         },
       })
         .then((res) => console.log(res));
