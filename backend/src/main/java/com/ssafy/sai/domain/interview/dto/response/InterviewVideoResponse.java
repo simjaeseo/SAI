@@ -4,6 +4,8 @@ import com.ssafy.sai.domain.interview.domain.InterviewVideo;
 import com.ssafy.sai.domain.interview.domain.UsedInterviewQuestion;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class InterviewVideoResponse {
 
@@ -12,7 +14,8 @@ public class InterviewVideoResponse {
     private String audioUrl;
     private String feedback;
     private String stt;
-    private String wrongPostureCount;
+    private Long wrongPostureCount;
+    private Double emotionRatio;
     private UsedInterviewQuestion usedInterviewQuestion;
 
     public InterviewVideoResponse(InterviewVideo interviewVideo) {
@@ -22,6 +25,7 @@ public class InterviewVideoResponse {
         feedback = interviewVideo.getFeedback();
         stt = interviewVideo.getStt();
         wrongPostureCount = interviewVideo.getWrongPostureCount();
+        emotionRatio = interviewVideo.getEmotionRatio();
         usedInterviewQuestion = interviewVideo.getUsedInterviewQuestion();
     }
 }

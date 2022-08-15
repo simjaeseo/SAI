@@ -53,8 +53,19 @@ dependencies {
 
 	// WebSocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin
+	implementation 'org.springframework.boot:spring-boot-maven-plugin:2.7.2'
+
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+//
+//jar {
+//	manifest {
+//		attributes 'Main-Class': 'com.ssafy.sai.SaiApplication'
+//	}
+//}

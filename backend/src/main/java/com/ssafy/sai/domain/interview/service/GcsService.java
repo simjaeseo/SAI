@@ -185,7 +185,9 @@ public class GcsService {
                     .audioUrl(gcsUrl)
                     .audioName(flacAudioNames.get(index))
                     .stt(stt)
-                    .wrongPostureCount(request.getWrongPostureCount()).build();
+                    .wrongPostureCount(request.getWrongPostureCount().get(index))
+                    .emotionRatio(request.getEmotionRatio().get(index))
+                    .build();
 
 
             //사용한 면접 질문 db에 저장하기
