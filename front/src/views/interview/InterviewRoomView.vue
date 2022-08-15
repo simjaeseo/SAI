@@ -1,7 +1,7 @@
 <template>
     <div class="container mt-5" id="body">
       <div><canvas id="canvas" v-show="false"></canvas></div>
-      <div id="label-container"></div>
+      <div v-show="false" id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -124,8 +124,8 @@
               <p id="video-start"> 모의 면접을 시작합니다.</p>
               <p id="video-start"> 질문에 답변해주세요. </p>
               <div class="cd-number-wrapper">
-                <span class="cd-number-five">5</span>
-                <span class="cd-number-four">4</span>
+                <!-- <span class="cd-number-five">5</span>
+                <span class="cd-number-four">4</span> -->
                 <span class="cd-number-three">3</span>
                 <span class="cd-number-two">2</span>
                 <span class="cd-number-one">1</span>
@@ -199,7 +199,7 @@ export default {
       preWrongCount: 0,
       emotionRatio: [],
       happy: 0,
-      emotionCount: 0,
+      emotionCount: 1,
     };
   },
   setup() {
@@ -299,6 +299,7 @@ export default {
     };
   },
   created() {
+    console.log(this.selectedQuestionList);
     this.questions = this.selectedQuestionList;
     this.savedQ = Object.values(this.selectedQuestionList);
   }, // 해당 vue 파일이 실행 되는 순간
@@ -314,8 +315,6 @@ export default {
       this.emotionCount += 1;
     },
     videoForm() {
-      console.log(this.emotionRatio);
-      console.log(this.wrongPostureCount);
       axios({
         url: drf.interview.saveVideo(this.currentUser.id),
         method: 'post',
@@ -363,9 +362,9 @@ export default {
     },
     startRecoding() {
       this.isRecording = true;
-      console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      console.log(this.questions);
       this.preWrongCount = this.countOutput().count;
       this.happy = 0;
       this.emotionCount = 0;
@@ -632,7 +631,7 @@ font-size: 10em;
 font-family: 'Londrina Outline'; /* Bowlby One SC */
 }
 
-.cd-number-five {
+/* .cd-number-five {
 position: absolute;
 opacity: 0;
 margin: 0 auto 0 auto;
@@ -691,7 +690,7 @@ to {  -ms-transform: scale(1.3); opacity: 1;}}
 
 @keyframes cd-number-four-anim {
 from {transform: scale(0.5); opacity: 0;}
-to {  transform: scale(1.3); opacity: 1;}}
+to {  transform: scale(1.3); opacity: 1;}} */
 
 .cd-number-three {
 position: absolute;

@@ -29,8 +29,6 @@ export default {
       })
         .then((res) => {
           commit('SET_QUESTION_LIST', res.data);
-          console.log(res);
-          console.log('1234');
         })
         .catch((err) => {
           console.log(err);

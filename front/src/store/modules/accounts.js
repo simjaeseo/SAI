@@ -108,8 +108,8 @@ export default {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
           dispatch('fetchCurrentUser', res.data.data.id);
-          router.push({ name: 'Main' });
         })
+        .then(router.push({ name: 'Main' }))
         .catch(() => {
           alert('아이디와 비밀번호를 확인해주세요.');
         });
@@ -131,6 +131,7 @@ export default {
         });
     },
     fetchCurrentUser({ getters, commit, dispatch }, userid) {
+      console.log(1);
       if (getters.isLoggedIn) {
         axios({
           url: drf.member.currentUserInfo(userid),
@@ -138,8 +139,11 @@ export default {
           header: getters.authHeader,
         })
           .then((res) => {
+            console.log(2);
             commit('SET_CURRENT_USER', res.data.data);
+            console.log(3);
             dispatch('fetchMyConsultants');
+            console.log(4);
           })
           .catch((err) => {
             console.log(err);
@@ -167,6 +171,7 @@ export default {
         .then(() => {
           dispatch('removeToken');
           commit('REMOVE_CURRENT_USER');
+          commit('RESET_SCHEDULE_STATE');
           alert('로그아웃 되었습니다.');
           router.push({ name: 'Login' });
         })
