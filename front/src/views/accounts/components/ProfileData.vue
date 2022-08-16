@@ -137,18 +137,18 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import {
-  Carousel, Slide, Pagination, Navigation,
-} from 'vue3-carousel';
-import 'vue3-carousel/dist/carousel.css';
+// import {
+//   Carousel, Slide, Pagination, Navigation,
+// } from 'vue3-carousel';
+// import 'vue3-carousel/dist/carousel.css';
 
 export default {
   name: 'ProfileView',
   components: {
-    Carousel,
-    Slide,
-    Pagination,
-    Navigation,
+    // Carousel,
+    // Slide,
+    // Pagination,
+    // Navigation,
   },
   setup() {
     const store = useStore();

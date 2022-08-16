@@ -51,7 +51,6 @@
         <div class="aifeedback"></div> -->
         <div class="d-flex justify-content-between">
           <p>컨설턴트님 피드백</p>
-          <!-- <button class="start-btn">신청하기</button> -->
         </div>
         <div class="ctfeedback"></div>
         <p> {{ videoDetail }}</p>
@@ -77,7 +76,6 @@
           <p>STT</p>
           <div class="graph">
             {{ this.stt }}
-            {{ this.videoUrl }}
           </div>
         </div>
       </div>
