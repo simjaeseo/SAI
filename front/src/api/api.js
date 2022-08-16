@@ -1,5 +1,4 @@
-// const HOST = 'https://i7c206.p.ssafy.io:8081/';
-const HOST = 'http://localhost:8081/';
+const HOST = 'https://i7c206.p.ssafy.io:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
@@ -32,7 +31,6 @@ export default {
     questionList: (type, detail) => `${HOST + INTERVIEW}question/list?questionType=${type}&questionDetailType=${detail}`,
     saveVideo: (id) => `${HOST + INTERVIEW + id}`,
     getUserVideo: (id) => `${HOST + INTERVIEW + id}`,
-    getVideoDetail: (id, index) => `${HOST + INTERVIEW + id}/request/${index}`,
     getFeedbackRequestVideo: (id) => `${HOST + INTERVIEW + id}/request`,
     deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
   },
