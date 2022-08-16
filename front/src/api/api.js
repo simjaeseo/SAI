@@ -1,4 +1,4 @@
-const HOST = process.env.VUE_APP_API_URL;
+const HOST = 'https://i7c206.p.ssafy.io:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
