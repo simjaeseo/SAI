@@ -23,6 +23,9 @@
     <hr>
     질문들
     {{ qArray }}
+    <hr>
+    이모션
+    {{ emotionArray }}
     <h1>{{ currentUser.name }}님의 {{ videoId }} 번째 영상 분석 결과</h1>
     <hr>
     <div class="box">
@@ -38,13 +41,9 @@
             질문
           </button>
           <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-            <li @click="this.emotionRatio=video.emotionRatio,
-            this.stt=video.stt,
-            this.videoUrl=video.videoUrl,
-            this.wrongPostureCount=video.wrongPostureCount"
-            v-for="(video, index) in videoDetail" :key="index"
-            @keydown.enter="s">
-              <a class="dropdown-item">{{ video.usedInterviewQuestion.question }}</a>
+            <li id="q-text" v-for="(q, index) in qArray" :key="index" @click="getIndex(index)"
+            @keydown="getIndex(index)">
+              {{ q.question }}
             </li>
           </ul>
         </div>
@@ -54,19 +53,17 @@
           <p>컨설턴트님 피드백</p>
         </div>
         <div class="ctfeedback"></div>
-        <p> {{ videoDetail }}</p>
+        <p></p>
       </div>
       <div class="right">
         <div class="mb-3">
           <p>표정</p>
           <div class="graph">
-            {{ this.emotionRatio }}
           </div>
         </div>
         <div class="mb-3">
           <p>머리 움직임</p>
           <div class="graph">
-            {{ this.wrongPostureCount }}
           </div>
         </div>
         <div class="mb-3">
@@ -76,7 +73,6 @@
         <div class="mb-3">
           <p>STT</p>
           <div class="graph">
-            {{ this.stt }}
           </div>
         </div>
       </div>
@@ -101,11 +97,17 @@ export default {
     const getVideoDetail = (params) => {
       store.dispatch('getVideoDetail', params);
     };
+    let order = null;
+    const getIndex = function (index) {
+      order = index;
+    };
     return {
       currentUser,
       userVideo,
       videoDetail,
       getVideoDetail,
+      getIndex,
+      order,
     };
   },
   data() {
@@ -122,6 +124,7 @@ export default {
       sttArray: [],
       teachableArray: [],
       qArray: [],
+      emotionArray: [],
     };
   },
   created() {
@@ -133,7 +136,6 @@ export default {
       method: 'get',
     })
       .then((res) => {
-        console.log(res.data.data);
         this.setVideos = JSON.parse(JSON.stringify(res.data.data));
         for (let i = 0; i < res.data.data[0].videoUrl.length; i += 1) {
           this.videoArray.push(JSON.parse(JSON.stringify(res.data.data[i].videoUrl)));
@@ -142,6 +144,7 @@ export default {
           this.sttArray.push(JSON.parse(JSON.stringify(res.data.data[i].stt)));
           this.teachableArray.push(JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount)));
           this.qArray.push(JSON.parse(JSON.stringify(res.data.data[i].usedInterviewQuestion)));
+          this.emotionArray.push(JSON.parse(JSON.stringify(res.data.data[i].emotionRatio)));
         }
       });
   },
@@ -149,6 +152,16 @@ export default {
 </script>
 
 <style scoped>
+#q-text {
+  cursor: pointer;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+#q-text:hover {
+  cursor: pointer;
+  padding-bottom: 10px;
+  background-color: rgba(228, 228, 228, 0.514);
+}
 .container {
     margin-top: 50px;
     padding: 0;
