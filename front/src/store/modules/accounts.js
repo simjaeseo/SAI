@@ -160,6 +160,7 @@ export default {
       })
         .then((res) => {
           console.log('동영상가져와요');
+          console.log(res);
           commit('SET_USER_VIDEO', res.data.data);
         });
     },
