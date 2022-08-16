@@ -106,7 +106,7 @@
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
                       <button type="button" class="btn" id='update-btn2'
-                      aria-label="Close" data-bs-dismiss="modal" @click="trigger"
+                      aria-label="Close" data-bs-dismiss="modal"
                       >확인</button>
                     </div>
                   </div>
@@ -114,27 +114,25 @@
               </div>
             </div>
             <div v-if="Enters.length" id='personal-video-box' class="mt-5">
-              <div id="myCarousel" class="carousel slide"
-              data-bs-touch="false" data-bs-interval="false">
-                <div class="carousel-inner mb-5">
-                  <div class="carousel-item active" id="caro"
-                  v-for="(enter, index) in Enters" :key="index">
-                    <div class="d-block"></div>
-                    <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
-                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
-                    <h5>{{ enter.name }}</h5>
-                  </div>
+              <div id="personal-caro-box" class="mt-5 mb-5">
+                <div id='personal-video-box'>
+                  <Carousel :autoplay="2000">
+                    <Slide v-for="enter in Enters" :key="enter">
+                      <div class="carousel__item">
+                      <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
+                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                        {{ slide }}
+                        <div>
+                          {{ enter.name }}
+                        </div>
+                      </div>
+                    </Slide>
+                    <template #addons>
+                      <Navigation />
+                      <Pagination />
+                    </template>
+                  </Carousel>
                 </div>
-                <button class="carousel-control-prev" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="prev">
-                  <span id="next">&#60;</span>
-                </button>
-                <button class="carousel-control-next" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="next"
-                id="next-btn" @click="trigger"
-                >
-                  <span id="next">&#62;</span>
-                </button>
               </div>
             </div>
             <div v-else>
@@ -219,6 +217,9 @@
 
 <script>
 import {
+  Carousel, Slide, Pagination, Navigation,
+} from 'vue3-carousel';
+import {
   computed,
   reactive,
   onBeforeMount,
@@ -230,9 +231,17 @@ import _uniq from 'lodash/uniq';
 import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
-  components: { SearchBarDuty, SearchBarUpdate },
+  components: {
+    SearchBarDuty,
+    SearchBarUpdate,
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
@@ -254,13 +263,6 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const userVideo = computed(() => store.getters.userVideo);
     let img = null;
-    const trigger = function () {
-      if (Enters.value.length) {
-        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
-          document.getElementById('next').click();
-        }
-      }
-    };
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
@@ -365,14 +367,10 @@ export default {
       selectedUserClass,
       userVideo,
       deletePersonalVideo,
-      trigger,
     };
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
-  },
-  mounted() {
-    this.trigger();
   },
 };
 </script>
@@ -825,6 +823,26 @@ body {margin: 10px}
   overflow: hidden;
   clip:rect(0,0,0,0);
   border: 0;
+}
+
+/* 캐러셀 */
+.carousel__item {
+  min-height: 200px;
+  width: 100%;
+  background-color: none;
+  color:  none;
+  font-size: 20px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+
+}
+.carousel__slide {
+  padding: 10px;
+}
+.carousel__pagination {
+  text-align: center;
+  padding: 0;
 }
 
 </style>
