@@ -12,6 +12,8 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    private String connectPath = "/members/**";
+    private String resourcePath = "file:vue/dist/img";
 
     /**
      * ResourceHandlerRegistry : 리소스 등록 및 핸들러 관리
@@ -20,6 +22,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:///C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image");
+        registry.addResourceHandler("connectPath").addResourceLocations("resourcePath");
     }
 }

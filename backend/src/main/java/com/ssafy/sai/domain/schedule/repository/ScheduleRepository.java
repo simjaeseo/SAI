@@ -32,14 +32,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     // 교육생 최근 일정 조회
     @Query(value = "select s from Schedule s" +
             " join fetch s.memberStudent" +
-            " where s.memberStudent.id = :memberId and (s.scheduleDate = :today and s.startTime >= :currentTime) or s.scheduleDate > :today",
+            " where s.memberStudent.id = :memberId and ((s.scheduleDate = :today and s.startTime >= :currentTime) or s.scheduleDate > :today)",
             countQuery = "select count(s) from Schedule s")
     Page<Schedule> selectScheduleSinceTodayByStudent(@Param("memberId") Long memberId, @Param("today") LocalDate today, @Param("currentTime") LocalTime currentTime, Pageable pageable);
 
     // 컨설턴트 최근 일정 조회
     @Query(value = "select s from Schedule s" +
             " join fetch s.memberConsultant" +
-            " where s.memberConsultant.id = :memberId and (s.scheduleDate = :today and s.startTime >= :currentTime) or s.scheduleDate > :today",
+            " where s.memberConsultant.id = :memberId and ((s.scheduleDate = :today and s.startTime >= :currentTime) or s.scheduleDate > :today)",
             countQuery = "select count(s) from Schedule s")
     Page<Schedule> selectScheduleSinceTodayByConsultant(@Param("memberId") Long memberId, @Param("today") LocalDate today, @Param("currentTime") LocalTime currentTime, Pageable pageable);
 

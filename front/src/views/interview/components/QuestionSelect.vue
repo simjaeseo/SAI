@@ -8,7 +8,7 @@
       <div class="d-flex">
         <div class="box3">
           <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
-          data-bs-toggle="button" autocomplete="off">인성 면접 질문</button>
+          data-bs-toggle="button">인성 면접 질문</button>
           <div class="dropdown">
             <button class="question-select-btn dropdown-toggle" type="button"
             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,6 +34,13 @@
           </div>
           <button @click="selected='myQuestion'" class="question-select-btn"
           data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
+          <div v-if="selectedQuestionList.length" id="user-select-box">
+            <h5>
+              선택된 질문
+            </h5>
+            <p v-for="(pick, index) in selectedQuestionList" :key="index" id="text-select">
+                #{{ pick }}</p>
+          </div>
         </div>
         <div class="box4" v-show="selected==''">
           <div class="question">
@@ -76,7 +83,7 @@
         <div class="box6">
           <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center">
-              <div class="form-check check">
+              <!-- <div class="form-check check">
                 <label class="form-check-label" for="randomChecked">
                   <input class="form-check-input" type="checkbox" value=""
                 id="randomChecked" checked>
@@ -87,7 +94,7 @@
                 id="shuffleChecked" checked>
                   질문 셔플 기능
                 </label>
-              </div>
+              </div> -->
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
@@ -124,6 +131,7 @@ export default {
       subscribers: [],
       mySessionId: 'SessionA',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      isSelected: false,
     };
   },
   setup() {
@@ -147,8 +155,10 @@ export default {
       const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.isSelected = false;
       } else {
         this.selectedQuestionList.push(data.question);
+        this.isSelected = true;
       }
       console.log(this.selectedQuestionList);
     },
@@ -176,6 +186,29 @@ export default {
 </script>
 
 <style scoped>
+#q-list {
+  width: 100%;
+  color: #5c6ac4;
+  border: 1px solid #5c6ac4;
+  margin-bottom: 10px;
+}
+#q-list:hover {
+  width: 100%;
+  color: #ffffff;
+  border: 1px solid #5c6ac4;
+  background-color: #5c6ac4;
+  margin-bottom: 10px;
+}
+#text-select {
+  color: #4d4d4d;
+}
+#user-select-box {
+  background: #5c6ac40c;
+  width: 300px;
+  max-height: 350px;
+  border-radius: 10px;
+  overflow: auto;
+}
 /* .container {
   max-width: 1600px;
   padding: 0;
