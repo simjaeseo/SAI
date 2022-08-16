@@ -56,16 +56,16 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                    <label class="form-check-label" for="gridRadios1">
+                    <label class="form-check-label" for="gridRadios3">
                       <input class="form-check-input" type="radio" name="gridRadios"
-                      id="gridRadios1" value="true" checked @change="ctConfirm($event)">
+                      id="gridRadios3" value="true" checked @change="ctConfirm($event)">
                       예
                     </label>
                   </div>
                   <div class="form-check">
-                    <label class="form-check-label" for="gridRadios2">
+                    <label class="form-check-label" for="gridRadios4">
                     <input class="form-check-input" type="radio" name="gridRadios"
-                    id="gridRadios2" value="false" @change="ctConfirm($event)">
+                    id="gridRadios4" value="false" @change="ctConfirm($event)">
                     아니오
                     </label>
                   </div>
@@ -97,12 +97,13 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label" for="gridRadios1"
+                  <label class="form-check-label"
                   v-for="(ct, index) in consultants"
-                  :key="index" id="ct-label">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="ct-radio" :value="ct.id" checked @change="ctSelect($event)" required>
-                    <p id="ct-name">{{ ct.name }}</p>
+                  :key="index" id="ct-label"
+                  :for="`gridRadios5${index}`">
+                  <input class="form-check-input ct-radio" type="radio" name="gridRadios"
+            :id="`gridRadios5${index}`" :value="ct.id" checked @change="ctSelect($event)" required>
+                    <p :id="`gridRadios5${index}`" class="ct-name">{{ ct.name }}</p>
                   </label>
                 </div>
                 </div>
@@ -566,10 +567,10 @@ export default {
   display: inline-block;
   width: 100%;
 }
-#ct-name {
+.ct-name {
   width: 100%;
 }
-#ct-radio {
+.ct-radio {
   display: inline-block;
 }
 #body {

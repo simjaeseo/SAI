@@ -7,7 +7,8 @@
       </div>
       <div class="d-flex">
         <div class="box3">
-          <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
+          <button @click="fetchQuestionList(['personality', 'common']),
+          selected=''" class="question-select-btn"
           data-bs-toggle="button">인성 면접 질문</button>
           <div class="dropdown">
             <button class="question-select-btn dropdown-toggle" type="button"
@@ -15,19 +16,19 @@
               직무 면접 질문
             </button>
             <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-              <li @click="fetchQuestionList(['직무', 'frontend']), selected=''"
+              <li @click="fetchQuestionList(['job', 'frontend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Frontend</a></li>
-              <li @click="fetchQuestionList(['직무', 'backend']), selected=''"
+              <li @click="fetchQuestionList(['job', 'backend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Backend</a></li>
-              <li @click="fetchQuestionList(['직무', 'Android/iOS']), selected=''"
+              <li @click="fetchQuestionList(['job', 'Android/iOS']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Android/iOS</a></li>
-              <li @click="fetchQuestionList(['직무', 'Data Scientist']), selected=''"
+              <li @click="fetchQuestionList(['job', 'Data Scientist']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Data Scientist</a></li>
-              <li @click="fetchQuestionList(['직무', 'DevOps']), selected=''"
+              <li @click="fetchQuestionList(['job', 'DevOps']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">DevOps</a></li>
             </ul>
@@ -62,9 +63,11 @@
             <div class="d-flex">
               <input type="text" class='form-control'
               v-model="myQuestion"
-              @keydown.enter="addQuestion()"
               aria-labelledby="myQuestion">
-              <button id="double-check-btn" @click="addQuestion()">등록</button>
+              <button id="double-check-btn"
+              @click="registMyQuestion(this.myQuestion), addQuestion()">
+              등록
+              </button>
             </div>
             <div v-for="myQ in myQuestionList" :key="myQ">
               <button class="question-btn" data-bs-toggle="button" autocomplete="off"
@@ -111,6 +114,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import drf from '@/api/api';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -137,16 +142,39 @@ export default {
   setup() {
     const store = useStore();
 
+    const currentUser = computed(() => store.getters.currentUser);
+    const authHeader = computed(() => store.getters.authHeader);
+
     const questionList = computed(() => store.getters.questionList);
     const fetchQuestionList = (params) => {
       store.dispatch('fetchQuestionList', params);
     };
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
 
+    const registMyQuestion = (myQuestion) => {
+      // console.log(myQuestion);
+      // console.log(currentUser.value.id);
+      // console.log(authHeader.value);
+      axios({
+        url: drf.interview.customQuestion(),
+        method: 'post',
+        data: {
+          question: myQuestion,
+          memberId: currentUser.value.id,
+        },
+        header: authHeader.value,
+      })
+        .then((res) => {
+          console.log(res);
+        });
+    };
+
     return {
       fetchQuestionList,
       questionList,
       selectQuestionList,
+      currentUser,
+      registMyQuestion,
     };
   },
   computed() {},
@@ -172,7 +200,6 @@ export default {
       console.log(this.selectedQuestionList);
     },
     addQuestion() {
-      console.log(this.myQuestion);
       this.selectedQuestionList.push(this.myQuestion);
       this.myQuestionList.push(this.myQuestion);
       this.clearInput();
