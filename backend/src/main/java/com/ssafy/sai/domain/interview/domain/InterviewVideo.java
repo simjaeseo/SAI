@@ -44,7 +44,9 @@ public class InterviewVideo extends BaseEntity {
     private String stt;
 
     @Column(name = "wrong_posture_count")
-    private String wrongPostureCount;
+    private Long wrongPostureCount;
+
+    private Double emotionRatio;
 
     public void createFeedback(String feedback) {
         this.feedback = feedback;
