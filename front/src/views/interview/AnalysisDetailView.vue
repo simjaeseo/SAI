@@ -125,6 +125,7 @@ export default {
       teachableArray: [],
       qArray: [],
       emotionArray: [],
+      feedback: [],
     };
   },
   created() {
