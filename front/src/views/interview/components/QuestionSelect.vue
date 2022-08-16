@@ -124,11 +124,13 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <router-link v-if="selectedQuestionList.length > 0" to="room">
-                <button class="start-btn"
+                <button
+                v-if="selectedQuestionList.length > 0"
+                class="start-btn"
                 @click.prevent="selectQuestionList(selectedQuestionList),
-                selectQuestionListTTS(selectedQuestionListTTS)">시작하기</button>
-              </router-link>
+                selectQuestionListTTS(selectedQuestionListTTS),
+                routeToRoom()
+                ">시작하기</button>
               <button v-else class="start-btn-disabled" disabled>시작하기</button>
             </div>
           </div>
@@ -141,6 +143,7 @@
 <script>
 import axios from 'axios';
 import drf from '@/api/api';
+import router from '@/router';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -210,6 +213,10 @@ export default {
         });
     };
 
+    const routeToRoom = () => {
+      router.push({ name: 'InterviewRoom' });
+    };
+
     return {
       questionList,
       currentUser,
@@ -220,6 +227,7 @@ export default {
       registMyQuestion,
       selectQuestionListTTS,
       deleteMyQuestion,
+      routeToRoom,
     };
   },
   methods: {
@@ -245,6 +253,7 @@ export default {
         this.selectedQuestionList.push(data);
         this.selectedQuestionListTTS.push(data);
       }
+      console.log(this.selectedQuestionListTTS);
     },
 
     clearInput() {
@@ -253,6 +262,7 @@ export default {
 
     addQuestion() {
       this.selectedQuestionList.push(this.myQuestion);
+      this.selectedQuestionListTTS.push(this.myQuestion);
       this.myQuestionList.push(this.myQuestion);
       this.fetchCustomQuestionList();
       this.clearInput();
