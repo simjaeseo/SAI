@@ -38,7 +38,7 @@ INSERT INTO interview_question(question, tts, question_type, question_detail_typ
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('전에 진행했던 프로젝트의 아키텍처를 설명해 보세요.','전에 진행했던 프로젝트의 아키텍처를 설명해 보세요.','job','common');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('자신이 제출한 포트폴리오를 설명해 보세요.','자신이 제출한 포트폴리오를 설명해 보세요.','job','common');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('사용할 줄 아는 프로그래밍 언어는 어떤 것들이 있으며 얼마나 능숙하나요?','사용할 줄 아는 프로그래밍 언어는 어떤 것들이 있으며 얼마나 능숙하나요?','job','common');
-INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('큐에대해 설명해 보세요.','큐에대해 설명해 보세요.','job','common');
+INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('queue에대해 설명해 보세요.','큐에대해 설명해 보세요.','job','common');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('본인이 사용할 줄 아는 언어들의 차이점은 무엇인가요?','본인이 사용할 줄 아는 언어들의 차이점은 무엇인가요?','job','common');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('프로세스와 스레드의 차이점은 무엇인가요?','프로세스와 스레드의 차이점은 무엇인가요?','job','common');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('본인이 지원한 job가 무슨 일을 한다고 생각하나요?','본인이 지원한 job가 무슨 일을 한다고 생각하나요?','job','common');
@@ -74,7 +74,7 @@ INSERT INTO interview_question(question, tts, question_type, question_detail_typ
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('DB에서 인덱스를 사용했을때 장점이 무엇이있나요?','디비에서 인덱스를 사용했을때 장점이 무엇이있나요?','job','Backend');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('가비지 컬렉션에대해 설명해보세요.','가비지 컬렉션에대해 설명해보세요.','job','Backend');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('브라우저 렌더링 과정을 설명해주세요.','브라우저 렌더링 과정을 설명해주세요.','job','Backend');
-INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('CORS는 무엇인지, 이를 처리해본 경험이 있다면 말씀해주세요.','코얼스 무엇인지, 이를 처리해본 경험이 있다면 말씀해주세요.','job','Backend');
+INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('CORS는 무엇인지, 이를 처리해본 경험이 있다면 말씀해주세요.','씨오알에스는 무엇인지, 이를 처리해본 경험이 있다면 말씀해주세요.','job','Backend');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('타입스크립트를 사용하는 이유는 무엇인가요?','타입스크립트를 사용하는 이유는 무엇인가요?','job','Backend');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('브라우저는 어떻게 동작하는지 설명해주세요.','브라우저는 어떻게 동작하는지 설명해주세요.','job','Backend');
 INSERT INTO interview_question(question, tts, question_type, question_detail_type) VALUES ('스프링프레임워크에대해 설명해보세요.','스프링프레임워크에대해 설명해보세요.','job','Backend');

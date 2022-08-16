@@ -6,12 +6,14 @@ export default {
   state: {
     questionList: {},
     selectedQuestionList: [],
+    selectedQuestionListTTS: [],
     videoDetail: [],
     customQuestionList: [],
   },
   getters: {
     questionList: (state) => state.questionList,
     selectedQuestionList: (state) => state.selectedQuestionList,
+    selectedQuestionListTTS: (state) => state.selectedQuestionListTTS,
     videoDetail: (state) => state.videoDetail,
     customQuestionList: (state) => state.customQuestionList,
   },
@@ -21,6 +23,9 @@ export default {
     },
     SET_SELECTED_QUESTION_LIST(state, questionList) {
       state.selectedQuestionList = questionList;
+    },
+    SET_SELECTED_QUESTION_LIST_TTS(state, questionListTTS) {
+      state.selectedQuestionListTTS = questionListTTS;
     },
     SET_VIDEO_DEATIL(state, videoDetail) {
       state.videoDetail = videoDetail;
@@ -56,8 +61,12 @@ export default {
     },
     fetchCustomQuestionList({ commit, getters }) {
       axios({
+        // url: drf.interview.customQuestionList(getters.currentUser.id),
         url: drf.interview.customQuestionList(getters.currentUser.id),
         method: 'get',
+        // data: {
+        //   memberId: getters.currentUser.id,
+        // },
         header: getters.authHeader,
       })
         .then((res) => {
