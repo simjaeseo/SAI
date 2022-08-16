@@ -18,6 +18,7 @@ public class QuestionDto {
     public static class data{
         private Long id;
         private String question;
+        private String tts;
         private String questionType;
         private String questionDetailType;
     }

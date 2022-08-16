@@ -20,7 +20,7 @@
       </div>
     </form>
       <div>
-        <router-link to='/login'>
+        <router-link :to="{ name: 'Login' }">
         <button class='btn' id='login-btn'>
         로그인 페이지</button></router-link>
       </div>

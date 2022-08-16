@@ -54,7 +54,7 @@ public class MemberService {
     private final ProfilePictureRepository profilePictureRepository;
     private final SpringSecurityConfig security;
 
-    private String dir = "C:/Users/kk_st/OneDrive/바탕 화면/S07P12C206/image";
+    private String dir = "vue/dist/img";
     private Path fileDir = Paths.get(dir).toAbsolutePath().normalize();
     private final String IMAGE = "image";
 
@@ -126,13 +126,6 @@ public class MemberService {
 
             ProfilePicture profilePicture = uploadImage(file);
             findMember.updateProfilePicture(profilePicture);
-        } else {
-            if (findMember.getProfilePicture() != null) {
-                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
-                path.delete();
-            }
-
-            findMember.updateProfilePicture(null);
         }
 
         return new MemberUpdateResponse(findMember);
@@ -168,13 +161,6 @@ public class MemberService {
 
             ProfilePicture profilePicture = uploadImage(file);
             findMember.updateProfilePicture(profilePicture);
-        } else {
-            if (findMember.getProfilePicture() != null) {
-                File path = new File(fileDir + "\\" + findMember.getProfilePicture().getFileName());
-                path.delete();
-            }
-
-            findMember.updateProfilePicture(null);
         }
 
         return new ConsultantResponse(findMember);

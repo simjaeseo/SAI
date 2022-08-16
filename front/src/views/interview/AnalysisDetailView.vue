@@ -2,14 +2,12 @@
   <div class="container">
     <h1>ㅇㅇㅇ님의 분석 결과</h1>
     <div class="d-flex align-items-center bar">
-        <router-link to="/analysis/comprehensive">
-          <div id="comprehensive">종합 분석</div>
-        </router-link>
         <router-link to="/analysis/detail">
           <div id="detail">세부 분석</div>
+          <!-- <p> {{ userVideo[$route.params.index].id }}</p> -->
         </router-link>
     </div>
-    <div class="d-flex align-items-center detail-bar">
+    <!-- <div class="d-flex align-items-center detail-bar">
       <router-link to="/analysis/detail">
         <div class="selected" id="sight">시선 처리</div>
       </router-link>
@@ -25,41 +23,103 @@
       <router-link to="/analysis/detail/stt">
         <div id="stt">답변 내용</div>
       </router-link>
-    </div>
+    </div> -->
     <div class="box">
       <div class="left">
-        <div class="player"></div>
+        <video class="mb-3" controls width="460">
+          <source :src="this.videoUrl"
+                  type="video/mp4">
+          <track src="captions_en.vtt" kind="captions" srclang="en" label="english_captions">
+        </video>
         <div class="dropdown">
           <button class="question-select-btn dropdown-toggle" type="button"
           id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             질문
           </button>
           <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#">질문1</a></li>
-            <li><a class="dropdown-item" href="#">질문2</a></li>
-            <li><a class="dropdown-item" href="#">질문3</a></li>
-            <li><a class="dropdown-item" href="#">질문4</a></li>
-            <li><a class="dropdown-item" href="#">질문5</a></li>
+            <li @click="this.emotionRatio=video.emotionRatio,
+            this.stt=video.stt,
+            this.videoUrl=video.videoUrl,
+            this.wrongPostureCount=video.wrongPostureCount"
+            v-for="(video, index) in videoDetail" :key="index"
+            @keydown.enter="s">
+              <a class="dropdown-item">{{ video.usedInterviewQuestion.question }}</a>
+            </li>
           </ul>
         </div>
-        <p>AI 피드백</p>
-        <div class="aifeedback"></div>
+        <!-- <p>AI 피드백</p>
+        <div class="aifeedback"></div> -->
         <div class="d-flex justify-content-between">
           <p>컨설턴트님 피드백</p>
-          <button class="start-btn">신청하기</button>
         </div>
         <div class="ctfeedback"></div>
+        <p> {{ videoDetail }}</p>
       </div>
       <div class="right">
-        <p>프레임별 시선 처리</p>
-        <div class="graph"></div>
+        <div class="mb-3">
+          <p>표정</p>
+          <div class="graph">
+            {{ this.emotionRatio }}
+          </div>
+        </div>
+        <div class="mb-3">
+          <p>머리 움직임</p>
+          <div class="graph">
+            {{ this.wrongPostureCount }}
+          </div>
+        </div>
+        <div class="mb-3">
+          <p>음성 크기</p>
+          <div class="graph"></div>
+        </div>
+        <div class="mb-3">
+          <p>STT</p>
+          <div class="graph">
+            {{ this.stt }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
+  name: 'ProfileView',
+  setup() {
+    const store = useStore();
+
+    const currentUser = computed(() => store.getters.currentUser);
+    const userVideo = computed(() => store.getters.userVideo);
+    const videoDetail = computed(() => store.getters.videoDetail);
+    const getVideoDetail = (params) => {
+      store.dispatch('getVideoDetail', params);
+    };
+    return {
+      currentUser,
+      userVideo,
+      videoDetail,
+      getVideoDetail,
+    };
+  },
+  data() {
+    return {
+      videoUrl: '',
+      stt: '',
+      emotionRatio: 0,
+      wrongPostureCount: 0,
+    };
+  },
+  // methods: {
+  //   dataChange(),
+  // },
+  created() {
+    this.$store.dispatch('getUserVideo', this.currentUser.id);
+    this.getVideoDetail([this.currentUser.id, this.userVideo[this.$route.params.index].id]);
+  },
 };
 </script>
 
@@ -68,7 +128,7 @@ export default {
     margin-top: 50px;
     padding: 0;
     width: 1000px;
-    height: 1500px;
+    height: 2050px;
 }
 
 #comprehensive {
@@ -210,7 +270,7 @@ export default {
 .graph {
   border: 1px solid black;
   border-radius: 15px;
-  height: 600px;
+  height: 400px;
   box-shadow: 2.4px 4.8px 4.8px hsl(0deg 0% 0% / 0.43);
 }
 h1 {

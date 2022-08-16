@@ -7,39 +7,49 @@
       </div>
       <div class="d-flex">
         <div class="box3">
-          <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
-          data-bs-toggle="button" autocomplete="off">인성 면접 질문</button>
+          <button @click="fetchQuestionList(['personality', 'common']),
+          selected=''" class="question-select-btn"
+          data-bs-toggle="button">인성 면접 질문</button>
           <div class="dropdown">
             <button class="question-select-btn dropdown-toggle" type="button"
             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
               직무 면접 질문
             </button>
             <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-              <li @click="fetchQuestionList(['직무', 'frontend']), selected=''"
+              <li @click="fetchQuestionList(['job', 'frontend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Frontend</a></li>
-              <li @click="fetchQuestionList(['직무', 'backend']), selected=''"
+              <li @click="fetchQuestionList(['job', 'backend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Backend</a></li>
-              <li @click="fetchQuestionList(['직무', 'Android/iOS']), selected=''"
+              <li @click="fetchQuestionList(['job', 'Android/iOS']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Android/iOS</a></li>
-              <li @click="fetchQuestionList(['직무', 'Data Scientist']), selected=''"
+              <li @click="fetchQuestionList(['job', 'Data Scientist']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Data Scientist</a></li>
-              <li @click="fetchQuestionList(['직무', 'DevOps']), selected=''"
+              <li @click="fetchQuestionList(['job', 'DevOps']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">DevOps</a></li>
             </ul>
           </div>
           <button @click="selected='myQuestion'" class="question-select-btn"
           data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
+          <div v-if="selectedQuestionList.length" id="user-select-box">
+            <h5>
+              선택된 질문
+            </h5>
+            <p v-for="(pick, index) in selectedQuestionList" :key="index" id="text-select">
+                #{{ pick }}</p>
+          </div>
         </div>
         <div class="box4" v-show="selected==''">
           <div class="question">
             <div>{{ questionList.length }}개의 질문</div>
             <button class="question-btn" data-bs-toggle="button" autocomplete="off"
             v-for="(data, i) in questionList" :key="i"
+            :style="[selectedQuestionList.includes(data.question) == '' ?
+            {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
             @click="selectQuestion(data)">
               {{ data.question }}</button>
             <div v-if="selectedQuestionList">
@@ -49,12 +59,24 @@
           </div>
         </div>
         <div class="box4" v-show="selected=='myQuestion'">
-          <div class="d-flex">
-            <input type="text" class='form-control'
-            v-model="myQuestion"
-            @keydown.enter="addQuestion()"
-            aria-labelledby="myQuestion">
-            <button id="double-check-btn" @click="addQuestion()">등록</button>
+          <div>
+            <div class="d-flex">
+              <input type="text" class='form-control'
+              v-model="myQuestion"
+              aria-labelledby="myQuestion">
+              <button id="double-check-btn"
+              @click="registMyQuestion(this.myQuestion), addQuestion()">
+              등록
+              </button>
+            </div>
+            <div v-for="myQ in myQuestionList" :key="myQ">
+              <button class="question-btn" data-bs-toggle="button" autocomplete="off"
+              :style="[selectedQuestionList.includes(myQ) == '' ?
+              {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
+              @click="selectMyQuestion(myQ)">
+                {{ myQ }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +86,7 @@
         <div class="box6">
           <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center">
-              <div class="form-check check">
+              <!-- <div class="form-check check">
                 <label class="form-check-label" for="randomChecked">
                   <input class="form-check-input" type="checkbox" value=""
                 id="randomChecked" checked>
@@ -75,7 +97,7 @@
                 id="shuffleChecked" checked>
                   질문 셔플 기능
                 </label>
-              </div>
+              </div> -->
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
@@ -92,6 +114,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import drf from '@/api/api';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -103,6 +127,7 @@ export default {
       selected: '',
       selectedQuestionList: [],
       myQuestion: '',
+      myQuestionList: [],
 
       OV: undefined,
       session: undefined,
@@ -111,10 +136,14 @@ export default {
       subscribers: [],
       mySessionId: 'SessionA',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
+      isSelected: false,
     };
   },
   setup() {
     const store = useStore();
+
+    const currentUser = computed(() => store.getters.currentUser);
+    const authHeader = computed(() => store.getters.authHeader);
 
     const questionList = computed(() => store.getters.questionList);
     const fetchQuestionList = (params) => {
@@ -122,10 +151,30 @@ export default {
     };
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
 
+    const registMyQuestion = (myQuestion) => {
+      // console.log(myQuestion);
+      // console.log(currentUser.value.id);
+      // console.log(authHeader.value);
+      axios({
+        url: drf.interview.customQuestion(),
+        method: 'post',
+        data: {
+          question: myQuestion,
+          memberId: currentUser.value.id,
+        },
+        header: authHeader.value,
+      })
+        .then((res) => {
+          console.log(res);
+        });
+    };
+
     return {
       fetchQuestionList,
       questionList,
       selectQuestionList,
+      currentUser,
+      registMyQuestion,
     };
   },
   computed() {},
@@ -134,12 +183,25 @@ export default {
       const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.isSelected = false;
       } else {
         this.selectedQuestionList.push(data.question);
+        this.isSelected = true;
       }
+      console.log(this.selectedQuestionList);
+    },
+    selectMyQuestion(data) {
+      const index = this.selectedQuestionList.indexOf(data, 0);
+      if (index >= 0) {
+        this.selectedQuestionList.splice(index, 1);
+      } else {
+        this.selectedQuestionList.push(data);
+      }
+      console.log(this.selectedQuestionList);
     },
     addQuestion() {
       this.selectedQuestionList.push(this.myQuestion);
+      this.myQuestionList.push(this.myQuestion);
       this.clearInput();
     },
     clearInput() {
@@ -151,6 +213,29 @@ export default {
 </script>
 
 <style scoped>
+#q-list {
+  width: 100%;
+  color: #5c6ac4;
+  border: 1px solid #5c6ac4;
+  margin-bottom: 10px;
+}
+#q-list:hover {
+  width: 100%;
+  color: #ffffff;
+  border: 1px solid #5c6ac4;
+  background-color: #5c6ac4;
+  margin-bottom: 10px;
+}
+#text-select {
+  color: #4d4d4d;
+}
+#user-select-box {
+  background: #5c6ac40c;
+  width: 300px;
+  max-height: 350px;
+  border-radius: 10px;
+  overflow: auto;
+}
 /* .container {
   max-width: 1600px;
   padding: 0;

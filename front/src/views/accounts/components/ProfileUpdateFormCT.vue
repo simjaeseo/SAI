@@ -7,10 +7,10 @@
             <div id='profile_image_box' class='col-sm-2'>
               <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
               id='user_profile_img'>
-              <!-- <img v-else-if="currentUser.profilePicture"
+              <img v-else-if="currentUser.profilePicture"
               :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
               alt="preview"
-              id='user_profile_img'> -->
+              id='user_profile_img'>
               <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
@@ -23,11 +23,9 @@
               <div class='row' id='personal-data-box2'>
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name" readonly @click="noChange"
-                    ></label>
-                    <p id='data-name'>소속</p>
-                    <select class='form-select' id='form-select-region'
+                    <p id="user-data">{{ currentUser.name }}</p>
+                    <p id='data-name'>소속</p><br>
+                    <select class='form-select mb-3' id='form-select-region'
                     aria-label='Default select example'
                     @change="changeCity">
                         <option selected disabled>{{ currentUser.campus.city }}</option>
@@ -36,8 +34,8 @@
                         <option value='광주'>광주</option>
                         <option value='구미'>구미</option>
                         <option value='부울경'>부울경</option>
-                    </select>
-                    <p id='data-name'>연락처</p>
+                    </select><br>
+                    <p id='data-name'>연락처</p><br>
                     <select class='form-select' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
@@ -59,13 +57,9 @@
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday"
-                    readonly @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.birthday }}</p>
                     <p id='data-name'>이메일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email"
-                    readonly @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.email }}</p>
                 </div>
               </div>
             </div>
@@ -74,7 +68,9 @@
 
         <!-- 버튼 -->
         <div id='btn-box'>
-            <button class='btn' id='cancel-btn'>취소</button>
+          <router-link :to="{ name: 'Main' }">
+            <button class='btn' id='cancel-btn' type="button">취소</button>
+          </router-link>
             <button class='btn'
             type='submit'
             id='update-btn'>완료</button>
@@ -156,6 +152,20 @@ export default {
 </script>
 
 <style scoped>
+#user-data {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #707070;
+  font-size: 15px;
+}
+#data-name {
+  font-size: 12px;
+  color: #707070;
+  display: inline;
+  padding: 3px;
+  border-radius: 15px;
+  background-color: #626db325;
+}
 .modal-body {
   height: 500px;
 }
