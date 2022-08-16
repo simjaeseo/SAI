@@ -18,6 +18,8 @@ public class InterviewQuestion{
 
     private String question;
 
+    private String tts;
+
     private String questionType;
 
     private String questionDetailType;
