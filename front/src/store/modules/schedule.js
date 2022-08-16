@@ -44,19 +44,6 @@ export default {
     RESET_DATE(state) {
       state.selectedDate = null;
     },
-    // SET_START_TIME(state, startTime) {
-    //   if (state.startTime !== startTime) {
-    //     state.startTime = startTime;
-    //     if (startTime.includes('30')) {
-    //       state.endTime = `${Number(startTime.slice(0, -3)) + 1}:00`;
-    //     } else {
-    //       state.endTime = `${startTime.slice(0, -3)}:30`;
-    //     }
-    //   } else {
-    //     state.startTime = false;
-    //     state.endTime = false;
-    //   }
-    // },
     SET_SCHEDULES(state, schedules) {
       state.schedules = schedules;
     },
@@ -102,8 +89,8 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data));
-      // .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_UPCOMING_SCHEDULES', res.data.data))
+        .catch((err) => console.error(err.response));
     },
     fetchMyConsultants({ commit, getters }) {
       axios({
@@ -111,8 +98,8 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_MY_CONSULTANTS', res.data.data));
-      // .catch((err) => console.error(err.response));
+        .then((res) => commit('SET_MY_CONSULTANTS', res.data.data))
+        .catch((err) => console.error(err.response));
     },
     createSchedule({ dispatch, getters, commit }, Credential) {
       if (getters.selectedDate
@@ -191,8 +178,8 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_CT_DAY_SCHEDULES', res.data.data));
-      // .catch((err) => console.error(err));
+        .then((res) => commit('SET_CT_DAY_SCHEDULES', res.data.data))
+        .catch((err) => console.error(err));
     },
     fetchDaySchedules({ commit, getters }, date) {
       axios({
@@ -200,8 +187,8 @@ export default {
         method: 'get',
         headers: getters.authHeader,
       })
-        .then((res) => commit('SET_DAY_SCHEDULES', res.data.data));
-      // .catch((err) => console.error(err));
+        .then((res) => commit('SET_DAY_SCHEDULES', res.data.data))
+        .catch((err) => console.error(err));
     },
   },
   modules: {

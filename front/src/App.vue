@@ -80,8 +80,8 @@
                   <span id='link-text2'>SSAFY<br>GIT</span></a>
                 </div>
                 <div id='most'>
-                  <a href="https://meeting.ssafy.com/" target="_blank" id='meeting-ssafy-link'>
-                  <span id='link-text3'>Meeting!<br>SSAFY</span></a>
+                  <a href="https://edu.ssafy.com/edu/main/index.do" target="_blank" id='edu-ssafy-link'>
+                  <span id='link-text3'>Edu<br>SSAFY</span></a>
                 </div>
               </ul>
             </div>
@@ -149,10 +149,9 @@ export default {
   padding: 0 10px 8px 0;
   border-bottom: 2px solid #fff;
   vertical-align: top;
-  text-align: left;
 }
 
-#meeting-ssafy-link {
+#edu-ssafy-link {
   display: block;
   width: 93.38px;
   height: 101px;

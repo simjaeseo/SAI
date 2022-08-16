@@ -47,12 +47,9 @@ export default {
       await store.dispatch('fetchSchedules');
     };
 
-    console.log(1);
     await fetchSchedules();
-    console.log(2);
 
     const schedules = computed(() => store.getters.schedules);
-    console.log(schedules.value);
     const scheduleDate = [];
 
     for (let i = 0; i < schedules.value.length; i += 1) {
@@ -208,10 +205,9 @@ thead {
 }
 
 .rounded2 {
-  border-radius: 80%;
+  border-radius: 50px;
   border:solid 1px #ffffff;
-  background-color:#aaf595;
-  /* padding:10px; */
+  background-color:#ffd9d9;
   color:#ffffff;
 }
 

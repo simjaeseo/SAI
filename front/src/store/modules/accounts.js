@@ -108,7 +108,6 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          console.log(0);
           dispatch('fetchCurrentUser', res.data.data.id).then(() => {
             router.push({ name: 'Main' });
           });
@@ -134,7 +133,6 @@ export default {
         });
     },
     async fetchCurrentUser({ getters, commit, dispatch }, userid) {
-      console.log(1);
       if (getters.isLoggedIn) {
         await axios({
           url: drf.member.currentUserInfo(userid),
@@ -142,12 +140,8 @@ export default {
           header: getters.authHeader,
         })
           .then((res) => {
-            console.log(2);
             commit('SET_CURRENT_USER', res.data.data);
-            console.log(3);
             dispatch('fetchMyConsultants');
-            console.log(getters.currentUser);
-            console.log(4);
           })
           .catch((err) => {
             console.log(err);
