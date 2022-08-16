@@ -1,7 +1,7 @@
 <template>
     <div class="container mt-5" id="body">
       <div><canvas id="canvas" v-show="false"></canvas></div>
-      <div id="label-container"></div>
+      <div v-show="false" id="label-container"></div>
       <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
       aria-labelledby="exampleModalToggleLabel" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
@@ -24,8 +24,7 @@
                 <div class="form-check">
                   <label class="form-check-label" for="gridRadios2">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="myConfirm($event)"
-                  data-bs-dismiss="modal">
+                  id="gridRadios2" value="false" @change="myConfirm($event)">
                     아니오
                   </label>
                 </div>
@@ -34,7 +33,12 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
-              data-bs-toggle="modal">다음</button>
+              data-bs-toggle="modal" v-if="myConfirms === true">다음</button>
+              <router-link to="/main">
+                <button class="btn btn-primary" aria-label="Close"
+                v-if="myConfirms === false"
+                data-bs-dismiss="modal">종료</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -61,8 +65,7 @@
                   <div class="form-check">
                     <label class="form-check-label" for="gridRadios2">
                     <input class="form-check-input" type="radio" name="gridRadios"
-                    id="gridRadios2" value="false" @change="ctConfirm($event)"
-                    data-bs-dismiss="modal">
+                    id="gridRadios2" value="false" @change="ctConfirm($event)">
                     아니오
                     </label>
                   </div>
@@ -71,7 +74,12 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle3"
-              data-bs-toggle="modal">다음</button>
+              data-bs-toggle="modal" v-if="ctConfirms === true">다음</button>
+              <router-link to="/main">
+                <button class="btn btn-primary" aria-label="Close"
+                v-if="ctConfirms === false"
+                data-bs-dismiss="modal" @click="videoForm">종료</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -101,7 +109,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <router-link to="/">
+              <router-link to="/main">
                 <button class="btn btn-primary" data-bs-dismiss="modal"
                 @click="videoForm"
                 >제출</button>
@@ -124,8 +132,8 @@
               <p id="video-start"> 모의 면접을 시작합니다.</p>
               <p id="video-start"> 질문에 답변해주세요. </p>
               <div class="cd-number-wrapper">
-                <span class="cd-number-five">5</span>
-                <span class="cd-number-four">4</span>
+                <!-- <span class="cd-number-five">5</span>
+                <span class="cd-number-four">4</span> -->
                 <span class="cd-number-three">3</span>
                 <span class="cd-number-two">2</span>
                 <span class="cd-number-one">1</span>
@@ -134,11 +142,11 @@
           </div>
           <div class="d-flex justify-content-end" style="margin-right:20px;">
             <div v-if="!isFinished">
-            <input class="btn btn-light" type="button"
+            <input class="btn btn-light" type="button" v-if="!isRecording"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
               :style="[isRecording == true ?
               {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
-              <input class="btn btn-light" type="button"
+              <input class="btn btn-light" type="button" v-if="isRecording"
               id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             </div>
             <div v-if="isFinished" class="d-flex justify-content-end">
@@ -199,7 +207,7 @@ export default {
       preWrongCount: 0,
       emotionRatio: [],
       happy: 0,
-      emotionCount: 0,
+      emotionCount: 1,
     };
   },
   setup() {
@@ -221,7 +229,6 @@ export default {
         }
       }
     }
-
     let progress = 327;
     let status = 'proper posture';
     let count = 0;
@@ -299,6 +306,7 @@ export default {
     };
   },
   created() {
+    console.log(this.selectedQuestionList);
     this.questions = this.selectedQuestionList;
     this.savedQ = Object.values(this.selectedQuestionList);
   }, // 해당 vue 파일이 실행 되는 순간
@@ -314,8 +322,6 @@ export default {
       this.emotionCount += 1;
     },
     videoForm() {
-      console.log(this.emotionRatio);
-      console.log(this.wrongPostureCount);
       axios({
         url: drf.interview.saveVideo(this.currentUser.id),
         method: 'post',
@@ -329,11 +335,9 @@ export default {
           emotionRatio: this.emotionRatio,
         },
       })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then((res) => console.log(res));
     },
     ctSelect(event) {
-      console.log(event.target.value);
       this.consultantsPK = event.target.value;
     },
     myConfirm(event) {
@@ -341,7 +345,6 @@ export default {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
-        this.$router.push('/');
       }
     },
     ctConfirm(event) {
@@ -349,8 +352,6 @@ export default {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
-        this.videoForm();
-        this.$router.push('/');
       }
     },
     answerCompleted() {
@@ -363,9 +364,9 @@ export default {
     },
     startRecoding() {
       this.isRecording = true;
-      console.log(this.isRecording);
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      console.log(this.questions);
       this.preWrongCount = this.countOutput().count;
       this.happy = 0;
       this.emotionCount = 0;
@@ -400,7 +401,6 @@ export default {
         })
         .then((res) => {
           this.myRecodingId = res.data.id;
-          console.log(res);
         });
     },
     stopRecoding() {
@@ -419,7 +419,6 @@ export default {
         })
         .then((res) => {
           this.savedUrls.push(res.data.url);
-          console.log(this.savedUrls);
         });
     },
     joinSession() {
@@ -632,7 +631,7 @@ font-size: 10em;
 font-family: 'Londrina Outline'; /* Bowlby One SC */
 }
 
-.cd-number-five {
+/* .cd-number-five {
 position: absolute;
 opacity: 0;
 margin: 0 auto 0 auto;
@@ -691,7 +690,7 @@ to {  -ms-transform: scale(1.3); opacity: 1;}}
 
 @keyframes cd-number-four-anim {
 from {transform: scale(0.5); opacity: 0;}
-to {  transform: scale(1.3); opacity: 1;}}
+to {  transform: scale(1.3); opacity: 1;}} */
 
 .cd-number-three {
 position: absolute;
