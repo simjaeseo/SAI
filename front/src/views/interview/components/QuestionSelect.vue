@@ -148,15 +148,14 @@ export default {
 
     const questionList = computed(() => store.getters.questionList);
     const fetchQuestionList = (params) => {
-      console.log('하하하하');
       store.dispatch('fetchQuestionList', params);
     };
-    const fetchCustomQuestionList = () => {
-      store.dispatch('fetchCustomQuestionList');
-    };
+    // const fetchCustomQuestionList = () => {
+    //   store.dispatch('fetchCustomQuestionList');
+    // };
 
-    fetchCustomQuestionList();
-    console.log(customQuestionList.value);
+    // fetchCustomQuestionList();
+    // console.log(customQuestionList.value);
 
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
 

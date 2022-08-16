@@ -31,14 +31,12 @@ export default {
   },
   actions: {
     fetchQuestionList({ getters, commit }, params) {
-      console.log(params[0], params[1]);
       axios({
         url: drf.interview.questionList(params[0], params[1]),
         method: 'get',
         header: getters.authHeader,
       })
         .then((res) => {
-          console.log(res.data);
           commit('SET_QUESTION_LIST', res.data);
         })
         .catch((err) => {
