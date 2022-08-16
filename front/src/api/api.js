@@ -1,4 +1,4 @@
-const HOST = process.env.VUE_APP_API_URL;
+const HOST = 'http://localhost:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
@@ -33,5 +33,7 @@ export default {
     getUserVideo: (id) => `${HOST + INTERVIEW + id}`,
     getFeedbackRequestVideo: (id) => `${HOST + INTERVIEW + id}/request`,
     deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
+    customQuestion: () => `${HOST + INTERVIEW}customQuestion/create`,
+    customQuestionDelete: (QID) => `${HOST + INTERVIEW}customQuestion/delete/${QID}`,
   },
 };
