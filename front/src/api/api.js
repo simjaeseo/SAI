@@ -40,5 +40,7 @@ export default {
     customQuestionList: (id) => `${HOST + INTERVIEW}customQuestion/list/${id}`,
     // 비디오 가져오기
     videoDetailPage: (memberId, videoId) => `${HOST + INTERVIEW}${memberId}/request/${videoId}`,
+    // 교육생 피드백 작성
+    feedBackPost: (ctId, videoId) => `${HOST + INTERVIEW}${ctId}/feedback/${videoId}`,
   },
 };

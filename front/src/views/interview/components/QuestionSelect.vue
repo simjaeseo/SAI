@@ -124,9 +124,9 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <router-link v-if="selectedQuestionList.length > 0" to="room">
+              <router-link :to="{ name: 'InterviewRoom' }" v-if="selectedQuestionList.length > 0">
                 <button class="start-btn"
-                @click.prevent="selectQuestionList(selectedQuestionList),
+                @click="selectQuestionList(selectedQuestionList),
                 selectQuestionListTTS(selectedQuestionListTTS)">시작하기</button>
               </router-link>
               <button v-else class="start-btn-disabled" disabled>시작하기</button>

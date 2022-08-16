@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex justify-content-between">
     <p id='management-text1'>교육생 관리</p>
-    {{ searchName }}
     <div class="max-w-xs relative space-y-3">
       <label
         for="search"

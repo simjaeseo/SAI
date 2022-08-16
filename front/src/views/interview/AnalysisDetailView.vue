@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="detail">
     <div class="container" v-if="setVideos">
       <!-- 묶음
       {{ userVideo }}
@@ -27,22 +27,20 @@
       <hr>
       이모션
       {{ emotionArray }} -->
-      {{ audioArray }}
-      {{ teachableArray }}
-      <h3>{{ currentUser.name }}님의 {{ videoId }} 번째 영상 분석 결과</h3>
+      <h2>{{ userVideo[videoId].studentName }}님의 {{ videoId }} 번째 영상 분석 결과</h2>
       <hr>
       <p id="date-text">
-        &#128204;{{ userVideo[videoId-1].interviewDate}}일자 연습영상을 분석한 결과입니다
+        &#128204;{{ userVideo[videoId-1].interviewDate}}
       </p>
       <div class="container">
         <div class="row">
           <div class="col-lg-8" id="video-box">
             <embed :src="`${videoLink}`" type="" v-if="videoLink" width="680px" height="400px">
-            <embed :src="`${videoArray[0]}`" type="" v-else width="680px" height="400px">
+            <embed :src="`${ videoArray[order] }`" type="" v-else width="680px" height="400px">
           </div>
           <div id="stt-box" class="col-lg-4">
             <div v-if="order != null">
-              <p>{{order+1}} 번째 영상의 스크립트</p>
+              <p>{{order+1}} 번째 영상의 답변내용</p>
               <p>{{ sttArray[order]}}</p>
             </div>
           </div>
@@ -52,8 +50,9 @@
                 질문
               </button>
               <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-                <li id="q-text" v-for="(q, index) in qArray" :key="index" @click="getIndex(index)"
-                @keydown="getIndex(index)">
+                <li id="q-text" v-for="(q, index) in qArray" :key="index"
+                @click="getIndex(index), getId(q.id)"
+                @keydown="getIndex(index), getId(q.id)">
                   {{ q.question }}
                 </li>
               </ul>
@@ -64,6 +63,34 @@
             <p v-if="isFeedBackCompleted[order] === 'false'" id="no-feedback">
               해당 영상에 대한 피드백이 없습니다.
             </p>
+            <p v-else class="mx-2 mt-2">
+              {{ isFeedBackCompleted[order] }}
+            </p>
+        </div>
+        <div v-if="currentUser.memberStatus === 'CONSULTANT' && order === 0 &&
+        isFeedBackCompleted[order] !== 'false'">
+          <form @submit.prevent="feedBackPost">
+            <label for="feedback">
+              현재 질문 : {{ qArray[order].question }}
+              <textarea id="feedback" cols="120" rows="15" class="form-control"
+              v-model="isFeedBackCompleted[0]"></textarea>
+            </label>
+            <div id="btn-box">
+              <button class="btn" type="submit" id="feed-back-btn">등록</button>
+            </div>
+          </form>
+        </div>
+        <div v-else-if="currentUser.memberStatus === 'CONSULTANT'">
+          <form @submit.prevent="feedBackPost">
+            <label for="feedback">
+              현재 질문 : {{ qArray[order].question }}
+              <textarea id="feedback" cols="120" rows="15" class="form-control"
+              v-model="feedbackData"></textarea>
+            </label>
+            <div id="btn-box">
+              <button class="btn" type="submit" id="feed-back-btn">등록</button>
+            </div>
+          </form>
         </div>
         <div class="container">
           <div class="row">
@@ -76,7 +103,47 @@
             <div class="col-lg-6" id="teachable-box">
               <h5>자세 분석</h5>
               <div id="teachable-box-inner">
-                <p v-if="teachableArray[order] > 5"></p>
+                <p v-if="teachableArray[order]" id="result-text">
+                  해당 답변이 진행되는 동안 잘못된 자세가 {{ teachableArray[order] }}번 감지되었습니다.
+                  안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
+                  몸의 흔들림이 잦을수록 집중도, 신뢰감, 소통능력 평가에 영향을 줄 수 있으니, 유의하여 면접에 응시하시기 바랍니다.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-6" id="teachable-box">
+              <h5>표정 변화</h5>
+              <div id="teachable-box-inner">
+                <p v-if="emotionArray[order] != null" id="result-text">
+                  긍정적인 표정이 {{ emotionArray[order] }}번 감지되었습니다.
+                  긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
+                  평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-6" id="teachable-box">
+              <h5>총평</h5>
+              <div id="teachable-box-inner">
+                <p v-if="teachableSub > 22" id="result-text">
+                  평균적으로 감지되는 움직임보다 다소 많은 흔들림이 감지되었습니다.
+                  AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
+                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[videoId].studentName }}
+                  님의 경우 올바른 자세를 유지하는
+                  연습이 필요하다는 점을 알려드립니다. 또한
+                  AI면접에서는 목소리에 대한 요소가 가장 중요합니다. 우선 크고, 또렷한 목소리로 대답을 해야 하며
+                  목소리의 크기 역시 중요한데 약간은 큰 소리로 대답하는것이 좋습니다. 또한, 정확한 발음을 통해
+                  음성이 텍스트로 올바르게 전환될 수 있도록 해야합니다. 주의할 것은 웅얼거리듯이 말하는 것입니다.
+                  웅얼거리지 않도록 신경써서 대답하는 것을 연습할 필요가 있습니다.
+                </p>
+                <p v-else-if="emotionSub < 10" id="result-text">
+                  영상에서 분석된 {{ userVideo[videoId].studentName }}님의 표정변화가 다소 부족한것으로 판단됩니다.
+                  AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
+                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[videoId].studentName }}님의 경우 미소를 유지하는
+                  연습이 필요하다는 점을 알려드립니다. 또한
+                  AI면접에서는 목소리에 대한 요소가 가장 중요합니다. 우선 크고, 또렷한 목소리로 대답을 해야 하며
+                  목소리의 크기 역시 중요한데 약간은 큰 소리로 대답하는것이 좋습니다. 또한, 정확한 발음을 통해
+                  음성이 텍스트로 올바르게 전환될 수 있도록 해야합니다. 주의할 것은 웅얼거리듯이 말하는 것입니다.
+                  웅얼거리지 않도록 신경써서 대답하는 것을 연습할 필요가 있습니다.
+                </p>
               </div>
             </div>
           </div>
@@ -129,20 +196,26 @@ export default {
       qArray: [],
       emotionArray: [],
       feedback: [],
-      order: null,
+      order: 0,
       videoLink: null,
+      teachableSub: null,
+      emotionSub: null,
+      len: null,
+      feedbackData: null,
+      feedbackId: null,
     };
   },
   created() {
     this.videoId = this.$route.params.videoid;
-    console.log(this.videoId);
-    this.$store.dispatch('getUserVideo', this.currentUser.id);
+    this.userId = this.$route.params.userid;
+    this.$store.dispatch('getUserVideo', this.userId);
     axios({
-      url: drf.interview.videoDetailPage(this.currentUser.id, this.videoId),
+      url: drf.interview.videoDetailPage(this.userId, this.videoId),
       method: 'get',
     })
       .then((res) => {
         this.setVideos = JSON.parse(JSON.stringify(res.data.data));
+        this.len = this.setVideos.length;
         for (let i = 0; i < res.data.data[0].videoUrl.length; i += 1) {
           this.videoArray.push(JSON.parse(JSON.stringify(res.data.data[i].videoUrl)));
           this.audioArray.push(JSON.parse(JSON.stringify(res.data.data[i].audioUrl)));
@@ -151,15 +224,36 @@ export default {
           this.teachableArray.push(JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount)));
           this.qArray.push(JSON.parse(JSON.stringify(res.data.data[i].usedInterviewQuestion)));
           this.emotionArray.push(JSON.parse(JSON.stringify(res.data.data[i].emotionRatio)));
+          this.teachableSub += JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount));
+          this.emotionSub += JSON.parse(JSON.stringify(res.data.data[i].emotionRatio));
         }
       });
   },
   methods: {
     getIndex(index) {
       this.order = index;
-      console.log(this.order);
       this.videoLink = this.videoArray[this.order];
-      console.log(this.videoLink);
+    },
+    getId(id) {
+      this.feedbackId = id;
+      if (this.isFeedBackCompleted[this.order] !== 'false') {
+        this.feedbackData = this.isFeedBackCompleted[this.order];
+      } else if (this.isFeedBackCompleted[this.order] === 'false') {
+        this.feedbackData = null;
+      }
+    },
+    feedBackPost() {
+      console.log(this.feedbackData);
+      axios({
+        url: drf.interview.feedBackPost(this.currentUser.id, this.feedbackId),
+        method: 'post',
+        data: {
+          feedback: this.feedbackData,
+        },
+      })
+        .then(
+          alert('피드백이 등록되었습니다.'),
+        );
     },
   },
   mounted() {
@@ -238,6 +332,32 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  font-weight: 700;
+  color: #494949;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+#feed-back-btn {
+  border: 1px solid #5c6ac4;
+  color: #5c6ac4;
+}
+#feed-back-btn:hover {
+  background-color: #5c6ac4;
+  color: white;
+}
+#btn-box {
+  text-align: end;
+}
+#teachable-box-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#result-text {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 canvas {
   width: 800px;
   height: 20vw;
@@ -247,11 +367,13 @@ canvas {
   border: 2px solid rgb(221, 221, 221);
   border-radius: 8px;
   height: 300px;
+  box-shadow: 2px 2px 2px 2px rgb(224, 224, 224);
 }
 #teachable-box-inner {
   border: 2px solid rgb(221, 221, 221);
   border-radius: 8px;
   height: 300px;
+  box-shadow: 2px 2px 2px 2px rgb(224, 224, 224);
 }
 h5 {
   font-weight: 500;
@@ -263,8 +385,9 @@ h5 {
   line-height: 400px;
 }
 #date-text {
-  margin: 0;
+  margin-bottom: 50px;
   text-align: end;
+  color: gray;
 }
 .dropdown {
   padding: 0;
@@ -283,11 +406,13 @@ h5 {
   padding: 0;
   border: 2px solid rgb(221, 221, 221);
   border-radius: 8px;
+  box-shadow: 2px 2px 2px 2px rgb(224, 224, 224);
 }
 #ct-box {
   height: 400px;
   border: 2px solid rgb(221, 221, 221);
   border-radius: 8px;
+  box-shadow: 2px 2px 2px 2px rgb(224, 224, 224);
 }
 ul {
   width: 100%;
@@ -307,7 +432,7 @@ ul {
   margin-top: 20px;
   padding: 0;
   width: 1000px;
-  height: 2050px;
+  height: 120vh;
 }
 .question-select-btn{
   margin-bottom: 1rem;

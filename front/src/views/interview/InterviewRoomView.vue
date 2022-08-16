@@ -192,7 +192,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: `User${Math.floor(Math.random() * 100)}`,
+      mySessionId: `User${Math.floor(Math.random() * 100000)}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
@@ -431,6 +431,7 @@ export default {
         })
         .then((res) => {
           this.savedUrls.push(res.data.url);
+          console.log(this.savedUrls);
         });
     },
     joinSession() {

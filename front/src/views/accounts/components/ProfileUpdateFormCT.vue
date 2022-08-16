@@ -20,12 +20,12 @@
             <!-- 프로필인적사항 -->
             <div id='personal-data-box1' class='col-sm-10'>
               <!-- 왼쪽 -->
-              <div class='row' id='personal-data-box2'>
+              <div class='row mt-2' id='personal-data-box2'>
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
                     <p id="user-data">{{ currentUser.name }}</p>
                     <p id='data-name'>소속</p><br>
-                    <select class='form-select mb-3' id='form-select-region'
+                    <select class='form-select mb-3 mt-2' id='form-select-region'
                     aria-label='Default select example'
                     @change="changeCity">
                         <option selected disabled>{{ currentUser.campus.city }}</option>
@@ -36,7 +36,7 @@
                         <option value='부울경'>부울경</option>
                     </select><br>
                     <p id='data-name'>연락처</p><br>
-                    <select class='form-select' id='form-select-first'
+                    <select class='form-select mt-2' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
                         <option value='2'>011</option>
@@ -449,7 +449,7 @@ p {
 #personal-data-box1 {
     background-color: #5c6ac40c;
     text-align: start;
-    height: 230px;
+    height: 250px;
     border-radius: 10px;
 }
 #profile_image_box {
