@@ -1,85 +1,87 @@
 <template>
-  <div class="container">
-    묶음
-    {{ userVideo }}
-    <hr>
-    개별비디오들
-    {{ setVideos }}
-    <hr>
-    비디오 주소
-    {{ videoArray }}
-    <hr>
-    오디오 주소
-    {{ audioArray }}
-    <hr>
-    피드백 결과
-    {{ isFeedBackCompleted }}
-    <hr>
-    stt
-    {{ sttArray }}
-    <hr>
-    티쳐블
-    {{ teachableArray }}
-    <hr>
-    질문들
-    {{ qArray }}
-    <h1>{{ currentUser.name }}님의 {{ videoId }} 번째 영상 분석 결과</h1>
-    <hr>
-    <div class="box">
-      <div class="left">
-        <video class="mb-3" controls width="460">
-          <source :src="this.videoUrl"
-                  type="video/mp4">
-          <track src="captions_en.vtt" kind="captions" srclang="en" label="english_captions">
-        </video>
-        <div class="dropdown">
-          <button class="question-select-btn dropdown-toggle" type="button"
-          id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            질문
-          </button>
-          <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-            <li @click="this.emotionRatio=video.emotionRatio,
-            this.stt=video.stt,
-            this.videoUrl=video.videoUrl,
-            this.wrongPostureCount=video.wrongPostureCount"
-            v-for="(video, index) in videoDetail" :key="index"
-            @keydown.enter="s">
-              <a class="dropdown-item">{{ video.usedInterviewQuestion.question }}</a>
-            </li>
-          </ul>
+  <div>
+    <div class="container" v-if="setVideos">
+      묶음
+      {{ userVideo }}
+      <hr>
+      개별비디오들
+      {{ setVideos }}
+      <hr>
+      비디오 주소
+      {{ videoArray }}
+      <hr>
+      오디오 주소
+      {{ audioArray }}
+      <hr>
+      피드백 결과
+      {{ isFeedBackCompleted }}
+      <hr>
+      stt
+      {{ sttArray }}
+      <hr>
+      티쳐블
+      {{ teachableArray }}
+      <hr>
+      질문들
+      {{ qArray }}
+      <hr>
+      이모션
+      {{ emotionArray }}
+      <h1>{{ currentUser.name }}님의 {{ videoId }} 번째 영상 분석 결과</h1>
+      <hr>
+      <div class="box">
+        <div class="left">
+          <video class="mb-3" controls width="460">
+            <source :src="this.videoUrl"
+                    type="video/mp4">
+            <track src="captions_en.vtt" kind="captions" srclang="en" label="english_captions">
+          </video>
+          <div class="dropdown">
+            <button class="question-select-btn dropdown-toggle" type="button"
+            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              질문
+            </button>
+            <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
+              <li id="q-text" v-for="(q, index) in qArray" :key="index" @click="getIndex(index)"
+              @keydown="getIndex(index)">
+                {{ q.question }}
+              </li>
+            </ul>
+          </div>
+          <div class="d-flex justify-content-between">
+            <p>컨설턴트님 피드백</p>
+          </div>
+          <div class="ctfeedback"></div>
+          <p></p>
         </div>
-        <!-- <p>AI 피드백</p>
-        <div class="aifeedback"></div> -->
-        <div class="d-flex justify-content-between">
-          <p>컨설턴트님 피드백</p>
+        <div class="right">
+          <div class="mb-3">
+            <p>표정</p>
+            <div class="graph">
+              <div v-if="order">
+                짜란
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <p>머리 움직임</p>
+            <div class="graph">
+            </div>
+          </div>
+          <div class="mb-3">
+            <p>음성 크기</p>
+            <div class="graph"></div>
+          </div>
+          <div class="mb-3">
+            <p>STT</p>
+            <div class="graph">
+            </div>
+          </div>
         </div>
-        <div class="ctfeedback"></div>
-        <p> {{ videoDetail }}</p>
       </div>
-      <div class="right">
-        <div class="mb-3">
-          <p>표정</p>
-          <div class="graph">
-            {{ this.emotionRatio }}
-          </div>
-        </div>
-        <div class="mb-3">
-          <p>머리 움직임</p>
-          <div class="graph">
-            {{ this.wrongPostureCount }}
-          </div>
-        </div>
-        <div class="mb-3">
-          <p>음성 크기</p>
-          <div class="graph"></div>
-        </div>
-        <div class="mb-3">
-          <p>STT</p>
-          <div class="graph">
-            {{ this.stt }}
-          </div>
-        </div>
-      </div>
+    </div>
+    <div v-else>
+      데이터를 분석중이에요. 조금만 기다려주세요.
     </div>
   </div>
 </template>
@@ -101,11 +103,17 @@ export default {
     const getVideoDetail = (params) => {
       store.dispatch('getVideoDetail', params);
     };
+    let order = null;
+    const getIndex = function (index) {
+      order = index;
+    };
     return {
       currentUser,
       userVideo,
       videoDetail,
       getVideoDetail,
+      getIndex,
+      order,
     };
   },
   data() {
@@ -122,6 +130,8 @@ export default {
       sttArray: [],
       teachableArray: [],
       qArray: [],
+      emotionArray: [],
+      feedback: [],
     };
   },
   created() {
@@ -133,7 +143,6 @@ export default {
       method: 'get',
     })
       .then((res) => {
-        console.log(res.data.data);
         this.setVideos = JSON.parse(JSON.stringify(res.data.data));
         for (let i = 0; i < res.data.data[0].videoUrl.length; i += 1) {
           this.videoArray.push(JSON.parse(JSON.stringify(res.data.data[i].videoUrl)));
@@ -142,6 +151,7 @@ export default {
           this.sttArray.push(JSON.parse(JSON.stringify(res.data.data[i].stt)));
           this.teachableArray.push(JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount)));
           this.qArray.push(JSON.parse(JSON.stringify(res.data.data[i].usedInterviewQuestion)));
+          this.emotionArray.push(JSON.parse(JSON.stringify(res.data.data[i].emotionRatio)));
         }
       });
   },
@@ -149,6 +159,16 @@ export default {
 </script>
 
 <style scoped>
+#q-text {
+  cursor: pointer;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+#q-text:hover {
+  cursor: pointer;
+  padding-bottom: 10px;
+  background-color: rgba(228, 228, 228, 0.514);
+}
 .container {
     margin-top: 50px;
     padding: 0;
