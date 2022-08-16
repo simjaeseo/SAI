@@ -1,9 +1,11 @@
 <template>
   <div class="calendar">
       <h2>
-        <a href="#" @click="onClickPrev(currentMonth)">◀</a>
+        <!-- <a href="#" @click="onClickPrev(currentMonth)">◀</a> -->
+        <a href="#" @click="onClickPrev()">◀</a>
         {{currentYear}}년 {{currentMonth}}월
-        <a href="#" @click="onClickNext(currentMonth)">▶</a>
+        <a href="#" @click="onClickNext()">▶</a>
+        <!-- <a href="#" @click="onClickNext(currentMonth)">▶</a> -->
       </h2>
       <table class="table">
           <thead>
@@ -179,9 +181,8 @@ export default {
         }
       }
     },
-    onClickPrev(month) {
-      this.month -= 1;
-      if (month <= 0) {
+    onClickPrev() {
+      if (this.currentMonth === 1) {
         this.currentMonth = 12;
         this.currentYear -= 1;
       } else {
@@ -189,9 +190,8 @@ export default {
       }
       this.init();
     },
-    onClickNext(month) {
-      this.month += 1;
-      if (month > 12) {
+    onClickNext() {
+      if (this.currentMonth === 12) {
         this.currentMonth = 1;
         this.currentYear += 1;
       } else {

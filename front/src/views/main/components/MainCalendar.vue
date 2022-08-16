@@ -35,15 +35,24 @@
 </template>
 
 <script>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
   name: 'MainCalendar',
-  setup() {
+  async setup() {
     const store = useStore();
 
+    const fetchSchedules = async () => {
+      await store.dispatch('fetchSchedules');
+    };
+
+    console.log(1);
+    await fetchSchedules();
+    console.log(2);
+
     const schedules = computed(() => store.getters.schedules);
+    console.log(schedules.value);
     const scheduleDate = [];
 
     for (let i = 0; i < schedules.value.length; i += 1) {
@@ -52,15 +61,9 @@ export default {
       }
     }
 
-    const fetchSchedules = () => {
-      store.dispatch('fetchSchedules');
-    };
-
-    onMounted(() => {
-      fetchSchedules();
-    });
     return {
       scheduleDate,
+      fetchSchedules,
     };
   },
   data() {
