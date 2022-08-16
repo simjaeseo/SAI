@@ -107,9 +107,11 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          dispatch('fetchCurrentUser', res.data.data.id);
+          console.log(0);
+          dispatch('fetchCurrentUser', res.data.data.id).then(() => {
+            router.push({ name: 'Main' });
+          });
         })
-        .then(router.push({ name: 'Main' }))
         .catch(() => {
           alert('아이디와 비밀번호를 확인해주세요.');
         });
@@ -130,10 +132,10 @@ export default {
           alert('올바르지 않은 요청입니다. 회원가입을 다시 시도하세요.');
         });
     },
-    fetchCurrentUser({ getters, commit, dispatch }, userid) {
+    async fetchCurrentUser({ getters, commit, dispatch }, userid) {
       console.log(1);
       if (getters.isLoggedIn) {
-        axios({
+        await axios({
           url: drf.member.currentUserInfo(userid),
           method: 'get',
           header: getters.authHeader,
@@ -143,6 +145,7 @@ export default {
             commit('SET_CURRENT_USER', res.data.data);
             console.log(3);
             dispatch('fetchMyConsultants');
+            console.log(getters.currentUser);
             console.log(4);
           })
           .catch((err) => {

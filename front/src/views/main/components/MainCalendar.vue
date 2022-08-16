@@ -40,16 +40,19 @@ import { useStore } from 'vuex';
 
 export default {
   name: 'MainCalendar',
-  setup() {
+  async setup() {
     const store = useStore();
 
-    const fetchSchedules = () => {
-      store.dispatch('fetchSchedules');
+    const fetchSchedules = async () => {
+      await store.dispatch('fetchSchedules');
     };
 
-    // fetchSchedules();
+    console.log(1);
+    await fetchSchedules();
+    console.log(2);
 
     const schedules = computed(() => store.getters.schedules);
+    console.log(schedules.value);
     const scheduleDate = [];
 
     for (let i = 0; i < schedules.value.length; i += 1) {
@@ -58,9 +61,6 @@ export default {
       }
     }
 
-    // onMounted(() => {
-    //   fetchSchedules();
-    // });
     return {
       scheduleDate,
       fetchSchedules,
@@ -82,9 +82,6 @@ export default {
   },
   mounted() {
     this.init();
-  },
-  created() {
-    this.fetchSchedules();
   },
   methods: {
     init() {

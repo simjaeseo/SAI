@@ -86,8 +86,8 @@ export default {
       commit('SET_DATE', date);
       dispatch('fetchDaySchedules', date);
     },
-    fetchSchedules({ commit, getters }) {
-      axios({
+    async fetchSchedules({ commit, getters }) {
+      await axios({
         url: drf.schedule.schedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
