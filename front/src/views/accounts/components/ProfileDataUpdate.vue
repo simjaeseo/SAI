@@ -316,6 +316,7 @@ export default {
       }
     };
     const userUpdate = () => {
+      console.log('엥?');
       const data = {
         id: currentUser.value.id,
         campus: {
