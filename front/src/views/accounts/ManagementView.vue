@@ -57,7 +57,8 @@
     </div>
     <div class="container">
       <div class="row">
-        <div v-if="studentData.studentName" id="student-profile">
+        <div v-if="studentData.studentName" id="student-profile"
+        class="col-4">
           <img v-if="studentData.img" id='user_profile_img'
           :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
           <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
@@ -84,7 +85,8 @@
             </li>
           </div>
         </div>
-        <div v-if="studentData.studentName" id="student-profile2">
+        <div v-if="studentData.studentName" id="student-profile2"
+        class="col-8">
         <carousel :nav="false" :dots="false" class="marginTop50">
           <div class="card mt-4" style="width: 16.792rem;"
           v-for="(video, index) in userVideo" :key="index">
@@ -293,7 +295,6 @@ h5 {
   background-color: #5c6ac40c;
   border-radius: 10px;
   height: 750px;
-  width: 860px;
   margin-left: 30px;
 }
 h6 {
