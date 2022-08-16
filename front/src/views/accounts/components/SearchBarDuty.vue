@@ -38,12 +38,6 @@
         </li>
       </ul>
       <div v-if="selectedCountry">
-        <!-- <p v-for="country in selectedCountries" :key="country" class='btn'
-        id='selected-item'
-        @keydown="selectedDeleteItem(country.name)"
-        @click="[selectedDeleteItem(country.name), deleteplus(country.name)]">
-        {{ country.name }}</p> -->
-
         <p v-for="(user, index) in Jobs" :key="index" class='btn'
         id='selected-item'
         @click="selectedDeleteItem2(user)"
@@ -58,7 +52,6 @@
 import {
   ref,
   computed,
-  // onBeforeMount,
 } from 'vue';
 import { useStore } from 'vuex';
 import countries from '@/data/duty.json';
@@ -67,20 +60,13 @@ export default {
   name: 'SearchBar',
   setup() {
     const store = useStore();
-    const plusJob = [];
+    let plusJob = [];
     const isLoggedIn = computed(() => store.getters.isLoggedIn);
     const currentUser = computed(() => store.getters.currentUser);
-    const Jobs = computed(() => store.getters.userJob);
+    // eslint-disable-next-line
+    const Jobs = computed(() => [...new Set(store.getters.userJob.map(JSON.stringify))].map(JSON.parse));
     const searchTerm = ref('');
 
-    // const Jobs = [];
-    // onBeforeMount(() => {
-    //   Job.value.forEach((el) => {
-    //     if (!Jobs.includes(el)) {
-    //       Jobs.push(el);
-    //     }
-    //   });
-    // });
     const searchCountries = computed(() => {
       if (searchTerm.value === '') {
         return [];
@@ -113,6 +99,7 @@ export default {
       store.dispatch('newJob', {
         plusJob,
       });
+      plusJob = [];
     };
     const deleteplus = function (event) {
       console.log(event);
@@ -144,25 +131,18 @@ export default {
   methods: {
     selectedDeleteItem(event) {
       this.deleteItem = event;
-      for (let i = 0; i < this.selectedCountries.length; i += 1) {
-        if (this.selectedCountries[i].name === this.deleteItem) {
-          this.selectedCountries.splice(i, 1);
-          i -= 1;
-        } this.$forceUpdate();
-      }
+      const index = this.selectedCountries.findIndex((item) => item.name === this.deleteItem);
+      this.selectedCountries.splice(index, 1);
+      this.$forceUpdate();
     },
     selectedDeleteItem2(event) {
       console.log(event.name);
-      const data = event.name;
-      console.log(data);
-      for (let i = 0; i < this.Jobs.length; i += 1) {
-        console.log(this.Jobs[i].name);
-        if (this.Jobs[i].name === data) {
-          this.Jobs.splice(i, 1);
-          i -= 1;
-        } this.$forceUpdate();
-      }
+      const dataIndex = this.Jobs.findIndex((item) => item.name === event.name);
+      console.log(dataIndex);
+      this.Jobs.splice(dataIndex, 1);
+      this.$forceUpdate();
       const newJobs = JSON.parse(JSON.stringify(this.Jobs));
+      console.log(newJobs);
       this.$store.dispatch('updateJob', newJobs);
     },
   },

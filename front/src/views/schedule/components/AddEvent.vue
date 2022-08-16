@@ -10,7 +10,7 @@
       </select-CT>
       <button
       class="btn"
-      @click.prevent="pickMyConsultant(null), forceRerenderSelectCT()"
+      @click.prevent="pickMyConsultant(''), forceRerenderSelectCT()"
       :style="[Credential.selectedConsultant == '' ?
       {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
         개인 일정

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { uniq } from 'lodash';
 import drf from '@/api/api';
+// eslint-disable-next-line
 import router from '@/router/index';
 
 export default {
@@ -107,8 +108,10 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          dispatch('fetchCurrentUser', res.data.data.id);
-          router.push({ name: 'Main' });
+          console.log(0);
+          dispatch('fetchCurrentUser', res.data.data.id).then(() => {
+            router.push({ name: 'Main' });
+          });
         })
         .catch(() => {
           alert('아이디와 비밀번호를 확인해주세요.');
@@ -130,16 +133,21 @@ export default {
           alert('올바르지 않은 요청입니다. 회원가입을 다시 시도하세요.');
         });
     },
-    fetchCurrentUser({ getters, commit, dispatch }, userid) {
+    async fetchCurrentUser({ getters, commit, dispatch }, userid) {
+      console.log(1);
       if (getters.isLoggedIn) {
-        axios({
+        await axios({
           url: drf.member.currentUserInfo(userid),
           method: 'get',
           header: getters.authHeader,
         })
           .then((res) => {
+            console.log(2);
             commit('SET_CURRENT_USER', res.data.data);
+            console.log(3);
             dispatch('fetchMyConsultants');
+            console.log(getters.currentUser);
+            console.log(4);
           })
           .catch((err) => {
             console.log(err);
@@ -153,6 +161,7 @@ export default {
       })
         .then((res) => {
           console.log('동영상가져와요');
+          console.log(res);
           commit('SET_USER_VIDEO', res.data.data);
         });
     },
@@ -167,6 +176,7 @@ export default {
         .then(() => {
           dispatch('removeToken');
           commit('REMOVE_CURRENT_USER');
+          commit('RESET_SCHEDULE_STATE');
           alert('로그아웃 되었습니다.');
           router.push({ name: 'Login' });
         })
@@ -175,6 +185,7 @@ export default {
         });
     },
     changePassword({ getters, dispatch }, credential) {
+      console.log(credential);
       axios({
         url: drf.member.updatePassword(),
         method: 'post',
@@ -185,8 +196,8 @@ export default {
           alert('비밀번호가 변경되었습니다. 로그인창으로 이동합니다.');
           dispatch('logout');
         })
-        .catch(() => {
-          alert('오류발생');
+        .catch((err) => {
+          console.log(err);
         });
     },
     signupformCT({ dispatch }, credentials) {
