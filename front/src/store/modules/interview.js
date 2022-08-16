@@ -7,11 +7,13 @@ export default {
     questionList: {},
     selectedQuestionList: [],
     videoDetail: [],
+    customQuestionList: [],
   },
   getters: {
     questionList: (state) => state.questionList,
     selectedQuestionList: (state) => state.selectedQuestionList,
     videoDetail: (state) => state.videoDetail,
+    customQuestionList: (state) => state.customQuestionList,
   },
   mutations: {
     SET_QUESTION_LIST(state, questionList) {
@@ -22,6 +24,9 @@ export default {
     },
     SET_VIDEO_DEATIL(state, videoDetail) {
       state.videoDetail = videoDetail;
+    },
+    SET_CUSTOM_QUESTION_LIST(state, customQuestionList) {
+      state.customQuestionList = customQuestionList;
     },
   },
   actions: {
@@ -49,6 +54,17 @@ export default {
           console.log('getVideoDetail');
           console.log(res.data.data);
           commit('SET_VIDEO_DEATIL', res.data.data);
+        });
+    },
+    fetchCustomQuestionList({ commit, getters }) {
+      axios({
+        url: drf.interview.customQuestionList(getters.currentUser.id),
+        method: 'get',
+        header: getters.authHeader,
+      })
+        .then((res) => {
+          console.log(res.data);
+          commit('SET_CUSTOM_QUESTION_LIST', res.data.data);
         });
     },
   },
