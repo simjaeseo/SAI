@@ -71,7 +71,6 @@ export default {
         header: getters.authHeader,
       })
         .then((res) => {
-          console.log(res.data);
           commit('SET_CUSTOM_QUESTION_LIST', res.data.data);
         });
     },
