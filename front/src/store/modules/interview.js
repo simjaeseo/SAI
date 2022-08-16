@@ -49,6 +49,7 @@ export default {
         });
     },
     getVideoDetail({ commit }, params) {
+      console.log('??');
       axios({
         url: drf.interview.getVideoDetail(params[0], params[1]),
         method: 'get',
