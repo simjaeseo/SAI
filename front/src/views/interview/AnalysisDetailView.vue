@@ -24,10 +24,10 @@
         <div id="stt">답변 내용</div>
       </router-link>
     </div> -->
-    <div class="box" v-for="(video, index) in videoDetail" :key="index">
+    <div class="box">
       <div class="left">
         <video class="mb-3" controls width="460">
-          <source src="video.videoUrl"
+          <source :src="this.videoUrl"
                   type="video/mp4">
           <track src="captions_en.vtt" kind="captions" srclang="en" label="english_captions">
         </video>
@@ -37,7 +37,12 @@
             질문
           </button>
           <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-            <li>
+            <li @click="this.emotionRatio=video.emotionRatio,
+            this.stt=video.stt,
+            this.videoUrl=video.videoUrl,
+            this.wrongPostureCount=video.wrongPostureCount"
+            v-for="(video, index) in videoDetail" :key="index"
+            @keydown.enter="s">
               <a class="dropdown-item">{{ video.usedInterviewQuestion.question }}</a>
             </li>
           </ul>
@@ -54,11 +59,15 @@
       <div class="right">
         <div class="mb-3">
           <p>표정</p>
-          <div class="graph"></div>
+          <div class="graph">
+            {{ this.emotionRatio }}
+          </div>
         </div>
         <div class="mb-3">
           <p>머리 움직임</p>
-          <div class="graph"></div>
+          <div class="graph">
+            {{ this.wrongPostureCount }}
+          </div>
         </div>
         <div class="mb-3">
           <p>음성 크기</p>
@@ -66,7 +75,10 @@
         </div>
         <div class="mb-3">
           <p>STT</p>
-          <div class="graph"></div>
+          <div class="graph">
+            {{ this.stt }}
+            {{ this.videoUrl }}
+          </div>
         </div>
       </div>
     </div>
@@ -95,10 +107,16 @@ export default {
       getVideoDetail,
     };
   },
-  // data() {
-  //   return {
-  //     index: $route.params.index,
-  //   };
+  data() {
+    return {
+      videoUrl: '',
+      stt: '',
+      emotionRatio: 0,
+      wrongPostureCount: 0,
+    };
+  },
+  // methods: {
+  //   dataChange(),
   // },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
