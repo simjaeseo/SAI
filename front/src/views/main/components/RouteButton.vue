@@ -7,7 +7,7 @@
           <div>
             <!-- <h3>{{ upcomingSchedules[0].category }}</h3> -->
               <div v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
-                <h5>
+                <h5 v-if="upcomingSchedule.scheduleDate === myToday">
                   <!-- {{ this.myToday.slice(5, 7) }} {{ this.myToday.slice(-2)}} -->
                   {{ upcomingSchedule.startTime }}
                   {{ upcomingSchedule.consultantName }}

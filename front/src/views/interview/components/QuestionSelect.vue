@@ -40,6 +40,8 @@
             <div>{{ questionList.length }}개의 질문</div>
             <button class="question-btn" data-bs-toggle="button" autocomplete="off"
             v-for="(data, i) in questionList" :key="i"
+            :style="[selectedQuestionList.includes(data.question) == '' ?
+            {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
             @click="selectQuestion(data)">
               {{ data.question }}</button>
             <div v-if="selectedQuestionList">
@@ -49,12 +51,22 @@
           </div>
         </div>
         <div class="box4" v-show="selected=='myQuestion'">
-          <div class="d-flex">
-            <input type="text" class='form-control'
-            v-model="myQuestion"
-            @keydown.enter="addQuestion()"
-            aria-labelledby="myQuestion">
-            <button id="double-check-btn" @click="addQuestion()">등록</button>
+          <div>
+            <div class="d-flex">
+              <input type="text" class='form-control'
+              v-model="myQuestion"
+              @keydown.enter="addQuestion()"
+              aria-labelledby="myQuestion">
+              <button id="double-check-btn" @click="addQuestion()">등록</button>
+            </div>
+            <div v-for="myQ in myQuestionList" :key="myQ">
+              <button class="question-btn" data-bs-toggle="button" autocomplete="off"
+              :style="[selectedQuestionList.includes(myQ) == '' ?
+              {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
+              @click="selectMyQuestion(myQ)">
+                {{ myQ }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -103,6 +115,7 @@ export default {
       selected: '',
       selectedQuestionList: [],
       myQuestion: '',
+      myQuestionList: [],
 
       OV: undefined,
       session: undefined,
@@ -137,9 +150,21 @@ export default {
       } else {
         this.selectedQuestionList.push(data.question);
       }
+      console.log(this.selectedQuestionList);
+    },
+    selectMyQuestion(data) {
+      const index = this.selectedQuestionList.indexOf(data, 0);
+      if (index >= 0) {
+        this.selectedQuestionList.splice(index, 1);
+      } else {
+        this.selectedQuestionList.push(data);
+      }
+      console.log(this.selectedQuestionList);
     },
     addQuestion() {
+      console.log(this.myQuestion);
       this.selectedQuestionList.push(this.myQuestion);
+      this.myQuestionList.push(this.myQuestion);
       this.clearInput();
     },
     clearInput() {
