@@ -79,6 +79,7 @@
           <ul :nav="false" :dots="false" class="marginTop50">
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
+            <router-link :to="{ name : 'AnalysisDetail', params: { index : index}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
@@ -95,6 +96,7 @@
                 <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
                 <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
               </div>
+            </router-link>
             </li>
           </ul>
         </div>
@@ -164,6 +166,11 @@ export default {
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
+  },
+  methods: {
+    showDetail(video) {
+      console.log(video);
+    },
   },
 };
 </script>
