@@ -37,5 +37,8 @@ export default {
     deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
     customQuestion: () => `${HOST + INTERVIEW}customQuestion/create`,
     customQuestionDelete: (QID) => `${HOST + INTERVIEW}customQuestion/delete/${QID}`,
+    customQuestionList: (id) => `${HOST + INTERVIEW}customQuestion/list/${id}`,
+    // 비디오 가져오기
+    videoDetailPage: (memberId, videoId) => `${HOST + INTERVIEW}${memberId}/request/${videoId}`,
   },
 };

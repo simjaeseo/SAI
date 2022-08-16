@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="max-w-xs relative space-y-3">
+    <div class="max-w-xs relative space-y-3 mt-2">
       <label
         for="search"
         class="text-gray-900"

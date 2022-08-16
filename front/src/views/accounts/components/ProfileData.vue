@@ -7,7 +7,7 @@
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
           <img v-else
-          :src="`https://i7c206.p.ssafy.io/img/${currentUser.profilePicture.fileName}`"
+          :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
           id='user_img' alt="profile">
         </div>
         <!-- 프로필인적사항 -->
@@ -43,30 +43,27 @@
     </div>
     <!-- 관심기업/직무 -->
     <div class="mt-5">
-        <p class="pb-5">{{ currentUser.name }}님의
+        <p>{{ currentUser.name }}님의
           {{ currentUser.interestedEnterprises.length }}개의 관심기업 &#128064;</p>
           <div v-if="currentUser.interestedEnterprises.length">
             <div id="personal-caro-box" class="mt-5 mb-5">
               <div id='personal-video-box'>
-                <div id="carouselExampleControlsNoTouching" class="carousel slide"
-                  data-bs-touch="false" data-bs-interval="false">
-                  <div class="carousel-inner">
-                    <div class="carousel-item active" id="caro"
-                    v-for="(enter, index) in currentUser.interestedEnterprises" :key="index">
-                      <img :src="require(`@/assets/enter/${enter.enterpriseName}.jpg`)"
-                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
-                      <h5>{{ enter.enterpriseName }}</h5>
+                <Carousel :autoplay="2000">
+                  <Slide v-for="enter in currentUser.interestedEnterprises" :key="enter">
+                    <div class="carousel__item">
+                    <img :src="require(`@/assets/enter/${enter.enterpriseName}.jpg`)"
+                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                      {{ slide }}
+                      <div>
+                        {{ enter.enterpriseName }}
+                      </div>
                     </div>
-                  </div>
-                  <button class="carousel-control-prev" type="button"
-                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-                    <span id="next">&#60;</span>
-                  </button>
-                  <button class="carousel-control-next" type="button"
-                  data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-                    <span id="next">&#62;</span>
-                  </button>
-                </div>
+                  </Slide>
+                  <template #addons>
+                    <Navigation />
+                    <Pagination />
+                  </template>
+                </Carousel>
               </div>
             </div>
           </div>
@@ -75,6 +72,7 @@
           </div>
     </div>
     <!-- 개인 동영상 -->
+    {{ userVideo }}
     <div class="mt-5 pt-5">
       <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
       <div class="box">
@@ -82,6 +80,7 @@
           <ul :nav="false" :dots="false" class="marginTop50">
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
+            <router-link :to="{ name: 'AnalysisDetail', params: { videoid: `${ video.id }`}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
@@ -98,6 +97,7 @@
                 <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
                 <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
               </div>
+            </router-link>
             </li>
           </ul>
         </div>
@@ -138,18 +138,18 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-// import {
-//   Carousel, Slide, Pagination, Navigation,
-// } from 'vue3-carousel';
-// import 'vue3-carousel/dist/carousel.css';
+import {
+  Carousel, Slide, Pagination, Navigation,
+} from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
   name: 'ProfileView',
   components: {
-    // Carousel,
-    // Slide,
-    // Pagination,
-    // Navigation,
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
   },
   setup() {
     const store = useStore();
@@ -423,6 +423,7 @@ p {
     background-color: #5c6ac40c;
     text-align: start;
     border-radius: 10px;
+    height: 100%;
 }
 #profile_image_box {
   text-align: center;
@@ -485,4 +486,26 @@ body {margin: 10px}
   border: 0;
 }
 
+/* 캐러셀 */
+.carousel__item {
+  min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel__slide {
+  padding: 10px;
+}
+
+.carousel__prev,
+.carousel__next {
+  box-sizing: content-box;
+  background: white;
+  border: 5px solid white;
+}
+
+.carousel__pagination {
+  padding: 0;
+}
 </style>

@@ -197,6 +197,7 @@ export default {
       isStart: false,
       question: '',
       questions: [],
+      questionsTTS: [],
       isFinished: false,
       myConfirms: false,
       ctConfirms: false,
@@ -214,6 +215,7 @@ export default {
   setup() {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
+    const selectedQuestionListTTS = computed(() => store.getters.selectedQuestionListTTS);
     const currentUser = computed(() => store.getters.currentUser);
     const consultants = computed(() => store.getters.myConsultants);
 
@@ -300,6 +302,7 @@ export default {
 
     return {
       selectedQuestionList,
+      selectedQuestionListTTS,
       currentUser,
       consultants,
       countOutput,
@@ -307,9 +310,10 @@ export default {
     };
   },
   created() {
-    console.log(this.selectedQuestionList);
     this.questions = this.selectedQuestionList;
+    this.questionsTTS = this.selectedQuestionListTTS;
     this.savedQ = Object.values(this.selectedQuestionList);
+    this.savedQTTS = Object.values(this.selectedQuestionListTTS);
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
@@ -333,6 +337,7 @@ export default {
           wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
+          questionsTTS: this.savedQTTS,
           emotionRatio: this.emotionRatio,
         },
       })
@@ -367,6 +372,7 @@ export default {
       this.isRecording = true;
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      this.questionTTS = this.questionsTTS.shift();
       console.log(this.questions);
       this.preWrongCount = this.countOutput().count;
       this.happy = 0;
@@ -386,7 +392,7 @@ export default {
         window.speechSynthesis.speak(speechMsg);
       }
 
-      speak(this.question, {
+      speak(this.questionTTS, {
         rate: 0.9,
         pitch: 0.5,
         lang: 'ko-KR',
@@ -408,7 +414,12 @@ export default {
       const tmp = this.countOutput().count;
       this.isRecording = false;
       this.wrongPostureCount.push(tmp - this.preWrongCount);
-      this.emotionRatio.push(this.happy / this.emotionCount);
+      if (this.happy / this.emotionCount) {
+        this.emotionRatio.push(this.happy / this.emotionCount);
+      } else {
+        this.emotionRatio.push(0);
+      }
+      console.log(this.emotionRatio);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,

@@ -103,7 +103,8 @@
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
               <router-link to="room">
                 <button class="start-btn"
-                @click="selectQuestionList(selectedQuestionList)">시작하기</button>
+                @click="selectQuestionList(selectedQuestionList),
+                selectQuestionListTTS(selectedQuestionListTTS)">시작하기</button>
               </router-link>
             </div>
           </div>
@@ -126,6 +127,7 @@ export default {
     return {
       selected: '',
       selectedQuestionList: [],
+      selectedQuestionListTTS: [],
       myQuestion: '',
       myQuestionList: [],
 
@@ -142,6 +144,7 @@ export default {
   setup() {
     const store = useStore();
 
+    const customQuestionList = computed(() => store.getters.customQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
     const authHeader = computed(() => store.getters.authHeader);
 
@@ -149,12 +152,17 @@ export default {
     const fetchQuestionList = (params) => {
       store.dispatch('fetchQuestionList', params);
     };
+    const fetchCustomQuestionList = () => {
+      store.dispatch('fetchCustomQuestionList');
+    };
+
+    fetchCustomQuestionList();
+    console.log(customQuestionList.value);
+
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
+    const selectQuestionListTTS = (data) => store.commit('SET_SELECTED_QUESTION_LIST_TTS', data);
 
     const registMyQuestion = (myQuestion) => {
-      // console.log(myQuestion);
-      // console.log(currentUser.value.id);
-      // console.log(authHeader.value);
       axios({
         url: drf.interview.customQuestion(),
         method: 'post',
@@ -163,10 +171,7 @@ export default {
           memberId: currentUser.value.id,
         },
         header: authHeader.value,
-      })
-        .then((res) => {
-          console.log(res);
-        });
+      });
     };
 
     return {
@@ -175,6 +180,8 @@ export default {
       selectQuestionList,
       currentUser,
       registMyQuestion,
+      customQuestionList,
+      selectQuestionListTTS,
     };
   },
   computed() {},
@@ -183,21 +190,23 @@ export default {
       const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.selectedQuestionListTTS.splice(index, 1);
         this.isSelected = false;
       } else {
         this.selectedQuestionList.push(data.question);
+        this.selectedQuestionListTTS.push(data.tts);
         this.isSelected = true;
       }
-      console.log(this.selectedQuestionList);
     },
     selectMyQuestion(data) {
       const index = this.selectedQuestionList.indexOf(data, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.selectedQuestionListTTS.splice(index, 1);
       } else {
         this.selectedQuestionList.push(data);
+        this.selectedQuestionListTTS.push(data);
       }
-      console.log(this.selectedQuestionList);
     },
     addQuestion() {
       this.selectedQuestionList.push(this.myQuestion);

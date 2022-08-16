@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@teachablemachine/pose": "^0.8.6",
+    "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-converter": "^3.19.0",
     "@tensorflow/tfjs-core": "^3.19.0",
-    "@tensorflow/tfjs-node": "^3.19.0",
     "axios": "^0.27.2",
     "canvas": "^2.9.3",
     "core-js": "^3.8.3",
@@ -26,11 +26,11 @@
     "vue": "^3.2.13",
     "vue-next-select": "^2.10.4",
     "vue-router": "^4.0.13",
+    "vue3-carousel": "^0.1.46",
     "vue3-toggle-button": "^1.0.0",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0",
-    "webstomp-client": "^1.2.6",
-    "vue3-carousel": "^0.1.46"
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

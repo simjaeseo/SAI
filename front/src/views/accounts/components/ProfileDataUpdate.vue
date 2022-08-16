@@ -7,10 +7,10 @@
             <div id='profile_image_box' class='col-sm-2'>
               <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
               id='user_profile_img'>
-              <img v-else-if="currentUser.profilePicture"
-              :src="`https://i7c206.p.ssafy.io/img/${currentUser.profilePicture.fileName}`"
+              <!-- <img v-else-if="currentUser.profilePicture"
+              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
               alt="preview"
-              id='user_profile_img'>
+              id='user_profile_img'> -->
               <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
@@ -25,7 +25,7 @@
                     <p id='data-name'>이름</p>
                     <p id="user-data">{{ currentUser.name }}</p>
                     <p id='data-name'>소속</p><br>
-                    <select class='form-select mb-2' id='form-select-cardinal-number'
+                    <select class='form-select mt-2 mb-2' id='form-select-cardinal-number'
                     aria-label='Default select example'>
                         <option selected disabled>
                         {{ currentUser.year}}기</option>
@@ -44,7 +44,7 @@
                       <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select><br>
                     <p id='data-name'>연락처</p><br>
-                    <select class='form-select' id='form-select-first'
+                    <select class='form-select mt-2' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
                         <option value='2'>011</option>
@@ -106,7 +106,7 @@
                       <button type="button" class="btn" id='cancel-btn2'
                       data-bs-dismiss="modal">닫기</button>
                       <button type="button" class="btn" id='update-btn2'
-                      aria-label="Close" data-bs-dismiss="modal" @click="trigger"
+                      aria-label="Close" data-bs-dismiss="modal"
                       >확인</button>
                     </div>
                   </div>
@@ -114,27 +114,25 @@
               </div>
             </div>
             <div v-if="Enters.length" id='personal-video-box' class="mt-5">
-              <div id="myCarousel" class="carousel slide"
-              data-bs-touch="false" data-bs-interval="false">
-                <div class="carousel-inner mb-5">
-                  <div class="carousel-item active" id="caro"
-                  v-for="(enter, index) in Enters" :key="index">
-                    <div class="d-block"></div>
-                    <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
-                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
-                    <h5>{{ enter.name }}</h5>
-                  </div>
+              <div id="personal-caro-box" class="mt-5 mb-5">
+                <div id='personal-video-box'>
+                  <Carousel :autoplay="2000">
+                    <Slide v-for="enter in Enters" :key="enter">
+                      <div class="carousel__item">
+                      <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
+                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                        {{ slide }}
+                        <div>
+                          {{ enter.name }}
+                        </div>
+                      </div>
+                    </Slide>
+                    <template #addons>
+                      <Navigation />
+                      <Pagination />
+                    </template>
+                  </Carousel>
                 </div>
-                <button class="carousel-control-prev" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="prev">
-                  <span id="next">&#60;</span>
-                </button>
-                <button class="carousel-control-next" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="next"
-                id="next-btn" @click="trigger"
-                >
-                  <span id="next">&#62;</span>
-                </button>
               </div>
             </div>
             <div v-else>
@@ -218,9 +216,9 @@
 </template>
 
 <script>
-// import {
-//   Carousel, Slide, Pagination, Navigation,
-// } from 'vue3-carousel';
+import {
+  Carousel, Slide, Pagination, Navigation,
+} from 'vue3-carousel';
 import {
   computed,
   reactive,
@@ -233,16 +231,16 @@ import _uniq from 'lodash/uniq';
 import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
-// import 'vue3-carousel/dist/carousel.css';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
   components: {
     SearchBarDuty,
     SearchBarUpdate,
-    // Carousel,
-    // Slide,
-    // Pagination,
-    // Navigation,
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
   },
   name: 'ProfileDataUpdate',
   setup() {
@@ -265,13 +263,6 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const userVideo = computed(() => store.getters.userVideo);
     let img = null;
-    const trigger = function () {
-      if (Enters.value.length) {
-        for (let i = 0; i < currentUser.value.interestedEnterprises.length + 1; i += 1) {
-          document.getElementById('next').click();
-        }
-      }
-    };
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
@@ -325,7 +316,6 @@ export default {
       }
     };
     const userUpdate = () => {
-      console.log('엥?');
       const data = {
         id: currentUser.value.id,
         campus: {
@@ -377,14 +367,10 @@ export default {
       selectedUserClass,
       userVideo,
       deletePersonalVideo,
-      trigger,
     };
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
-  },
-  mounted() {
-    this.trigger();
   },
 };
 </script>
@@ -775,7 +761,7 @@ p {
 #personal-data-box1 {
     background-color: #5c6ac40c;
     text-align: start;
-    height: 230px;
+    height: 100%;
     border-radius: 10px;
 }
 #profile_image_box {
@@ -839,4 +825,25 @@ body {margin: 10px}
   border: 0;
 }
 
+/* 캐러셀 */
+.carousel__item {
+  min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel__slide {
+  padding: 10px;
+}
+
+.carousel__prev,
+.carousel__next {
+  box-sizing: content-box;
+  background: white;
+  border: 5px solid white;
+}
+.carousel__pagination {
+  padding: 0;
+}
 </style>
