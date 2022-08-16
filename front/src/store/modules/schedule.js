@@ -31,6 +31,15 @@ export default {
         state.selectedDate = false;
       }
     },
+    RESET_SCHEDULE_STATE(state) {
+      state.selectedDate = null;
+      state.endTime = null;
+      state.schedules = [];
+      state.upcomingSchedules = [];
+      state.myConsultants = [];
+      state.CTDaySchedules = [];
+      state.daySchedules = [];
+    },
     RESET_DATE(state) {
       state.selectedDate = null;
     },
@@ -51,9 +60,7 @@ export default {
       state.schedules = schedules;
     },
     SET_UPCOMING_SCHEDULES(state, upcomingSchedules) {
-      console.log('!!!!');
       state.upcomingSchedules = upcomingSchedules;
-      console.log(state.upcomingSchedules);
     },
     SET_MY_CONSULTANTS(state, myConsultants) {
       state.myConsultants = myConsultants;
@@ -79,8 +86,8 @@ export default {
       commit('SET_DATE', date);
       dispatch('fetchDaySchedules', date);
     },
-    fetchSchedules({ commit, getters }) {
-      axios({
+    async fetchSchedules({ commit, getters }) {
+      await axios({
         url: drf.schedule.schedule(getters.currentUser.id),
         method: 'get',
         headers: getters.authHeader,
