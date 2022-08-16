@@ -1,29 +1,30 @@
 <template>
   <div class="container">
-    <h1>ㅇㅇㅇ님의 분석 결과</h1>
-    <div class="d-flex align-items-center bar">
-        <router-link to="/analysis/detail">
-          <div id="detail">세부 분석</div>
-          <!-- <p> {{ userVideo[$route.params.index].id }}</p> -->
-        </router-link>
-    </div>
-    <!-- <div class="d-flex align-items-center detail-bar">
-      <router-link to="/analysis/detail">
-        <div class="selected" id="sight">시선 처리</div>
-      </router-link>
-      <router-link to="/analysis/detail/head">
-        <div id="head">머리 움직임</div>
-      </router-link>
-      <router-link to="/analysis/detail/pitch">
-        <div id="pitch">음성 높낮이</div>
-      </router-link>
-      <router-link to="/analysis/detail/volume">
-        <div id="volume">음성 크기</div>
-      </router-link>
-      <router-link to="/analysis/detail/stt">
-        <div id="stt">답변 내용</div>
-      </router-link>
-    </div> -->
+    묶음
+    {{ userVideo }}
+    <hr>
+    개별비디오들
+    {{ setVideos }}
+    <hr>
+    비디오 주소
+    {{ videoArray }}
+    <hr>
+    오디오 주소
+    {{ audioArray }}
+    <hr>
+    피드백 결과
+    {{ isFeedBackCompleted }}
+    <hr>
+    stt
+    {{ sttArray }}
+    <hr>
+    티쳐블
+    {{ teachableArray }}
+    <hr>
+    질문들
+    {{ qArray }}
+    <h1>{{ currentUser.name }}님의 {{ videoId }} 번째 영상 분석 결과</h1>
+    <hr>
     <div class="box">
       <div class="left">
         <video class="mb-3" controls width="460">
@@ -86,6 +87,8 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import axios from 'axios';
+import drf from '@/api/api';
 
 export default {
   name: 'ProfileView',
@@ -111,14 +114,36 @@ export default {
       stt: '',
       emotionRatio: 0,
       wrongPostureCount: 0,
+      setVideos: null,
+      videoId: null,
+      videoArray: [],
+      audioArray: [],
+      isFeedBackCompleted: [],
+      sttArray: [],
+      teachableArray: [],
+      qArray: [],
     };
   },
-  // methods: {
-  //   dataChange(),
-  // },
   created() {
+    this.videoId = this.$route.params.videoid;
+    console.log(this.videoId);
     this.$store.dispatch('getUserVideo', this.currentUser.id);
-    this.getVideoDetail([this.currentUser.id, this.userVideo[this.$route.params.index].id]);
+    axios({
+      url: drf.interview.videoDetailPage(this.currentUser.id, this.videoId),
+      method: 'get',
+    })
+      .then((res) => {
+        console.log(res.data.data);
+        this.setVideos = JSON.parse(JSON.stringify(res.data.data));
+        for (let i = 0; i < res.data.data[0].videoUrl.length; i += 1) {
+          this.videoArray.push(JSON.parse(JSON.stringify(res.data.data[i].videoUrl)));
+          this.audioArray.push(JSON.parse(JSON.stringify(res.data.data[i].audioUrl)));
+          this.isFeedBackCompleted = JSON.parse(JSON.stringify(res.data.data[i].feedback));
+          this.sttArray.push(JSON.parse(JSON.stringify(res.data.data[i].stt)));
+          this.teachableArray.push(JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount)));
+          this.qArray.push(JSON.parse(JSON.stringify(res.data.data[i].usedInterviewQuestion)));
+        }
+      });
   },
 };
 </script>
