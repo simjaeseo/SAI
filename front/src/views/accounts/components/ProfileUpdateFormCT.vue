@@ -68,7 +68,9 @@
 
         <!-- 버튼 -->
         <div id='btn-box'>
-            <button class='btn' id='cancel-btn'>취소</button>
+          <router-link :to="{ name: 'Main' }">
+            <button class='btn' id='cancel-btn' type="button">취소</button>
+          </router-link>
             <button class='btn'
             type='submit'
             id='update-btn'>완료</button>

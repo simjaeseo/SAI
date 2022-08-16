@@ -218,6 +218,9 @@
 </template>
 
 <script>
+// import {
+//   Carousel, Slide, Pagination, Navigation,
+// } from 'vue3-carousel';
 import {
   computed,
   reactive,
@@ -230,9 +233,17 @@ import _uniq from 'lodash/uniq';
 import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
+// import 'vue3-carousel/dist/carousel.css';
 
 export default {
-  components: { SearchBarDuty, SearchBarUpdate },
+  components: {
+    SearchBarDuty,
+    SearchBarUpdate,
+    // Carousel,
+    // Slide,
+    // Pagination,
+    // Navigation,
+  },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
@@ -314,6 +325,7 @@ export default {
       }
     };
     const userUpdate = () => {
+      console.log('엥?');
       const data = {
         id: currentUser.value.id,
         campus: {
