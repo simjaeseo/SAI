@@ -21,11 +21,12 @@
                 <p>상세 정보 : {{ upcomingSchedule.detail }}</p>
                 <router-link to='/interview/ct' id='routerlink'>
                   <button
-                    v-if="this.myToday.slice(5, 7) === upcomingSchedule.scheduleDate.slice(5, 7)
-                    && this.myToday.slice(-2) === upcomingSchedule.scheduleDate.slice(-2)&&
-                    Number(Date().slice(15, 18)) == Number(upcomingSchedule.startTime.slice(0, 2))||
-                    Number(Date().slice(15, 18)) ==
-                    Number(upcomingSchedule.startTime.slice(0, 2) - 1)"
+                    v-if="(this.myToday.slice(5, 7) === upcomingSchedule.scheduleDate.slice(5, 7)
+                    && this.myToday.slice(-2) === upcomingSchedule.scheduleDate.slice(-2))&&
+                  (Number(Date().slice(15, 18)) == Number(upcomingSchedule.startTime.slice(0, 2))||
+                    (Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedule.startTime.slice(0, 2) - 1) &&
+                    Number(Date().slice(15, 18)) > 30))"
                     class="btn">
                       면접 바로가기
                   </button><br>
@@ -62,6 +63,7 @@ export default {
   },
   setup() {
     const store = useStore();
+    console.log(Date().slice(19, 21));
 
     const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
     return {

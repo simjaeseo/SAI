@@ -33,6 +33,7 @@ export default {
         header: getters.authHeader,
       })
         .then((res) => {
+          console.log(res);
           commit('SET_QUESTION_LIST', res.data);
         })
         .catch((err) => {
