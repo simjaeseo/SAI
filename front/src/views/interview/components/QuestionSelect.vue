@@ -142,6 +142,7 @@ export default {
   setup() {
     const store = useStore();
 
+    const customQuestionList = computed(() => store.getters.customQuestionList);
     const currentUser = computed(() => store.getters.currentUser);
     const authHeader = computed(() => store.getters.authHeader);
 
@@ -149,12 +150,16 @@ export default {
     const fetchQuestionList = (params) => {
       store.dispatch('fetchQuestionList', params);
     };
+    const fetchCustomQuestionList = () => {
+      store.dispatch('fetchCustomQuestionList');
+    };
+
+    fetchCustomQuestionList();
+    console.log(customQuestionList.value);
+
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
 
     const registMyQuestion = (myQuestion) => {
-      // console.log(myQuestion);
-      // console.log(currentUser.value.id);
-      // console.log(authHeader.value);
       axios({
         url: drf.interview.customQuestion(),
         method: 'post',
@@ -163,10 +168,7 @@ export default {
           memberId: currentUser.value.id,
         },
         header: authHeader.value,
-      })
-        .then((res) => {
-          console.log(res);
-        });
+      });
     };
 
     return {
@@ -175,6 +177,7 @@ export default {
       selectQuestionList,
       currentUser,
       registMyQuestion,
+      customQuestionList,
     };
   },
   computed() {},

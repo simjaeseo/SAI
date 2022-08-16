@@ -1,4 +1,4 @@
-const HOST = 'https://i7c206.p.ssafy.io:8081/';
+const HOST = 'http://localhost:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
@@ -35,5 +35,6 @@ export default {
     deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
     customQuestion: () => `${HOST + INTERVIEW}customQuestion/create`,
     customQuestionDelete: (QID) => `${HOST + INTERVIEW}customQuestion/delete/${QID}`,
+    customQuestionList: (id) => `${HOST + INTERVIEW}customQuestion/list/${id}`,
   },
 };
