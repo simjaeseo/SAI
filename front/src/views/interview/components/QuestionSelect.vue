@@ -124,11 +124,21 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
+<<<<<<< HEAD
               <router-link :to="{ name: 'InterviewRoom' }" v-if="selectedQuestionList.length > 0">
                 <button class="start-btn"
                 @click="selectQuestionList(selectedQuestionList),
                 selectQuestionListTTS(selectedQuestionListTTS)">시작하기</button>
               </router-link>
+=======
+                <button
+                v-if="selectedQuestionList.length > 0"
+                class="start-btn"
+                @click.prevent="selectQuestionList(selectedQuestionList),
+                selectQuestionListTTS(selectedQuestionListTTS),
+                routeToRoom()
+                ">시작하기</button>
+>>>>>>> 618883ca304cb8364d3730d8f1c15c745632e327
               <button v-else class="start-btn-disabled" disabled>시작하기</button>
             </div>
           </div>
@@ -141,6 +151,7 @@
 <script>
 import axios from 'axios';
 import drf from '@/api/api';
+import router from '@/router';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -210,6 +221,10 @@ export default {
         });
     };
 
+    const routeToRoom = () => {
+      router.push({ name: 'InterviewRoom' });
+    };
+
     return {
       questionList,
       currentUser,
@@ -220,6 +235,7 @@ export default {
       registMyQuestion,
       selectQuestionListTTS,
       deleteMyQuestion,
+      routeToRoom,
     };
   },
   methods: {
@@ -245,6 +261,7 @@ export default {
         this.selectedQuestionList.push(data);
         this.selectedQuestionListTTS.push(data);
       }
+      console.log(this.selectedQuestionListTTS);
     },
 
     clearInput() {
@@ -253,6 +270,7 @@ export default {
 
     addQuestion() {
       this.selectedQuestionList.push(this.myQuestion);
+      this.selectedQuestionListTTS.push(this.myQuestion);
       this.myQuestionList.push(this.myQuestion);
       this.fetchCustomQuestionList();
       this.clearInput();
