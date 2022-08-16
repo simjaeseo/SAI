@@ -72,6 +72,7 @@
           </div>
     </div>
     <!-- 개인 동영상 -->
+    {{ userVideo }}
     <div class="mt-5 pt-5">
       <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
       <div class="box">
@@ -79,6 +80,7 @@
           <ul :nav="false" :dots="false" class="marginTop50">
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
+            <router-link :to="{ name: 'AnalysisDetail', params: { videoid: `${ video.id }`}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
@@ -95,6 +97,7 @@
                 <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
                 <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
               </div>
+            </router-link>
             </li>
           </ul>
         </div>

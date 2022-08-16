@@ -145,7 +145,7 @@ const routes = [
     component: AnalysisComprehensiveView,
   },
   {
-    path: '/analysis/detail',
+    path: '/analysis/detail/:videoid',
     name: 'AnalysisDetail',
     component: AnalysisDetailView,
   },
