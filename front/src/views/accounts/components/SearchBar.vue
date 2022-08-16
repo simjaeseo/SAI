@@ -103,12 +103,11 @@ export default {
   methods: {
     selectedDeleteItem(event) {
       this.deleteItem = event;
-      for (let i = 0; i < this.selectedCountries.length; i += 1) {
-        if (this.selectedCountries[i].name === this.deleteItem) {
-          this.selectedCountries.splice(i, 1);
-          i -= 1;
-        }
-      } this.$forceUpdate();
+      console.log(this.deleteItem);
+      console.log(this.selectedCountries);
+      const index = this.selectedCountries.findIndex((item) => item.name === this.deleteItem);
+      this.selectedCountries.splice(index, 1);
+      this.$forceUpdate();
     },
   },
 };

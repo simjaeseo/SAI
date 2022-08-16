@@ -29,7 +29,8 @@
     "vue3-toggle-button": "^1.0.0",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0",
-    "webstomp-client": "^1.2.6"
+    "webstomp-client": "^1.2.6",
+    "vue3-carousel": "^0.1.46"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
