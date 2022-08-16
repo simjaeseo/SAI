@@ -208,7 +208,7 @@ export default {
       wrongPostureCount: [],
       preWrongCount: 0,
       emotionRatio: [],
-      happy: 0.0000000000000001,
+      happy: 0,
       emotionCount: 1,
     };
   },
