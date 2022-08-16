@@ -19,7 +19,7 @@ public class InterviewVideoResponse {
         videoId = interviewVideo.getId();
         videoUrl = interviewVideo.getVideoUrl();
         audioUrl = interviewVideo.getAudioUrl();
-        feedback = interviewVideo.getFeedback();
+        feedback = interviewVideo.getFeedback() == null ? "false" : interviewVideo.getFeedback();
         stt = interviewVideo.getStt();
         wrongPostureCount = interviewVideo.getWrongPostureCount();
         emotionRatio = interviewVideo.getEmotionRatio();
