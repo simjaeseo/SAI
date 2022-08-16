@@ -1,8 +1,8 @@
 <template>
   <div id='app'>
-    <div style="border-bottom: 1px solid #e9eef1;">
+    <div style="border-bottom: 1px solid #e9eef1;" v-if="isLoggedIn">
       <nav class="navbar navbar-light navbar-expand-lg sticky-top container pb-0 pt-0">
-          <router-link to='/'>
+          <router-link to='/main'>
             <img src="@/assets/logo8.png" alt="로고" id='logo-img'>
           </router-link>
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
@@ -19,7 +19,7 @@
             <div class="offcanvas-body">
               <ul class="navbar-nav justify-content-end flex-grow-1">
                 <li class="nav-item">
-                  <router-link to='/' id='dropdown-router'>
+                  <router-link to='/main' id='dropdown-router'>
                     <p id='dropdown-link-text-out'>HOME</p>
                   </router-link>
                 </li>
@@ -53,7 +53,7 @@
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보 수정</p></router-link>
                     </li>
-                    <li><router-link to='/schedule' id='dropdown-router'
+                    <li><router-link to='/scheduleCT' id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>일정관리</p></router-link>
                     </li>
@@ -64,7 +64,7 @@
                     <li>
                       <hr class="dropdown-divider">
                     </li>
-                    <li><router-link to='/login' id='dropdown-router'
+                    <li><router-link to='/' id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text' @click="logout()" @keyup="logout()">
                     로그아웃</p></router-link>
@@ -76,11 +76,11 @@
                   <span id='link-text'>JOB<br>SSAFY</span></a>
                 </div>
                 <div id='git'>
-                  <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='ssafy-git-link'>
+                  <a href="https://project.ssafy.com/login?returnPath=%2Fhome" target="_blank" id='ssafy-git-link'>
                   <span id='link-text2'>SSAFY<br>GIT</span></a>
                 </div>
                 <div id='most'>
-                  <a href="https://edu.ssafy.com/comm/login/SecurityJobLoginSSOForm.do" target="_blank" id='meeting-ssafy-link'>
+                  <a href="https://meeting.ssafy.com/" target="_blank" id='meeting-ssafy-link'>
                   <span id='link-text3'>Meeting!<br>SSAFY</span></a>
                 </div>
               </ul>
@@ -88,7 +88,7 @@
           </div>
       </nav>
     </div>
-    <div>
+    <!-- <div>
       <router-link to="/">Main</router-link> |
       <router-link to="/schedule">Schedule</router-link> |
       <router-link to="/scheduleCT">ScheduleCT</router-link> |
@@ -107,7 +107,7 @@
       <router-link to="/interview/ct">InterviewCt</router-link> |
       <router-link to="/analysis/comprehensive">AnalysisComprehensive</router-link> |
       <router-link to="/analysis/detail">AnalysisDetail</router-link>
-    </div>
+    </div> -->
   <router-view/>
   </div>
 </template>

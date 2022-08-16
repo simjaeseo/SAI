@@ -7,10 +7,10 @@
             <div id='profile_image_box' class='col-sm-2'>
               <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
               id='user_profile_img'>
-              <img v-else-if="currentUser.profilePicture"
+              <!-- <img v-else-if="currentUser.profilePicture"
               :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
               alt="preview"
-              id='user_profile_img'>
+              id='user_profile_img'> -->
               <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'
@@ -23,11 +23,9 @@
               <div class='row' id='personal-data-box2'>
                 <div class='col-lg-6'>
                     <p id='data-name'>이름</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.name"
-                    readonly @click="noChange"></label>
-                    <p id='data-name'>소속</p>
-                    <select class='form-select' id='form-select-cardinal-number'
+                    <p id="user-data">{{ currentUser.name }}</p>
+                    <p id='data-name'>소속</p><br>
+                    <select class='form-select mb-2' id='form-select-cardinal-number'
                     aria-label='Default select example'>
                         <option selected disabled>
                         {{ currentUser.year}}기</option>
@@ -44,8 +42,8 @@
                     required>
                       <option selected>{{ currentUser.campus.classNumber}}</option>
                       <option v-for='option in state.options' :key="option">{{option}}</option>
-                    </select>
-                    <p id='data-name'>연락처</p>
+                    </select><br>
+                    <p id='data-name'>연락처</p><br>
                     <select class='form-select' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
@@ -69,13 +67,9 @@
               <!-- 오른쪽 -->
                 <div class='col-lg-6'>
                     <p id='data-name'>생년월일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.birthday" readonly
-                    @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.birthday }}</p>
                     <p id='data-name'>이메일</p>
-                    <label for='user-update-name'><input type='text' id='user-update-name'
-                    class='form-control' v-model="currentUser.email" readonly
-                    @click="noChange"></label>
+                    <p id="user-data">{{ currentUser.email }}</p>
                     <p id='data-name'>관심직무</p>
                     <search-bar-duty></search-bar-duty>
                 </div>
@@ -86,7 +80,7 @@
         <div>
           <div id='personal-video-box1' class='container'>
             <div id='box1'>
-              <p id='for-inline' class="pb-5">
+              <p id='for-inline'>
                 {{ currentUser.name }}님의 {{ Enters.length }}개의 관심기업 &#128064;</p>
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -119,27 +113,26 @@
                 </div>
               </div>
             </div>
-            <div v-if="Enters.length" id='personal-video-box'>
-              <div id="myCarousel" class="carousel slide"
-              data-bs-touch="false" data-bs-interval="false">
-                <div class="carousel-inner mb-5">
-                  <div class="carousel-item active" id="caro"
-                  v-for="(enter, index) in Enters" :key="index">
-                    <div class="d-block"></div>
-                    <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
-                    class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
-                    <h5>{{ enter.name }}</h5>
-                  </div>
+            <div v-if="Enters.length" id='personal-video-box' class="mt-5">
+              <div id="personal-caro-box" class="mt-5 mb-5">
+                <div id='personal-video-box'>
+                  <Carousel :autoplay="2000">
+                    <Slide v-for="enter in Enters" :key="enter">
+                      <div class="carousel__item">
+                      <img :src="require(`@/assets/enter/${enter.name}.jpg`)"
+                      class="d-block mx-auto" alt="로고" style="width:300px; height:130px;">
+                        {{ slide }}
+                        <div>
+                          {{ enter.name }}
+                        </div>
+                      </div>
+                    </Slide>
+                    <template #addons>
+                      <Navigation />
+                      <Pagination />
+                    </template>
+                  </Carousel>
                 </div>
-                <button class="carousel-control-prev" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="prev">
-                  <span id="next">&#60;</span>
-                </button>
-                <button class="carousel-control-next" type="button"
-                data-bs-target="#myCarousel" data-bs-slide="next"
-                >
-                  <span id="next">&#62;</span>
-                </button>
               </div>
             </div>
             <div v-else>
@@ -224,6 +217,9 @@
 
 <script>
 import {
+  Carousel, Slide, Pagination, Navigation,
+} from 'vue3-carousel';
+import {
   computed,
   reactive,
   onBeforeMount,
@@ -235,9 +231,17 @@ import _uniq from 'lodash/uniq';
 import router from '@/router/index';
 import SearchBarDuty from './SearchBarDuty.vue';
 import SearchBarUpdate from './SearchBarUpdate.vue';
+import 'vue3-carousel/dist/carousel.css';
 
 export default {
-  components: { SearchBarDuty, SearchBarUpdate },
+  components: {
+    SearchBarDuty,
+    SearchBarUpdate,
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation,
+  },
   name: 'ProfileDataUpdate',
   setup() {
     const store = useStore();
@@ -259,7 +263,6 @@ export default {
     const currentUser = computed(() => store.getters.currentUser);
     const userVideo = computed(() => store.getters.userVideo);
     let img = null;
-
     onBeforeMount(() => {
       const userPhone = currentUser.value.phone;
       state.mobileFirst = userPhone.substr(0, 3);
@@ -292,7 +295,6 @@ export default {
     const selectedUserClass = function (event) {
       state.userClass = event.target.value;
     };
-
     const noChange = function () {
       alert('변경할 수 없는 값입니다.');
     };
@@ -374,6 +376,20 @@ export default {
 </script>
 
 <style scoped>
+#data-name {
+  font-size: 12px;
+  color: #707070;
+  display: inline;
+  padding: 3px;
+  border-radius: 15px;
+  background-color: #626db325;
+}
+#user-data {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #707070;
+  font-size: 15px;
+}
 #delete-personal-btn-box {
   text-align: end;
 }
@@ -807,6 +823,26 @@ body {margin: 10px}
   overflow: hidden;
   clip:rect(0,0,0,0);
   border: 0;
+}
+
+/* 캐러셀 */
+.carousel__item {
+  min-height: 200px;
+  width: 100%;
+  background-color: none;
+  color:  none;
+  font-size: 20px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+
+}
+.carousel__slide {
+  padding: 10px;
+}
+.carousel__pagination {
+  text-align: center;
+  padding: 0;
 }
 
 </style>

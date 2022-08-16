@@ -110,7 +110,7 @@
       </div>
       </div>
         <div id='home-btn-box'>
-      <router-link to='/'>
+      <router-link :to="{ name: 'Main' }">
         <button class='btn' id='home-btn'>홈으로</button>
       </router-link>
     </div>

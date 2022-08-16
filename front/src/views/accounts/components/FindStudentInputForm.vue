@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex justify-content-between">
     <p id='management-text1'>교육생 관리</p>
+    {{ searchName }}
     <div class="max-w-xs relative space-y-3">
       <label
         for="search"
@@ -13,7 +14,7 @@
         placeholder="&#128269;  이름을검색하세요"
         class="p-3 mb-0.5 w-full form-control"
         style="width:300px; height:50px"
-        @keydown.enter="searchStudent()"
+        @change="searchStudent()"
       >
       </label>
 
@@ -54,7 +55,7 @@ export default {
     const store = useStore();
     const students = computed(() => store.getters.students);
     let finded = [];
-    let searchName = ref('');
+    const searchName = ref('');
     const value = function (event) {
       console.log(event);
     };
@@ -67,6 +68,7 @@ export default {
         },
       })
         .then((res) => {
+          console.log(res);
           for (let i = 0; i < res.data.data.length; i += 1) {
             finded.push(res.data.data[i]);
           }
@@ -87,7 +89,7 @@ export default {
     let img = '';
     const selectedStudent = function (student) {
       console.log(student.id);
-      searchName = ref('');
+      searchName.value = '';
       console.log('선택했다!');
       console.log(searchName);
       finded = [];
