@@ -3,7 +3,9 @@
     <div id="route-button" class="row">
       <p id='main-text1'>{{ currentUser.name }}님 안녕하세요!</p>
       <div class="col-lg-7" id='user-schedule-box1'>
-        <route-button></route-button>
+        <Suspense>
+          <route-button></route-button>
+        </Suspense>
       </div>
       <div class="col-lg-1">
       </div>
