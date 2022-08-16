@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
+// eslint-disable-next-line
+import store from '@/store';
 
 // 메인페이지 라우터
 import MainPageView from '@/views/main/MainPageView.vue';
@@ -38,6 +40,9 @@ import ScheduleCTView from '@/views/schedule/ScheduleCTView.vue';
 // test
 // import Test from '@/views/chat/TTSSTT2.vue';
 
+// page not found
+import PageNotFound from '@/views/main/PageNotFoundView.vue';
+
 const routes = [
   {
     path: '/manual',
@@ -50,12 +55,12 @@ const routes = [
     component: ThanksToView,
   },
   {
-    path: '/',
+    path: '/main',
     name: 'Main',
     component: MainPageView,
   },
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: LoginView,
   },
@@ -179,6 +184,14 @@ const routes = [
   //   name: 'Test',
   //   component: Test,
   // },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404',
+  },
+  {
+    path: '/404',
+    component: PageNotFound,
+  },
 ];
 
 const router = createRouter({
@@ -186,4 +199,53 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const { isLoggedIn } = store.getters;
+  const authPages = [
+    'Manual',
+    'C206',
+    'Main',
+    'Profile',
+    'UpdateUser',
+    'Management',
+    'Schedule',
+    'ScheduleCT',
+    'Interview',
+    'InterviewSetting',
+    'InterviewQuestion',
+    'InterviewRoom',
+    'InterviewSolo',
+    'InterviewCt',
+    'AnalysisComprehensive',
+    'AnalysisDetail',
+    'AnalysisDetailHead',
+    'AnalysisDetailPitch',
+    'AnalysisDetailVolume',
+    'AnalysisDetailStt',
+    'PasswordUpdate',
+    'ProfileUpdateCTView',
+  ];
+  const unAuthPages = [
+    'Login',
+    'Signup',
+    'SignupCT',
+    'HelpPassword',
+    'Helpid',
+  ];
+
+  const isAuthRequired = authPages.includes(to.name);
+  const NotAuthentication = unAuthPages.includes(to.name);
+
+  if (NotAuthentication && isLoggedIn) {
+    next({ name: 'Main' });
+  } else {
+    next();
+  }
+
+  if (isAuthRequired && !isLoggedIn) {
+    next({ name: 'Login' });
+  } else {
+    next();
+  }
+});
 export default router;

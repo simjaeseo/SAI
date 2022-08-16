@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { uniq } from 'lodash';
 import drf from '@/api/api';
+// eslint-disable-next-line
 import router from '@/router/index';
 
 export default {
@@ -184,6 +185,7 @@ export default {
         });
     },
     changePassword({ getters, dispatch }, credential) {
+      console.log(credential);
       axios({
         url: drf.member.updatePassword(),
         method: 'post',
@@ -194,8 +196,8 @@ export default {
           alert('비밀번호가 변경되었습니다. 로그인창으로 이동합니다.');
           dispatch('logout');
         })
-        .catch(() => {
-          alert('오류발생');
+        .catch((err) => {
+          console.log(err);
         });
     },
     signupformCT({ dispatch }, credentials) {

@@ -24,8 +24,7 @@
                 <div class="form-check">
                   <label class="form-check-label" for="gridRadios2">
                   <input class="form-check-input" type="radio" name="gridRadios"
-                  id="gridRadios2" value="false" @change="myConfirm($event)"
-                  data-bs-dismiss="modal">
+                  id="gridRadios2" value="false" @change="myConfirm($event)">
                     아니오
                   </label>
                 </div>
@@ -34,7 +33,12 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
-              data-bs-toggle="modal">다음</button>
+              data-bs-toggle="modal" v-if="myConfirms === true">다음</button>
+              <router-link to="/main">
+                <button class="btn btn-primary" aria-label="Close"
+                v-if="myConfirms === false"
+                data-bs-dismiss="modal">종료</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -61,8 +65,7 @@
                   <div class="form-check">
                     <label class="form-check-label" for="gridRadios2">
                     <input class="form-check-input" type="radio" name="gridRadios"
-                    id="gridRadios2" value="false" @change="ctConfirm($event)"
-                    data-bs-dismiss="modal">
+                    id="gridRadios2" value="false" @change="ctConfirm($event)">
                     아니오
                     </label>
                   </div>
@@ -71,7 +74,12 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-primary" data-bs-target="#exampleModalToggle3"
-              data-bs-toggle="modal">다음</button>
+              data-bs-toggle="modal" v-if="ctConfirms === true">다음</button>
+              <router-link to="/main">
+                <button class="btn btn-primary" aria-label="Close"
+                v-if="ctConfirms === false"
+                data-bs-dismiss="modal" @click="videoForm">종료</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -101,7 +109,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <router-link to="/">
+              <router-link to="/main">
                 <button class="btn btn-primary" data-bs-dismiss="modal"
                 @click="videoForm"
                 >제출</button>
@@ -134,11 +142,11 @@
           </div>
           <div class="d-flex justify-content-end" style="margin-right:20px;">
             <div v-if="!isFinished">
-            <input class="btn btn-light" type="button"
+            <input class="btn btn-light" type="button" v-if="!isRecording"
               id="buttonLeaveSession" @click="startRecoding" value="시작"
               :style="[isRecording == true ?
               {background:'#e52b50', color:'#ffffff'} : {background: '#f8f9fa'}]">
-              <input class="btn btn-light" type="button"
+              <input class="btn btn-light" type="button" v-if="isRecording"
               id="buttonLeaveSession" @click="[answerCompleted(), stopRecoding()]" value="답변 완료">
             </div>
             <div v-if="isFinished" class="d-flex justify-content-end">
@@ -221,7 +229,6 @@ export default {
         }
       }
     }
-
     let progress = 327;
     let status = 'proper posture';
     let count = 0;
@@ -328,11 +335,9 @@ export default {
           emotionRatio: this.emotionRatio,
         },
       })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        .then((res) => console.log(res));
     },
     ctSelect(event) {
-      console.log(event.target.value);
       this.consultantsPK = event.target.value;
     },
     myConfirm(event) {
@@ -340,7 +345,6 @@ export default {
         this.myConfirms = true;
       } else {
         this.myConfirms = false;
-        this.$router.push('/');
       }
     },
     ctConfirm(event) {
@@ -348,8 +352,6 @@ export default {
         this.ctConfirms = true;
       } else {
         this.ctConfirms = false;
-        this.videoForm();
-        this.$router.push('/');
       }
     },
     answerCompleted() {
@@ -399,7 +401,6 @@ export default {
         })
         .then((res) => {
           this.myRecodingId = res.data.id;
-          console.log(res);
         });
     },
     stopRecoding() {
@@ -418,7 +419,6 @@ export default {
         })
         .then((res) => {
           this.savedUrls.push(res.data.url);
-          console.log(this.savedUrls);
         });
     },
     joinSession() {

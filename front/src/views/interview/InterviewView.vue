@@ -1,8 +1,16 @@
-Interviewview
-
 <template>
-  <progress-bar-first></progress-bar-first>
-  <mode-select></mode-select>
+  <div>
+    <progress-bar-first></progress-bar-first>
+    <mode-select></mode-select>
+    <div class="container">
+      <router-link to="/manual" id="manual-text">
+        <p id="text">
+          모의면접이 처음이신가요?&#128064; <br>
+          사용법 알아보기
+        </p>
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -41,5 +49,19 @@ export default {
 </script>
 
 <style scoped>
-
+#manual-text {
+  text-decoration: none;
+  color: gray;
+  font-weight: 300;
+}
+#manual-text:hover {
+  text-decoration: none;
+  color: rgb(95, 95, 95);
+  cursor: pointer;
+  font-weight: 400;
+}
+.container {
+  margin-top: 50px;
+  text-align: center;
+}
 </style>

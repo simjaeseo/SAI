@@ -10,6 +10,7 @@
       <img src="@/assets/manual3.png" alt="이미지">
     </div>
     <div id="div4">
+      <img src="@/assets/manual4.png" alt="이미지">
     </div>
   </div>
 </template>
