@@ -53,7 +53,13 @@
                     class="dropdown-item">
                     <p id='dropdown-link-text'>회원정보 수정</p></router-link>
                     </li>
-                    <li><router-link to='/scheduleCT' id='dropdown-router'
+                    <li v-if="currentUser.memberStatus == 'TRAINEE'">
+                      <router-link to='/schedule' id='dropdown-router'
+                      class="dropdown-item">
+                        <p id='dropdown-link-text'>일정관리</p>
+                      </router-link>
+                    </li>
+                    <li v-else><router-link to='/scheduleCT' id='dropdown-router'
                     class="dropdown-item">
                     <p id='dropdown-link-text'>일정관리</p></router-link>
                     </li>
