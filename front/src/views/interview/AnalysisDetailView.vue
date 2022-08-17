@@ -158,7 +158,7 @@
       </div>
     </div>
     <div v-else>
-      데이터를 분석중이에요. 조금만 기다려주세요.
+      <load-page></load-page>
     </div>
   </div>
 </template>
@@ -170,9 +170,11 @@ import axios from 'axios';
 // eslint-disable-next-line
 import router from '@/router/index';
 import drf from '@/api/api';
+import LoadPage from './components/LoadPage.vue';
 
 export default {
   name: 'ProfileView',
+  components: { LoadPage },
   setup() {
     const store = useStore();
 

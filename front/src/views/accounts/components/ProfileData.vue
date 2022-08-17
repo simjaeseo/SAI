@@ -101,6 +101,12 @@
             </li>
           </ul>
         </div>
+        <div id="tip-text">
+          <p>
+            TIP! 새롭게 저장된 영상은 분석결과를 불러오기 위한 시간이 소요됩니다. (평균 2~5분)<br>
+            영상저장 후 조금만 기다려주세요 :)
+          </p>
+        </div>
       </div>
     </div>
     <!-- 컨설팅영상 추가하심됩니다-->
@@ -172,6 +178,10 @@ export default {
 </script>
 
 <style scoped>
+#tip-text {
+  text-align: end;
+  color: rgb(151, 151, 151);
+}
 ul{
   list-style:none;
 }
