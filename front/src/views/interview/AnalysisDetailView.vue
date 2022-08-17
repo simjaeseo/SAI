@@ -36,9 +36,6 @@
         </div>
       </div>
       <hr>
-      <p id="date-text">
-        &#128204;{{ userVideo[videoId-1].interviewDate}}
-      </p>
       <div class="container">
         <div class="row">
           <div class="col-lg-8" id="video-box">

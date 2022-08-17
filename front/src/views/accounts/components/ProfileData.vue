@@ -80,7 +80,7 @@
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
             <router-link :to="{ name: 'AnalysisDetail',
-            params: { userid: `${ currentUser.id}`, videoid: `${ video.id }`}}">
+            params: { userid: `${ currentUser.id }`, videoid: `${ video.id }`}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
