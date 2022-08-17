@@ -118,9 +118,6 @@ export default {
           city: state.userCity,
         },
       };
-      console.log(data.phone);
-      console.log(data.campus.city);
-      console.log(img);
       const formData = new FormData();
       formData.append('file', img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
@@ -130,11 +127,9 @@ export default {
       state.file = e.target.files;
       state.url = URL.createObjectURL(state.file[0]);
       state.imgUrl = state.url;
-      console.log(state.imgUrl);
       [img] = e.target.files;
     };
     const changeCity = function (event) {
-      console.log(event.target.value);
       state.userCity = event.target.value;
     };
     return {

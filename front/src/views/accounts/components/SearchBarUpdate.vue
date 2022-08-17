@@ -139,9 +139,7 @@ export default {
     },
     selectedDeleteItem2(event) {
       const data = event.name;
-      console.log(data);
       for (let i = 0; i < this.Enters.length; i += 1) {
-        console.log(this.Enters[i]);
         if (this.Enters[i].name === data) {
           this.Enters.splice(i, 1);
           i -= 1;

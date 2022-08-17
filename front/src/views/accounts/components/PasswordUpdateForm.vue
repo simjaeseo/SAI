@@ -65,7 +65,6 @@ export default {
     const checkStrNumPasswd1 = function () {
       if (!(/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.newpw1))) {
         state.isCorrect = false;
-        console.log('비번1정규식통과ㄴㄴ');
         alert('8자리 이상 16자리 이하 영문+숫자.');
         state.credentials.newpw1 = '';
         document.getElementById('user_signup_pw1').focus();
@@ -75,15 +74,12 @@ export default {
       if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(state.credentials.newpw2)) {
         if (state.credentials.newpw1 === state.credentials.newpw2) {
           state.isCorrect = true;
-          console.log('비번2정규식통과&같음');
         } else {
           state.isCorrect = false;
-          console.log('비번2정규식통과ㄴㄴ');
           alert('비밀번호가 올바르지 않습니다.');
         }
       } else {
         state.isCorrect = false;
-        console.log('비번2정규식통과ㄴㄴ');
         alert('비밀번호가 올바르지 않습니다.');
       }
     };
@@ -92,7 +88,6 @@ export default {
     onBeforeMount(() => {
       state.currentUserEmail = currentUser.value.email;
       state.currentUserId = currentUser.value.id;
-      console.log(state.currentUserEmail);
     });
     const passwordupdateform = function () {
       store.dispatch('changePassword', {

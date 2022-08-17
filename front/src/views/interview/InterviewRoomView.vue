@@ -122,19 +122,17 @@
       <div id="session" v-if="session">
         <div id="main-video">
           <div id="video-box">
-            <div v-if="question.length" style="display:inline;">
-              <span v-if="!isFinished"> 질문 : </span>
-              <span>{{question}}</span>
-            </div>
-            <div>
-            </div>
+            <h5 v-if="questions.length">
+              {{ questions.length }}개의 질문이 남았어요!
+            </h5>
+            <h5 v-else>
+              선택된 질문에 대한 연습이 끝났어요! 하단의 면접 종료 버튼을 눌러 종료하세요.
+            </h5>
             <user-video :stream-manager="mainStreamManager" @emotionRatioCount="emotionRatioCount"/>
-            <div id="video-text" v-if="isAnimationStart">
-              <p id="video-start"> 모의 면접을 시작합니다.</p>
+            <div id="video-text" v-if="isRecording">
+              <p id="video-start"> {{question}} </p>
               <p id="video-start"> 질문에 답변해주세요. </p>
               <div class="cd-number-wrapper">
-                <!-- <span class="cd-number-five">5</span>
-                <span class="cd-number-four">4</span> -->
                 <span class="cd-number-three">3</span>
                 <span class="cd-number-two">2</span>
                 <span class="cd-number-one">1</span>
@@ -153,7 +151,7 @@
             <div v-if="isFinished" class="d-flex justify-content-end">
               <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
               data-bs-target="#exampleModalToggle"
-              @click="leaveSession()" id="modal-btn">면접 종료
+              @click="leaveSession(), webcamOff()" id="modal-btn">면접 종료
               </button>
             </div>
           </div>
@@ -278,6 +276,7 @@ export default {
     }
 
     async function init() {
+      console.log(1111111);
       const modelURL = `${TMURL}model.json`;
       const metadataURL = `${TMURL}metadata.json`;
 
@@ -320,7 +319,9 @@ export default {
     this.init();
     // this.mySessionId = this.currentUser.id;
   }, // 템플릿 내 HTML DOM이 화면에 로딩이 되는 순간, 마운트가 다 끝난 순간 실행
-  unmounted() { }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
+  unmounted() {
+    MediaStreamTrack.stop();
+  }, // 컴포넌트 이동 시 unmount가 일어나면서 해당 코드 자동 실행
   methods: {
     emotionRatioCount(happyRatio) {
       this.happy += happyRatio;
@@ -407,6 +408,7 @@ export default {
           },
         })
         .then((res) => {
+          console.log(666666);
           this.myRecodingId = res.data.id;
         });
     },
@@ -435,6 +437,7 @@ export default {
         });
     },
     joinSession() {
+      console.log(222222);
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
 
@@ -500,6 +503,7 @@ export default {
     },
 
     leaveSession() {
+      console.log(44444);
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       if (this.session) this.session.disconnect();
 
@@ -513,6 +517,7 @@ export default {
     },
 
     updateMainVideoStreamManager(stream) {
+      console.log(33333);
       if (this.mainStreamManager === stream) return;
       this.mainStreamManager = stream;
     },
@@ -523,6 +528,7 @@ export default {
 
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession(sessionId) {
+      console.log(555555);
       return new Promise((resolve, reject) => {
         const data = JSON.stringify({ customSessionId: sessionId });
         axios

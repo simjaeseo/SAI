@@ -3,8 +3,11 @@ package com.ssafy.sai.domain.interview.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.sai.global.common.BaseEntity;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+
+import java.time.LocalDate;
 
 import static javax.persistence.FetchType.*;
 

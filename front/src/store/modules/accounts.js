@@ -177,7 +177,6 @@ export default {
         });
     },
     changePassword({ getters, dispatch }, credential) {
-      console.log(credential);
       axios({
         url: drf.member.updatePassword(),
         method: 'post',

@@ -80,7 +80,7 @@
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
             <router-link :to="{ name: 'AnalysisDetail',
-            params: { userid: `${ currentUser.id}`, videoid: `${ video.id }`}}">
+            params: { userid: `${ currentUser.id }`, videoid: `${ video.id }`}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
@@ -100,6 +100,12 @@
             </router-link>
             </li>
           </ul>
+        </div>
+        <div id="tip-text">
+          <p>
+            TIP! 새롭게 저장된 영상은 분석결과를 불러오기 위한 시간이 소요됩니다. (평균 2~5분)<br>
+            영상저장 후 조금만 기다려주세요 :)
+          </p>
         </div>
       </div>
     </div>
@@ -172,6 +178,10 @@ export default {
 </script>
 
 <style scoped>
+#tip-text {
+  text-align: end;
+  color: rgb(151, 151, 151);
+}
 ul{
   list-style:none;
 }

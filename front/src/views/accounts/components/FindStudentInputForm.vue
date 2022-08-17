@@ -67,7 +67,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res);
           for (let i = 0; i < res.data.data.length; i += 1) {
             finded.push(res.data.data[i]);
           }
@@ -87,10 +86,7 @@ export default {
     let year = '';
     let img = '';
     const selectedStudent = function (student) {
-      console.log(student.id);
       searchName.value = '';
-      console.log('선택했다!');
-      console.log(searchName);
       finded = [];
       birthday = student.birthday;
       city = student.campus.city;

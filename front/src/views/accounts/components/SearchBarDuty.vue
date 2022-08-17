@@ -102,8 +102,6 @@ export default {
       plusJob = [];
     };
     const deleteplus = function (event) {
-      console.log(event);
-      console.log(plusJob);
       for (let i = 0; i < plusJob.length; i += 1) {
         if (plusJob[i].name === event.name) {
           plusJob.splice(i, 1);
@@ -136,13 +134,10 @@ export default {
       this.$forceUpdate();
     },
     selectedDeleteItem2(event) {
-      console.log(event.name);
       const dataIndex = this.Jobs.findIndex((item) => item.name === event.name);
-      console.log(dataIndex);
       this.Jobs.splice(dataIndex, 1);
       this.$forceUpdate();
       const newJobs = JSON.parse(JSON.stringify(this.Jobs));
-      console.log(newJobs);
       this.$store.dispatch('updateJob', newJobs);
     },
   },
