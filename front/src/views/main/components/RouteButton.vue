@@ -33,7 +33,9 @@
       </div>
       </div>
       <div class="col-lg-5" id='right-box'>
-        <router-link to="/interview" style="text-decoration:none">
+        <router-link to="/interview"
+        v-if="currentUser.memberStatus === 'TRAINEE'"
+        style="text-decoration:none">
           <button id='schedule-btn2' class="btn">모의면접시작</button>
         </router-link>
         <router-link v-if="currentUser.memberStatus === 'TRAINEE'"

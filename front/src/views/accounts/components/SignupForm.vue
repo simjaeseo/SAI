@@ -207,8 +207,8 @@
           <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
         </div>
       </form>
-        <router-link to='/helpPassword' id='sign-up-text'>
-          <button class='btn' id='signup-btn'>비밀번호 찾기</button>
+        <router-link to='/' id='sign-up-text'>
+          <button class='btn' id='signup-btn'>로그인으로</button>
         </router-link>
     </div>
   </div>
@@ -261,6 +261,9 @@ export default {
         alert('8자리 이상 16자리 이하 영문+숫자.');
         state.credentials.userPassword1 = '';
         document.getElementById('user_signup_pw1').focus();
+      } else {
+        state.isCorrect = false;
+        alert('8자리 이상 16자리 이하 영문+숫자.');
       }
     };
     const checkStrNumPasswd2 = function () {
