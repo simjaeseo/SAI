@@ -72,7 +72,6 @@
           </div>
     </div>
     <!-- 개인 동영상 -->
-    {{ userVideo }}
     <div class="mt-5 pt-5">
       <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
       <div class="box">

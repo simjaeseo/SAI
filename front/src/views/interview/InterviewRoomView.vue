@@ -122,6 +122,12 @@
       <div id="session" v-if="session">
         <div id="main-video">
           <div id="video-box">
+            <h5 v-if="questions.length">
+              {{ questions.length }}개의 질문이 남았어요!
+            </h5>
+            <h5 v-else>
+              선택된 질문에 대한 연습이 끝났어요! 하단의 면접 종료 버튼을 눌러 종료하세요.
+            </h5>
             <user-video :stream-manager="mainStreamManager" @emotionRatioCount="emotionRatioCount"/>
             <div id="video-text" v-if="isRecording">
               <p id="video-start"> {{question}} </p>
