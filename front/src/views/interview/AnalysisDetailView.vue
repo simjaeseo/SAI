@@ -36,9 +36,9 @@
         </div>
       </div>
       <hr>
-      <div id="date-box1">
+      <!-- <div id="date-box1">
         <p>&#128204;{{ setVideos[order].createdDate}}</p>
-      </div>
+      </div> -->
       <div class="container">
         <div class="row">
           <div class="col-lg-8" id="video-box">
@@ -115,6 +115,9 @@
                   안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
                   몸의 흔들림이 잦을수록 집중도, 신뢰감, 소통능력 평가에 영향을 줄 수 있으니, 유의하여 면접에 응시하시기 바랍니다.
                 </p>
+                <p v-if="teachableArray[order] === 0" id="result-text">
+                  자세를 분석하는데 필요한 데이터가 충분하지않습니다 :(
+                </p>
               </div>
             </div>
             <div class="col-lg-6" id="teachable-box">
@@ -124,6 +127,9 @@
                   긍정적인 표정의 비율이 {{ emotionArray[order] }}입니다.
                   긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
                   평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
+                </p>
+                <p v-if="emotionArray[order] === 0" id="result-text">
+                  표정을 분석하는데 필요한 데이터가 충분하지않습니다 :(
                 </p>
               </div>
             </div>

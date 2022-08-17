@@ -186,9 +186,6 @@
           <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
         </div>
       </form>
-        <router-link to='/helpPassword' id='sign-up-text'>
-          <button class='btn' id='signup-btn'>비밀번호 찾기</button>
-        </router-link>
     </div>
   </div>
 </template>

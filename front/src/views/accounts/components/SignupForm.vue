@@ -154,6 +154,7 @@
                 <option value='5'>5기</option>
                 <option value='6'>6기</option>
                 <option value='7'>7기</option>
+                <option value='7'>8기</option>
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'
@@ -207,9 +208,6 @@
           <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
         </div>
       </form>
-        <router-link to='/helpPassword' id='sign-up-text'>
-          <button class='btn' id='signup-btn'>비밀번호 찾기</button>
-        </router-link>
     </div>
   </div>
 </template>
