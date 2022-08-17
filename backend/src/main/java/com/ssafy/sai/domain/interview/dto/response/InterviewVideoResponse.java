@@ -4,7 +4,7 @@ import com.ssafy.sai.domain.interview.domain.InterviewVideo;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class InterviewVideoResponse {
@@ -14,7 +14,7 @@ public class InterviewVideoResponse {
     private String audioUrl;
     private String feedback;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
     private String stt;
     private Double emotionRatio;
     private Long wrongPostureCount;
@@ -26,7 +26,7 @@ public class InterviewVideoResponse {
         audioUrl = interviewVideo.getAudioUrl();
         feedback = interviewVideo.getFeedback();
         stt = interviewVideo.getStt();
-        createdDate = interviewVideo.getCreatedDate();
+        createdDate = interviewVideo.getInterviewInfo().getInterviewDate();
         wrongPostureCount = interviewVideo.getWrongPostureCount();
         emotionRatio = interviewVideo.getEmotionRatio();
         usedInterviewQuestion = new UsedInterviewQuestionResponse(interviewVideo);
