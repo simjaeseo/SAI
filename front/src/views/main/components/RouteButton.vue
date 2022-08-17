@@ -5,29 +5,29 @@
         <p id='schedule-text1'>오늘의 일정</p>
         <div id="today-schedule">
           <div>
-            <!-- <h3>{{ upcomingSchedules[0].category }}</h3> -->
-              <div v-for="upcomingSchedule in upcomingSchedules" :key="upcomingSchedule">
-                <h5 v-if="upcomingSchedule.scheduleDate === myToday">
-                  <!-- {{ this.myToday.slice(5, 7) }} {{ this.myToday.slice(-2)}} -->
-                  {{ upcomingSchedule.startTime }}
-                  {{ upcomingSchedule.consultantName }}
-                  {{ upcomingSchedule.detail }}
-                  <!-- {{ upcomingSchedule.scheduleDate.slice(5, 7) }}월
-                  {{ upcomingSchedule.scheduleDate.slice(-2) }}일 -->
-                  <router-link to='/interview/ct' id='routerlink'>
-                    <button
-                      v-if="this.myToday.slice(5, 7) === upcomingSchedule.scheduleDate.slice(5, 7)
-                      && this.myToday.slice(-2) === upcomingSchedule.scheduleDate.slice(-2)&&
-                      Number(Date().slice(15, 18)) ==
-                      Number(upcomingSchedule.startTime.slice(0, 2)) - 1 ||
-                      Number(Date().slice(15, 18)) ==
-                      Number(upcomingSchedule.startTime.slice(0, 2))"
-                      id="schedule-btn1" class="btn">
-                        입장하기
-                    </button>
-                  </router-link>
-                </h5>
-                <br>
+            <div v-if="upcomingSchedules.length > 0
+              && upcomingSchedules[0].scheduleDate === myToday">
+              <h5>
+                {{ upcomingSchedules[0].startTime }}
+                {{ upcomingSchedules[0].consultantName }}
+                {{ upcomingSchedules[0].detail }}
+                <router-link to='/interview/ct' id='routerlink'>
+                  <button
+                  v-if="this.myToday.slice(5, 7) === upcomingSchedules[0].scheduleDate.slice(5, 7)
+                    && this.myToday.slice(-2) === upcomingSchedules[0].scheduleDate.slice(-2)&&
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) - 1 ||
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2))"
+                    id="schedule-btn1" class="btn">
+                      입장하기
+                  </button>
+                </router-link>
+              </h5>
+              <br>
+            </div>
+            <div v-else>
+              <h5>오늘 일정이 없습니다.</h5>
             </div>
           </div>
       </div>
@@ -53,27 +53,28 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
-  data() {
-    return {
-      myToday: `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDate()}`.slice(-2)}`,
-    };
-  },
-  setup() {
+  name: 'RouteButton',
+  async setup() {
+    const myToday = `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDate()}`.slice(-2)}`;
+
     const store = useStore();
+
+    const fetchUpcomingSchedules = async () => {
+      await store.dispatch('fetchUpcomingSchedules');
+    };
+
+    await fetchUpcomingSchedules();
+
     const currentUser = computed(() => store.getters.currentUser);
     const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-    const fetchUpcomingSchedules = () => {
-      store.dispatch('fetchUpcomingSchedules');
-    };
+
     return {
+      myToday,
       currentUser,
       upcomingSchedules,
       fetchUpcomingSchedules,
     };
   },
-  created() {
-    this.fetchUpcomingSchedules();
-  }, // 해당 vue 파일이 실행 되는 순간
 };
 </script>
 

@@ -76,8 +76,8 @@ public class InterviewService {
     }
 
     @Transactional
-    public List<CustomInterviewQuestion> getCustomInterviewQuestionList(CustomQuestionRequest request) throws MemberException {
-        Member findMember = memberRepository.findById(request.getMemberId())
+    public List<CustomInterviewQuestion> getCustomInterviewQuestionList(Long id) throws MemberException {
+        Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
         List<CustomInterviewQuestion> customInterviewQuestionList = customQuestionRepository.findQuestionsByMemberId(findMember.getId());
         return customInterviewQuestionList;

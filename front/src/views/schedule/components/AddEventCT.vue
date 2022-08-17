@@ -15,8 +15,8 @@
       <div v-for="time in times" :key="time" id='time-box' class="container">
         <button
         v-if="daySchedules.includes(time)"
-        class="btn btn-primary"
-        >
+        class="scheduled"
+        disabled>
           {{ time }}
         </button>
         <button
@@ -177,12 +177,17 @@ export default {
   margin-bottom: 20px;
   display: inline;
 }
+
 button {
   border: 1px solid #ced4da;
   width: 68px;
   height: 40px;
   margin: 5px 5px 10px 5px;
   border-radius: 10px;
+}
+
+.scheduled{
+  background-color: rgb(170, 170, 170);
 }
 
 #disable-time {

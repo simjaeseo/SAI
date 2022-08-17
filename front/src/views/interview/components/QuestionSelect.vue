@@ -7,7 +7,8 @@
       </div>
       <div class="d-flex">
         <div class="box3">
-          <button @click="fetchQuestionList(['인성', '공통']), selected=''" class="question-select-btn"
+          <button @click.prevent="fetchQuestionList(['personality', 'common']),
+          selected=''" class="question-select-btn"
           data-bs-toggle="button">인성 면접 질문</button>
           <div class="dropdown">
             <button class="question-select-btn dropdown-toggle" type="button"
@@ -15,24 +16,25 @@
               직무 면접 질문
             </button>
             <ul class="dropdown-menu duties-select" aria-labelledby="dropdownMenuButton1">
-              <li @click="fetchQuestionList(['직무', 'frontend']), selected=''"
+              <li @click.prevent="fetchQuestionList(['job', 'frontend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Frontend</a></li>
-              <li @click="fetchQuestionList(['직무', 'backend']), selected=''"
+              <li @click.prevent="fetchQuestionList(['job', 'backend']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Backend</a></li>
-              <li @click="fetchQuestionList(['직무', 'Android/iOS']), selected=''"
+              <li @click.prevent="fetchQuestionList(['job', 'Android/iOS']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Android/iOS</a></li>
-              <li @click="fetchQuestionList(['직무', 'Data Scientist']), selected=''"
+              <li @click.prevent="fetchQuestionList(['job', 'Data Scientist']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">Data Scientist</a></li>
-              <li @click="fetchQuestionList(['직무', 'DevOps']), selected=''"
+              <li @click.prevent="fetchQuestionList(['job', 'DevOps']), selected=''"
               @keydown.enter="s">
                 <a class="dropdown-item" href="#">DevOps</a></li>
             </ul>
           </div>
-          <button @click="selected='myQuestion'" class="question-select-btn"
+          <button @click.prevent="fetchCustomQuestionList(), selected='myQuestion'"
+          class="question-select-btn"
           data-bs-toggle="button" autocomplete="off">내가 만든 질문</button>
           <div v-if="selectedQuestionList.length" id="user-select-box">
             <h5>
@@ -47,9 +49,9 @@
             <div>{{ questionList.length }}개의 질문</div>
             <button class="question-btn" data-bs-toggle="button" autocomplete="off"
             v-for="(data, i) in questionList" :key="i"
-            :style="[selectedQuestionList.includes(data.question) == '' ?
-            {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
-            @click="selectQuestion(data)">
+            :style="[selectedQuestionList.includes(data.question) ?
+            {background:'#5c6ac4', color:'#ffffff'} : {}]"
+            @click.prevent="selectQuestion(data)">
               {{ data.question }}</button>
             <div v-if="selectedQuestionList">
               <p v-for="(pick, index) in selectedQuestionList" :key="index">
@@ -59,19 +61,43 @@
         </div>
         <div class="box4" v-show="selected=='myQuestion'">
           <div>
-            <div class="d-flex">
+            <div v-if="!deleteMode" class="d-flex">
               <input type="text" class='form-control'
               v-model="myQuestion"
-              @keydown.enter="addQuestion()"
               aria-labelledby="myQuestion">
-              <button id="double-check-btn" @click="addQuestion()">등록</button>
+              <button id="double-check-btn"
+      @click.prevent="registMyQuestion(this.myQuestion), addQuestion()">
+              등록
+              </button>
             </div>
-            <div v-for="myQ in myQuestionList" :key="myQ">
-              <button class="question-btn" data-bs-toggle="button" autocomplete="off"
-              :style="[selectedQuestionList.includes(myQ) == '' ?
-              {background:'#ffffff'} : {background:'#5c6ac4', color:'#ffffff'}]"
-              @click="selectMyQuestion(myQ)">
-                {{ myQ }}
+            <div class="delete-button">
+              <button v-if="!deleteMode" @click.prevent="modeChange()">
+                삭제하기
+              </button>
+              <button v-else @click.prevent="modeChange()">
+                돌아가기
+              </button>
+            </div>
+            <div v-for="myQ in customQuestionList" :key="myQ">
+              <button
+              v-if="!deleteMode"
+              class="question-btn"
+              data-bs-toggle="button"
+              autocomplete="off"
+              :style="[selectedQuestionList.includes(myQ.question) == '' ?
+              {} : {background:'#5c6ac4', color:'#ffffff'}]"
+              @click.prevent="selectMyQuestion(myQ.question)">
+                {{ myQ.question }}
+              </button>
+              <button
+              v-else
+              class="delete-btn"
+              data-bs-toggle="button"
+              autocomplete="off"
+              @click.prevent="
+              cancelMyQuestion(myQ.question),
+              deleteMyQuestion(myQ.id)">
+                {{ myQ.question }}
               </button>
             </div>
           </div>
@@ -98,10 +124,14 @@
             </div>
             <div class="d-flex align-items-center">
               <div>선택된 질문 {{ selectedQuestionList.length }}개</div>
-              <router-link to="room">
-                <button class="start-btn"
-                @click="selectQuestionList(selectedQuestionList)">시작하기</button>
-              </router-link>
+                <button
+                v-if="selectedQuestionList.length > 0"
+                class="start-btn"
+                @click.prevent="selectQuestionList(selectedQuestionList),
+                selectQuestionListTTS(selectedQuestionListTTS),
+                routeToRoom()
+                ">시작하기</button>
+              <button v-else class="start-btn-disabled" disabled>시작하기</button>
             </div>
           </div>
         </div>
@@ -111,6 +141,9 @@
 </template>
 
 <script>
+import axios from 'axios';
+import drf from '@/api/api';
+import router from '@/router';
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
@@ -121,6 +154,7 @@ export default {
     return {
       selected: '',
       selectedQuestionList: [],
+      selectedQuestionListTTS: [],
       myQuestion: '',
       myQuestionList: [],
 
@@ -132,53 +166,118 @@ export default {
       mySessionId: 'SessionA',
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isSelected: false,
+      deleteMode: false,
     };
   },
   setup() {
     const store = useStore();
 
+    const customQuestionList = computed(() => store.getters.customQuestionList);
+    const currentUser = computed(() => store.getters.currentUser);
+    const authHeader = computed(() => store.getters.authHeader);
     const questionList = computed(() => store.getters.questionList);
+
     const fetchQuestionList = (params) => {
       store.dispatch('fetchQuestionList', params);
     };
+    const fetchCustomQuestionList = () => {
+      store.dispatch('fetchCustomQuestionList');
+    };
+
     const selectQuestionList = (data) => store.commit('SET_SELECTED_QUESTION_LIST', data);
+    const selectQuestionListTTS = (data) => store.commit('SET_SELECTED_QUESTION_LIST_TTS', data);
+
+    const registMyQuestion = (myQ) => {
+      axios({
+        url: drf.interview.customQuestion(),
+        method: 'post',
+        data: {
+          question: myQ,
+          memberId: currentUser.value.id,
+        },
+        header: authHeader.value,
+      })
+        .then(() => {
+          fetchCustomQuestionList();
+        });
+    };
+
+    const deleteMyQuestion = (myQ) => {
+      axios({
+        url: drf.interview.customQuestionDelete(myQ),
+        method: 'delete',
+        header: authHeader.value,
+      })
+        .then(() => {
+          fetchCustomQuestionList();
+        });
+    };
+
+    const routeToRoom = () => {
+      router.push({ name: 'InterviewRoom' });
+    };
 
     return {
-      fetchQuestionList,
       questionList,
+      currentUser,
+      customQuestionList,
+      fetchQuestionList,
+      fetchCustomQuestionList,
       selectQuestionList,
+      registMyQuestion,
+      selectQuestionListTTS,
+      deleteMyQuestion,
+      routeToRoom,
     };
   },
-  computed() {},
   methods: {
     selectQuestion(data) {
       const index = this.selectedQuestionList.indexOf(data.question, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.selectedQuestionListTTS.splice(index, 1);
         this.isSelected = false;
       } else {
         this.selectedQuestionList.push(data.question);
+        this.selectedQuestionListTTS.push(data.tts);
         this.isSelected = true;
       }
-      console.log(this.selectedQuestionList);
     },
+
     selectMyQuestion(data) {
       const index = this.selectedQuestionList.indexOf(data, 0);
       if (index >= 0) {
         this.selectedQuestionList.splice(index, 1);
+        this.selectedQuestionListTTS.splice(index, 1);
       } else {
         this.selectedQuestionList.push(data);
+        this.selectedQuestionListTTS.push(data);
       }
-      console.log(this.selectedQuestionList);
+      console.log(this.selectedQuestionListTTS);
     },
-    addQuestion() {
-      console.log(this.myQuestion);
-      this.selectedQuestionList.push(this.myQuestion);
-      this.myQuestionList.push(this.myQuestion);
-      this.clearInput();
-    },
+
     clearInput() {
       this.myQuestion = '';
+    },
+
+    addQuestion() {
+      this.selectedQuestionList.push(this.myQuestion);
+      this.selectedQuestionListTTS.push(this.myQuestion);
+      this.myQuestionList.push(this.myQuestion);
+      this.fetchCustomQuestionList();
+      this.clearInput();
+    },
+
+    modeChange() {
+      this.deleteMode = !this.deleteMode;
+    },
+
+    cancelMyQuestion(data) {
+      const index = this.selectedQuestionList.indexOf(data, 0);
+      if (index >= 0) {
+        this.selectedQuestionList.splice(index, 1);
+        this.selectedQuestionListTTS.splice(index, 1);
+      }
     },
   },
 };
@@ -278,10 +377,12 @@ export default {
   display: flex;
   flex-direction: column;
 }
+
 .question {
   display: flex;
   flex-direction: column;
 }
+
 .question-select-btn{
   margin: 3px;
   z-index: 1000;
@@ -306,6 +407,7 @@ export default {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 .question-btn{
   margin-top: 10px;
   z-index: 1000;
@@ -331,8 +433,36 @@ export default {
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.delete-btn{
+  margin-top: 10px;
+  z-index: 1000;
+  color: rgb(235, 0, 0);
+  background-color: white;
+  border: 1px solid rgb(235, 0, 0);
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-size: 15px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  height: 48px;
+  width: 920px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .question-btn {
+    transition: none;
+  }
+  .delete-btn {
     transition: none;
   }
 }
@@ -340,6 +470,11 @@ export default {
 .question-btn:hover {
   color: white;
   background-color: #5c6ac4;
+}
+
+.delete-btn:hover {
+  color: white;
+  background-color: rgb(235, 0, 0);
 }
 
 label {
@@ -364,6 +499,31 @@ label {
   text-decoration: none;
   vertical-align: middle;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  font-size: 20px;
+  border-radius: 0.25rem;
+  padding: 0;
+  width: 200px;
+  height: 60px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.start-btn-disabled{
+  margin: 20px;
+  margin-right: 12px;
+  z-index: 1000;
+  background-color: #b4b4b4;
+  color: white;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;

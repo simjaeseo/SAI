@@ -145,7 +145,7 @@ const routes = [
     component: AnalysisComprehensiveView,
   },
   {
-    path: '/analysis/detail',
+    path: '/analysis/detail/:userid/:videoid',
     name: 'AnalysisDetail',
     component: AnalysisDetailView,
   },
@@ -225,22 +225,22 @@ router.beforeEach((to, from, next) => {
     'PasswordUpdate',
     'ProfileUpdateCTView',
   ];
-  const unAuthPages = [
-    'Login',
-    'Signup',
-    'SignupCT',
-    'HelpPassword',
-    'Helpid',
-  ];
+  // const unAuthPages = [
+  //   'Login',
+  //   'Signup',
+  //   'SignupCT',
+  //   'HelpPassword',
+  //   'Helpid',
+  // ];
 
   const isAuthRequired = authPages.includes(to.name);
-  const NotAuthentication = unAuthPages.includes(to.name);
+  // const NotAuthentication = unAuthPages.includes(to.name);
 
-  if (NotAuthentication && isLoggedIn) {
-    next({ name: 'Main' });
-  } else {
-    next();
-  }
+  // if (NotAuthentication && isLoggedIn) {
+  //   next({ name: 'Main' });
+  // } else {
+  //   next();
+  // }
 
   if (isAuthRequired && !isLoggedIn) {
     next({ name: 'Login' });

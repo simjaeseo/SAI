@@ -6,9 +6,9 @@
         <div id='profile_image_box' class='d-none d-md-block col-md-2'>
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
-          <!-- <img v-else
+          <img v-else
           :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
-          id='user_img' alt="profile"> -->
+          id='user_img' alt="profile">
         </div>
         <!-- 프로필인적사항 -->
         <div id='personal-data-box1' class='col-xs-12 col-sm-12 col-md-10'>
@@ -79,7 +79,8 @@
           <ul :nav="false" :dots="false" class="marginTop50">
             <li class="card" style="width: 16.792rem; margin-top:70px;"
             v-for="(video, index) in userVideo" :key="index">
-            <router-link :to="{ name : 'AnalysisDetail', params: { index : index}}">
+            <router-link :to="{ name: 'AnalysisDetail',
+            params: { userid: `${ currentUser.id}`, videoid: `${ video.id }`}}">
               <div class="card-body">
                 <div id="badge-box">
                   <button id="card-text-badge-request" class="btn"
@@ -166,11 +167,6 @@ export default {
   },
   created() {
     this.$store.dispatch('getUserVideo', this.currentUser.id);
-  },
-  methods: {
-    showDetail(video) {
-      console.log(video);
-    },
   },
 };
 </script>
@@ -427,6 +423,7 @@ p {
     background-color: #5c6ac40c;
     text-align: start;
     border-radius: 10px;
+    height: 100%;
 }
 #profile_image_box {
   text-align: center;
@@ -493,20 +490,22 @@ body {margin: 10px}
 .carousel__item {
   min-height: 200px;
   width: 100%;
-  background-color: none;
-  color:  none;
-  font-size: 20px;
-  border-radius: 8px;
   justify-content: center;
   align-items: center;
-
 }
+
 .carousel__slide {
   padding: 10px;
 }
-.carousel__pagination {
-  text-align: center;
-  padding: 0;
+
+.carousel__prev,
+.carousel__next {
+  box-sizing: content-box;
+  background: white;
+  border: 5px solid white;
 }
 
+.carousel__pagination {
+  padding: 0;
+}
 </style>

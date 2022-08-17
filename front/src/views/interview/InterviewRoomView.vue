@@ -56,16 +56,16 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                    <label class="form-check-label" for="gridRadios1">
+                    <label class="form-check-label" for="gridRadios3">
                       <input class="form-check-input" type="radio" name="gridRadios"
-                      id="gridRadios1" value="true" checked @change="ctConfirm($event)">
+                      id="gridRadios3" value="true" checked @change="ctConfirm($event)">
                       예
                     </label>
                   </div>
                   <div class="form-check">
-                    <label class="form-check-label" for="gridRadios2">
+                    <label class="form-check-label" for="gridRadios4">
                     <input class="form-check-input" type="radio" name="gridRadios"
-                    id="gridRadios2" value="false" @change="ctConfirm($event)">
+                    id="gridRadios4" value="false" @change="ctConfirm($event)">
                     아니오
                     </label>
                   </div>
@@ -97,12 +97,13 @@
               <div class="col-12">
                 <div class="form-check">
                   <div class="form-check">
-                  <label class="form-check-label" for="gridRadios1"
+                  <label class="form-check-label"
                   v-for="(ct, index) in consultants"
-                  :key="index" id="ct-label">
-                  <input class="form-check-input" type="radio" name="gridRadios"
-                  id="ct-radio" :value="ct.id" checked @change="ctSelect($event)" required>
-                    <p id="ct-name">{{ ct.name }}</p>
+                  :key="index" id="ct-label"
+                  :for="`gridRadios5${index}`">
+                  <input class="form-check-input ct-radio" type="radio" name="gridRadios"
+            :id="`gridRadios5${index}`" :value="ct.id" checked @change="ctSelect($event)" required>
+                    <p :id="`gridRadios5${index}`" class="ct-name">{{ ct.name }}</p>
                   </label>
                 </div>
                 </div>
@@ -191,11 +192,12 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: `User${Math.floor(Math.random() * 100)}`,
+      mySessionId: `User${Math.floor(Math.random() * 100000)}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
       questions: [],
+      questionsTTS: [],
       isFinished: false,
       myConfirms: false,
       ctConfirms: false,
@@ -213,6 +215,7 @@ export default {
   setup() {
     const store = useStore();
     const selectedQuestionList = computed(() => store.getters.selectedQuestionList);
+    const selectedQuestionListTTS = computed(() => store.getters.selectedQuestionListTTS);
     const currentUser = computed(() => store.getters.currentUser);
     const consultants = computed(() => store.getters.myConsultants);
 
@@ -299,6 +302,7 @@ export default {
 
     return {
       selectedQuestionList,
+      selectedQuestionListTTS,
       currentUser,
       consultants,
       countOutput,
@@ -306,9 +310,10 @@ export default {
     };
   },
   created() {
-    console.log(this.selectedQuestionList);
     this.questions = this.selectedQuestionList;
+    this.questionsTTS = this.selectedQuestionListTTS;
     this.savedQ = Object.values(this.selectedQuestionList);
+    this.savedQTTS = Object.values(this.selectedQuestionListTTS);
   }, // 해당 vue 파일이 실행 되는 순간
   mounted() {
     this.joinSession();
@@ -332,6 +337,7 @@ export default {
           wrongPostureCount: this.wrongPostureCount,
           interviewVideoUrl: this.savedUrls,
           questions: this.savedQ,
+          questionsTTS: this.savedQTTS,
           emotionRatio: this.emotionRatio,
         },
       })
@@ -366,6 +372,7 @@ export default {
       this.isRecording = true;
       this.isAnimationStart = true;
       this.question = this.questions.shift();
+      this.questionTTS = this.questionsTTS.shift();
       console.log(this.questions);
       this.preWrongCount = this.countOutput().count;
       this.happy = 0;
@@ -385,7 +392,7 @@ export default {
         window.speechSynthesis.speak(speechMsg);
       }
 
-      speak(this.question, {
+      speak(this.questionTTS, {
         rate: 0.9,
         pitch: 0.5,
         lang: 'ko-KR',
@@ -407,7 +414,12 @@ export default {
       const tmp = this.countOutput().count;
       this.isRecording = false;
       this.wrongPostureCount.push(tmp - this.preWrongCount);
-      this.emotionRatio.push(this.happy / this.emotionCount);
+      if (this.happy / this.emotionCount) {
+        this.emotionRatio.push(this.happy / this.emotionCount);
+      } else {
+        this.emotionRatio.push(0);
+      }
+      console.log(this.emotionRatio);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,
@@ -419,6 +431,7 @@ export default {
         })
         .then((res) => {
           this.savedUrls.push(res.data.url);
+          console.log(this.savedUrls);
         });
     },
     joinSession() {
@@ -566,10 +579,10 @@ export default {
   display: inline-block;
   width: 100%;
 }
-#ct-name {
+.ct-name {
   width: 100%;
 }
-#ct-radio {
+.ct-radio {
   display: inline-block;
 }
 #body {

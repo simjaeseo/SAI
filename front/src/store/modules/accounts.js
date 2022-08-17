@@ -108,7 +108,6 @@ export default {
         .then((res) => {
           const token = res.headers.accesstoken;
           dispatch('saveToken', token);
-          console.log(0);
           dispatch('fetchCurrentUser', res.data.data.id).then(() => {
             router.push({ name: 'Main' });
           });
@@ -134,7 +133,6 @@ export default {
         });
     },
     async fetchCurrentUser({ getters, commit, dispatch }, userid) {
-      console.log(1);
       if (getters.isLoggedIn) {
         await axios({
           url: drf.member.currentUserInfo(userid),
@@ -142,12 +140,8 @@ export default {
           header: getters.authHeader,
         })
           .then((res) => {
-            console.log(2);
             commit('SET_CURRENT_USER', res.data.data);
-            console.log(3);
             dispatch('fetchMyConsultants');
-            console.log(getters.currentUser);
-            console.log(4);
           })
           .catch((err) => {
             console.log(err);
@@ -160,8 +154,6 @@ export default {
         method: 'get',
       })
         .then((res) => {
-          console.log('동영상가져와요');
-          console.log(res);
           commit('SET_USER_VIDEO', res.data.data);
         });
     },
@@ -238,6 +230,7 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
+          router.push({ name: 'Profile', params: { id: userId } });
         });
     },
     userUpdateCT({ dispatch, getters }, credentials) {
@@ -250,7 +243,7 @@ export default {
         .then(() => {
           alert('수정되었습니다.');
           dispatch('fetchCurrentUser', userId);
-          router.push({ name: '/profile/update/ct', params: { id: userId } });
+          router.push({ name: 'Main' });
         })
         .catch((err) => console.log(err));
     },

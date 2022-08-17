@@ -1,81 +1,42 @@
-<template>
-  <div class="body">
-    <video id="video" width="720" height="560" autoplay muted></video>
-  </div>
-</template>
-
 <script>
-// // eslint-disable-next-line
-// import faceExpression from '@/assets/models/face_expression_model-weights_manifest.json';
-// import faceLandmark from '@/assets/models/face_landmark_68_model-weights_manifest.json';
-// import faceRecognition from '@/assets/models/face_recognition_model-weights_manifest.json';
-// import faceDetector from '@/assets/models/tiny_face_detector_model-weights_manifest.json';
-import * as faceapi from '../../assets/face-api.min';
+// import { defineComponent } from '@vue/composition-api'
 
-export default {
-  setup() {
-    const video = document.getElementById('video');
+// export default defineComponent({
+//   setup() {
 
-    function startVideo() {
-      console.log('1');
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-          console.log('2');
-          video.srcObject = stream;
-          console.log('3');
-        })
-        .catch((err) => {
-          console.log('!!!!!!');
-          console.log(err);
-        });
-    }
+//   },
+// })
+// </script>
 
-    window.onload = () => {
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('./models'),
-        faceapi.nets.faceRecognitionNet.loadFromUri('./models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('./models'),
-        // faceapi.nets.tinyFaceDetector.loadFromUri(faceDetector),
-        // faceapi.nets.faceLandmark68Net.loadFromUri(faceLandmark),
-        // faceapi.nets.faceRecognitionNet.loadFromUri(faceRecognition),
-        // faceapi.nets.faceExpressionNet.loadFromUri(faceExpression),
-      ]).then(startVideo());
-    };
+// <template>
+//   <div></div>
+// </template>
 
-    video.addEventListener('play', () => {
-      const canvas = faceapi.createCanvasFromMedia(video);
-      document.body.append(canvas);
-      const displaySize = { width: video.width, height: video.height };
-      faceapi.matchDimensions(canvas, displaySize);
-      setInterval(async () => {
-      // eslint-disable-next-line
-        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
-        console.log(detections);
-        const resizedDetections = faceapi.resizeResults(detections, displaySize);
-        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-        faceapi.draw.drawDetections(canvas, resizedDetections);
-        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
-        faceapi.draw.drawFaceExpressions(canvas, resizedDetections);
-      }, 100);
-    });
-  },
-};
+// <script>
+// export default {
+//   data() {
+//     피드백 내용: '',
+//     분석내용들: {
+//       a,
+//       b,
+//       c,
+//       d,
+//     }
+//   },
+//   setup() {
+//     결과지 내용 싹다 가져온다음
+//   },
+//   mounted() {
+//     첫번째 질문들에 대한 내용들을
+//     data에 저장하고 띄움
+//   }
+//   methods: {
+//     인덱스로 데이터에 있는 내용들 갈아치울수 있게 하는 함수하나
+//   },
+// };
+// </script>
+
+// <style>
+
+// </style>
 </script>
-
-<style>
-.body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-canvas {
-  position: absolute;
-}
-</style>
