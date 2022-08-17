@@ -152,8 +152,6 @@ export default {
       }
     };
     const findId = function () {
-      console.log(state.credentials.username);
-      console.log(state.credentials.userBirth);
       axios({
         url: drf.member.findId(),
         method: 'post',

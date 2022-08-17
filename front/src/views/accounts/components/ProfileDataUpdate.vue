@@ -285,8 +285,6 @@ export default {
       state.userClass = currentUser.value.campus.classNumber;
       if (currentUser.value.profilePicture != null) {
         img = currentUser.value.profilePicture.fileName;
-        console.log('이미지있다!');
-        console.log(img);
       } else {
         img = null;
       }
@@ -329,7 +327,6 @@ export default {
       };
       const formData = new FormData();
       formData.append('file', img);
-      console.log(img);
       formData.append('request', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       store.dispatch('userUpdate', formData);
     };
@@ -337,13 +334,11 @@ export default {
       state.file = e.target.files;
       state.url = URL.createObjectURL(state.file[0]);
       state.imgUrl = state.url;
-      console.log(state.imgUrl);
       [img] = e.target.files;
     };
     const deletePersonalVideo = function (info) {
       if (window.confirm('정말 삭제하시겠습니까? 삭제된 영상은 복구할 수 없습니다.')) {
         const userId = currentUser.value.id;
-        console.log(userId);
         axios({
           url: drf.interview.deletePersonalVideo(userId, info),
           method: 'delete',

@@ -103,8 +103,6 @@ export default {
   methods: {
     selectedDeleteItem(event) {
       this.deleteItem = event;
-      console.log(this.deleteItem);
-      console.log(this.selectedCountries);
       const index = this.selectedCountries.findIndex((item) => item.name === this.deleteItem);
       this.selectedCountries.splice(index, 1);
       this.$forceUpdate();

@@ -106,7 +106,6 @@ export default {
   methods: {
     forceRerender() {
       this.cKey += 1;
-      console.log(this.cKey);
     },
   },
   setup() {
@@ -138,7 +137,6 @@ export default {
           store.dispatch('findedStudents', finded);
           finded = [];
         })
-        .catch((err) => console.log(err.config.data));
     };
     let birthday = '';
     let city = '';
@@ -156,10 +154,7 @@ export default {
       finded = [];
     };
     const selectedStudent = function (student) {
-      console.log(student.id);
       searchName = ref('');
-      console.log('선택했다!');
-      console.log(searchName);
       finded = [];
       birthday = student.birthday;
       city = student.campus.city;
@@ -206,11 +201,6 @@ export default {
       method: 'get',
     })
       .then((res) => {
-        // for (let i = 0; i < res.data.data.length; i += 1) {
-        //   // this.feedbackList.push(res.data.data[i]);
-        //   // console.log(this.feedbackList);
-        //   this.feedbackList.push(res.data.data[0]);
-        // }
         this.$store.commit('SET_FEEDBACK_LIST', res.data.data);
       });
   },

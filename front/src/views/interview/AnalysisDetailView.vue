@@ -260,7 +260,6 @@ export default {
       }
     },
     feedBackPost() {
-      console.log(this.feedbackData);
       axios({
         url: drf.interview.feedBackPost(this.currentUser.id, this.feedbackId),
         method: 'post',
