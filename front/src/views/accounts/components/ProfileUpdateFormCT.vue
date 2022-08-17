@@ -8,9 +8,8 @@
               <img v-if="!!state.imgUrl" :src="state.imgUrl" alt="preview"
               id='user_profile_img'>
               <img v-else-if="currentUser.profilePicture"
-              :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
-              alt="preview"
-              id='user_profile_img'>
+              :src="`https://i7c206.p.ssafy.io/img/${currentUser.profilePicture.fileName}`"
+              id='user_img' alt="profile">
               <img v-else src='@/assets/profile5.png' alt='basic-img' id='user_profile_img'> <br>
                 <div class="filebox">
                     <label for='ex_file'><input type='file' id='ex_file' accept='image/*'

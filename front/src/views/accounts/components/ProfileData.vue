@@ -7,7 +7,7 @@
           <img v-if="!currentUser.profilePicture"
           src="@/assets/profile5.png" alt="profile" id='user_img'>
           <img v-else
-          :src="require(`../../../../../image/${currentUser.profilePicture.fileName}`)"
+          :src="`https://i7c206.p.ssafy.io/img/${currentUser.profilePicture.fileName}`"
           id='user_img' alt="profile">
         </div>
         <!-- 프로필인적사항 -->
