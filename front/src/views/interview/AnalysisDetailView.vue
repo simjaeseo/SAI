@@ -27,6 +27,8 @@
       <hr>
       이모션
       {{ emotionArray }} -->
+      {{ order }}
+      {{ setVideos[order].createdDate}}
       <div>
         <h2>{{ userVideo[0].studentName }}님의 {{ videoId }} 번째 영상 분석 결과 &#128064;</h2>
         <div id="btn-box">
@@ -342,7 +344,7 @@ export default {
     };
 
     // drawAudio(sample);
-    drawAudio(this.audioArray.order);
+    drawAudio(this.audioArray[this.order]);
   },
 };
 </script>
