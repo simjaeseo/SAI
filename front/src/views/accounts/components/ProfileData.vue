@@ -72,7 +72,6 @@
           </div>
     </div>
     <!-- 개인 동영상 -->
-    {{ userVideo }}
     <div class="mt-5 pt-5">
       <p>{{ currentUser.name }}님의 {{ userVideo.length }}개의 영상 &#127916;</p>
       <div class="box">
@@ -101,6 +100,12 @@
             </router-link>
             </li>
           </ul>
+        </div>
+        <div id="tip-text">
+          <p>
+            TIP! 새롭게 저장된 영상은 분석결과를 불러오기 위한 시간이 소요됩니다. (평균 2~5분)<br>
+            영상저장 후 조금만 기다려주세요 :)
+          </p>
         </div>
       </div>
     </div>
@@ -173,6 +178,10 @@ export default {
 </script>
 
 <style scoped>
+#tip-text {
+  text-align: end;
+  color: rgb(151, 151, 151);
+}
 ul{
   list-style:none;
 }

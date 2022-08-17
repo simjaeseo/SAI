@@ -154,6 +154,7 @@
                 <option value='5'>5기</option>
                 <option value='6'>6기</option>
                 <option value='7'>7기</option>
+                <option value='7'>8기</option>
               </select>
               <select class='form-select' id='form-select-region'
               aria-label='Default select example'
