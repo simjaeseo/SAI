@@ -25,7 +25,7 @@
                     <p id='data-name'>이름</p>
                     <p id="user-data">{{ currentUser.name }}</p>
                     <p id='data-name'>소속</p><br>
-                    <select class='form-select mb-2' id='form-select-cardinal-number'
+                    <select class='form-select mt-2 mb-2' id='form-select-cardinal-number'
                     aria-label='Default select example'>
                         <option selected disabled>
                         {{ currentUser.year}}기</option>
@@ -44,7 +44,7 @@
                       <option v-for='option in state.options' :key="option">{{option}}</option>
                     </select><br>
                     <p id='data-name'>연락처</p><br>
-                    <select class='form-select' id='form-select-first'
+                    <select class='form-select mt-2' id='form-select-first'
                     aria-label='Default select example'>
                         <option value='1'>010</option>
                         <option value='2'>011</option>
@@ -761,7 +761,7 @@ p {
 #personal-data-box1 {
     background-color: #5c6ac40c;
     text-align: start;
-    height: 230px;
+    height: 100%;
     border-radius: 10px;
 }
 #profile_image_box {
@@ -829,20 +829,21 @@ body {margin: 10px}
 .carousel__item {
   min-height: 200px;
   width: 100%;
-  background-color: none;
-  color:  none;
-  font-size: 20px;
-  border-radius: 8px;
   justify-content: center;
   align-items: center;
-
 }
+
 .carousel__slide {
   padding: 10px;
 }
+
+.carousel__prev,
+.carousel__next {
+  box-sizing: content-box;
+  background: white;
+  border: 5px solid white;
+}
 .carousel__pagination {
-  text-align: center;
   padding: 0;
 }
-
 </style>

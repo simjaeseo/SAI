@@ -183,6 +183,7 @@ public class GcsService {
                     .videoUrl(S3videoUrl)
                     .videoName(S3videoName)
                     .audioUrl(gcsUrl)
+                    .feedback("false")
                     .audioName(flacAudioNames.get(index))
                     .stt(stt)
                     .wrongPostureCount(request.getWrongPostureCount().get(index))

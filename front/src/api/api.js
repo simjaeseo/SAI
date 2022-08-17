@@ -35,5 +35,13 @@ export default {
     getVideoDetail: (id, index) => `${HOST + INTERVIEW + id}/request/${index}`,
     getFeedbackRequestVideo: (id) => `${HOST + INTERVIEW + id}/request`,
     deletePersonalVideo: (id, info) => `${HOST + INTERVIEW + id}/${info}`,
+    customQuestion: () => `${HOST + INTERVIEW}customQuestion/create`,
+    customQuestionDelete: (QID) => `${HOST + INTERVIEW}customQuestion/delete/${QID}`,
+    customQuestionList: (id) => `${HOST + INTERVIEW}customQuestion/list/${id}`,
+    // 비디오 가져오기
+    videoDetailPage: (memberId, videoId) => `${HOST + INTERVIEW}${memberId}/request/${videoId}`,
+    // 교육생 피드백 작성
+    feedBackPost: (ctId, videoId) => `${HOST + INTERVIEW}${ctId}/feedback/${videoId}`,
+    completedPB: (ctId, InfoId) => `${HOST + INTERVIEW}${ctId}/request/${InfoId}`,
   },
 };

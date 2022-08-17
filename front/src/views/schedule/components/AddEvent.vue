@@ -12,7 +12,7 @@
       class="btn"
       @click.prevent="pickMyConsultant(''), forceRerenderSelectCT()"
       :style="[Credential.selectedConsultant == '' ?
-      {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
+      {background:'#5c6ac4', color:'#ffffff'} : {}]">
         개인 일정
       </button>
     </div>
@@ -21,16 +21,16 @@
       <div v-for="time in times" :key="time" id='time-box'>
         <button
         id="time-btn"
-        v-if="CTDaySchedules.includes(time)"
-        class="btn btn-danger"
-        >
+        v-if="daySchedules.includes(time)"
+        class="scheduled"
+        disabled>
           {{ time }}
         </button>
         <button
         id="time-btn"
-        v-else-if="daySchedules.includes(time)"
-        class="btn btn-primary"
-        >
+        v-else-if="CTDaySchedules.includes(time)"
+        class="scheduled-consultant"
+        disabled>
           {{ time }}
         </button>
         <button
@@ -38,8 +38,7 @@
         v-else
         @click.prevent="Credential.startTime = time"
         :style="[Credential.startTime == time ?
-        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]"
-        >
+        {background:'#5c6ac4', color:'#ffffff'} : {background:'#ffffff'}]">
           {{ time }}
         </button>
       </div>
@@ -81,7 +80,10 @@
       </label>
     </div>
     <div id="add-button">
-      <button class="btn" @click.prevent="createSchedule(Credential), forceRerender()">등록</button>
+      <button class="btn"
+      @click.prevent="createSchedule(Credential), resetCTDaySchedules(), forceRerender()">
+      등록
+      </button>
     </div>
     </div>
   </form>
@@ -97,7 +99,6 @@ export default {
   components: {
     SelectCT,
   },
-  props: ['updateKey'],
   data() {
     return {
       times: [],
@@ -188,7 +189,6 @@ export default {
 
       function init() {
         for (let i = 0; i < btn.length; i += 1) {
-          console.log(btn[i]);
           btn[i].addEventListener('click', handleClick);
         }
       }
@@ -196,7 +196,6 @@ export default {
       init();
     },
     pickMyConsultant(value) {
-      console.log(value);
       this.Credential.selectedConsultant = value;
       const data = {
         consultant: this.Credential.selectedConsultant,
@@ -211,8 +210,13 @@ export default {
     selectCategory(e) {
       this.Credential.selectedCategory = e.target.value;
     },
-    check(item) {
-      console.log(item);
+    resetCredential() {
+      this.Credential = {
+        startTime: null,
+        selectedConsultant: null,
+        scheduleDetail: '',
+        selectedCategory: null,
+      };
     },
   },
   created() {
@@ -220,6 +224,9 @@ export default {
   },
   mounted() {
     this.timeSet();
+  },
+  deactivated() {
+    this.resetCredential();
   },
 };
 </script>
@@ -293,10 +300,6 @@ button {
   border-radius: 10px;
 }
 
-#disable-time {
-  background-color: red;
-}
-
 #add-button {
   text-align: end;
 }
@@ -327,5 +330,13 @@ label {
 .form-select:focus {
   border: 1px solid #5c6ac4;
   box-shadow: none;
+}
+
+.scheduled{
+  background-color: rgb(170, 170, 170);
+}
+
+.scheduled-consultant{
+  background-color: #ccd3ff;
 }
 </style>

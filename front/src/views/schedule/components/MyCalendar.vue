@@ -1,11 +1,9 @@
 <template>
   <div class="calendar">
       <h2>
-        <!-- <a href="#" @click="onClickPrev(currentMonth)">◀</a> -->
         <a href="#" @click="onClickPrev()">◀</a>
         {{currentYear}}년 {{currentMonth}}월
         <a href="#" @click="onClickNext()">▶</a>
-        <!-- <a href="#" @click="onClickNext(currentMonth)">▶</a> -->
       </h2>
       <table class="table">
           <thead>
@@ -31,26 +29,33 @@ v-if="selectedDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day
                 <div v-for="sc in schedules" :key="sc" id="schedule">
                   <div v-if="sc.category !== 'block'">
                     <div
-v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`"
-                    class="schedule-summary">
+                    class="schedule-summary"
+v-if="sc.scheduleDate === `${currentYear}-${`0${currentMonth}`.slice(-2)}-${`0${day}`.slice(-2)}`">
                       <div
-:style="[sc.category == 'practice' || 'consulting-job' || 'consulting-introduction' ?
-                      {background:'#deepblue'} : {background:'#deeppink'}]">
+                      class="schedule-summary"
+:style="[['practice', 'consulting-job', 'consulting-introduction'].includes(sc.category) ?
+                      {background:'#5c6ac4'} : {background:'#ff9e9e'}]">
                         {{ sc.detail }}
                       </div>
                       <div class="schedule-detail">
-                        {{ sc.scheduleDate.slice(5, 7) }}월
-                        {{ sc.scheduleDate.slice(-2) }}일
-                        {{ sc.startTime }}<br>
-                        {{ sc.detail }}<br>
-                        <span v-show="sc.consultantName">
-                        {{ sc.consultantName }}
-                        </span><br>
-                        <button
-                        class="btn btn-danger"
-                        @click="deleteSchedule(sc.id)">
-                        삭 제
-                        </button>
+                        <p id="modal-head">
+                          {{ sc.detail }}
+                        </p>
+                        <p id="modal-body">
+                          {{ sc.scheduleDate.slice(5, 7) }}월
+                          {{ sc.scheduleDate.slice(-2) }}일
+                          {{ sc.startTime }}<br>
+                          <span v-show="sc.consultantName">
+                          {{ sc.consultantName }}
+                          </span>
+                        </p>
+                        <div id="button-area">
+                          <button
+                          id="delete-button"
+                          @click="deleteSchedule(sc.id)">
+                          삭 제
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -234,7 +239,8 @@ button:hover {
 }
 
 td {
-  height: 100px;
+  height: 10vh;
+  width: 10vw;
   font-size: 10px;
 }
 td:hover {
@@ -264,9 +270,13 @@ h2 {
 .schedule-summary {
   position: relative;
   display: block;
-  border-radius: 5%;
+  border-radius: 15px;
   background: rgba(0, 191, 255, 0.459);
+  margin-bottom: 0.2vh;
   color: white;
+  text-align: start;
+  text-indent: 0.5vw;
+  font-size: 0.2rem;
 }
 
 .schedule-detail {
@@ -283,6 +293,9 @@ h2 {
 
 .schedule-summary:hover .schedule-detail {
   visibility: visible;
+  background-color: #8e94bd;
+  text-align: start;
+  text-indent: 1px;
 }
 
 .schedule-summary .schedule-detail::after {
@@ -293,8 +306,32 @@ h2 {
 
 .schedule-summary .schedule-detail {
   width: 120px;
-  top: 105%;
+  top: -20%;
   left: 50%;
-  margin-left: -60px;
+  margin-left: 45px;
+}
+
+#modal-head {
+  font-size: 20px;
+  margin: 0%;
+  padding: 0%;
+}
+
+#modal-body {
+  font-size: 15px;
+}
+
+#delete-button {
+  background-color: #ffa2a2;
+  border-radius: 50px;
+  width: 30px;
+  height: 20px;
+  text-align: center;
+  color: white;
+}
+
+#button-area {
+  display: flex;
+  justify-content: end;
 }
 </style>

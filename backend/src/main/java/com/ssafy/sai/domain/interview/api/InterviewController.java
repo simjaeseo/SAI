@@ -147,8 +147,8 @@ public class InterviewController {
     }
 
     //사용자 질문 삭제
-    @DeleteMapping("/customQuestion/delete")
-    public ResponseEntity deleteCustomInterviewQuestion(@RequestParam Long id) {
+    @DeleteMapping("/customQuestion/delete/{custom-interview-question-id}")
+    public ResponseEntity deleteCustomInterviewQuestion(@PathVariable("custom-interview-question-id") Long id) {
         interviewService.deleteCustomInterviewQuestion(id);
         return ResponseEntity.ok().body(new MessageResponse<>());
     }
@@ -160,9 +160,9 @@ public class InterviewController {
     }
 
     //사용자 질문 목록 조회
-    @GetMapping("/customQuestion/list")
-    public List<CustomInterviewQuestion> getCustomInterviewQuestionList(@RequestBody CustomQuestionRequest request) {
-        return interviewService.getCustomInterviewQuestionList(request);
+    @GetMapping("/customQuestion/list/{member-id}")
+    public ResponseEntity<?extends DataResponse> getCustomInterviewQuestionList(@PathVariable("member-id")Long id) {
+        return ResponseEntity.ok().body(new DataResponse(interviewService.getCustomInterviewQuestionList(id)));
     }
 
 

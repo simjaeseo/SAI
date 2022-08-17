@@ -1,43 +1,5 @@
 <template>
   <div class='container' id='management-page1'>
-    <!-- <div class="d-flex justify-content-between">
-      <p id='management-text1'>교육생 관리</p>
-      <div class="max-w-xs relative space-y-3">
-        <label
-          for="search"
-          class="text-gray-900"
-        >
-        <input
-          type="text"
-          id="search"
-          v-model="searchName"
-          placeholder="&#128269;  이름을검색하세요"
-          class="p-3 mb-0.5 w-full form-control"
-          style="width:300px; height:50px"
-          @keydown.enter="searchStudent"
-        >
-        </label>
-
-        <ul
-          v-if="searchName"
-          class="border border-gray-300"
-        >
-          <li>
-            <p id='result-count'>
-              {{ students.length }}명이 검색되었습니다.
-            </p>
-          </li>
-          <li
-            v-for="student in students"
-            :key="student.id"
-            @click="selectedStudent(student), closeUl()"
-            @keydown="selectedStudent(student), closeUl()">
-            <p>{{student.year}}기 {{ student.name }} {{ student.campus.city }}
-              {{student.campus.classNumber }}반</p>
-          </li>
-        </ul>
-      </div>
-    </div> -->
     <find-student-input-form :cKey="cKey" @forceRerender="forceRerender"></find-student-input-form>
     <hr>
     <div class="container mb-5">
@@ -46,18 +8,22 @@
       <carousel :nav="false" :dots="false" class="marginTop50">
         <div class="card mt-4" style="width: 19rem;"
         v-for="(request, index) in getList" :key="index">
+        <router-link :to="{ name: 'AnalysisDetail',
+        params: { userid: `${ request.studentId }`, videoid: `${ request.id }`}}" id="router-text">
           <div class="card-body">
             <h5 class="card-title">{{ request.campus.city }}
               {{ request.campus.classNumber }}반 {{ request.studentName }}</h5>
             <p class="card-text">요청일: {{ request.interviewDate }}</p>
           </div>
+        </router-link>
         </div>
       </carousel>
       </div>
     </div>
     <div class="container">
       <div class="row">
-        <div v-if="studentData.studentName" id="student-profile">
+        <div v-if="studentData.studentName" id="student-profile"
+        class="col-4">
           <img v-if="studentData.img" id='user_profile_img'
           :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
           <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
@@ -84,10 +50,14 @@
             </li>
           </div>
         </div>
-        <div v-if="studentData.studentName" id="student-profile2">
+        <div v-if="studentData.studentName" id="student-profile2"
+        class="col-8">
         <carousel :nav="false" :dots="false" class="marginTop50">
           <div class="card mt-4" style="width: 16.792rem;"
           v-for="(video, index) in userVideo" :key="index">
+          <router-link :to="{ name: 'AnalysisDetail',
+          params: { userid: `${ video.studentId }`, videoid: `${ video.id }`}}"
+          id="router-text">
             <div class="card-body">
               <div id="badge-box">
                 <button id="card-text-badge-request" class="btn"
@@ -104,6 +74,7 @@
               <h5 class="card-title">#{{ video.id }} 개인 모의 면접</h5>
               <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
             </div>
+          </router-link>
           </div>
         </carousel>
         </div>
@@ -248,6 +219,9 @@ export default {
 </script>
 
 <style scoped>
+#router-text {
+  text-decoration: none;
+}
 #card-text-badge-request {
   display: inline;
   background: #f0506e;
@@ -293,7 +267,6 @@ h5 {
   background-color: #5c6ac40c;
   border-radius: 10px;
   height: 750px;
-  width: 860px;
   margin-left: 30px;
 }
 h6 {
