@@ -121,7 +121,7 @@
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
                 <p v-if="emotionArray[order] != null" id="result-text">
-                  긍정적인 표정이 {{ emotionArray[order] }}번 감지되었습니다.
+                  긍정적인 표정의 비율이 {{ emotionArray[order] }}입니다.
                   긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
                   평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
                 </p>
@@ -130,10 +130,10 @@
             <div class="col-lg-6" id="teachable-box">
               <h5>총평</h5>
               <div id="teachable-box-inner">
-                <p v-if="teachableSub > 22" id="result-text">
+                <p v-if="teachableSub > 1" id="result-text">
                   평균적으로 감지되는 움직임보다 다소 많은 흔들림이 감지되었습니다.
                   AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
-                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[0].studentName }}
+                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라서 {{ userVideo[0].studentName }}
                   님의 경우 올바른 자세를 유지하는
                   연습이 필요하다는 점을 알려드립니다. 또한
                   AI면접에서는 목소리에 대한 요소가 가장 중요합니다. 우선 크고, 또렷한 목소리로 대답을 해야 하며
@@ -345,7 +345,7 @@ export default {
     };
 
     // drawAudio(sample);
-    drawAudio('@/assets/sample.mp3');
+    drawAudio(this.audioArray.order);
   },
 };
 </script>
