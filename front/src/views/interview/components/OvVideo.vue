@@ -67,6 +67,10 @@ export default {
       }, 100);
     });
   },
+
+  unmounted() {
+    MediaStreamTrack.stop();
+  },
 };
 </script>
 

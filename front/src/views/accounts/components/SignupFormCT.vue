@@ -186,6 +186,9 @@
           <button class='btn' id='signup-btn' type="submit" v-if='state.isCorrect'>회원가입</button>
         </div>
       </form>
+        <router-link to='/' id='sign-up-text'>
+          <button class='btn' id='signup-btn'>로그인으로</button>
+        </router-link>
     </div>
   </div>
 </template>
