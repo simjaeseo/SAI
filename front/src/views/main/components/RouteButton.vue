@@ -18,7 +18,9 @@
                     Number(Date().slice(15, 18)) ==
                     Number(upcomingSchedules[0].startTime.slice(0, 2)) - 1 ||
                     Number(Date().slice(15, 18)) ==
-                    Number(upcomingSchedules[0].startTime.slice(0, 2))"
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) ||
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) - 3"
                     id="schedule-btn1" class="btn">
                       입장하기
                   </button>

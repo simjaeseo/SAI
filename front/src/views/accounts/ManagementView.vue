@@ -136,7 +136,7 @@ export default {
           }
           store.dispatch('findedStudents', finded);
           finded = [];
-        })
+        });
     };
     let birthday = '';
     let city = '';

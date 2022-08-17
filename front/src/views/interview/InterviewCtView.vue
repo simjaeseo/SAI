@@ -27,8 +27,6 @@
       </div>
 
       <div id="session" v-if="session">
-        {{ this.currentUser }}
-        {{ upcomingSchedules[0].studentId }}
         <div id="main-video">
           <div class="d-flex">
             <div id="video-box">
@@ -36,8 +34,6 @@
               @emotionRatioCount="emotionRatioCount"/>
             </div>
             <div id="video-container" class="col-md-6">
-              <user-video :stream-manager="publisher"
-              @click="updateMainVideoStreamManager(publisher)"/>
               <user-video v-for="sub in subscribers"
               :key="sub.stream.connection.connectionId"
               :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
@@ -53,10 +49,7 @@
               this.currentUser.memberStatus == 'CONSULTANT'"
               id="buttonLeaveSession" @click="stopRecoding()" value="답변 완료">
             <div class="d-flex justify-content-end">
-              <!-- <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
-              data-bs-target="#exampleModalToggle"
-              @click="leaveSession()" id="modal-btn">면접 종료 -->
-              <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
+              <button class="btn" data-bs-toggle="modal" @keydown="s"
               data-bs-target="#exampleModalToggle" id="modal-btn">면접 종료
               </button>
             </div>
@@ -96,7 +89,7 @@ export default {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      mySessionId: `User${Math.floor(Math.random() * 100000)}`,
+      mySessionId: `${this.upcomingSchedules[0].id}`,
       myUserName: `Participant${Math.floor(Math.random() * 100)}`,
       isStart: false,
       question: '',
