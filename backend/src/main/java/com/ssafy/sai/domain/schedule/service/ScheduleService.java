@@ -47,7 +47,9 @@ public class ScheduleService {
         Member findMember = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 
-        PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "scheduleDate", "startTime"));
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+
+        PageRequest pageRequest = PageRequest.of(0, scheduleList.size(), Sort.by(Sort.Direction.ASC, "scheduleDate", "startTime"));
 
         if (findMember.getMemberStatus().equals(TRAINEE)) {
             Page<Schedule> schedules = scheduleRepository.selectAllByStudent(id, pageRequest);
