@@ -27,7 +27,14 @@
       <hr>
       이모션
       {{ emotionArray }} -->
-      <h2>{{ userVideo[videoId].studentName }}님의 {{ videoId }} 번째 영상 분석 결과</h2>
+      <div>
+        <h2>{{ userVideo[0].studentName }}님의 {{ videoId }} 번째 영상 분석 결과 &#128064;</h2>
+        <div id="btn-box">
+          <button class="btn"
+          id="completed-btn" @click="completedPB"
+          v-if="currentUser.memberStatus === 'CONSULTANT'">피드백 완료</button>
+        </div>
+      </div>
       <hr>
       <p id="date-text">
         &#128204;{{ userVideo[videoId-1].interviewDate}}
@@ -126,7 +133,7 @@
                 <p v-if="teachableSub > 22" id="result-text">
                   평균적으로 감지되는 움직임보다 다소 많은 흔들림이 감지되었습니다.
                   AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
-                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[videoId].studentName }}
+                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[0].studentName }}
                   님의 경우 올바른 자세를 유지하는
                   연습이 필요하다는 점을 알려드립니다. 또한
                   AI면접에서는 목소리에 대한 요소가 가장 중요합니다. 우선 크고, 또렷한 목소리로 대답을 해야 하며
@@ -135,9 +142,9 @@
                   웅얼거리지 않도록 신경써서 대답하는 것을 연습할 필요가 있습니다.
                 </p>
                 <p v-else-if="emotionSub < 10" id="result-text">
-                  영상에서 분석된 {{ userVideo[videoId].studentName }}님의 표정변화가 다소 부족한것으로 판단됩니다.
+                  영상에서 분석된 님의 표정변화가 다소 부족한것으로 판단됩니다.
                   AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
-                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[videoId].studentName }}님의 경우 미소를 유지하는
+                  시선 처리 등이 가장 많은 점수를 차지합니다. 따라써 {{ userVideo[0].studentName }}님의 경우 미소를 유지하는
                   연습이 필요하다는 점을 알려드립니다. 또한
                   AI면접에서는 목소리에 대한 요소가 가장 중요합니다. 우선 크고, 또렷한 목소리로 대답을 해야 하며
                   목소리의 크기 역시 중요한데 약간은 큰 소리로 대답하는것이 좋습니다. 또한, 정확한 발음을 통해
@@ -160,6 +167,8 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
+// eslint-disable-next-line
+import router from '@/router/index';
 import drf from '@/api/api';
 
 export default {
@@ -255,6 +264,16 @@ export default {
           alert('피드백이 등록되었습니다.'),
         );
     },
+    completedPB() {
+      // eslint-disable-next-line
+      if (confirm("해당 영상을 '피드백 완료' 처리 하시겠습니까?")) {
+        axios({
+          url: drf.interview.completedPB(this.currentUser.id, this.$route.params.videoid),
+          method: 'put',
+        })
+          .then(router.push({ name: 'Management' }));
+      }
+    },
   },
   mounted() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -332,11 +351,19 @@ export default {
 </script>
 
 <style scoped>
+#completed-btn {
+  background-color: #ffffff;
+  color: #5c6ac4;
+  border: 1px solid #5c6ac4;
+}
+#completed-btn:hover {
+  background-color: #5c6ac4;
+  color: white;
+}
 h2 {
   font-weight: 700;
   color: #494949;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 50px;;
 }
 #feed-back-btn {
   border: 1px solid #5c6ac4;

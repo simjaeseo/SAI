@@ -1,4 +1,6 @@
 <template>
+<div>
+
   <main v-if="this.upcomingSchedules[0] !== undefined" class="page-content">
     <div class="card">
         <div class="content">
@@ -54,6 +56,7 @@
         </div>
     </div>
   </main>
+</div>
 </template>
 
 <script>

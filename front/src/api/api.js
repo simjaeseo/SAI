@@ -42,5 +42,6 @@ export default {
     videoDetailPage: (memberId, videoId) => `${HOST + INTERVIEW}${memberId}/request/${videoId}`,
     // 교육생 피드백 작성
     feedBackPost: (ctId, videoId) => `${HOST + INTERVIEW}${ctId}/feedback/${videoId}`,
+    completedPB: (ctId, InfoId) => `${HOST + INTERVIEW}${ctId}/request/${InfoId}`,
   },
 };
