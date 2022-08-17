@@ -97,6 +97,8 @@
                 </div>
                 <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
                 <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
+                <p class="card-text">비디오 번호 {{ video.id }}</p> <br>
+                <p class="card-text">현재유저 {{ currentUser.id }}</p> <br>
               </div>
             </router-link>
             </li>
