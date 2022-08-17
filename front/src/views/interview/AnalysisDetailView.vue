@@ -123,7 +123,7 @@
             <div class="col-lg-6" id="teachable-box">
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
-                <p v-if="emotionArray[order] != null" id="result-text">
+                <p v-if="emotionArray[order] != 0" id="result-text">
                   긍정적인 표정의 비율이 {{ emotionArray[order] }}입니다.
                   긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
                   평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
