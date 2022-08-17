@@ -41,6 +41,7 @@ public class InterviewVideo extends BaseEntity {
     private String audioName;
     private String feedback;
 
+    @Column(length = 4000)
     private String stt;
 
     @Column(name = "wrong_posture_count")
