@@ -79,7 +79,7 @@ public class GcsService {
             );
             String gsutillUrl = "gs://sai-ssafy/" + flacAudioNames.get(index); // google speech API 를 사용하기위한 gsutill URL
 
-            String gcsUrl = "https://storage.googleapis.com/sai-ssafy/" + audioName;
+            String gcsUrl = "https://storage.googleapis.com/sai-ssafy/" + flacAudioNames.get(index);
             gcsUrls.add(gcsUrl);
 
             STT(id, request, saveInterviewInfo, gsutillUrl, gcsUrls.get(index), openviduVideoNames, flacAudioNames, S3videoUrlList.get(index), S3videoNameList.get(index), index);
