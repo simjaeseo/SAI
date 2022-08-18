@@ -29,7 +29,7 @@
       {{ emotionArray }} -->
       <!-- {{ setVideos.value }} -->
       <div>
-        <h2>{{ userVideo[0].studentName }}님의 {{ videoId }} 번째 영상 분석 결과 &#128064;</h2>
+        <h2>{{ userVideo[0].studentName }}님의 {{ order + 1 }} 번째 영상 분석 결과 &#128064;</h2>
         <div id="btn-box">
           <button class="btn"
           id="completed-btn" @click="completedPB"
@@ -240,7 +240,6 @@ export default {
 
     const userVideo = computed(() => store.getters.userVideo);
     const videoDetail = computed(() => store.getters.videoDetail);
-
     const videoUrl = computed(() => store.getters.videoUrl);
     const stt = computed(() => store.getters.stt);
     const emotionRatio = computed(() => store.getters.emotionRatio);
@@ -254,11 +253,8 @@ export default {
     const qArray = computed(() => store.getters.qArray);
     const emotionArray = computed(() => store.getters.emotionArray);
     const feedback = computed(() => store.getters.feedback);
-    const order = computed(() => store.getters.order);
     const teachableSub = computed(() => store.getters.teachableSub);
     const emotionSub = computed(() => store.getters.emotionSub);
-
-    console.log(userVideo.value);
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
@@ -322,22 +318,21 @@ export default {
     };
 
     const drawAudio = (data) => {
-      console.log(data);
       axios({
         url: drf.interview.videoDetailPage(data[0], data[1]),
         method: 'get',
       })
         .then((res) => {
-          console.log(res.data.data[data[2]].audioUrl);
           fetch(res.data.data[data[2]].audioUrl)
             .then((response) => response.arrayBuffer())
             .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-            .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
+            .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
+            .catch((err) => console.log(err));
         });
     };
     onMounted(() => {
       // drawAudio(sample);
-      drawAudio([userId, VDID, order.value]);
+      drawAudio([userId, VDID, 0]);
     });
 
     return {
@@ -358,7 +353,6 @@ export default {
       qArray,
       emotionArray,
       feedback,
-      order,
       teachableSub,
       emotionSub,
       drawAudio,
@@ -370,6 +364,7 @@ export default {
     return {
       feedbackData: null,
       feedbackId: null,
+      order: 0,
       videoLink: this.videoArray[0],
       audioLink: this.audioArray[0],
     };
@@ -377,11 +372,12 @@ export default {
   methods: {
     getIndex(index) {
       this.order = index;
-      console.log(this.videoArray[this.order]);
-      console.log(this.audioArray[this.order]);
       this.videoLink = this.videoArray[this.order];
       this.audioLink = this.audioArray[this.order];
-      this.drawAudio(this.userId, this.VDID, this.order);
+      console.log(222222222222222);
+      console.log(this.VDID);
+      console.log(this.userVideo[3]);
+      this.drawAudio([Number(this.userId), this.userVideo[this.VDID - 1].id, this.order]);
     },
     getId(id) {
       this.feedbackId = id;
@@ -393,7 +389,7 @@ export default {
     },
     feedBackPost() {
       axios({
-        url: drf.interview.feedBackPost(this.currentUser.id, this.setVideos.videoId),
+        url: drf.interview.feedBackPost(this.currentUser.id, this.setVideos[this.order].videoId),
         method: 'post',
         data: {
           feedback: this.feedbackData,

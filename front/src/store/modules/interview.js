@@ -75,6 +75,7 @@ export default {
     },
     SET_FEEDBACK_CREDENTIALS(state, credentials) {
       state.setVideos = credentials;
+      console.log(state.setVideos);
       credentials.forEach((element) => {
         state.videoArray.push(element.videoUrl);
         state.audioArray.push(element.audioUrl);
@@ -101,7 +102,6 @@ export default {
       state.qArray = [];
       state.emotionArray = [];
       state.feedback = [];
-      state.order = 0;
       state.teachableSub = null;
       state.emotionSub = null;
     },

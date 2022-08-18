@@ -87,7 +87,6 @@ export default {
       state.feedBackList = list;
     },
     SET_USER_VIDEO(state, data) {
-      console.log(data);
       state.userVideo = data;
     },
   },
