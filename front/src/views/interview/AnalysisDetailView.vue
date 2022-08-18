@@ -110,33 +110,52 @@
             <div class="col-lg-6" id="teachable-box">
               <h5>자세 분석</h5>
               <div id="teachable-box-inner">
-                <p v-if="teachableArray[order]" id="result-text">
+                <p>
                   해당 답변이 진행되는 동안 잘못된 자세가 {{ teachableArray[order] }}번 감지되었습니다.
+                </p>
+                <p v-if="teachableArray[order] > 20" id="result-text">
+                  자세가 심하게 불안정합니다.
                   안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
                   몸의 흔들림이 잦을수록 집중도, 신뢰감, 소통능력 평가에 영향을 줄 수 있으니, 유의하여 면접에 응시하시기 바랍니다.
                 </p>
-                <p v-if="teachableArray[order] === 0" id="result-text">
-                  자세를 분석하는데 필요한 데이터가 충분하지않습니다 :(
+                <p v-else-if="teachableArray[order] > 5" id="result-text">
+                  자세가 조금 불안정합니다.
+                  안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
+                  몸의 흔들림이 잦을수록 집중도, 신뢰감, 소통능력 평가에 영향을 줄 수 있으니, 유의하여 면접에 응시하시기 바랍니다.
+                </p>
+                <p v-else id="result-text">
+                  자세가 안정적입니다.
+                  안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
+                  몸의 흔들림이 잦을수록 집중도, 신뢰감, 소통능력 평가에 영향을 줄 수 있으니, 유의하여 면접에 응시하시기 바랍니다.
                 </p>
               </div>
             </div>
             <div class="col-lg-6" id="teachable-box">
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
-                <p v-if="emotionArray[order] != 0" id="result-text">
-                  긍정적인 표정의 비율이 {{ emotionArray[order] }}입니다.
+                <p>
+                  긍정적인 표정의 비율이 {{ `${emotionArray[order]*100}`.splice(0, 4) }}%입니다.
+                </p>
+                <p v-if="emotionArray[order] > 0.5" id="result-text">
+                  표정이 긍정적입니다.
                   긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
                   평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
                 </p>
-                <p v-if="emotionArray[order] === 0" id="result-text">
-                  표정을 분석하는데 필요한 데이터가 충분하지않습니다 :(
+                <p v-else-if="emotionArray[order] > 0.25" id="result-text">
+                  긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
+                  평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
+                </p>
+                <p v-else id="result-text">
+                  더 긍정적인 표정으로 면접을 준비하는 것을 추천합니다.
+                  긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
+                  평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
                 </p>
               </div>
             </div>
             <div class="col-lg-6" id="teachable-box">
               <h5>총평</h5>
               <div id="teachable-box-inner">
-                <p v-if="teachableSub > 1" id="result-text">
+                <p v-if="teachableSub > 5" id="result-text">
                   평균적으로 감지되는 움직임보다 다소 많은 흔들림이 감지되었습니다.
                   AI면접에서는 답변 내용보다 외적 요소가 중요합니다. 말할 때 표정과 자세, 목소리 톤, 음색,
                   시선 처리 등이 가장 많은 점수를 차지합니다. 따라서 {{ userVideo[0].studentName }}
@@ -281,6 +300,78 @@ export default {
           .then(router.push({ name: 'Management' }));
       }
     },
+  },
+  mounted() {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContext();
+
+    const drawLineSegment = (ctx, x, height, width, isEven) => {
+      const tmp = -height;
+      const tmp2 = ctx;
+      tmp2.lineWidth = 1;
+      tmp2.strokeStyle = '#000';
+      tmp2.beginPath();
+      // tmp = isEven ? height : -height;
+      tmp2.moveTo(x, 0);
+      tmp2.lineTo(x, tmp);
+      tmp2.arc(x + width / 2, tmp, width / 2, Math.PI, 0, isEven);
+      tmp2.lineTo(x + width, 0);
+      tmp2.stroke();
+    };
+
+    const draw = (normalizedData) => {
+      const canvas = document.querySelector('canvas');
+      const dpr = window.devicePixelRatio || 1;
+      const padding = 20;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = (canvas.offsetHeight + padding * 2) * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.translate(0, canvas.offsetHeight / 2 + padding);
+
+      const width = canvas.offsetWidth / normalizedData.length;
+      for (let i = 0; i < normalizedData.length; i += 1) {
+        const x = width * i;
+        let height = normalizedData[i] * canvas.offsetHeight - padding;
+        if (height < 0) {
+          height = 0;
+        } else if (height > canvas.offsetHeight / 2) {
+          height = height > canvas.offsetHeight / 2;
+        }
+        drawLineSegment(ctx, x, height, width, (i + 1) % 2);
+      }
+    };
+
+    const filterData = (audioBuffer) => {
+      const rawData = audioBuffer.getChannelData(0);
+      const samples = 5;
+      const blockSize = Math.floor(rawData.length / samples);
+      const filteredData = [];
+      for (let i = 0; i < samples; i += 1) {
+        const blockStart = blockSize * i;
+        let sum = 0;
+        for (let j = 0; j < blockSize; j += 1) {
+          sum += Math.abs(rawData[blockStart + j]);
+        }
+        filteredData.push(sum / blockSize);
+      }
+      return filteredData;
+    };
+
+    const normalizeData = (filteredData) => {
+      const multiplier = Math.max(...filteredData) ** -1;
+      return filteredData.map((n) => n * multiplier);
+    };
+
+    const drawAudio = (url) => {
+      fetch(url)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+        .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
+    };
+
+    // drawAudio(sample);
+    drawAudio(this.audioArray[this.order]);
   },
 };
 </script>

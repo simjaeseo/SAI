@@ -244,7 +244,6 @@ export default {
       if (prediction[0].probability.toFixed(2) >= 0.70) {
         if (status !== 'proper posture') {
           count += 1;
-          console.log(count);
           countOutput();
           progress -= 32.7;
           if (progress <= 0) {
@@ -276,7 +275,6 @@ export default {
     }
 
     async function init() {
-      console.log(1111111);
       const modelURL = `${TMURL}model.json`;
       const metadataURL = `${TMURL}metadata.json`;
 
@@ -374,7 +372,6 @@ export default {
       this.isAnimationStart = true;
       this.question = this.questions.shift();
       this.questionTTS = this.questionsTTS.shift();
-      console.log(this.questions);
       this.preWrongCount = this.countOutput().count;
       this.happy = 0;
       this.emotionCount = 0;
@@ -408,7 +405,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log(666666);
           this.myRecodingId = res.data.id;
         });
     },
@@ -421,7 +417,6 @@ export default {
       } else {
         this.emotionRatio.push(0);
       }
-      console.log(this.emotionRatio);
       axios
         .post(`${OPENVIDU_SERVER_URL}/openvidu/api/recordings/stop/${this.myRecodingId}`, JSON.stringify({
           recoding: this.myRecodingId,
@@ -437,7 +432,6 @@ export default {
         });
     },
     joinSession() {
-      console.log(222222);
       // --- Get an OpenVidu object ---
       this.OV = new OpenVidu();
 
@@ -503,7 +497,6 @@ export default {
     },
 
     leaveSession() {
-      console.log(44444);
       // --- Leave the session by calling 'disconnect' method over the Session object ---
       if (this.session) this.session.disconnect();
 
@@ -517,7 +510,6 @@ export default {
     },
 
     updateMainVideoStreamManager(stream) {
-      console.log(33333);
       if (this.mainStreamManager === stream) return;
       this.mainStreamManager = stream;
     },
@@ -528,7 +520,6 @@ export default {
 
     // See https://docs.openvidu.io/en/stable/reference-docs/REST-API/#post-session
     createSession(sessionId) {
-      console.log(555555);
       return new Promise((resolve, reject) => {
         const data = JSON.stringify({ customSessionId: sessionId });
         axios

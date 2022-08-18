@@ -1,5 +1,5 @@
-const HOST = 'https://i7c206.p.ssafy.io:8081/';
-// const HOST = 'http://localhost:8081/';
+// const HOST = 'https://i7c206.p.ssafy.io:8081/';
+const HOST = 'http://localhost:8081/';
 
 const MEMBER = 'members/';
 const SCHEDULE = 'schedule/';
