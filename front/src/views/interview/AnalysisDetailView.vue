@@ -195,6 +195,7 @@ import {
   computed,
   ref,
   onMounted,
+  // toRaw,
 } from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
@@ -297,7 +298,7 @@ export default {
 
     const filterData = (audioBuffer) => {
       const rawData = audioBuffer.getChannelData(0);
-      const samples = 50000;
+      const samples = 5;
       const blockSize = Math.floor(rawData.length / samples);
       const filteredData = [];
       for (let i = 0; i < samples; i += 1) {
@@ -373,6 +374,9 @@ export default {
       this.order = index;
       this.videoLink = this.videoArray[this.order];
       this.audioLink = this.audioArray[this.order];
+      console.log(222222222222222);
+      console.log(this.VDID);
+      console.log(this.userVideo[3]);
       this.drawAudio([Number(this.userId), this.userVideo[this.VDID - 1].id, this.order]);
     },
     getId(id) {
