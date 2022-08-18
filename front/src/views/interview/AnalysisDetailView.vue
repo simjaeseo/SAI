@@ -27,8 +27,9 @@
       <hr>
       이모션
       {{ emotionArray }} -->
+      <!-- {{ setVideos.value }} -->
       <div>
-        <h2>{{ userVideo[0].studentName }}님의 {{ videoId }} 번째 영상 분석 결과 &#128064;</h2>
+        <h2>{{ userVideo[0].studentName }}님의 {{ order + 1 }} 번째 영상 분석 결과 &#128064;</h2>
         <div id="btn-box">
           <button class="btn"
           id="completed-btn" @click="completedPB"
@@ -43,7 +44,8 @@
         <div class="row">
           <div class="col-lg-8" id="video-box">
             <embed :src="`${videoLink}`" type="" v-if="videoLink" width="680px" height="400px">
-            <embed :src="`${ videoArray[order] }`" type="" v-else width="680px" height="400px">
+            <!-- <embed :src="`${ videoArray[order] }`" type=""
+            v-else width="680px" height="400px"> -->
           </div>
           <div id="stt-box" class="col-lg-4">
             <div v-if="order != null">
@@ -134,7 +136,7 @@
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
                 <p>
-                  긍정적인 표정의 비율이 {{ `${emotionArray[order]*100}`.splice(0, 4) }}%입니다.
+                  긍정적인 표정의 비율이 {{ emotionArray[order] }}%입니다.
                 </p>
                 <p v-if="emotionArray[order] > 0.5" id="result-text">
                   표정이 긍정적입니다.
@@ -189,11 +191,17 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import {
+  computed,
+  ref,
+  onMounted,
+  // toRaw,
+} from 'vue';
 import { useStore } from 'vuex';
 import axios from 'axios';
 // eslint-disable-next-line
 import router from '@/router/index';
+import { useRoute } from 'vue-router';
 import drf from '@/api/api';
 import LoadPage from './components/LoadPage.vue';
 
@@ -202,106 +210,52 @@ export default {
   components: { LoadPage },
   setup() {
     const store = useStore();
-
+    const route = useRoute();
     const currentUser = computed(() => store.getters.currentUser);
+
+    const reset = () => {
+      store.commit('RESET_FEEDBACK_CREDENTIALS');
+    };
+
+    const getUserVideo = (UID) => {
+      store.dispatch('getUserVideo', UID);
+    };
+
+    const id = { ...route };
+    const videoId = ref(null);
+
+    videoId.value = id.params.videoid;
+    const userId = id.params.userid;
+    const VDID = videoId.value;
+
+    getUserVideo(userId);
+
+    const setCredential = (data) => {
+      console.log(data); // 지우지 말것!
+      store.dispatch('fetchFeedbackCredentials', data);
+    };
+
+    reset();
+    setCredential([userId, VDID]);
+
     const userVideo = computed(() => store.getters.userVideo);
     const videoDetail = computed(() => store.getters.videoDetail);
-    const getVideoDetail = (params) => {
-      store.dispatch('getVideoDetail', params);
-    };
-    return {
-      currentUser,
-      userVideo,
-      videoDetail,
-      getVideoDetail,
-    };
-  },
-  data() {
-    return {
-      videoUrl: '',
-      stt: '',
-      emotionRatio: 0,
-      wrongPostureCount: 0,
-      setVideos: null,
-      videoId: null,
-      videoArray: [],
-      audioArray: [],
-      isFeedBackCompleted: [],
-      sttArray: [],
-      teachableArray: [],
-      qArray: [],
-      emotionArray: [],
-      feedback: [],
-      order: 0,
-      videoLink: null,
-      teachableSub: null,
-      emotionSub: null,
-      len: null,
-      feedbackData: null,
-      feedbackId: null,
-    };
-  },
-  created() {
-    this.videoId = this.$route.params.videoid;
-    this.userId = this.$route.params.userid;
-    this.$store.dispatch('getUserVideo', this.userId);
-    axios({
-      url: drf.interview.videoDetailPage(this.userId, this.videoId),
-      method: 'get',
-    })
-      .then((res) => {
-        this.setVideos = JSON.parse(JSON.stringify(res.data.data));
-        this.len = this.setVideos.length;
-        for (let i = 0; i < res.data.data[0].videoUrl.length; i += 1) {
-          this.videoArray.push(JSON.parse(JSON.stringify(res.data.data[i].videoUrl)));
-          this.audioArray.push(JSON.parse(JSON.stringify(res.data.data[i].audioUrl)));
-          this.isFeedBackCompleted.push(JSON.parse(JSON.stringify(res.data.data[i].feedback)));
-          this.sttArray.push(JSON.parse(JSON.stringify(res.data.data[i].stt)));
-          this.teachableArray.push(JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount)));
-          this.qArray.push(JSON.parse(JSON.stringify(res.data.data[i].usedInterviewQuestion)));
-          this.emotionArray.push(JSON.parse(JSON.stringify(res.data.data[i].emotionRatio)));
-          this.teachableSub += JSON.parse(JSON.stringify(res.data.data[i].wrongPostureCount));
-          this.emotionSub += JSON.parse(JSON.stringify(res.data.data[i].emotionRatio));
-        }
-      });
-  },
-  methods: {
-    getIndex(index) {
-      this.order = index;
-      this.videoLink = this.videoArray[this.order];
-    },
-    getId(id) {
-      this.feedbackId = id;
-      if (this.isFeedBackCompleted[this.order] !== 'false') {
-        this.feedbackData = this.isFeedBackCompleted[this.order];
-      } else if (this.isFeedBackCompleted[this.order] === 'false') {
-        this.feedbackData = null;
-      }
-    },
-    feedBackPost() {
-      axios({
-        url: drf.interview.feedBackPost(this.currentUser.id, this.feedbackId),
-        method: 'post',
-        data: {
-          feedback: this.feedbackData,
-        },
-      })
-        .then(
-          alert('피드백이 등록되었습니다.'),
-        );
-    },
-    completedPB() {
-      // eslint-disable-next-line
-      if (confirm("해당 영상을 '피드백 완료' 처리 하시겠습니까?")) {
-        axios({
-          url: drf.interview.completedPB(this.currentUser.id, this.$route.params.videoid),
-          method: 'put',
-        })
-          .then(router.push({ name: 'Management' }));
-      }
-    },
-  },
-  mounted() {
+    const videoUrl = computed(() => store.getters.videoUrl);
+    const stt = computed(() => store.getters.stt);
+    const emotionRatio = computed(() => store.getters.emotionRatio);
+    const wrongPostureCount = computed(() => store.getters.wrongPostureCount);
+    const setVideos = computed(() => store.getters.setVideos);
+    const videoArray = computed(() => store.getters.videoArray);
+    const audioArray = computed(() => store.getters.audioArray);
+    const isFeedBackCompleted = computed(() => store.getters.isFeedBackCompleted);
+    const sttArray = computed(() => store.getters.sttArray);
+    const teachableArray = computed(() => store.getters.teachableArray);
+    const qArray = computed(() => store.getters.qArray);
+    const emotionArray = computed(() => store.getters.emotionArray);
+    const feedback = computed(() => store.getters.feedback);
+    const teachableSub = computed(() => store.getters.teachableSub);
+    const emotionSub = computed(() => store.getters.emotionSub);
+
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
 
@@ -363,15 +317,98 @@ export default {
       return filteredData.map((n) => n * multiplier);
     };
 
-    const drawAudio = (url) => {
-      fetch(url)
-        .then((response) => response.arrayBuffer())
-        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-        .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
+    const drawAudio = (data) => {
+      axios({
+        url: drf.interview.videoDetailPage(data[0], data[1]),
+        method: 'get',
+      })
+        .then((res) => {
+          fetch(res.data.data[data[2]].audioUrl)
+            .then((response) => response.arrayBuffer())
+            .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+            .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
+            .catch((err) => console.log(err));
+        });
     };
+    onMounted(() => {
+      // drawAudio(sample);
+      drawAudio([userId, VDID, 0]);
+    });
 
-    // drawAudio(sample);
-    drawAudio(this.audioArray[this.order]);
+    return {
+      currentUser,
+      userVideo,
+      videoDetail,
+      videoUrl,
+      stt,
+      emotionRatio,
+      wrongPostureCount,
+      setVideos,
+      videoId,
+      videoArray,
+      audioArray,
+      isFeedBackCompleted,
+      sttArray,
+      teachableArray,
+      qArray,
+      emotionArray,
+      feedback,
+      teachableSub,
+      emotionSub,
+      drawAudio,
+      userId,
+      VDID,
+    };
+  },
+  data() {
+    return {
+      feedbackData: null,
+      feedbackId: null,
+      order: 0,
+      videoLink: this.videoArray[0],
+      audioLink: this.audioArray[0],
+    };
+  },
+  methods: {
+    getIndex(index) {
+      this.order = index;
+      this.videoLink = this.videoArray[this.order];
+      this.audioLink = this.audioArray[this.order];
+      console.log(222222222222222);
+      console.log(this.VDID);
+      console.log(this.userVideo[3]);
+      this.drawAudio([Number(this.userId), this.userVideo[this.VDID - 1].id, this.order]);
+    },
+    getId(id) {
+      this.feedbackId = id;
+      if (this.isFeedBackCompleted[this.order] !== 'false') {
+        this.feedbackData = this.isFeedBackCompleted[this.order];
+      } else if (this.isFeedBackCompleted[this.order] === 'false') {
+        this.feedbackData = null;
+      }
+    },
+    feedBackPost() {
+      axios({
+        url: drf.interview.feedBackPost(this.currentUser.id, this.setVideos[this.order].videoId),
+        method: 'post',
+        data: {
+          feedback: this.feedbackData,
+        },
+      })
+        .then(
+          alert('피드백이 등록되었습니다.'),
+        );
+    },
+    completedPB() {
+      // eslint-disable-next-line
+      if (confirm("해당 영상을 '피드백 완료' 처리 하시겠습니까?")) {
+        axios({
+          url: drf.interview.completedPB(this.currentUser.id, this.$route.params.videoid),
+          method: 'put',
+        })
+          .then(router.push({ name: 'Management' }));
+      }
+    },
   },
 };
 </script>

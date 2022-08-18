@@ -9,6 +9,26 @@ export default {
     selectedQuestionListTTS: [],
     videoDetail: [],
     customQuestionList: [],
+    videoUrl: '',
+    stt: '',
+    emotionRatio: 0,
+    wrongPostureCount: 0,
+    setVideos: null,
+    videoArray: [],
+    audioArray: [],
+    isFeedBackCompleted: [],
+    sttArray: [],
+    teachableArray: [],
+    qArray: [],
+    emotionArray: [],
+    feedback: [],
+    order: 0,
+    videoLink: null,
+    audioLink: null,
+    teachableSub: null,
+    emotionSub: null,
+    feedbackData: null,
+    feedbackId: null,
   },
   getters: {
     questionList: (state) => state.questionList,
@@ -16,6 +36,26 @@ export default {
     selectedQuestionListTTS: (state) => state.selectedQuestionListTTS,
     videoDetail: (state) => state.videoDetail,
     customQuestionList: (state) => state.customQuestionList,
+    videoUrl: (state) => state.videoUrl,
+    stt: (state) => state.stt,
+    emotionRatio: (state) => state.emotionRatio,
+    wrongPostureCount: (state) => state.wrongPostureCount,
+    setVideos: (state) => state.setVideos,
+    videoArray: (state) => state.videoArray,
+    audioArray: (state) => state.audioArray,
+    isFeedBackCompleted: (state) => state.isFeedBackCompleted,
+    sttArray: (state) => state.sttArray,
+    teachableArray: (state) => state.teachableArray,
+    qArray: (state) => state.qArray,
+    emotionArray: (state) => state.emotionArray,
+    feedback: (state) => state.feedback,
+    order: (state) => state.order,
+    videoLink: (state) => state.videoLink,
+    audioLink: (state) => state.audioLink,
+    teachableSub: (state) => state.teachableSub,
+    emotionSub: (state) => state.emotionSub,
+    feedbackData: (state) => state.feedbackData,
+    feedbackId: (state) => state.feedbackId,
   },
   mutations: {
     SET_QUESTION_LIST(state, questionList) {
@@ -32,6 +72,38 @@ export default {
     },
     SET_CUSTOM_QUESTION_LIST(state, customQuestionList) {
       state.customQuestionList = customQuestionList;
+    },
+    SET_FEEDBACK_CREDENTIALS(state, credentials) {
+      state.setVideos = credentials;
+      console.log(state.setVideos);
+      credentials.forEach((element) => {
+        state.videoArray.push(element.videoUrl);
+        state.audioArray.push(element.audioUrl);
+        state.isFeedBackCompleted.push(element.feedback);
+        state.sttArray.push(element.stt);
+        state.teachableArray.push(element.wrongPostureCount);
+        state.qArray.push(element.usedInterviewQuestion);
+        state.emotionArray.push(element.emotionRatio);
+        state.teachableSub += element.wrongPostureCount;
+        state.emotionSub += element.emotionRatio;
+      });
+    },
+    RESET_FEEDBACK_CREDENTIALS(state) {
+      state.videoUrl = '';
+      state.stt = '';
+      state.emotionRatio = 0;
+      state.wrongPostureCount = 0;
+      state.setVideos = null;
+      state.videoArray = [];
+      state.audioArray = [];
+      state.isFeedBackCompleted = [];
+      state.sttArray = [];
+      state.teachableArray = [];
+      state.qArray = [];
+      state.emotionArray = [];
+      state.feedback = [];
+      state.teachableSub = null;
+      state.emotionSub = null;
     },
   },
   actions: {
@@ -73,6 +145,15 @@ export default {
         .then((res) => {
           commit('SET_CUSTOM_QUESTION_LIST', res.data.data);
         });
+    },
+    fetchFeedbackCredentials({ commit, getters }, data) {
+      axios({
+        url: drf.interview.videoDetailPage(data[0], data[1]),
+        method: 'get',
+        header: getters.authHeader,
+      })
+        .then((res) => commit('SET_FEEDBACK_CREDENTIALS', res.data.data))
+        .catch((err) => console.log(err));
     },
   },
 };

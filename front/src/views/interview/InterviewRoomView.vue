@@ -151,7 +151,7 @@
             <div v-if="isFinished" class="d-flex justify-content-end">
               <button class="btn" data-bs-toggle="modal" @keydown="leaveSession"
               data-bs-target="#exampleModalToggle"
-              @click="leaveSession(), webcamOff()" id="modal-btn">면접 종료
+              @click="leaveSession()" id="modal-btn">면접 종료
               </button>
             </div>
           </div>
