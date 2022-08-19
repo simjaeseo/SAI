@@ -1,5 +1,8 @@
 ![image](/uploads/a96fc83be7c9523e23cadea4af27d9d4/image.png)
 
+# [📃 개발일지](https://lab.ssafy.com/s07-webmobile2-sub2/S07P12C206/-/wikis/home)
+
+
 ## :sparkles: 팀 구성 
 
 | 팀　장 | 팀　원 | 팀　원 | 팀　원 | 팀　원 | 팀　원 |
