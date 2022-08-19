@@ -322,29 +322,29 @@ export default {
       return filteredData.map((n) => n * multiplier);
     };
 
-    // const drawAudio = (data) => {
-    //   axios({
-    //     url: drf.interview.videoDetailPage(data[0], data[1]),
-    //     method: 'get',
-    //   })
-    //     .then((res) => {
-    //       fetch(res.data.data[data[2]].audioUrl)
-    //         .then((response) => response.arrayBuffer())
-    //         .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-    //         .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
-    //         .catch((err) => console.log(err));
-    //     });
-    // };
-    const drawAudio = (url) => {
-      fetch(url)
-        .then((response) => response.arrayBuffer())
-        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-        .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
+    const drawAudio = (data) => {
+      axios({
+        url: drf.interview.videoDetailPage(data[0], data[1]),
+        method: 'get',
+      })
+        .then((res) => {
+          fetch(res.data.data[data[2]].audioUrl)
+            .then((response) => response.arrayBuffer())
+            .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+            .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
+            .catch((err) => console.log(err));
+        });
     };
+    // const drawAudio = (url) => {
+    //   fetch(url)
+    //     .then((response) => response.arrayBuffer())
+    //     .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+    //     .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
+    // };
     onMounted(() => {
       // drawAudio(sample);
-      // drawAudio([userId, VDID, 0]);
-      drawAudio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/shoptalk-clip.mp3');
+      drawAudio([userId, VDID, 0]);
+      // drawAudio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/shoptalk-clip.mp3');
     });
 
     return {
