@@ -107,6 +107,11 @@
               <h5>오디오 분석</h5>
               <div id="audio-box-inner">
                 <canvas></canvas>
+                <p id="audio-text">
+                  목소리의 음량 변화를 주는 것이 필요합니다. 즉 감정에 따라 음량을 높이거나 낮춤으로써
+                  목소리에 다양한 변화를 주는 것이 상대방의 집중도를 높일 수 있습니다. 일정한 음량을 유지하기 보다
+                  상대가 집중해 줫으면 하는 내용에서는 상대적으로 음량을 키워주는 것이 좋습니다.
+                </p>
               </div>
             </div>
             <div class="col-lg-6" id="teachable-box">
@@ -298,7 +303,7 @@ export default {
 
     const filterData = (audioBuffer) => {
       const rawData = audioBuffer.getChannelData(0);
-      const samples = 5;
+      const samples = 50000;
       const blockSize = Math.floor(rawData.length / samples);
       const filteredData = [];
       for (let i = 0; i < samples; i += 1) {
@@ -317,22 +322,29 @@ export default {
       return filteredData.map((n) => n * multiplier);
     };
 
-    const drawAudio = (data) => {
-      axios({
-        url: drf.interview.videoDetailPage(data[0], data[1]),
-        method: 'get',
-      })
-        .then((res) => {
-          fetch(res.data.data[data[2]].audioUrl)
-            .then((response) => response.arrayBuffer())
-            .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-            .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
-            .catch((err) => console.log(err));
-        });
+    // const drawAudio = (data) => {
+    //   axios({
+    //     url: drf.interview.videoDetailPage(data[0], data[1]),
+    //     method: 'get',
+    //   })
+    //     .then((res) => {
+    //       fetch(res.data.data[data[2]].audioUrl)
+    //         .then((response) => response.arrayBuffer())
+    //         .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+    //         .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))))
+    //         .catch((err) => console.log(err));
+    //     });
+    // };
+    const drawAudio = (url) => {
+      fetch(url)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+        .then((audioBuffer) => draw(normalizeData(filterData(audioBuffer))));
     };
     onMounted(() => {
       // drawAudio(sample);
-      drawAudio([userId, VDID, 0]);
+      // drawAudio([userId, VDID, 0]);
+      drawAudio('https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/shoptalk-clip.mp3');
     });
 
     return {
@@ -452,9 +464,9 @@ h2 {
   padding-right: 10px;
 }
 canvas {
-  width: 800px;
+  width: 450px;
   height: 20vw;
-  margin: 2rem auto;
+  margin: 0%;
 }
 #audio-box-inner {
   border: 2px solid rgb(221, 221, 221);
@@ -550,5 +562,13 @@ ul {
   height: 40px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#audio-text {
+  position: relative;
+  top: -25%;
+  width: 440px;
+  text-indent: 15px;
+  margin-left: 15px;
 }
 </style>
