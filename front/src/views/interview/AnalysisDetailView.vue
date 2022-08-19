@@ -114,9 +114,14 @@
             <div class="col-lg-6" id="teachable-box">
               <h5>자세 분석</h5>
               <div id="teachable-box-inner">
-                <p>
-                  해당 답변이 진행되는 동안 잘못된 자세가 {{ teachableArray[order] }}번 감지되었습니다.
-                </p>
+                <div class="progress-box">
+                  <circle-progress
+                  class="progress-bar"
+                  :percent="(teachableArray[order] > 100)?
+                    100 : teachableArray[order]"
+                  :show-percent="true"
+                  :viewport="true" :size="130"/>
+                </div>
                 <p v-if="teachableArray[order] > 20" id="result-text">
                   자세가 심하게 불안정합니다.
                   안정된 자세는 지원자의 면접 태도에 좋은 영향을 끼칩니다. 안정된 자세를 유지하여, 편안하게 면접을 응시하시기 바랍니다.
@@ -135,12 +140,17 @@
               </div>
             </div>
             <div class="col-lg-6" id="teachable-box">
-              <h5>표정 변화</h5>
+              <h5>긍정적 표정</h5>
               <div id="teachable-box-inner">
-                <p>
-                  긍정적인 표정의 비율이 {{ Math.round(emotionArray[order] * 100) }}%입니다.
-                </p>
-                <p v-if="emotionArray[order] > 0.5" id="result-text">
+                <div class="progress-box">
+                  <circle-progress
+                  class="progress-bar"
+                  :percent="(Math.round(emotionArray[order] * 100) > 100)?
+                    100 : Math.round(emotionArray[order] * 100)"
+                  :show-percent="true"
+                  :viewport="true" :size="130"/>
+                </div>
+                <p v-if="emotionArray[order] > 0.4" id="result-text">
                   표정이 긍정적입니다.
                   긍정적인 표정이 많을경우, 면접관에게 좋은 인상을 남길 수 있습니다. 또한 표정 변화는 활기참, 호감도, 친절함, 유쾌함
                   평가에 영향을 줄 수 있습니다. 표정 변화에 유의해서 긍정적 표정을 지으며 면접에 응시하기 바랍니다.
@@ -193,6 +203,7 @@
 </template>
 
 <script>
+import 'vue3-circle-progress/dist/circle-progress.css';
 import {
   computed,
   ref,
@@ -205,11 +216,15 @@ import axios from 'axios';
 import router from '@/router/index';
 import { useRoute } from 'vue-router';
 import drf from '@/api/api';
+import CircleProgress from 'vue3-circle-progress';
 import LoadPage from './components/LoadPage.vue';
 
 export default {
   name: 'ProfileView',
-  components: { LoadPage },
+  components: {
+    LoadPage,
+    CircleProgress,
+  },
   setup() {
     const store = useStore();
     const route = useRoute();
