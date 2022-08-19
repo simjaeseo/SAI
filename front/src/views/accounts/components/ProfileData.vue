@@ -109,35 +109,6 @@
         </div>
       </div>
     </div>
-    <!-- 컨설팅영상 추가하심됩니다-->
-    <div class="mt-5 pt-5">
-      <p class="mt-5">{{ currentUser.name }}님의 컨설팅 영상 &#127916;</p>
-      <div class="box">
-        <div id="tab">
-          <ul :nav="false" :dots="false" class="marginTop50">
-            <li class="card" style="width: 16.792rem; margin-top:70px;"
-            v-for="(video, index) in userVideo" :key="index">
-              <div class="card-body">
-                <div id="badge-box">
-                  <button id="card-text-badge-request" class="btn"
-                  v-if="video.feedbackCompleteStatus === 'FALSE'
-                  && video.feedbackRequestStatus === 'TRUE'">
-                    REQUEST</button>
-                  <button id="card-text-badge-completed" class="btn"
-                  v-if="video.feedbackCompleteStatus === 'TRUE'">
-                    COMPLETED</button>
-                  <button id="card-text-badge-none" class="btn"
-                  v-if="video.feedbackRequestStatus === 'FALSE'">
-                    TEST</button>
-                </div>
-                <h5 class="card-title mt-3">#{{ video.id }} 개인 모의 면접</h5>
-                <p class="card-text">녹화일: {{ video.interviewDate }}</p> <br>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

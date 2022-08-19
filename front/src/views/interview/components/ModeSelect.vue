@@ -21,13 +21,14 @@
               <router-link to='/schedule' id='routerlink'>
                 <button class="start-btn">1:1 면접 신청</button>
               </router-link>
-              <router-link to='/interview/ct' id='routerlink'>
-                <button class="start-btn">
+              <!-- 인호형이 날려버리라고 했던거같아서 주석처리 합니당 -->
+              <!-- <router-link to='/interview/ct' id='routerlink'>
+                <button class="start-btn"> -->
                   <!-- {{ upcomingSchedules[0].scheduleDate.slice(5, 7) }}월
                   {{ upcomingSchedules[0].scheduleDate.slice(-2) }}일
                   {{ upcomingSchedules[0].startTime }}<br> -->
-                  1:1 면접 시작하기</button>
-              </router-link>
+                  <!-- 1:1 면접 시작하기</button>
+              </router-link> -->
             </div>
         </div>
     </div>

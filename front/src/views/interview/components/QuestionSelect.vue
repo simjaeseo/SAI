@@ -53,10 +53,11 @@
             {background:'#5c6ac4', color:'#ffffff'} : {}]"
             @click.prevent="selectQuestion(data)">
               {{ data.question }}</button>
-            <div v-if="selectedQuestionList">
+              <!-- 밑에 로그 나오는거 제거 -->
+            <!-- <div v-if="selectedQuestionList">
               <p v-for="(pick, index) in selectedQuestionList" :key="index">
                 {{ pick }}</p>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="box4" v-show="selected=='myQuestion'">
