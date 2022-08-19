@@ -72,7 +72,7 @@
               </button>
             </div>
             <div class="delete-button">
-              <button v-if="!deleteMode" @click.prevent="modeChange()">
+              <button v-if="!deleteMode" class="btn btn-danger" @click.prevent="modeChange()">
                 삭제하기
               </button>
               <button v-else @click.prevent="modeChange()">

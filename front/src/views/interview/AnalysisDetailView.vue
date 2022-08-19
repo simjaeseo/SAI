@@ -1,7 +1,6 @@
 <template>
   <div id="detail">
     <div class="container" v-if="setVideos">
-<<<<<<< HEAD
       <!-- 묶음
       {{ userVideo }}
       <hr>
@@ -29,8 +28,6 @@
       이모션
       {{ emotionArray }} -->
       <!-- {{ setVideos.value }} -->
-=======
->>>>>>> 5a37ca5c921aa6a492013de2157715f848c28fc6
       <div>
         <h2>{{ userVideo[0].studentName }}님의 {{ order + 1 }} 번째 영상 분석 결과 &#128064;</h2>
         <div id="btn-box">
@@ -44,11 +41,8 @@
         <div class="row">
           <div class="col-lg-8" id="video-box">
             <embed :src="`${videoLink}`" type="" v-if="videoLink" width="680px" height="400px">
-<<<<<<< HEAD
             <!-- <embed :src="`${ videoArray[order] }`" type=""
             v-else width="680px" height="400px"> -->
-=======
->>>>>>> 5a37ca5c921aa6a492013de2157715f848c28fc6
           </div>
           <div id="stt-box" class="col-lg-4">
             <div v-if="order != null">
@@ -144,11 +138,7 @@
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
                 <p>
-<<<<<<< HEAD
-                  긍정적인 표정의 비율이 {{ emotionArray[order] }}%입니다.
-=======
                   긍정적인 표정의 비율이 {{ Math.round(emotionArray[order] * 100) }}%입니다.
->>>>>>> 5a37ca5c921aa6a492013de2157715f848c28fc6
                 </p>
                 <p v-if="emotionArray[order] > 0.5" id="result-text">
                   표정이 긍정적입니다.
@@ -471,8 +461,8 @@ h2 {
   padding-right: 10px;
 }
 canvas {
-  width: 450px;
-  height: 20vw;
+  width: 25vw;
+  height: 20vh;
   margin: 0%;
 }
 #audio-box-inner {
