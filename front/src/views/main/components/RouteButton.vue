@@ -4,13 +4,22 @@
       <div class="col-lg-7" id='left-box'>
         <p id='schedule-text1'>오늘의 일정</p>
         <div id="today-schedule">
-          <div>
-            <div v-if="upcomingSchedules.length > 0
-              && upcomingSchedules[0].scheduleDate === myToday">
+          <!-- 학생일때 -->
+          <div v-if="currentUser.memberStatus === 'TRAINEE'">
+            <div v-if="soloSt.length > 0
+              && soloSt[0].scheduleDate === myToday">
               <h5>
-                {{ upcomingSchedules[0].startTime }}
-                {{ upcomingSchedules[0].consultantName }}
-                {{ upcomingSchedules[0].detail }}
+                {{ soloSt[0].startTime }}
+                {{ soloSt[0].consultantName }}
+                {{ soloSt[0].detail }}
+              </h5>
+            </div>
+            <div v-else-if="withCt.length > 0
+              && withCt[0].scheduleDate === myToday">
+              <h5>
+                {{ withCt[0].startTime }}
+                {{ withCt[0].consultantName }}
+                {{ withCt[0].detail }}
                 <router-link to='/interview/ct' id='routerlink'>
                   <button
                   v-if="this.myToday.slice(5, 7) === upcomingSchedules[0].scheduleDate.slice(5, 7)
@@ -26,7 +35,41 @@
                   </button>
                 </router-link>
               </h5>
-              <br>
+            </div>
+            <div v-else>
+              <h5>오늘 일정이 없습니다.</h5>
+            </div>
+          </div>
+          <div v-if="currentUser.memberStatus === 'CONSULTANT'">
+            <div v-if="soloCt.length > 0
+              && soloCt[0].scheduleDate === myToday">
+              <h5>
+                {{ soloCt[0].startTime }}
+                {{ soloCt[0].consultantName }}
+                {{ soloCt[0].detail }}
+              </h5>
+            </div>
+            <div v-else-if="withSt.length > 0
+              && withSt[0].scheduleDate === myToday">
+              <h5>
+                {{ withSt[0].startTime }}
+                {{ withSt[0].consultantName }}
+                {{ withSt[0].detail }}
+                <router-link to='/interview/ct' id='routerlink'>
+                  <button
+                  v-if="this.myToday.slice(5, 7) === upcomingSchedules[0].scheduleDate.slice(5, 7)
+                    && this.myToday.slice(-2) === upcomingSchedules[0].scheduleDate.slice(-2)&&
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) - 1 ||
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) ||
+                    Number(Date().slice(15, 18)) ==
+                    Number(upcomingSchedules[0].startTime.slice(0, 2)) - 3"
+                    id="schedule-btn1" class="btn">
+                      입장하기
+                  </button>
+                </router-link>
+              </h5>
             </div>
             <div v-else>
               <h5>오늘 일정이 없습니다.</h5>
@@ -53,7 +96,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -62,6 +105,40 @@ export default {
     const myToday = `${new Date().getFullYear()}-${`0${new Date().getMonth() + 1}`.slice(-2)}-${`0${new Date().getDate()}`.slice(-2)}`;
 
     const store = useStore();
+    const currentUser = computed(() => store.getters.currentUser);
+    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
+    const soloCt = [];
+    const soloSt = [];
+    const withCt = [];
+    const withSt = [];
+    onBeforeMount(() => {
+      // 컨설턴트랑 일정 (교육생 입장)
+      console.log(upcomingSchedules.value);
+      for (let i = 0; i < upcomingSchedules.value.length; i += 1) {
+        if (upcomingSchedules.value[i].consultantId != null) {
+          withCt.push(upcomingSchedules.value[i]);
+        }
+      }
+      // 학생이랑 일정 (컨설턴트 입장)
+      for (let i = 0; i < upcomingSchedules.value.length; i += 1) {
+        if (upcomingSchedules.value[i].studentId != null) {
+          withSt.push(upcomingSchedules.value[i]);
+        }
+      }
+      // 개인일정 교육생
+      for (let i = 0; i < upcomingSchedules.value.length; i += 1) {
+        if (upcomingSchedules.value[i].consultantId === null) {
+          soloSt.push(upcomingSchedules.value[i]);
+        }
+      }
+      // 개인일정 컨설턴트
+      for (let i = 0; i < upcomingSchedules.value.length; i += 1) {
+        if (upcomingSchedules.value[i].studentId === null) {
+          soloCt.push(upcomingSchedules.value[i]);
+        }
+      }
+      console.log(withCt);
+    });
 
     const fetchUpcomingSchedules = async () => {
       await store.dispatch('fetchUpcomingSchedules');
@@ -69,14 +146,15 @@ export default {
 
     await fetchUpcomingSchedules();
 
-    const currentUser = computed(() => store.getters.currentUser);
-    const upcomingSchedules = computed(() => store.getters.upcomingSchedules);
-
     return {
       myToday,
       currentUser,
       upcomingSchedules,
       fetchUpcomingSchedules,
+      withCt,
+      withSt,
+      soloCt,
+      soloSt,
     };
   },
 };

@@ -1,33 +1,6 @@
 <template>
   <div id="detail">
     <div class="container" v-if="setVideos">
-      <!-- 묶음
-      {{ userVideo }}
-      <hr>
-      개별비디오들
-      {{ setVideos }}
-      <hr>
-      비디오 주소
-      {{ videoArray }}
-      <hr>
-      오디오 주소
-      {{ audioArray }}
-      <hr>
-      피드백 결과
-      {{ isFeedBackCompleted }}
-      <hr>
-      stt
-      {{ sttArray }}
-      <hr>
-      티쳐블
-      {{ teachableArray }}
-      <hr>
-      질문들
-      {{ qArray }}
-      <hr>
-      이모션
-      {{ emotionArray }} -->
-      <!-- {{ setVideos.value }} -->
       <div>
         <h2>{{ userVideo[0].studentName }}님의 {{ order + 1 }} 번째 영상 분석 결과 &#128064;</h2>
         <div id="btn-box">
@@ -37,15 +10,10 @@
         </div>
       </div>
       <hr>
-      <!-- <div id="date-box1">
-        <p>&#128204;{{ setVideos[order].createdDate}}</p>
-      </div> -->
       <div class="container">
         <div class="row">
           <div class="col-lg-8" id="video-box">
             <embed :src="`${videoLink}`" type="" v-if="videoLink" width="680px" height="400px">
-            <!-- <embed :src="`${ videoArray[order] }`" type=""
-            v-else width="680px" height="400px"> -->
           </div>
           <div id="stt-box" class="col-lg-4">
             <div v-if="order != null">
@@ -136,7 +104,7 @@
               <h5>표정 변화</h5>
               <div id="teachable-box-inner">
                 <p>
-                  긍정적인 표정의 비율이 {{ emotionArray[order] }}%입니다.
+                  긍정적인 표정의 비율이 {{ Math.round(emotionArray[order] * 100) }}%입니다.
                 </p>
                 <p v-if="emotionArray[order] > 0.5" id="result-text">
                   표정이 긍정적입니다.
