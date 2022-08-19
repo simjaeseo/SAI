@@ -25,7 +25,7 @@
         <div v-if="studentData.studentName" id="student-profile"
         class="col-4">
           <img v-if="studentData.img" id='user_profile_img'
-          :src="require(`../../../../image/${studentData.img.fileName}`)" alt="img">
+          :src="`https://i7c206.p.ssafy.io/img/${studentData.img.fileName}`" alt="img">
           <img v-else src='@/assets/profile5.png' alt="no-img" id='user_profile_img'>
           <div id="user-profile-inner">
             <h6>이름</h6>
