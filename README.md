@@ -25,7 +25,7 @@
 지수 : 수학은 10 넘어가면 어지러워요 그치만 넥슨 연락주세요   
 
 
-### 기술 스택
+## 기술 스택
 #### FE
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
@@ -44,3 +44,7 @@
 <img src="https://img.shields.io/badge/Nginx-009639C?style=for-the-badge&logo=Nginx&logoColor=white">
 <img src="https://img.shields.io/badge/Aws-569A31?style=for-the-badge&logo=AWSs3&logoColor=white">
 <img src="https://img.shields.io/badge/google-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white">
+
+#### Tool
+<img src="https://img.shields.io/badge/POSTMAN-FF6C37?style=for-the-badge&logo=Postman&logoColor=white">
+<img src="https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=Mattermost&logoColor=white">
