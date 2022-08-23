@@ -1,7 +1,6 @@
 ![image](/uploads/a96fc83be7c9523e23cadea4af27d9d4/image.png)
 
-# [📃 개발일지 Wiki](https://lab.ssafy.com/s07-webmobile2-sub2/S07P12C206/-/wikis/home)
-
+## [📃 개발일지 Wiki](https://lab.ssafy.com/s07-webmobile2-sub2/S07P12C206/-/wikis/home)
 
 ## :sparkles: 팀 구성 
 
@@ -50,7 +49,6 @@
 #### IDE
 <img src="https://img.shields.io/badge/VisualStudioCode-007ACC?style=for-the-badge&logo=VisualStudioCode&logoColor=white">
 <img src="https://img.shields.io/badge/Inteelij-000000?style=for-the-badge&logo=Intellijidea&logoColor=white">
-<img src="https://img.shields.io/badge/google-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white">
 <br>
 
 #### Tool
@@ -60,3 +58,4 @@
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
+<br>
