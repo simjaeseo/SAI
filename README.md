@@ -50,24 +50,85 @@ Face API를 이용한 표정분석
 
 ## :sparkles: 팀 구성 
 
-| 팀　장 | 팀　원 | 팀　원 | 팀　원 | 팀　원 | 팀　원 |
-| :-----: | :-----: | :---: | :-----: | :-----: | :-----: |
-| **최인호** | **윤형준** | **지 근** | **조덕희** | **심재서** | **김지수** |
-| <img src="https://img.shields.io/badge/FE-F8DC75"> | <img src="https://img.shields.io/badge/FE-F8DC75"> | <img src="https://img.shields.io/badge/BE-6DB33F">  | <img src="https://img.shields.io/badge/BE-6DB33F"> | <img src="https://img.shields.io/badge/BE-6DB33F"> | <img src="https://img.shields.io/badge/FE-F8DC75"> |
+<table>
+  <tr>
+    <td align="center" width="150px">
+      <a href="https://github.com/cih831" target="_blank">
+        <img src="/uploads/f50ed29f5e5cb395e08f9aaf1ab1ddd0/image.png" alt="최인호 프로필" />
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="#" target="_blank">
+        <img src="/uploads/30eb7d89542ecece03f421638327e35a/image.png" alt="김지수 프로필" />
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="#" target="_blank">
+        <img src="/uploads/fd220bd593e4692498289ba0cd328050/image.png" alt="윤형준 프로필" />
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="https://github.com/jg6735" target="_blank">
+        <img src="/uploads/7814fe722369bce8eeb7484103c5e4f8/image.png" alt="지근 프로필" />
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="https://github.com/simjaeseo" target="_blank">
+        <img src="/uploads/754059cebbec97d3f7228f521ad9f9d0/image.png" alt="심재서 프로필" />
+      </a>
+    </td>
+    <td align="center" width="150px">
+      <a href="https://github.com/Givem2thekey" target="_blank">
+        <img src="/uploads/044cc950ab727ae05ca3b21972ea360b/image.png" alt="조덕희 프로필" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/cih831" target="_blank">
+        최인호<br />(Front-end & 팀장)
+      </a>
+    </td>
+    <td align="center">
+      <a href="#" target="_blank">
+        김지수<br />(Front-end)
+      </a>
+    </td>
+    <td align="center">
+      <a href="#" target="_blank">
+        윤형준<br />(Front-end)
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/jg6735" target="_blank">
+        지근<br />(Back-end)
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/simjaeseo" target="_blank">
+        심재서<br />(Back-end)
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Givem2thekey">
+        조덕희<br />(Back-end)
+      </a>
+    </td>
+  </tr>
+</table>
 
+<br />
 
-<img src = "/uploads/f50ed29f5e5cb395e08f9aaf1ab1ddd0/image.png" width = "60" height = "60">
-인호 : 개발 프로젝트는 처음인 내가 이 세계에서는 팀장이라니?! 열심히 하겠습니다 화이팅! <br>     
-<img src = "/uploads/fd220bd593e4692498289ba0cd328050/image.png" width = "60" height = "60">
-형준 : 저는 바보입니다 <br> 
-<img src = "/uploads/7814fe722369bce8eeb7484103c5e4f8/image.png" width = "60" height = "60">
-지근 : "아무거나 다 좋아요"가 없는 팀원이 되겠습니다 !  <br>
-<img src = "/uploads/044cc950ab727ae05ca3b21972ea360b/image.png" width = "60" height = "60">
-덕희 : 전공자지만 제대로 된 프로젝트는 처음입니다. 좋은 결과를 위해 열심히 참여하겠습니다! <br>
-<img src = "/uploads/754059cebbec97d3f7228f521ad9f9d0/image.png" width = "60" height = "60">
-재서 : 다같이 열심히해서 좋은 프로젝트 만들어봐요😊 <br>
-<img src = "/uploads/30eb7d89542ecece03f421638327e35a/image.png" width = "60" height = "60">
-지수 : 수학은 10 넘어가면 어지러워요 그치만 넥슨 연락주세요   
+<br />
+
+|  이름  |        역할        | <div align="center">개발 내용</div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| :----: | :----------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 최인호 | Front-end<br />팀장 | - 메인 홈 페이지 개발<br /> - 일정 관리 페이지 개발<br /> - TTS, decibal graph 등 음성 관련 기능 적용<br /> - Teachablemachine, tensorflow 등 영상 분석 관련 기능 적용<br /> - Vuex를 활용한 상태관리<br /> - 개인 모의 면접 대기실 성능 개선 및 UI 수정<br /> - 모의면접 분석 페이지 UI/UX 개선                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 김지수 |      Front-end      |                                                                                                                                                                                                                                                                                                                                                                            |
+| 윤형준 |      Front-end      |                                        |
+| 지근 |     Back-end      | - 회원 도메인 설계 및 개발<br />- 회원 기능 API 개발<br />- 스프링 시큐리티, JWT 인증을 통한 회원가입 / 로그인 구현<br />- 면접 영상 도메인 설계 및 개발<br />- 면접 정보 및 피드백 관련 API 개발<br />- 회원, 일정, 면접 영상 JPA 개발, 리팩토링<br />- Nginx 웹서버 구축 및 배포<br />- Nginx SSL 적용 |
+| 심재서 |     Back-end      | - DB 설계<br />- 일정 도메인 설계 및 개발<br />- 면접 저장 도메인 설계 및 개발<br />- Openvidu 서버 배포<br />- jave 라이브러리를 활용한 mp4 면접파일을 flac 음성파일로 변환<br />- AWS S3, Google Cloud Storage를 활용하여 면접 영상 파일, 음성 파일 저장 기능 구현<br />- Google Speech API를 활용하여 저장된 음성 파일을 스크립트로 변환 (STT 기능)<br />- Spring Boot에 SSL 적용                                                                                                                                                                                                                          |
+| 조덕희 |     Back-end      |                                                                                                                                                                                                                                                                                                       |   
 
 
 ## 기술 스택
