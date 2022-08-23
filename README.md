@@ -23,3 +23,24 @@
 재서 : 다같이 열심히해서 좋은 프로젝트 만들어봐요😊 <br>
 <img src = "/uploads/30eb7d89542ecece03f421638327e35a/image.png" width = "60" height = "60">
 지수 : 수학은 10 넘어가면 어지러워요 그치만 넥슨 연락주세요   
+
+
+### 기술 스택
+#### FE
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
+<br>
+
+#### BE
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white">
+
+<br>
+
+#### Infra
+<img src="https://img.shields.io/badge/Nginx-009639C?style=for-the-badge&logo=Nginx&logoColor=white">
+<img src="https://img.shields.io/badge/Aws-569A31?style=for-the-badge&logo=AWSs3&logoColor=white">
+<img src="https://img.shields.io/badge/google-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white">
