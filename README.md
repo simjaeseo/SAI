@@ -12,7 +12,7 @@
 
 
 <img src = "/uploads/f50ed29f5e5cb395e08f9aaf1ab1ddd0/image.png" width = "60" height = "60">
-인호 : 나는 말하는 감자애오 <br>     
+인호 : 개발 프로젝트는 처음인 내가 이 세계에서는 팀장이라니?! 열심히 하겠습니다 화이팅! <br>     
 <img src = "/uploads/fd220bd593e4692498289ba0cd328050/image.png" width = "60" height = "60">
 형준 : 저는 바보입니다 <br> 
 <img src = "/uploads/7814fe722369bce8eeb7484103c5e4f8/image.png" width = "60" height = "60">
