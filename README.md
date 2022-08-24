@@ -128,10 +128,7 @@ Face API를 이용한 표정분석
 | 윤형준 |      Front-end      |                                        |
 | 지근 |     Back-end      | - 회원 도메인 설계 및 개발<br />- 회원 기능 API 개발<br />- 스프링 시큐리티, JWT 인증을 통한 회원가입 / 로그인 구현<br />- 면접 영상 도메인 설계 및 개발<br />- 면접 정보 및 피드백 관련 API 개발<br />- 회원, 일정, 면접 영상 JPA 개발, 리팩토링<br />- Nginx 웹서버 구축 및 배포<br />- Nginx SSL 적용 |
 | 심재서 |     Back-end      | - DB 설계<br />- 일정 도메인 설계 및 개발<br />- 면접 저장 도메인 설계 및 개발<br />- Openvidu 서버 배포<br />- jave 라이브러리를 활용한 mp4 면접파일을 flac 음성파일로 변환<br />- AWS S3, Google Cloud Storage를 활용하여 면접 영상 파일, 음성 파일 저장 기능 구현<br />- Google Speech API를 활용하여 저장된 음성 파일을 스크립트로 변환 (STT 기능)<br />- Spring Boot에 SSL 적용                                                                                                                                                                                                                          |
-| 조덕희 |     Back-end      |                                                                                                                                                   - 면접 질문 도메인 설계 및 개발<br />
-- Teachable Machine 통한 자세 인식 모델 학습 및 구현<br />
-- 면접 질문 데이터 수집<br />
-- 산출물 관리 (ERD 정리 및 시연시나리오 작성)
+| 조덕희 |     Back-end      | - 면접 질문 도메인 설계 및 개발<br />- Teachable Machine 통한 자세 인식 모델 학습 및 구현<br />- 면접 질문 데이터 수집<br />- 산출물 관리 (ERD 정리 및 시연시나리오 작성)
 |
 
 
